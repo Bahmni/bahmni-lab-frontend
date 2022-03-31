@@ -1,8 +1,5 @@
 name: Trigger E2E Workflows
 on:
-  push:
-    branches:
-      - e2e-trigger-workflow
   workflow_run:
     workflows: [Build and Publish]
     types:
