@@ -2,7 +2,7 @@ import {ExtensionSlot, usePatient} from '@openmrs/esm-framework'
 import {render, screen} from '@testing-library/react'
 import React from 'react'
 import {when} from 'jest-when'
-import PatientLabChart from './patient-lab-chart'
+import PatientLabDetails from './patient-lab-details'
 
 const mockPatientUuid = 'abc123'
 const matchParams = {
@@ -12,7 +12,7 @@ const matchParams = {
   url: '',
 }
 
-describe('Patient lab chart', () => {
+describe('Patient lab details', () => {
   it('should show loader if call for patient data is in progress', () => {
     when(usePatient)
       .calledWith(mockPatientUuid)
@@ -20,7 +20,7 @@ describe('Patient lab chart', () => {
         isLoading: true,
       })
     render(
-      <PatientLabChart
+      <PatientLabDetails
         match={matchParams}
         history={undefined}
         location={undefined}
@@ -36,7 +36,7 @@ describe('Patient lab chart', () => {
         error: {message: 'unable to fetch patient data'},
       })
     render(
-      <PatientLabChart
+      <PatientLabDetails
         match={matchParams}
         history={undefined}
         location={undefined}
@@ -63,7 +63,7 @@ describe('Patient lab chart', () => {
       )
     })
     render(
-      <PatientLabChart
+      <PatientLabDetails
         match={matchParams}
         history={undefined}
         location={undefined}

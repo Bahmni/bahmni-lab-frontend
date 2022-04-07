@@ -47,14 +47,11 @@ function setupOpenMRS() {
         route: 'home',
       },
       {
-        route: /^patient\/.+\/chart\/lab/,
-        load: getAsyncLifecycle(
-          () => import('./patient-lab-chart/root.component'),
-          {
-            featureName: 'patient-lab-chart-root',
-            moduleName: labliteModuleName,
-          },
-        ),
+        route: /^patient\/.+/,
+        load: getAsyncLifecycle(() => import('./patient-lab-root.component'), {
+          featureName: 'patient-lab-root',
+          moduleName: labliteModuleName,
+        }),
       },
     ],
   }
