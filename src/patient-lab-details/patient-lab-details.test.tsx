@@ -3,8 +3,11 @@ import {render, screen} from '@testing-library/react'
 import React from 'react'
 import {when} from 'jest-when'
 import PatientLabDetails from './patient-lab-details'
+<<<<<<< HEAD:src/patient-lab-details/patient-lab-details.test.tsx
 import {BrowserRouter} from 'react-router-dom'
 import userEvent from '@testing-library/user-event'
+=======
+>>>>>>> e7b7712 (BAH-1503 | Refactor. rename patient lab chart component and url to patient lab details):src/patient-lab-chart/patient-lab-chart.test.tsx
 
 const mockPatientUuid = '1'
 const matchParams = {
@@ -65,6 +68,7 @@ describe('Patient lab details', () => {
       )
     })
     render(
+<<<<<<< HEAD:src/patient-lab-details/patient-lab-details.test.tsx
       <BrowserRouter>
         <PatientLabDetails
           match={matchParams}
@@ -72,6 +76,13 @@ describe('Patient lab details', () => {
           location={undefined}
         />
       </BrowserRouter>,
+=======
+      <PatientLabDetails
+        match={matchParams}
+        history={undefined}
+        location={undefined}
+      />,
+>>>>>>> e7b7712 (BAH-1503 | Refactor. rename patient lab chart component and url to patient lab details):src/patient-lab-chart/patient-lab-chart.test.tsx
     )
     expect(screen.queryByText(/loading \.\.\./i)).not.toBeInTheDocument()
     expect(
