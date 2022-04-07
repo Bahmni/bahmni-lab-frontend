@@ -3,15 +3,8 @@ import {render, screen} from '@testing-library/react'
 import React from 'react'
 import {when} from 'jest-when'
 import PatientLabDetails from './patient-lab-details'
-<<<<<<< HEAD
-<<<<<<< HEAD:src/patient-lab-details/patient-lab-details.test.tsx
 import {BrowserRouter} from 'react-router-dom'
 import userEvent from '@testing-library/user-event'
-=======
->>>>>>> e7b7712 (BAH-1503 | Refactor. rename patient lab chart component and url to patient lab details):src/patient-lab-chart/patient-lab-chart.test.tsx
-=======
-import {MemoryRouter} from 'react-router'
->>>>>>> 9e8b733 (BAH-1503 | Add. create an Upload reports button to navigate to report upload screen)
 
 const mockPatientUuid = '1'
 const matchParams = {
@@ -72,29 +65,13 @@ describe('Patient lab details', () => {
       )
     })
     render(
-<<<<<<< HEAD
-<<<<<<< HEAD:src/patient-lab-details/patient-lab-details.test.tsx
       <BrowserRouter>
-=======
-      <MemoryRouter>
->>>>>>> 9e8b733 (BAH-1503 | Add. create an Upload reports button to navigate to report upload screen)
         <PatientLabDetails
           match={matchParams}
           history={undefined}
           location={undefined}
         />
-<<<<<<< HEAD
       </BrowserRouter>,
-=======
-      <PatientLabDetails
-        match={matchParams}
-        history={undefined}
-        location={undefined}
-      />,
->>>>>>> e7b7712 (BAH-1503 | Refactor. rename patient lab chart component and url to patient lab details):src/patient-lab-chart/patient-lab-chart.test.tsx
-=======
-      </MemoryRouter>,
->>>>>>> 9e8b733 (BAH-1503 | Add. create an Upload reports button to navigate to report upload screen)
     )
     expect(screen.queryByText(/loading \.\.\./i)).not.toBeInTheDocument()
     expect(
@@ -111,11 +88,8 @@ describe('Patient lab details', () => {
         name: /upload report/i,
       }),
     ).toBeInTheDocument()
-<<<<<<< HEAD
 
     userEvent.click(screen.getByText('Upload Report'))
     expect(global.window.location.href).toMatch('/patient/1/report')
-=======
->>>>>>> 9e8b733 (BAH-1503 | Add. create an Upload reports button to navigate to report upload screen)
   })
 })

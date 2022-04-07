@@ -3,11 +3,4 @@ export const labliteModuleName = '@bahmni/lab-lite-app'
 export const searchModuleName = '@openmrs/esm-patient-search-app'
 export const patientLabDetailsPath = 'patient/${patientUuid}'
 export const patientLabDetailsRoute = '/patient/:patientUuid'
-<<<<<<< HEAD
-<<<<<<< HEAD
 export const patientLabReportRoute = '/patient/:patientUuid/report'
-=======
->>>>>>> e7b7712 (BAH-1503 | Refactor. rename patient lab chart component and url to patient lab details)
-=======
-export const patientLabReportRoute = '/patient/:patientUuid/report'
->>>>>>> 9e8b733 (BAH-1503 | Add. create an Upload reports button to navigate to report upload screen)
