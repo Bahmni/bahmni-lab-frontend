@@ -1,16 +1,16 @@
 import {ExtensionSlot, usePatient} from '@openmrs/esm-framework'
 import React from 'react'
-import {RouteComponentProps} from 'react-router-dom'
+import {Link, RouteComponentProps} from 'react-router-dom'
 import Loader from '../loader/loader.component'
-import styles from './patient-lab-chart.scss'
+import styles from './patient-lab-details.scss'
 
 interface PatientLabChartParams {
   patientUuid: string
 }
 
-const PatientLabChart: React.FC<RouteComponentProps<PatientLabChartParams>> = ({
-  match,
-}) => {
+const PatientLabDetails: React.FC<RouteComponentProps<
+  PatientLabChartParams
+>> = ({match}) => {
   const {patientUuid} = match.params
   const {isLoading, patient, error} = usePatient(patientUuid)
   return (
@@ -37,4 +37,4 @@ const PatientLabChart: React.FC<RouteComponentProps<PatientLabChartParams>> = ({
   )
 }
 
-export default PatientLabChart
+export default PatientLabDetails
