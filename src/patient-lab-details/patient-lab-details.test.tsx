@@ -3,6 +3,7 @@ import {render, screen} from '@testing-library/react'
 import React from 'react'
 import {when} from 'jest-when'
 import PatientLabDetails from './patient-lab-details'
+import {MemoryRouter} from 'react-router'
 
 const mockPatientUuid = 'abc123'
 const matchParams = {
@@ -63,11 +64,13 @@ describe('Patient lab details', () => {
       )
     })
     render(
-      <PatientLabDetails
-        match={matchParams}
-        history={undefined}
-        location={undefined}
-      />,
+      <MemoryRouter>
+        <PatientLabDetails
+          match={matchParams}
+          history={undefined}
+          location={undefined}
+        />
+      </MemoryRouter>,
     )
     expect(screen.queryByText(/loading \.\.\./i)).not.toBeInTheDocument()
     expect(
@@ -77,6 +80,12 @@ describe('Patient lab details', () => {
       screen.getByText(
         /State : \{"patient":\{"id":"1"\},"patientuuid":"1","hideActionsOverflow":true\}/i,
       ),
+    ).toBeInTheDocument()
+
+    expect(
+      screen.getByRole('button', {
+        name: /upload report/i,
+      }),
     ).toBeInTheDocument()
   })
 })

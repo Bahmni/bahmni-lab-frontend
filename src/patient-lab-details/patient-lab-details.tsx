@@ -1,16 +1,17 @@
 import {ExtensionSlot, usePatient} from '@openmrs/esm-framework'
+import {Button} from 'carbon-components-react'
 import React from 'react'
 import {Link, RouteComponentProps} from 'react-router-dom'
 import Loader from '../loader/loader.component'
 import styles from './patient-lab-details.scss'
 
-interface PatientLabChartParams {
+interface PatientParamsType {
   patientUuid: string
 }
 
-const PatientLabDetails: React.FC<RouteComponentProps<
-  PatientLabChartParams
->> = ({match}) => {
+const PatientLabDetails: React.FC<RouteComponentProps<PatientParamsType>> = ({
+  match,
+}) => {
   const {patientUuid} = match.params
   const {isLoading, patient, error} = usePatient(patientUuid)
   return (
@@ -31,6 +32,16 @@ const PatientLabDetails: React.FC<RouteComponentProps<
               }}
             />
           </aside>
+          <br></br>
+          <br></br>
+          <Link
+            to={{
+              pathname: '/patient/' + patient.id + '/report',
+              state: {patient},
+            }}
+          >
+            <Button>Upload Report</Button>
+          </Link>
         </div>
       )}
     </main>
