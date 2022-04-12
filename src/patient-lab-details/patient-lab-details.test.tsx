@@ -3,8 +3,10 @@ import {render, screen} from '@testing-library/react'
 import React from 'react'
 import {when} from 'jest-when'
 import PatientLabDetails from './patient-lab-details'
+import {BrowserRouter} from 'react-router-dom'
+import userEvent from '@testing-library/user-event'
 
-const mockPatientUuid = 'abc123'
+const mockPatientUuid = '1'
 const matchParams = {
   isExact: true,
   params: {patientUuid: `${mockPatientUuid}`},
@@ -52,7 +54,7 @@ describe('Patient lab details', () => {
     when(usePatient)
       .calledWith(mockPatientUuid)
       .mockReturnValue({
-        patient: {id: '1'},
+        patient: {id: mockPatientUuid},
       })
     when(ExtensionSlot).mockImplementation((props: any) => {
       return (
@@ -63,11 +65,13 @@ describe('Patient lab details', () => {
       )
     })
     render(
-      <PatientLabDetails
-        match={matchParams}
-        history={undefined}
-        location={undefined}
-      />,
+      <BrowserRouter>
+        <PatientLabDetails
+          match={matchParams}
+          history={undefined}
+          location={undefined}
+        />
+      </BrowserRouter>,
     )
     expect(screen.queryByText(/loading \.\.\./i)).not.toBeInTheDocument()
     expect(
@@ -76,5 +80,14 @@ describe('Patient lab details', () => {
     expect(
       screen.getByText(/State : \{"patient":\{"id":"1"\},"patientuuid":"1"\}/i),
     ).toBeInTheDocument()
+
+    expect(
+      screen.getByRole('button', {
+        name: /upload report/i,
+      }),
+    ).toBeInTheDocument()
+
+    userEvent.click(screen.getByText('Upload Report'))
+    expect(global.window.location.href).toMatch('/patient/1/report')
   })
 })
