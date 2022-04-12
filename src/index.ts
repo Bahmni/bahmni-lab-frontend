@@ -48,10 +48,14 @@ function setupOpenMRS() {
       },
       {
 <<<<<<< HEAD
+<<<<<<< HEAD
         route: /^patient\/[a-z0-9-]+/,
 =======
         route: /^patient\/.+/,
 >>>>>>> e7b7712 (BAH-1503 | Refactor. rename patient lab chart component and url to patient lab details)
+=======
+        route: /^patient\/[a-z0-9-]+/,
+>>>>>>> 9e8b733 (BAH-1503 | Add. create an Upload reports button to navigate to report upload screen)
         load: getAsyncLifecycle(() => import('./patient-lab-root.component'), {
           featureName: 'patient-lab-root',
           moduleName: labliteModuleName,
