@@ -16,7 +16,11 @@ const PatientLabReport = () => {
         <aside>
           <ExtensionSlot
             extensionSlotName="patient-header-slot"
-            state={{patient: patient, patientUuid: patient.id}}
+            state={{
+              patient: patient,
+              patientUuid: patient.id,
+              hideActionsOverflow: true,
+            }}
           />
         </aside>
       </div>
