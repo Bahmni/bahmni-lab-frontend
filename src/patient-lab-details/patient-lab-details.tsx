@@ -27,7 +27,7 @@ const PatientLabDetails: React.FC<RouteComponentProps<PatientParamsType>> = ({
             <aside>
               <ExtensionSlot
                 extensionSlotName="patient-header-slot"
-                state={{patient, patientUuid: patient.id}}
+                state={{patient, patientUuid: patient.id, hideActionsOverflow: true}}
               />
             </aside>
           </div>
