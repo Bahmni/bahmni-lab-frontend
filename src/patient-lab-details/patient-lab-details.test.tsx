@@ -3,9 +3,10 @@ import {render, screen} from '@testing-library/react'
 import React from 'react'
 import {when} from 'jest-when'
 import PatientLabDetails from './patient-lab-details'
-import {MemoryRouter} from 'react-router'
+import {BrowserRouter} from 'react-router-dom'
+import userEvent from '@testing-library/user-event'
 
-const mockPatientUuid = 'abc123'
+const mockPatientUuid = '1'
 const matchParams = {
   isExact: true,
   params: {patientUuid: `${mockPatientUuid}`},
@@ -53,7 +54,7 @@ describe('Patient lab details', () => {
     when(usePatient)
       .calledWith(mockPatientUuid)
       .mockReturnValue({
-        patient: {id: '1'},
+        patient: {id: mockPatientUuid},
       })
     when(ExtensionSlot).mockImplementation((props: any) => {
       return (
@@ -64,13 +65,13 @@ describe('Patient lab details', () => {
       )
     })
     render(
-      <MemoryRouter>
+      <BrowserRouter>
         <PatientLabDetails
           match={matchParams}
           history={undefined}
           location={undefined}
         />
-      </MemoryRouter>,
+      </BrowserRouter>,
     )
     expect(screen.queryByText(/loading \.\.\./i)).not.toBeInTheDocument()
     expect(
@@ -87,5 +88,8 @@ describe('Patient lab details', () => {
         name: /upload report/i,
       }),
     ).toBeInTheDocument()
+
+    userEvent.click(screen.getByText('Upload Report'))
+    expect(global.window.location.href).toMatch('/patient/1/report')
   })
 })

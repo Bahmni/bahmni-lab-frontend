@@ -19,6 +19,7 @@ import {labOrderUuid, headers} from '../constants'
 import Loader from '../loader/loader.component'
 import styles from './patient-lab-details.scss'
 import {openmrsFetch} from '@openmrs/esm-framework'
+import AddFilled16 from '@carbon/icons-react/lib/add/16'
 
 interface PatientParamsType {
   patientUuid: string
@@ -119,7 +120,7 @@ const PatientLabDetails: React.FC<RouteComponentProps<PatientParamsType>> = ({
               state: {patient},
             }}
           >
-            <Button>Upload Report</Button>
+            <Button renderIcon={AddFilled16}>Upload Report</Button>
           </Link>
         </div>
       )}
