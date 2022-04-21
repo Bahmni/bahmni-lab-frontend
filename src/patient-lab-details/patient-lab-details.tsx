@@ -1,22 +1,23 @@
 import AddFilled16 from '@carbon/icons-react/lib/add/16'
-import { ExtensionSlot, openmrsFetch, usePatient } from '@openmrs/esm-framework'
+import {ExtensionSlot, openmrsFetch, usePatient} from '@openmrs/esm-framework'
 import {
   Button,
-  DataTable, Table,
+  DataTable,
+  Table,
   TableBody,
   TableCell,
   TableHead,
   TableHeader,
   TableRow,
   TableSelectAll,
-  TableSelectRow
+  TableSelectRow,
 } from 'carbon-components-react'
 import React from 'react'
-import { RouteComponentProps } from 'react-router-dom'
+import {RouteComponentProps} from 'react-router-dom'
 import useSWR from 'swr'
-import { headers, labOrderUuid } from '../constants'
+import {headers, labOrderUuid} from '../constants'
 import Loader from '../loader/loader.component'
-import { LabOrdersFetchResponse } from '../types'
+import {LabOrdersFetchResponse} from '../types'
 import styles from './patient-lab-details.scss'
 
 interface PatientParamsType {
@@ -61,12 +62,7 @@ const PatientLabDetails: React.FC<RouteComponentProps<PatientParamsType>> = ({
     <div>
       <h4>Pending Lab Orders</h4>
       <DataTable rows={rows} headers={headers}>
-        {({
-          rows,
-          headers,
-          getSelectionProps,
-          getHeaderProps,
-        }) => (
+        {({rows, headers, getSelectionProps, getHeaderProps}) => (
           <Table title="lab-order-table">
             <TableHead>
               <TableRow>
@@ -123,7 +119,7 @@ const PatientLabDetails: React.FC<RouteComponentProps<PatientParamsType>> = ({
           )}
           <br></br>
           <br></br>
-            <Button renderIcon={AddFilled16}>Upload Report</Button>
+          <Button renderIcon={AddFilled16}>Upload Report</Button>
         </div>
       )}
     </main>

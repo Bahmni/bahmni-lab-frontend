@@ -1,10 +1,7 @@
 import React from 'react'
 import {SWRConfig} from 'swr'
 import {BrowserRouter, Route} from 'react-router-dom'
-import {
-  patientLabDetailsRoute,
-  spaRoot,
-} from './constants'
+import {patientLabDetailsRoute, spaRoot} from './constants'
 import PatientLabDetails from './patient-lab-details/patient-lab-details'
 
 const swrConfiguration = {
