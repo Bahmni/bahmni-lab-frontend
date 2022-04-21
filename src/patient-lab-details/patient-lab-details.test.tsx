@@ -114,8 +114,6 @@ describe('Patient lab details', () => {
       }),
     ).toBeInTheDocument()
 
-    userEvent.click(screen.getByText('Upload Report'))
-    expect(global.window.location.href).toMatch('/patient/1/report')
   })
 
   it('should display pending lab orders table when call for orders data is successful', async () => {

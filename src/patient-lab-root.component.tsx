@@ -3,11 +3,9 @@ import {SWRConfig} from 'swr'
 import {BrowserRouter, Route} from 'react-router-dom'
 import {
   patientLabDetailsRoute,
-  patientLabReportRoute,
   spaRoot,
 } from './constants'
 import PatientLabDetails from './patient-lab-details/patient-lab-details'
-import PatientLabReport from './patient-lab-report/patient-lab-report'
 
 const swrConfiguration = {
   // Maximum number of retries when the backend returns an error
@@ -23,11 +21,6 @@ const Root: React.FC = () => {
             exact
             path={patientLabDetailsRoute}
             component={PatientLabDetails}
-          />
-          <Route
-            exact
-            path={patientLabReportRoute}
-            component={PatientLabReport}
           />
         </BrowserRouter>
       </SWRConfig>

@@ -12,7 +12,7 @@ import {
   TableSelectRow
 } from 'carbon-components-react'
 import React from 'react'
-import { Link, RouteComponentProps } from 'react-router-dom'
+import { RouteComponentProps } from 'react-router-dom'
 import useSWR from 'swr'
 import { headers, labOrderUuid } from '../constants'
 import Loader from '../loader/loader.component'
@@ -123,14 +123,7 @@ const PatientLabDetails: React.FC<RouteComponentProps<PatientParamsType>> = ({
           )}
           <br></br>
           <br></br>
-          <Link
-            to={{
-              pathname: '/patient/' + patient.id + '/report',
-              state: {patient},
-            }}
-          >
             <Button renderIcon={AddFilled16}>Upload Report</Button>
-          </Link>
         </div>
       )}
     </main>
