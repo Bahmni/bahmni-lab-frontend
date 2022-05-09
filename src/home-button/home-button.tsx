@@ -1,6 +1,6 @@
 import React from 'react'
 import styles from './home-button.scss'
-import HomeFilled24 from '@carbon/icons-react/lib/Home/24'
+import Home24 from '@carbon/icons-react/lib/home/24'
 import {labHomePath, bahmniHomePath} from '../constants'
 import {HeaderGlobalAction} from 'carbon-components-react'
 
@@ -14,7 +14,7 @@ const HomeButton = () => {
           process.env.NODE_ENV === 'development' ? labHomePath : bahmniHomePath
       }}
     >
-      <HomeFilled24 className={styles.home} />
+      <Home24 className={styles.home} />
     </HeaderGlobalAction>
   )
 }
