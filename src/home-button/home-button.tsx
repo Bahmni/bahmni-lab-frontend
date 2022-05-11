@@ -1,7 +1,7 @@
 import React from 'react'
 import styles from './home-button.scss'
 import Home24 from '@carbon/icons-react/lib/home/24'
-import {labHomePath, bahmniHomePath} from '../constants'
+import {homePath} from '../constants'
 import {HeaderGlobalAction} from 'carbon-components-react'
 
 const HomeButton = () => {
@@ -10,8 +10,7 @@ const HomeButton = () => {
       aria-label="Home"
       className={styles.headerGlobalBarButton}
       onClick={() => {
-        window.location.href =
-          process.env.NODE_ENV === 'development' ? labHomePath : bahmniHomePath
+        window.location.href = homePath
       }}
     >
       <Home24 className={styles.home} />

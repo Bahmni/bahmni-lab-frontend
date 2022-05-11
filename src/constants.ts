@@ -5,8 +5,7 @@ export const patientLabDetailsPath = 'patient/${patientUuid}'
 export const patientLabDetailsRoute = '/patient/:patientUuid'
 export const labOrderUuid = '8189b409-3f10-11e4-adec-0800271c1b75'
 export const defaultPageSize = 5
-export const labHomePath = '/lab/home'
-export const bahmniHomePath = '/bahmni/home'
+export const homePath = '/bahmni/home'
 
 export const headers = [
   {
