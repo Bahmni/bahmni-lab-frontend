@@ -1,7 +1,8 @@
 name: Trigger E2E Workflows
 on:
   workflow_run:
-    workflows: [Build and Publish]
+    workflows: [DONT RUN]
+    # workflows: [Build and Publish]
     types:
       - completed
 env:

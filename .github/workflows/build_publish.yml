@@ -2,20 +2,28 @@ name: Build and Publish
 
 on:
   push:
-    branches: [main]
+    branches: [lab-infra]
   pull_request:
     branches: [main]
-
-env:
-  BAHMNI_VERSION: 0.94
   
 jobs:
   build:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v2
-      - name: Use Node.js
+      - name: Checkout repository
+        uses: actions/checkout@v2
+      - name: Provision resources for dev
+        run: |
+          APP_VERSION=$(cat package/.appversion)
+          if [ $(git tag -l "$APP_VERSION") ]; then 
+            echo "App version $APP_VERSION already released. Please update your version in package/.appversion"
+            exit 1
+          else
+            echo "setting artifact version to $(echo $APP_VERSION-${{github.run_number}})"
+            echo "ARTIFACT_VERSION=$(echo $APP_VERSION-${{github.run_number}})" >> $GITHUB_ENV
+          fi
+      - name: Setup Node.js 16.x
         uses: actions/setup-node@v1
         with:
           node-version: "16.x"
@@ -35,5 +43,6 @@ jobs:
         uses: docker/build-push-action@v2
         with:
           context: .
+          file: package/docker/Dockerfile
           push: true
-          tags: bahmni/bahmni-lab:${{env.BAHMNI_VERSION}}-${{github.run_number}},bahmni/bahmni-lab:latest
+          tags: bahmni/bahmni-lab:${{env.ARTIFACT_VERSION}},bahmni/bahmni-lab:latest
