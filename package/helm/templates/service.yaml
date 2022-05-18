@@ -10,7 +10,7 @@ spec:
   type: {{ .Values.service.type }}
   ports:
     - port: {{ .Values.service.port }}
-      targetPort: 8090
+      targetPort: 80
       name: '8090'
   selector:
     app: {{ .Chart.Name }}
