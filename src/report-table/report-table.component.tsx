@@ -103,7 +103,7 @@ const ReportTable = ({patientUuid}) => {
                               return cell.id.endsWith('file') ? (
                                 <TableCell key={cell.id}>
                                   <Link
-                                    href="http://s3.amazonaws.com/awsdocs/S3/latest/s3-gsg.pdf"
+                                    href="https://drive.google.com/file/d/1e1J618HFVr_SpGJD1YxXJpY094B1_g8n/view?usp=sharing"
                                     target={'_blank'}
                                   >
                                     {cell.value}
