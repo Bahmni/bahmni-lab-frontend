@@ -14,18 +14,25 @@ import Overlay from '../overlay'
 import SelectTest from '../select-test/select-test'
 import UploadFile from '../upload-file/upload-file'
 import {saveDiagnosticReport, uploadFile} from './upload-report.resources'
+import {PendingOrders} from '../types'
 import styles from './upload-report.scss'
 
 interface UploadReportProps {
   close: Function
   header: string
   patientUuid: string
+  selectedPendingTest: Array<PendingOrders>
+  selectedPendingTestDispatch: Function
+  removedRow: PendingOrders
 }
 
 const UploadReport: React.FC<UploadReportProps> = ({
   close,
   header,
   patientUuid,
+  selectedPendingTest,
+  selectedPendingTestDispatch,
+  removedRow,
 }) => {
   const locale: Object = localStorage.getItem('i18nextLng')
   const currentDate: string = dayjs().format('MM/DD/YYYY')
@@ -94,7 +101,12 @@ const UploadReport: React.FC<UploadReportProps> = ({
 
   return (
     <Overlay close={close} header={header} buttonsGroup={renderButtonGroup()}>
-      <SelectTest isDiscardButtonClicked={isDiscardButtonClicked} />
+      <SelectTest
+        isDiscardButtonClicked={isDiscardButtonClicked}
+        selectedPendingTest={selectedPendingTest}
+        selectedPendingTestDispatch={selectedPendingTestDispatch}
+        removedRow={removedRow}
+      />
       <br />
       <UploadFile />
       <DatePicker

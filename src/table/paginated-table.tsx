@@ -17,7 +17,12 @@ import {headers, defaultPageSize} from '../constants'
 import {LabOrdersFetchResponse} from '../types'
 import {fetcher, getPendingLabOrdersURL} from '../utils/api-utils'
 
-const PaginatedTable = ({patientUuid}) => {
+const PaginatedTable = ({
+  patientUuid,
+  selectedPendingTestDispatch,
+  setRemovedRow,
+  selectedPendingTest,
+}) => {
   const {data: pendingLabOrders, error: pendingLabOrderDataError} = useSWR<
     LabOrdersFetchResponse,
     Error
@@ -37,6 +42,7 @@ const PaginatedTable = ({patientUuid}) => {
           },
         ),
         orderedBy: row.orderer.display,
+        conceptUuid: row.concept.uuid,
       }
     })
   }, [pendingLabOrders])
@@ -55,11 +61,19 @@ const PaginatedTable = ({patientUuid}) => {
           <>
             <h4>Pending Lab Orders</h4>
             <DataTable rows={paginatedPendingLabOrders} headers={headers}>
-              {({rows, headers, getSelectionProps, getHeaderProps}) => (
+              {({
+                rows: dataTableRows,
+                headers,
+                getSelectionProps,
+                getHeaderProps,
+              }) => (
                 <Table title="lab-order-table">
                   <TableHead>
                     <TableRow>
-                      <TableSelectAll {...getSelectionProps()} />
+                      <TableSelectAll
+                        {...getSelectionProps()}
+                        indeterminate={selectedPendingTest.length > 0}
+                      />
                       {headers.map(header => (
                         <TableHeader {...getHeaderProps({header})}>
                           {header.header}
@@ -68,9 +82,33 @@ const PaginatedTable = ({patientUuid}) => {
                     </TableRow>
                   </TableHead>
                   <TableBody>
-                    {rows.map(row => (
+                    {dataTableRows.map(row => (
                       <TableRow key={row.id}>
-                        <TableSelectRow {...getSelectionProps({row})} />
+                        <TableSelectRow
+                          {...getSelectionProps({row})}
+                          onChange={selected => {
+                            const currentRow = rows.filter(
+                              intialRow => intialRow.id === row.id,
+                            )[0]
+                            if (selected) {
+                              selectedPendingTestDispatch({
+                                type: 'checked',
+                                currentRow: currentRow,
+                              })
+                            } else {
+                              selectedPendingTestDispatch({
+                                type: 'unchecked',
+                                currentRow: currentRow,
+                                setRemovedRow: setRemovedRow,
+                              })
+                            }
+                          }}
+                          checked={
+                            selectedPendingTest.filter(
+                              tempRow => tempRow.id === row.id,
+                            ).length > 0
+                          }
+                        />
                         {row.cells.map(cell => (
                           <TableCell key={cell.id}>{cell.value}</TableCell>
                         ))}
