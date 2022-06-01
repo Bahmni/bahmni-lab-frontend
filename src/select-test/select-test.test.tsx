@@ -22,7 +22,7 @@ describe('Select Test', () => {
       </SWRConfig>,
     )
     await waitFor(() =>
-      expect(screen.getByText('Available Tests ( 2 )')).toBeInTheDocument(),
+      expect(screen.getByText('Available Tests ( 4 )')).toBeInTheDocument(),
     )
 
     expect(screen.getByTestId(/available-tests/i)).toHaveTextContent(
@@ -75,7 +75,7 @@ describe('Select Test', () => {
       screen.getByRole('checkbox', {name: /Absolute Eosinphil Count/i}),
     )
 
-    expect(screen.getByText('Available Tests ( 1 )')).toBeInTheDocument()
+    expect(screen.getByText('Available Tests ( 3 )')).toBeInTheDocument()
     expect(screen.getByText('Selected Tests ( 1 )')).toBeInTheDocument()
     expect(screen.getByTestId(/selected-tests/i)).toHaveTextContent(
       /Absolute Eosinphil Count/i,
@@ -298,6 +298,152 @@ describe('Select Test', () => {
     )
     expect(screen.getByTestId(/available-tests/i)).toHaveTextContent(
       /Haemoglobin/i,
+    )
+  })
+  it('should show panel tag against each panel', async () => {
+    const mockedOpenmrsFetch = openmrsFetch as jest.Mock
+    mockedOpenmrsFetch.mockResolvedValue(mockLabTestsResponse)
+    renderWithContextProvider(
+      <SWRConfig value={{provider: () => new Map()}}>
+        <SelectTest isDiscardButtonClicked={false} />
+      </SWRConfig>,
+    )
+
+    await waitForLoaderToComplete()
+
+    const panelCount = screen.getAllByTitle(/panel/i).length
+    expect(panelCount).toBe(2)
+  })
+
+  it('should update available tests when user selects a panel', async () => {
+    const mockedOpenmrsFetch = openmrsFetch as jest.Mock
+    mockedOpenmrsFetch.mockResolvedValue(mockLabTestsResponse)
+    renderWithContextProvider(
+      <SWRConfig value={{provider: () => new Map()}}>
+        <SelectTest isDiscardButtonClicked={false} />
+      </SWRConfig>,
+    )
+
+    await waitForLoaderToComplete()
+
+    userEvent.click(screen.getByRole('checkbox', {name: /TLC/i}))
+
+    expect(screen.queryByTestId(/available-tests/i)).not.toHaveTextContent(
+      /TLC/i,
+    )
+    expect(screen.getByText('Available Tests ( 2 )')).toBeInTheDocument()
+    expect(screen.getByText('Selected Tests ( 1 )')).toBeInTheDocument()
+  })
+
+  it('should not display test in both lists when user selects a test and a panel containing the same test', async () => {
+    const mockedOpenmrsFetch = openmrsFetch as jest.Mock
+    mockedOpenmrsFetch.mockResolvedValue(mockLabTestsResponse)
+    renderWithContextProvider(
+      <SWRConfig value={{provider: () => new Map()}}>
+        <SelectTest isDiscardButtonClicked={false} />
+      </SWRConfig>,
+    )
+
+    await waitForLoaderToComplete()
+
+    userEvent.click(
+      screen.getByRole('checkbox', {name: /Absolute Eosinphil Count/i}),
+    )
+
+    expect(screen.getByTestId(/selected-test/i)).toHaveTextContent(
+      /Absolute Eosinphil Count/i,
+    )
+    userEvent.click(screen.getByRole('checkbox', {name: /TLC/i}))
+
+    expect(
+      screen.queryByText(/Absolute Eosinphil Count/i),
+    ).not.toBeInTheDocument()
+    expect(screen.getByText('Available Tests ( 2 )')).toBeInTheDocument()
+  })
+
+  it('should display tests in panel when user unselects a panel', async () => {
+    const mockedOpenmrsFetch = openmrsFetch as jest.Mock
+    mockedOpenmrsFetch.mockResolvedValue(mockLabTestsResponse)
+    renderWithContextProvider(
+      <SWRConfig value={{provider: () => new Map()}}>
+        <SelectTest isDiscardButtonClicked={false} />
+      </SWRConfig>,
+    )
+
+    await waitForLoaderToComplete()
+
+    userEvent.click(screen.getByRole('checkbox', {name: /TLC/i}))
+    expect(screen.getByText('Available Tests ( 2 )')).toBeInTheDocument()
+
+    userEvent.click(screen.getByRole('checkbox', {name: /TLC/i}))
+
+    expect(screen.getByText('Available Tests ( 4 )')).toBeInTheDocument()
+    expect(screen.getByTestId(/available-tests/i)).toHaveTextContent(
+      /Absolute Eosinphil Count/i,
+    )
+    expect(screen.getByTestId(/available-tests/i)).toHaveTextContent(
+      /Total Leucocyte Count/i,
+    )
+  })
+
+  it('should show test in available list if user unselects multiple panels that contains the common test', async () => {
+    const mockedOpenmrsFetch = openmrsFetch as jest.Mock
+    mockedOpenmrsFetch.mockResolvedValue(mockLabTestsResponse)
+    renderWithContextProvider(
+      <SWRConfig value={{provider: () => new Map()}}>
+        <SelectTest isDiscardButtonClicked={false} />
+      </SWRConfig>,
+    )
+
+    await waitForLoaderToComplete()
+
+    userEvent.click(screen.getByRole('checkbox', {name: /TLC/i}))
+    userEvent.click(screen.getByRole('checkbox', {name: /Anaemia Panel/i}))
+
+    userEvent.click(screen.getByRole('checkbox', {name: /Anaemia Panel/i}))
+
+    expect(screen.queryByTestId(/available-tests/i)).not.toHaveTextContent(
+      /Absolute Eosinphil Count/i,
+    )
+    expect(screen.getByTestId(/available-tests/i)).toHaveTextContent(
+      /Haemoglobin/i,
+    )
+
+    userEvent.click(screen.getByRole('checkbox', {name: /TLC/i}))
+
+    expect(screen.getByTestId(/available-tests/i)).toHaveTextContent(
+      /Absolute Eosinphil Count/i,
+    )
+  })
+
+  it('should show test in available list if test matches the search value on unselecting multiple panels that contains the common test', async () => {
+    const mockedOpenmrsFetch = openmrsFetch as jest.Mock
+    mockedOpenmrsFetch.mockResolvedValue(mockLabTestsResponse)
+    renderWithContextProvider(
+      <SWRConfig value={{provider: () => new Map()}}>
+        <SelectTest isDiscardButtonClicked={false} />
+      </SWRConfig>,
+    )
+
+    await waitForLoaderToComplete()
+
+    userEvent.click(screen.getByRole('checkbox', {name: /TLC/i}))
+    userEvent.click(screen.getByRole('checkbox', {name: /Anaemia Panel/i}))
+
+    userEvent.type(screen.getByRole('searchbox', {name: /search/i}), 'ab')
+    expect(screen.queryByTestId(/available-tests/i)).not.toHaveTextContent(
+      /Absolute Eosinphil Count/i,
+    )
+
+    userEvent.click(screen.getByRole('checkbox', {name: /Anaemia Panel/i}))
+
+    expect(screen.queryByTestId(/available-tests/i)).not.toHaveTextContent(
+      /Absolute Eosinphil Count/i,
+    )
+
+    userEvent.click(screen.getByRole('checkbox', {name: /TLC/i}))
+    expect(screen.getByTestId(/available-tests/i)).toHaveTextContent(
+      /Absolute Eosinphil Count/i,
     )
   })
 })

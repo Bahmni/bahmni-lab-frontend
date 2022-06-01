@@ -269,7 +269,7 @@ function getFormatedDate(addDays: number): string {
   return date.toLocaleDateString('en', {
     year: 'numeric',
     month: 'long',
-    day: '2-digit',
+    day: 'numeric',
   })
 }
 

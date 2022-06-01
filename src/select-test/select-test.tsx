@@ -21,7 +21,6 @@ const SelectTest = ({isDiscardButtonClicked}) => {
     boolean
   >(true)
   const {selectedTests, setSelectedTests} = useSelectedTests()
-  const [totalPanels, setTotalPanels] = useState<Array<LabTest>>([])
   const [allTestsAndPanels, setAllTestsAndPanels] = useState<Array<LabTest>>([])
 
   const {data: labTestResults, error: labTestResultsError} = useSWR<any, Error>(
@@ -48,14 +47,13 @@ const SelectTest = ({isDiscardButtonClicked}) => {
   }, [searchValue, searchResults, selectedTests])
 
   useEffect(() => {
+    const labOrder = labTestResults?.data?.results[0]
     searchResults.length === 0 &&
-      labTestResults?.data?.results[0]?.setMembers?.map(sample => {
-        sample.setMembers.map((tests: LabTest) => {
-          if (tests.conceptClass?.name == 'LabTest') {
+      labTestResults &&
+      getTestsInLabOrder(labOrder)?.map(sample => {
+        getTestsInLabOrder(sample).map((tests: LabTest) => {
+          if (isLabTest(tests))
             setTotalTests(totalTest => [...totalTest, tests])
-          } else if (tests.conceptClass?.name == 'LabSet') {
-            setTotalPanels(panel => [...panel, tests])
-          }
           setSearchResults(searchResults => [...searchResults, tests])
           setAllTestsAndPanels(searchResults => [...searchResults, tests])
         })
@@ -72,6 +70,8 @@ const SelectTest = ({isDiscardButtonClicked}) => {
       filterSearchResults(allTestsAndPanels)
     }
   }, [searchValue])
+
+  const getTestsInLabOrder = (labOrder: LabTest) => labOrder?.setMembers
 
   const isCommonTestPresent = (
     filteredTest: LabTest,
@@ -104,7 +104,7 @@ const SelectTest = ({isDiscardButtonClicked}) => {
             }
           } else if (!isLabTest(selectedTest)) {
             selectedPanelName.push(selectedTest.name.display)
-            for (let selectedPanel of selectedTest.setMembers) {
+            for (let selectedPanel of getTestsInLabOrder(selectedTest)) {
               if (isCommonTestPresent(labTest, selectedPanel)) {
                 isSelectedTestPresent = true
                 break
@@ -137,7 +137,7 @@ const SelectTest = ({isDiscardButtonClicked}) => {
     const remainingTests = filterTests(searchResults, test)
     if (!isLabTest(test)) {
       let listOfSelectedTests = selectedTests
-      for (let testInPanel of test.setMembers) {
+      for (let testInPanel of getTestsInLabOrder(test)) {
         let isTestInPanel = false
         for (let labTest of selectedTests) {
           if (isCommonTestPresent(testInPanel, labTest)) {
@@ -163,7 +163,7 @@ const SelectTest = ({isDiscardButtonClicked}) => {
     remainingTests: Array<LabTest>,
   ) => {
     let tests = remainingTests
-    for (let filteredTest of selectedTest.setMembers) {
+    for (let filteredTest of getTestsInLabOrder(selectedTest)) {
       let isSelectedTestPresent = false
       for (let searchResult of tests) {
         if (isCommonTestPresent(filteredTest, searchResult)) {
@@ -179,29 +179,45 @@ const SelectTest = ({isDiscardButtonClicked}) => {
   }
 
   const handleUnselect = (unselectedTest: LabTest) => {
-    updateSearchResultOnUnselect(unselectedTest)
     setSelectedTests(filterTests(selectedTests, unselectedTest))
-    addTestsInPanel(unselectedTest)
+    updateSearchResultsOnUnselect(unselectedTest)
+    addTestsInPanelToSearchResultsOnUnselect(unselectedTest)
   }
 
-  const isTestHavingSearchValue = test =>
-    test.name.display.toLowerCase().includes(searchValue?.toLowerCase())
+  const isTestHavingSearchValue = (test: LabTest) =>
+    !searchValue ||
+    test.name.display.toLowerCase().includes(searchValue.toLowerCase())
 
-  const updateSearchResultOnUnselect = (unselectedTest: LabTest) =>
-    (isTestHavingSearchValue(unselectedTest) || !searchValue) &&
-    setSearchResults(searchResults => [...searchResults, unselectedTest])
-
-  const addTestsInPanel = unselectedTest => {
+  const updateSearchResultsOnUnselect = (unselectedTest: LabTest) => {
+    if (isTestHavingSearchValue(unselectedTest))
+      setSearchResults(searchResults => [...searchResults, unselectedTest])
+  }
+  const addTestsInPanelToSearchResultsOnUnselect = (
+    unselectedTest: LabTest,
+  ) => {
+    const updatedSelectedTest = filterTests(selectedTests, unselectedTest)
+    let testsToAdd = []
     if (!isLabTest(unselectedTest))
-      unselectedTest.setMembers.map((test: LabTest) => {
+      getTestsInLabOrder(unselectedTest).map((test: LabTest) => {
         if (
           isTestHavingSearchValue(test) &&
-          searchResults.find(
-            searchResult => !isCommonTestPresent(searchResult, test),
-          )
+          !isTestPresentInSelectedPanel(test, updatedSelectedTest)
         )
-          setSearchResults(searchResults => [...searchResults, test])
+          testsToAdd.push(test)
       })
+    setSearchResults(searchResults => [...searchResults, ...testsToAdd])
+  }
+
+  const isTestPresentInSelectedPanel = (
+    test: LabTest,
+    updatedSelectedTest: Array<LabTest>,
+  ) => {
+    for (let selectedTest of updatedSelectedTest) {
+      for (let testInPanel of getTestsInLabOrder(selectedTest)) {
+        if (isCommonTestPresent(testInPanel, test)) return true
+      }
+    }
+    return false
   }
 
   const showSearchCount = () => {
@@ -276,6 +292,15 @@ const SelectTest = ({isDiscardButtonClicked}) => {
     )
   }
 
+  const getAvailableTestsCount = () => {
+    let availableTests = totalTests.length
+    selectedTests.map(selectedTest => {
+      if (isLabTest(selectedTest)) availableTests -= 1
+      else availableTests -= getTestsInLabOrder(selectedTest).length
+    })
+    return availableTests
+  }
+
   if (labTestResultsError)
     return <h3>Something went wrong in fetching Lab Tests</h3>
   if (!labTestResultsError && !labTestResults) return <Loader />
@@ -299,8 +324,7 @@ const SelectTest = ({isDiscardButtonClicked}) => {
         <AccordionItem
           className={isAvailableTestsClicked && styles.accordionItem}
           data-testid="available-tests"
-          title={`Available Tests ( ${searchResults.length -
-            selectedTests.length} )`}
+          title={`Available Tests ( ${getAvailableTestsCount()} )`}
           open={isAvailableTestsClicked}
           children={renderSearchResults()}
           onClick={() => setIsAvailableTestsClicked(!isAvailableTestsClicked)}
