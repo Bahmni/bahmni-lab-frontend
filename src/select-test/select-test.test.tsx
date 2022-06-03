@@ -10,33 +10,46 @@ import {
   mockLabTestsResponse,
 } from '../__mocks__/selectTests.mock'
 import SelectTest from './select-test'
+import {PendingOrders} from '../types'
 
 describe('Select Test', () => {
+  const selectedPendingTestDispatch = jest.fn()
+  const removedRow: PendingOrders = {} as PendingOrders
+  const selectedPendingTest: Array<PendingOrders> = []
   beforeEach(() => jest.clearAllMocks())
   it('should show tests in available tests', async () => {
     const mockedOpenmrsFetch = openmrsFetch as jest.Mock
     mockedOpenmrsFetch.mockResolvedValue(mockLabTestsResponse)
     renderWithContextProvider(
       <SWRConfig value={{provider: () => new Map()}}>
-        <SelectTest isDiscardButtonClicked={false} />,
+        <SelectTest
+          isDiscardButtonClicked={false}
+          selectedPendingTest={selectedPendingTest}
+          selectedPendingTestDispatch={selectedPendingTestDispatch}
+          removedRow={removedRow}
+        />
+        ,
       </SWRConfig>,
     )
     await waitFor(() =>
       expect(screen.getByText('Available Tests ( 2 )')).toBeInTheDocument(),
     )
-
     expect(screen.getByTestId(/available-tests/i)).toHaveTextContent(
       /Absolute Eosinphil Count/i,
     )
   })
-
   it('should display error message when call for lab result is unsuccessful', async () => {
     const mockedOpenmrsFetch = openmrsFetch as jest.Mock
     mockedOpenmrsFetch.mockRejectedValueOnce(mockLabTestsErrorResponse)
-
     renderWithContextProvider(
       <SWRConfig value={{provider: () => new Map()}}>
-        <SelectTest isDiscardButtonClicked={false} />,
+        <SelectTest
+          isDiscardButtonClicked={false}
+          selectedPendingTest={selectedPendingTest}
+          selectedPendingTestDispatch={selectedPendingTestDispatch}
+          removedRow={removedRow}
+        />
+        ,
       </SWRConfig>,
     )
 
@@ -53,7 +66,13 @@ describe('Select Test', () => {
 
     renderWithContextProvider(
       <SWRConfig value={{provider: () => new Map()}}>
-        <SelectTest isDiscardButtonClicked={false} />,
+        <SelectTest
+          isDiscardButtonClicked={false}
+          selectedPendingTest={selectedPendingTest}
+          selectedPendingTestDispatch={selectedPendingTestDispatch}
+          removedRow={removedRow}
+        />
+        ,
       </SWRConfig>,
     )
 
@@ -65,16 +84,19 @@ describe('Select Test', () => {
     mockedOpenmrsFetch.mockResolvedValue(mockLabTestsResponse)
     renderWithContextProvider(
       <SWRConfig value={{provider: () => new Map()}}>
-        <SelectTest isDiscardButtonClicked={false} />
+        <SelectTest
+          isDiscardButtonClicked={false}
+          selectedPendingTest={selectedPendingTest}
+          selectedPendingTestDispatch={selectedPendingTestDispatch}
+          removedRow={removedRow}
+        />
       </SWRConfig>,
     )
 
     await waitForLoaderToComplete()
-
     userEvent.click(
       screen.getByRole('checkbox', {name: /Absolute Eosinphil Count/i}),
     )
-
     expect(screen.getByText('Available Tests ( 1 )')).toBeInTheDocument()
     expect(screen.getByText('Selected Tests ( 1 )')).toBeInTheDocument()
     expect(screen.getByTestId(/selected-tests/i)).toHaveTextContent(
@@ -87,7 +109,12 @@ describe('Select Test', () => {
 
     renderWithContextProvider(
       <SWRConfig value={{provider: () => new Map()}}>
-        <SelectTest isDiscardButtonClicked={false} />
+        <SelectTest
+          isDiscardButtonClicked={false}
+          selectedPendingTest={selectedPendingTest}
+          selectedPendingTestDispatch={selectedPendingTestDispatch}
+          removedRow={removedRow}
+        />
       </SWRConfig>,
     )
 
@@ -117,7 +144,12 @@ describe('Select Test', () => {
 
     renderWithContextProvider(
       <SWRConfig value={{provider: () => new Map()}}>
-        <SelectTest isDiscardButtonClicked={false} />
+        <SelectTest
+          isDiscardButtonClicked={false}
+          selectedPendingTest={selectedPendingTest}
+          selectedPendingTestDispatch={selectedPendingTestDispatch}
+          removedRow={removedRow}
+        />
       </SWRConfig>,
     )
 
@@ -133,7 +165,12 @@ describe('Select Test', () => {
     mockedOpenmrsFetch.mockResolvedValue(mockLabTestsResponse)
     renderWithContextProvider(
       <SWRConfig value={{provider: () => new Map()}}>
-        <SelectTest isDiscardButtonClicked={false} />
+        <SelectTest
+          isDiscardButtonClicked={false}
+          selectedPendingTest={selectedPendingTest}
+          selectedPendingTestDispatch={selectedPendingTestDispatch}
+          removedRow={removedRow}
+        />
       </SWRConfig>,
     )
 
@@ -172,7 +209,12 @@ describe('Select Test', () => {
     mockedOpenmrsFetch.mockResolvedValue(mockLabTestsResponse)
     renderWithContextProvider(
       <SWRConfig value={{provider: () => new Map()}}>
-        <SelectTest isDiscardButtonClicked={false} />
+        <SelectTest
+          isDiscardButtonClicked={false}
+          selectedPendingTest={selectedPendingTest}
+          selectedPendingTestDispatch={selectedPendingTestDispatch}
+          removedRow={removedRow}
+        />
       </SWRConfig>,
     )
 
@@ -213,7 +255,12 @@ describe('Select Test', () => {
     mockedOpenmrsFetch.mockResolvedValue(mockLabTestsResponse)
     renderWithContextProvider(
       <SWRConfig value={{provider: () => new Map()}}>
-        <SelectTest isDiscardButtonClicked={false} />
+        <SelectTest
+          isDiscardButtonClicked={false}
+          selectedPendingTest={selectedPendingTest}
+          selectedPendingTestDispatch={selectedPendingTestDispatch}
+          removedRow={removedRow}
+        />
       </SWRConfig>,
     )
 
@@ -225,16 +272,16 @@ describe('Select Test', () => {
     expect(screen.getByTestId(/selected-tests/i)).toHaveTextContent(
       /Absolute Eosinphil Count/i,
     )
-
     userEvent.type(screen.getByRole('searchbox', {name: /search/i}), 'ab')
+
     userEvent.click(
       screen.getByRole('checkbox', {name: /Absolute Eosinphil Count/i}),
     )
 
     expect(screen.getByTestId(/available-tests/i)).toHaveTextContent(
       /Absolute Eosinphil Count/i,
-    )
-    expect(screen.getByText('Selected Tests ( 0 )')).toBeInTheDocument()
+    ),
+      expect(screen.getByText('Selected Tests ( 0 )')).toBeInTheDocument()
     expect(
       screen.getByText(/You have not selected any tests/i),
     ).toBeInTheDocument()
@@ -244,7 +291,12 @@ describe('Select Test', () => {
     mockedOpenmrsFetch.mockResolvedValue(mockLabTestsResponse)
     renderWithContextProvider(
       <SWRConfig value={{provider: () => new Map()}}>
-        <SelectTest isDiscardButtonClicked={false} />
+        <SelectTest
+          isDiscardButtonClicked={false}
+          selectedPendingTest={selectedPendingTest}
+          selectedPendingTestDispatch={selectedPendingTestDispatch}
+          removedRow={removedRow}
+        />
       </SWRConfig>,
     )
 
@@ -272,7 +324,12 @@ describe('Select Test', () => {
     mockedOpenmrsFetch.mockResolvedValue(mockLabTestsResponse)
     renderWithContextProvider(
       <SWRConfig value={{provider: () => new Map()}}>
-        <SelectTest isDiscardButtonClicked={false} />
+        <SelectTest
+          isDiscardButtonClicked={false}
+          selectedPendingTest={selectedPendingTest}
+          selectedPendingTestDispatch={selectedPendingTestDispatch}
+          removedRow={removedRow}
+        />
       </SWRConfig>,
     )
 

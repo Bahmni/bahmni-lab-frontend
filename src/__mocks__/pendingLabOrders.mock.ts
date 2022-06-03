@@ -18,12 +18,13 @@ export const mockPendingLabOrdersResponse: LabOrdersFetchResponse = {
           ],
         },
         concept: {
-          uuid: 'dummy-456',
+          uuid: 'fe769568-16da-4d9e-9c99-fbed0a8a60f5',
           display: 'Routine Blood',
           links: [
             {
               rel: 'self',
-              uri: 'http://openmrs:8080/openmrs/ws/rest/v1/concept/dummy-456',
+              uri:
+                'http://openmrs:8080/openmrs/ws/rest/v1/concept/fe769568-16da-4d9e-9c99-fbed0a8a60f5',
             },
           ],
         },

@@ -95,6 +95,7 @@ const PaginatedTable = ({
                                 type: 'checked',
                                 currentRow: currentRow,
                               })
+                              setRemovedRow({})
                             } else {
                               selectedPendingTestDispatch({
                                 type: 'unchecked',

@@ -14,8 +14,12 @@ import {
   uploadFileRequestBody,
 } from '../__mocks__/selectTests.mock'
 import UploadReport from './upload-report'
+import {PendingOrders} from '../types'
 
 describe('Upload Report', () => {
+  const selectedPendingTestDispatch = jest.fn()
+  const removedRow: PendingOrders = {} as PendingOrders
+  const selectedPendingTest: Array<PendingOrders> = []
   beforeEach(() =>
     Object.defineProperty(window, 'localStorage', {value: localStorageMock}),
   )
@@ -28,7 +32,14 @@ describe('Upload Report', () => {
     mockedLayout.mockReturnValue('desktop')
 
     renderWithContextProvider(
-      <UploadReport close={close} header={'Test Header'} patientUuid={'123'} />,
+      <UploadReport
+        close={close}
+        header={'Test Header'}
+        patientUuid={'123'}
+        selectedPendingTest={selectedPendingTest}
+        selectedPendingTestDispatch={selectedPendingTestDispatch}
+        removedRow={removedRow}
+      />,
     )
 
     userEvent.click(screen.getByLabelText('close-icon'))
@@ -52,6 +63,9 @@ describe('Upload Report', () => {
           close={close}
           header={'Test Header'}
           patientUuid={'123'}
+          selectedPendingTest={selectedPendingTest}
+          selectedPendingTestDispatch={selectedPendingTestDispatch}
+          removedRow={removedRow}
         />
       </SWRConfig>,
     )
@@ -123,7 +137,14 @@ describe('Upload Report', () => {
     mockedLayout.mockReturnValue('desktop')
 
     renderWithContextProvider(
-      <UploadReport close={close} header={'Test Header'} patientUuid={'123'} />,
+      <UploadReport
+        close={close}
+        header={'Test Header'}
+        patientUuid={'123'}
+        selectedPendingTest={selectedPendingTest}
+        selectedPendingTestDispatch={selectedPendingTestDispatch}
+        removedRow={removedRow}
+      />,
     )
 
     expect(
@@ -158,6 +179,9 @@ describe('Upload Report', () => {
           close={close}
           header={'Test Header'}
           patientUuid={'123'}
+          selectedPendingTest={selectedPendingTest}
+          selectedPendingTestDispatch={selectedPendingTestDispatch}
+          removedRow={removedRow}
         />
       </SWRConfig>,
     )
@@ -218,6 +242,9 @@ describe('Upload Report', () => {
           close={close}
           header={'Test Header'}
           patientUuid={'123'}
+          selectedPendingTest={selectedPendingTest}
+          selectedPendingTestDispatch={selectedPendingTestDispatch}
+          removedRow={removedRow}
         />
       </SWRConfig>,
     )
@@ -278,7 +305,7 @@ function getFormatedDate(addDays: number): string {
   return date.toLocaleDateString('en', {
     year: 'numeric',
     month: 'long',
-    day: '2-digit',
+    day: 'numeric',
   })
 }
 

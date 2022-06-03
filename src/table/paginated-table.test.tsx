@@ -12,10 +12,14 @@ import {
   mockPendingLabOrdersResponse,
 } from '../__mocks__/pendingLabOrders.mock'
 import PaginatedTable from './paginated-table'
+import {PendingOrders} from '../types'
 
 const mockPatientUuid = '1'
 
 describe('Paginated Table', () => {
+  const selectedPendingTestDispatch = jest.fn()
+  const setRemovedRow = jest.fn()
+  const selectedPendingTest: Array<PendingOrders> = []
   beforeEach(() => {
     Object.defineProperty(window, 'localStorage', {value: localStorageMock})
     localStorage.setItem('i18nextLng', 'en-us')
@@ -23,7 +27,6 @@ describe('Paginated Table', () => {
   afterEach(() => {
     localStorage.removeItem('i18nextLng'), jest.clearAllMocks()
   })
-
   it('should display pending lab orders table when call for orders data is successful', async () => {
     const mockedOpenmrsFetch = openmrsFetch as jest.Mock
     mockedOpenmrsFetch.mockReturnValue(mockPendingLabOrdersResponse)
@@ -35,6 +38,7 @@ describe('Paginated Table', () => {
             testName: 'Routine Blood',
             date: 'April 19, 2022',
             orderedBy: 'Test Orderer',
+            conceptUuid: 'fe769568-16da-4d9e-9c99-fbed0a8a60f5',
           },
         ],
         5,
@@ -51,15 +55,18 @@ describe('Paginated Table', () => {
         goTo: jest.fn(),
         currentPage: 1,
       })
-
     render(
       <SWRConfig value={{provider: () => new Map()}}>
         <BrowserRouter>
-          <PaginatedTable patientUuid={mockPatientUuid} />
+          <PaginatedTable
+            patientUuid={mockPatientUuid}
+            selectedPendingTestDispatch={selectedPendingTestDispatch}
+            setRemovedRow={setRemovedRow}
+            selectedPendingTest={selectedPendingTest}
+          />
         </BrowserRouter>
       </SWRConfig>,
     )
-
     await waitFor(() => {
       expect(screen.getByText(/Pending lab orders/i)).toBeInTheDocument()
     })
@@ -90,7 +97,6 @@ describe('Paginated Table', () => {
       }).length,
     ).toEqual(1)
     expect(screen.getByText(/1 \/ 1 items/i)).toBeInTheDocument()
-
     expect(
       screen.queryByText(
         /Something went wrong in fetching pending lab orders\.\.\./i,
@@ -100,15 +106,18 @@ describe('Paginated Table', () => {
   it('should display error message when call for orders data is unsuccessful', async () => {
     const mockedOpenmrsFetch = openmrsFetch as jest.Mock
     mockedOpenmrsFetch.mockRejectedValueOnce(mockPendingLabOrdersErrorResponse)
-
     render(
       <SWRConfig value={{provider: () => new Map()}}>
         <BrowserRouter>
-          <PaginatedTable patientUuid={mockPatientUuid} />
+          <PaginatedTable
+            patientUuid={mockPatientUuid}
+            selectedPendingTestDispatch={selectedPendingTestDispatch}
+            setRemovedRow={setRemovedRow}
+            selectedPendingTest={selectedPendingTest}
+          />
         </BrowserRouter>
       </SWRConfig>,
     )
-
     await waitFor(() => {
       expect(
         screen.getByText(
@@ -123,15 +132,18 @@ describe('Paginated Table', () => {
   it('should not display pending lab orders table when there is no open orders', async () => {
     const mockedOpenmrsFetch = openmrsFetch as jest.Mock
     mockedOpenmrsFetch.mockReturnValue(mockEmptyPendingLabOrderResponse)
-
     render(
       <SWRConfig value={{provider: () => new Map()}}>
         <BrowserRouter>
-          <PaginatedTable patientUuid={mockPatientUuid} />
+          <PaginatedTable
+            patientUuid={mockPatientUuid}
+            selectedPendingTestDispatch={selectedPendingTestDispatch}
+            setRemovedRow={setRemovedRow}
+            selectedPendingTest={selectedPendingTest}
+          />
         </BrowserRouter>
       </SWRConfig>,
     )
-
     await waitFor(() => {
       expect(screen.queryByText('Pending lab orders')).not.toBeInTheDocument()
     })

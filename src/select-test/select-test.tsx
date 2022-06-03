@@ -85,15 +85,25 @@ const SelectTest = ({
       handleSelect(selectedTest),
     )
     if (selectedPendingTest.length > 0)
-      setSearchResults(
-        allTests.filter(
-          pendingOrderTest =>
-            selectedPendingTest.findIndex(
-              tempPendingTest =>
-                tempPendingTest.conceptUuid === pendingOrderTest.uuid,
-            ) === -1,
-        ),
-      )
+      setSearchResults(prevSearchResults => {
+        if (prevSearchResults.length > 0) {
+          return prevSearchResults.filter(
+            pendingOrderTest =>
+              selectedPendingTest.findIndex(
+                tempPendingTest =>
+                  tempPendingTest.conceptUuid === pendingOrderTest.uuid,
+              ) === -1,
+          )
+        } else {
+          return allTests.filter(
+            pendingOrderTest =>
+              selectedPendingTest.findIndex(
+                tempPendingTest =>
+                  tempPendingTest.conceptUuid === pendingOrderTest.uuid,
+              ) === -1,
+          )
+        }
+      })
     setSelectedTests(prev => {
       const allSelected = [...prev, ...initialSelectedFromOrdersTable]
       const uniqueRows = allSelected.filter(

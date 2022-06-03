@@ -3,6 +3,7 @@ import {
   openmrsFetch,
   useLayoutType,
   usePatient,
+  usePagination,
 } from '@openmrs/esm-framework'
 import {fireEvent, render, screen, waitFor} from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
@@ -18,6 +19,7 @@ import {
   mockDiagnosticReportResponse,
 } from '../__mocks__/selectTests.mock'
 import PatientLabDetails from './patient-lab-details'
+import {getRoles} from '@testing-library/dom'
 
 const mockPatientUuid = '1'
 const matchParams = {
@@ -172,6 +174,80 @@ describe('Patient lab details', () => {
     expect(screen.getByLabelText(/overlay/i)).toBeInTheDocument()
   })
 
+  it('should pre-populate the selected tests in upload report overlay component', async () => {
+    Object.defineProperty(window, 'localStorage', {value: localStorageMock})
+    when(usePatient)
+      .calledWith(mockPatientUuid)
+      .mockReturnValue({
+        patient: {id: mockPatientUuid},
+      })
+    when(ExtensionSlot).mockImplementation((props: any) => {
+      return (
+        <>
+          <div>Extension slot name : {props.extensionSlotName} </div>
+          <div>State : {JSON.stringify(props.state)}</div>
+        </>
+      )
+    })
+    localStorage.setItem('i18nextLng', 'en')
+
+    const mockedOpenmrsFetch = openmrsFetch as jest.Mock
+    mockedOpenmrsFetch
+      .mockReturnValueOnce(mockPendingLabOrdersResponse)
+      .mockReturnValue(mockLabTestsResponse)
+    when(usePagination)
+      .calledWith(expect.anything(), 5)
+      .mockReturnValue({
+        results: [
+          {
+            id: 'abc-123',
+            testName: 'Haemoglobin',
+            date: 'May 03, 2022',
+            orderedBy: 'Superman',
+          },
+        ],
+        goTo: jest.fn(),
+        currentPage: 1,
+      })
+    render(
+      <SWRConfig value={{provider: () => new Map()}}>
+        <BrowserRouter>
+          <PatientLabDetails
+            match={matchParams}
+            history={undefined}
+            location={undefined}
+          />
+        </BrowserRouter>
+      </SWRConfig>,
+    )
+
+    await waitFor(() => {
+      expect(screen.getByText(/Pending lab orders/i)).toBeInTheDocument()
+    })
+
+    expect(screen.getByRole('cell', {name: 'Haemoglobin'})).toBeInTheDocument()
+
+    userEvent.click(screen.getByRole('checkbox', {name: /Select Row/i}))
+    userEvent.click(screen.getByRole('button', {name: /upload report/i}))
+
+    expect(
+      screen.getByRole('button', {name: /save and upload/i}),
+    ).toBeDisabled()
+
+    await waitFor(() => {
+      expect(screen.getByTestId(/selected-tests/i)).toHaveTextContent(
+        'Selected Tests ( 1 )',
+      )
+    })
+
+    userEvent.click(screen.getByRole('checkbox', {name: /Select Row/i}))
+    await waitFor(() => {
+      expect(screen.getByTestId(/selected-tests/i)).toHaveTextContent(
+        'Selected Tests ( 0 )',
+      )
+    })
+  })
+
   it('should show success notification on report upload', async () => {
     Object.defineProperty(window, 'localStorage', {value: localStorageMock})
     when(usePatient)
@@ -269,7 +345,7 @@ function getFormatedDate(addDays: number): string {
   return date.toLocaleDateString('en', {
     year: 'numeric',
     month: 'long',
-    day: '2-digit',
+    day: 'numeric',
   })
 }
 
