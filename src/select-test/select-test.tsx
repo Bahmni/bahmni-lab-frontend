@@ -44,6 +44,7 @@ const SelectTest = ({isDiscardButtonClicked}) => {
       !searchValue
     )
       setSearchResults(allTestsAndPanels)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchValue, searchResults, selectedTests])
 
   useEffect(() => {
@@ -58,6 +59,7 @@ const SelectTest = ({isDiscardButtonClicked}) => {
           setAllTestsAndPanels(searchResults => [...searchResults, tests])
         })
       })
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [labTestResults])
 
   useEffect(() => {
@@ -69,6 +71,7 @@ const SelectTest = ({isDiscardButtonClicked}) => {
     } else {
       filterSearchResults(allTestsAndPanels)
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchValue])
 
   const getTestsInLabOrder = (labOrder: LabTest) => labOrder?.setMembers
