@@ -13,7 +13,16 @@ describe('upload file', () => {
       'Drag and drop files here or click to upload',
     )
     expect(fileInput).toHaveAttribute('type', 'file')
-    expect(fileInput).toHaveAttribute('accept', 'image/jpg,application/pdf')
+    expect(fileInput).toHaveAttribute(
+      'accept',
+      'image/jpg,image/jpeg,application/pdf',
+    )
+    expect(
+      screen.getByText('Maximum File size allowed: 5MB'),
+    ).toBeInTheDocument()
+    expect(
+      screen.getByText('Allowed file extensions: pdf, jpeg, jpg'),
+    ).toBeInTheDocument()
   })
 
   it('should show the uploaded file if file is jpg and size is lesser than 5mb and file drop box should not be available', async () => {
