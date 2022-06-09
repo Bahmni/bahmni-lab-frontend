@@ -12,6 +12,7 @@ import {
   mockPendingLabOrdersResponse,
 } from '../__mocks__/pendingLabOrders.mock'
 import PaginatedTable from './paginated-table'
+import PendingLabOrdersProvider from '../context/pending-orders-context'
 
 const mockPatientUuid = '1'
 
@@ -35,6 +36,7 @@ describe('Paginated Table', () => {
             testName: 'Routine Blood',
             date: 'April 19, 2022',
             orderedBy: 'Test Orderer',
+            conceptUuid: 'fe769568-16da-4d9e-9c99-fbed0a8a60f5',
           },
         ],
         5,
@@ -55,7 +57,12 @@ describe('Paginated Table', () => {
     render(
       <SWRConfig value={{provider: () => new Map()}}>
         <BrowserRouter>
-          <PaginatedTable patientUuid={mockPatientUuid} />
+          <PendingLabOrdersProvider>
+            <PaginatedTable
+              patientUuid={mockPatientUuid}
+              onButtonClick={false}
+            />
+          </PendingLabOrdersProvider>
         </BrowserRouter>
       </SWRConfig>,
     )
@@ -104,7 +111,12 @@ describe('Paginated Table', () => {
     render(
       <SWRConfig value={{provider: () => new Map()}}>
         <BrowserRouter>
-          <PaginatedTable patientUuid={mockPatientUuid} />
+          <PendingLabOrdersProvider>
+            <PaginatedTable
+              patientUuid={mockPatientUuid}
+              onButtonClick={false}
+            />
+          </PendingLabOrdersProvider>
         </BrowserRouter>
       </SWRConfig>,
     )
@@ -127,7 +139,12 @@ describe('Paginated Table', () => {
     render(
       <SWRConfig value={{provider: () => new Map()}}>
         <BrowserRouter>
-          <PaginatedTable patientUuid={mockPatientUuid} />
+          <PendingLabOrdersProvider>
+            <PaginatedTable
+              patientUuid={mockPatientUuid}
+              onButtonClick={false}
+            />
+          </PendingLabOrdersProvider>
         </BrowserRouter>
       </SWRConfig>,
     )

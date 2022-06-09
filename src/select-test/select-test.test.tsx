@@ -3,6 +3,7 @@ import {render, screen, waitFor} from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import React from 'react'
 import {SWRConfig} from 'swr'
+import PendingLabOrdersProvider from '../context/pending-orders-context'
 import {UploadReportProvider} from '../context/upload-report-context'
 import {
   mockLabTestsErrorResponse,
@@ -355,5 +356,9 @@ function mockOpenmrsApi(apiResponse: any = mockLabTestsResponse) {
 }
 
 function renderWithContextProvider(children) {
-  return render(<UploadReportProvider>{children}</UploadReportProvider>)
+  return render(
+    <PendingLabOrdersProvider>
+      <UploadReportProvider>{children}</UploadReportProvider>
+    </PendingLabOrdersProvider>,
+  )
 }
