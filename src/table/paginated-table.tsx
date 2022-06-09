@@ -16,12 +16,18 @@ import useSWR from 'swr'
 import {headers, defaultPageSize} from '../constants'
 import {LabOrdersFetchResponse} from '../types'
 import {fetcher, getPendingLabOrdersURL} from '../utils/api-utils'
+import {usePendingLabOrderContext} from '../context/pending-orders-context'
 
-const PaginatedTable = ({patientUuid}) => {
+const PaginatedTable = ({patientUuid, onButtonClick}) => {
   const {data: pendingLabOrders, error: pendingLabOrderDataError} = useSWR<
     LabOrdersFetchResponse,
     Error
   >(getPendingLabOrdersURL(patientUuid), fetcher)
+
+  const {
+    selectedPendingOrder,
+    setSelectedPendingOrder,
+  } = usePendingLabOrderContext()
 
   const rows = useMemo(() => {
     return pendingLabOrders?.data?.results?.reverse().map(row => {
@@ -37,6 +43,7 @@ const PaginatedTable = ({patientUuid}) => {
           },
         ),
         orderedBy: row.orderer.display,
+        conceptUuid: row.concept.uuid,
       }
     })
   }, [pendingLabOrders])
@@ -55,11 +62,19 @@ const PaginatedTable = ({patientUuid}) => {
           <>
             <h4>Pending Lab Orders</h4>
             <DataTable rows={paginatedPendingLabOrders} headers={headers}>
-              {({rows, headers, getSelectionProps, getHeaderProps}) => (
+              {({
+                rows: dataTableRows,
+                headers,
+                getSelectionProps,
+                getHeaderProps,
+              }) => (
                 <Table title="lab-order-table">
                   <TableHead>
                     <TableRow>
-                      <TableSelectAll {...getSelectionProps()} />
+                      <TableSelectAll
+                        {...getSelectionProps()}
+                        disabled={onButtonClick}
+                      />
                       {headers.map(header => (
                         <TableHeader {...getHeaderProps({header})}>
                           {header.header}
@@ -68,9 +83,29 @@ const PaginatedTable = ({patientUuid}) => {
                     </TableRow>
                   </TableHead>
                   <TableBody>
-                    {rows.map(row => (
+                    {dataTableRows.map(row => (
                       <TableRow key={row.id}>
-                        <TableSelectRow {...getSelectionProps({row})} />
+                        <TableSelectRow
+                          {...getSelectionProps({row})}
+                          onChange={selected => {
+                            const currentRow = rows.filter(
+                              intialRow => intialRow.id === row.id,
+                            )[0]
+                            if (selected) {
+                              setSelectedPendingOrder(prev => [
+                                ...prev,
+                                currentRow,
+                              ])
+                            } else {
+                              setSelectedPendingOrder(
+                                selectedPendingOrder.filter(
+                                  tempRow => tempRow.id !== currentRow.id,
+                                ),
+                              )
+                            }
+                          }}
+                          disabled={onButtonClick}
+                        />
                         {row.cells.map(cell => (
                           <TableCell key={cell.id}>{cell.value}</TableCell>
                         ))}
@@ -87,6 +122,7 @@ const PaginatedTable = ({patientUuid}) => {
               totalItems={rows?.length}
               onPageNumberChange={({page}) => {
                 goTo(page)
+                setSelectedPendingOrder([])
               }}
             />
           </>

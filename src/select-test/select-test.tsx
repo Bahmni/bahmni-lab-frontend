@@ -8,6 +8,7 @@ import {
 import React, {useEffect, useState} from 'react'
 import useSWR from 'swr'
 import {useSelectedTests} from '../context/upload-report-context'
+import {usePendingLabOrderContext} from '../context/pending-orders-context'
 import Loader from '../loader/loader.component'
 import {LabTest} from '../types/selectTest'
 import {fetcher, getLabTests} from '../utils/api-utils'
@@ -22,6 +23,7 @@ const SelectTest = ({isDiscardButtonClicked}) => {
   >(true)
   const {selectedTests, setSelectedTests} = useSelectedTests()
   const [allTestsAndPanels, setAllTestsAndPanels] = useState<Array<LabTest>>([])
+  const {selectedPendingOrder} = usePendingLabOrderContext()
 
   const {data: labTestResults, error: labTestResultsError} = useSWR<any, Error>(
     getLabTests,
@@ -73,6 +75,48 @@ const SelectTest = ({isDiscardButtonClicked}) => {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchValue])
+
+  useEffect(() => {
+    const allTests: Array<LabTest> = []
+    labTestResults?.data?.results[0]?.setMembers?.map(sample => {
+      sample.setMembers.map(tests => {
+        if (tests.conceptClass?.name == 'LabTest') {
+          allTests.push(tests)
+        }
+      })
+    })
+    const initialSelectedFromOrdersTable = allTests.filter(
+      pendingOrderTest =>
+        selectedPendingOrder.findIndex(
+          tempPendingTest =>
+            tempPendingTest.conceptUuid === pendingOrderTest.uuid,
+        ) > -1,
+    )
+    initialSelectedFromOrdersTable.forEach(selectedTest =>
+      handleSelect(selectedTest),
+    )
+    if (selectedPendingOrder.length > 0)
+      setSearchResults(prevSearchResults => {
+        if (prevSearchResults.length > 0) {
+          return prevSearchResults.filter(
+            pendingOrderTest =>
+              selectedPendingOrder.findIndex(
+                tempPendingTest =>
+                  tempPendingTest.conceptUuid === pendingOrderTest.uuid,
+              ) === -1,
+          )
+        } else {
+          return allTests.filter(
+            pendingOrderTest =>
+              selectedPendingOrder.findIndex(
+                tempPendingTest =>
+                  tempPendingTest.conceptUuid === pendingOrderTest.uuid,
+              ) === -1,
+          )
+        }
+      })
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedPendingOrder, labTestResults])
 
   const getTestsInLabOrder = (labOrder: LabTest) => labOrder?.setMembers
 
