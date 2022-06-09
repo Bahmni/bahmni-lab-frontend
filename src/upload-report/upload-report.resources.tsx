@@ -57,7 +57,7 @@ const uploadFileRequestBody = (fileContent, fileType, patientUuid) => {
   return {
     content: removeBase64(fileContent),
     encounterTypeName: 'Patient Document',
-    fileType: extension,
+    fileType: fileType.split('/')[0],
     format: extension,
     patientUuid: patientUuid,
   }
