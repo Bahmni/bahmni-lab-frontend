@@ -12,6 +12,7 @@ import React from 'react'
 import {BrowserRouter} from 'react-router-dom'
 import {SWRConfig} from 'swr'
 import {localStorageMock} from '../utils/test-utils'
+import {mockPendingLabOrder} from '../__mocks__/patientLabDetails.mock'
 import {mockPendingLabOrdersResponse} from '../__mocks__/pendingLabOrders.mock'
 import {
   mockLabTestsResponse,
@@ -186,18 +187,7 @@ describe('Patient lab details', () => {
       .mockReturnValue(mockLabTestsResponse)
     when(usePagination)
       .calledWith(expect.anything(), 5)
-      .mockReturnValue({
-        results: [
-          {
-            id: 'abc-123',
-            testName: 'Haemoglobin',
-            date: 'May 03, 2022',
-            orderedBy: 'Superman',
-          },
-        ],
-        goTo: jest.fn(),
-        currentPage: 1,
-      })
+      .mockReturnValue(mockPendingLabOrder)
     render(
       <SWRConfig value={{provider: () => new Map()}}>
         <BrowserRouter>
@@ -230,6 +220,9 @@ describe('Patient lab details', () => {
     })
 
     expect(screen.getByRole('checkbox', {name: /Select Row/i})).toBeDisabled()
+
+    userEvent.click(screen.getByRole('button', {name: /close-icon/i}))
+    expect(screen.getByRole('checkbox', {name: /Select Row/i})).toBeEnabled()
   })
 
   it('should show success notification on report upload', async () => {
