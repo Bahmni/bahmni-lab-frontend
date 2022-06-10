@@ -117,16 +117,20 @@ const UploadReport: React.FC<UploadReportProps> = ({
       </DatePicker>
 
       <div style={{paddingTop: '1rem'}}>
+        <div
+          className={'bx--label'}
+          style={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            padding: '2px 0px 2px 0px',
+            width: '100%',
+          }}
+        >
+          Report Conclusion{' '}
+          <span id="counter">{`${reportConclusion?.length}/${maxCount}`}</span>
+        </div>
         <TextArea
-          labelText={
-            <>
-              Report Conclusion{' '}
-              <span
-                className={styles.counter}
-                id="counter"
-              >{`${reportConclusion?.length}/${maxCount}`}</span>
-            </>
-          }
+          labelText=""
           maxLength={maxCount}
           required={true}
           value={reportConclusion}

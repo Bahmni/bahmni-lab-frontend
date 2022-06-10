@@ -3,6 +3,7 @@ import {
   AccordionItem,
   Checkbox,
   Search,
+  Tag,
 } from 'carbon-components-react'
 import React, {useEffect, useState} from 'react'
 import useSWR from 'swr'
@@ -20,6 +21,7 @@ const SelectTest = ({isDiscardButtonClicked}) => {
     boolean
   >(true)
   const {selectedTests, setSelectedTests} = useSelectedTests()
+  const [allTestsAndPanels, setAllTestsAndPanels] = useState<Array<LabTest>>([])
 
   const {data: labTestResults, error: labTestResultsError} = useSWR<any, Error>(
     getLabTests,
@@ -41,81 +43,184 @@ const SelectTest = ({isDiscardButtonClicked}) => {
       selectedTests.length === 0 &&
       !searchValue
     )
-      setSearchResults(totalTests)
+      setSearchResults(allTestsAndPanels)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchValue, searchResults, selectedTests])
 
   useEffect(() => {
+    const labOrder = labTestResults?.data?.results[0]
     searchResults.length === 0 &&
-      labTestResults?.data?.results[0]?.setMembers?.map(sample => {
-        sample.setMembers.map(tests => {
-          tests.conceptClass?.name == 'LabTest' &&
-            (setSearchResults(searchResults => [...searchResults, tests]),
-            setTotalTests(totalTest => [...totalTest, tests]))
+      labTestResults &&
+      getTestsInLabOrder(labOrder)?.map(sample => {
+        getTestsInLabOrder(sample).map((tests: LabTest) => {
+          if (isLabTest(tests))
+            setTotalTests(totalTest => [...totalTest, tests])
+          setSearchResults(searchResults => [...searchResults, tests])
+          setAllTestsAndPanels(searchResults => [...searchResults, tests])
         })
       })
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [labTestResults])
 
   useEffect(() => {
     if (searchValue) {
-      const filteredTests = totalTests.filter(test =>
+      const filteredTestsAndPanels = allTestsAndPanels.filter(test =>
         test.name.display.toLowerCase().includes(searchValue.toLowerCase()),
       )
-      filterSearchResults(filteredTests)
+      filterSearchResults(filteredTestsAndPanels)
     } else {
-      filterSearchResults(totalTests)
+      filterSearchResults(allTestsAndPanels)
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchValue])
+
+  const getTestsInLabOrder = (labOrder: LabTest) => labOrder?.setMembers
+
+  const isCommonTestPresent = (
+    filteredTest: LabTest,
+    selectedTest: LabTest,
+  ) => {
+    return filteredTest?.name?.display === selectedTest?.name?.display
+  }
+
+  const isLabTest = (test: LabTest) => test.conceptClass.name == 'LabTest'
+
+  const removeSelectedPanels = (
+    updatedSearchResults: Array<LabTest>,
+    selectedPanelName: Array<string>,
+  ) =>
+    updatedSearchResults.filter(
+      test => !selectedPanelName.includes(test.name.display),
+    )
 
   const filterSearchResults = (labTests: Array<LabTest>) => {
     if (selectedTests.length > 0) {
-      const tests = []
-      for (let filteredTest of labTests) {
-        let isSelectedTestPresent = true
+      let updatedSearchResults = []
+      for (let labTest of labTests) {
+        let isSelectedTestPresent = false
+        let selectedPanelName = []
         for (let selectedTest of selectedTests) {
-          if (filteredTest?.name?.display !== selectedTest?.name?.display)
-            isSelectedTestPresent = false
-          else {
-            isSelectedTestPresent = true
-            break
+          if (isLabTest(selectedTest)) {
+            if (isCommonTestPresent(labTest, selectedTest)) {
+              isSelectedTestPresent = true
+              break
+            }
+          } else if (!isLabTest(selectedTest)) {
+            selectedPanelName.push(selectedTest.name.display)
+            for (let selectedPanel of getTestsInLabOrder(selectedTest)) {
+              if (isCommonTestPresent(labTest, selectedPanel)) {
+                isSelectedTestPresent = true
+                break
+              }
+            }
           }
         }
-        if (!isSelectedTestPresent) tests.push(filteredTest)
+        if (!isSelectedTestPresent) {
+          updatedSearchResults.push(labTest)
+        }
+        updatedSearchResults = removeSelectedPanels(
+          updatedSearchResults,
+          selectedPanelName,
+        )
       }
-      setSearchResults(tests)
-    } else setSearchResults([...labTests])
+      setSearchResults(updatedSearchResults)
+    } else setSearchResults(labTests)
   }
 
   const handleClear = () => {
     if (selectedTests.length > 0) {
-      filterSearchResults(totalTests)
-    } else setSearchResults([...totalTests])
+      filterSearchResults(allTestsAndPanels)
+    } else setSearchResults(allTestsAndPanels)
+  }
+
+  const filterTests = (tests: Array<LabTest>, testToRemove: LabTest) =>
+    tests.filter((test: LabTest) => !isCommonTestPresent(test, testToRemove))
+
+  const removeSelectedTest = (test: LabTest) => {
+    const remainingTests = filterTests(searchResults, test)
+    if (!isLabTest(test)) {
+      let listOfSelectedTests = selectedTests
+      for (let testInPanel of getTestsInLabOrder(test)) {
+        let isTestInPanel = false
+        for (let labTest of selectedTests) {
+          if (isCommonTestPresent(testInPanel, labTest)) {
+            isTestInPanel = true
+            break
+          }
+        }
+        if (isTestInPanel)
+          listOfSelectedTests = filterTests(listOfSelectedTests, testInPanel)
+      }
+      setSelectedTests(listOfSelectedTests)
+      removeTestsInPanel(test, remainingTests)
+    } else setSearchResults(remainingTests)
+    setSelectedTests((selectedTest: Array<LabTest>) => [...selectedTest, test])
   }
 
   const handleSelect = (selectedTest: LabTest) => {
-    setSelectedTests([...selectedTests, selectedTest])
-    setSearchResults(
-      searchResults.filter(
-        (availableTest: LabTest) =>
-          availableTest?.name?.display !== selectedTest?.name?.display,
-      ),
-    )
+    removeSelectedTest(selectedTest)
   }
 
-  const updateSearchResultOnUnselect = (unselectedTest: LabTest) =>
-    (unselectedTest.name.display
-      .toLowerCase()
-      .includes(searchValue?.toLowerCase()) ||
-      !searchValue) &&
-    setSearchResults(searchResults => [...searchResults, unselectedTest])
+  const removeTestsInPanel = (
+    selectedTest: LabTest,
+    remainingTests: Array<LabTest>,
+  ) => {
+    let tests = remainingTests
+    for (let filteredTest of getTestsInLabOrder(selectedTest)) {
+      let isSelectedTestPresent = false
+      for (let searchResult of tests) {
+        if (isCommonTestPresent(filteredTest, searchResult)) {
+          isSelectedTestPresent = true
+          break
+        }
+      }
+      if (isSelectedTestPresent) {
+        tests = filterTests(tests, filteredTest)
+      }
+    }
+    setSearchResults(tests)
+  }
 
   const handleUnselect = (unselectedTest: LabTest) => {
-    updateSearchResultOnUnselect(unselectedTest)
-    setSelectedTests(
-      selectedTests?.filter(
-        (selectedTest: LabTest) =>
-          selectedTest.name.display !== unselectedTest.name.display,
-      ),
-    )
+    setSelectedTests(filterTests(selectedTests, unselectedTest))
+    updateSearchResultsOnUnselect(unselectedTest)
+    addTestsInPanelToSearchResultsOnUnselect(unselectedTest)
+  }
+
+  const isTestHavingSearchValue = (test: LabTest) =>
+    !searchValue ||
+    test.name.display.toLowerCase().includes(searchValue.toLowerCase())
+
+  const updateSearchResultsOnUnselect = (unselectedTest: LabTest) => {
+    if (isTestHavingSearchValue(unselectedTest))
+      setSearchResults(searchResults => [...searchResults, unselectedTest])
+  }
+  const addTestsInPanelToSearchResultsOnUnselect = (
+    unselectedTest: LabTest,
+  ) => {
+    const updatedSelectedTest = filterTests(selectedTests, unselectedTest)
+    let testsToAdd = []
+    if (!isLabTest(unselectedTest))
+      getTestsInLabOrder(unselectedTest).map((test: LabTest) => {
+        if (
+          isTestHavingSearchValue(test) &&
+          !isTestPresentInSelectedPanel(test, updatedSelectedTest)
+        )
+          testsToAdd.push(test)
+      })
+    setSearchResults(searchResults => [...searchResults, ...testsToAdd])
+  }
+
+  const isTestPresentInSelectedPanel = (
+    test: LabTest,
+    updatedSelectedTest: Array<LabTest>,
+  ) => {
+    for (let selectedTest of updatedSelectedTest) {
+      for (let testInPanel of getTestsInLabOrder(selectedTest)) {
+        if (isCommonTestPresent(testInPanel, test)) return true
+      }
+    }
+    return false
   }
 
   const showSearchCount = () => {
@@ -136,14 +241,25 @@ const SelectTest = ({isDiscardButtonClicked}) => {
         <div className={searchValue && styles.searchValue}>
           {searchValue && showSearchCount()}
         </div>
-
         {searchResults.map((searchResult, index) => (
-          <Checkbox
-            id={searchResult.name.uuid}
-            key={`${searchResult.name.uuid}${index}`}
-            labelText={searchResult.name.display}
-            onChange={() => handleSelect(searchResult)}
-          />
+          <div style={{display: 'flex'}} key={index}>
+            <Checkbox
+              id={searchResult.name.uuid}
+              key={`${searchResult.name.uuid}${index}`}
+              labelText={searchResult.name.display}
+              onChange={() => handleSelect(searchResult)}
+            />
+            {searchResult.conceptClass.name == 'LabSet' && (
+              <Tag
+                className="some-class"
+                size="sm"
+                title="Clear Filter"
+                type="blue"
+              >
+                Panel
+              </Tag>
+            )}
+          </div>
         ))}
       </>
     )
@@ -155,16 +271,37 @@ const SelectTest = ({isDiscardButtonClicked}) => {
     return (
       <div>
         {selectedTests.map((selectedTest, index) => (
-          <Checkbox
-            id={selectedTest.name.uuid}
-            checked={true}
-            key={`${selectedTest.name.uuid}${index}`}
-            labelText={selectedTest.name.display}
-            onChange={() => handleUnselect(selectedTest)}
-          />
+          <div style={{display: 'flex'}}>
+            <Checkbox
+              id={selectedTest.name.uuid}
+              checked={true}
+              key={`${selectedTest.name.uuid}${index}`}
+              labelText={selectedTest.name.display}
+              onChange={() => handleUnselect(selectedTest)}
+            />
+            {selectedTest.conceptClass.name == 'LabSet' && (
+              <Tag
+                className="some-class"
+                size="sm"
+                title="Clear Filter"
+                type="blue"
+              >
+                Panel
+              </Tag>
+            )}
+          </div>
         ))}
       </div>
     )
+  }
+
+  const getAvailableTestsCount = () => {
+    let availableTests = totalTests.length
+    selectedTests.map(selectedTest => {
+      if (isLabTest(selectedTest)) availableTests -= 1
+      else availableTests -= getTestsInLabOrder(selectedTest).length
+    })
+    return availableTests
   }
 
   if (labTestResultsError)
@@ -190,14 +327,14 @@ const SelectTest = ({isDiscardButtonClicked}) => {
         <AccordionItem
           className={isAvailableTestsClicked && styles.accordionItem}
           data-testid="available-tests"
-          title={`Available Tests ( ${totalTests.length -
-            selectedTests.length} )`}
+          title={`Available Tests ( ${getAvailableTestsCount()} )`}
           open={isAvailableTestsClicked}
           children={renderSearchResults()}
           onClick={() => setIsAvailableTestsClicked(!isAvailableTestsClicked)}
         />
 
         <AccordionItem
+          className={styles.accordionItem}
           data-testid="selected-tests"
           title={`Selected Tests ( ${selectedTests.length} )`}
           open={true}
