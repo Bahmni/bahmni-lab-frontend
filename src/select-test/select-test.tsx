@@ -242,7 +242,7 @@ const SelectTest = ({isDiscardButtonClicked}) => {
           {searchValue && showSearchCount()}
         </div>
         {searchResults.map((searchResult, index) => (
-          <div style={{display: 'flex'}}>
+          <div style={{display: 'flex'}} key={index}>
             <Checkbox
               id={searchResult.name.uuid}
               key={`${searchResult.name.uuid}${index}`}

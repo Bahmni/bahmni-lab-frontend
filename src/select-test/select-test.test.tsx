@@ -14,13 +14,9 @@ import SelectTest from './select-test'
 describe('Select Test', () => {
   beforeEach(() => jest.clearAllMocks())
   it('should show tests in available tests', async () => {
-    const mockedOpenmrsFetch = openmrsFetch as jest.Mock
-    mockedOpenmrsFetch.mockResolvedValue(mockLabTestsResponse)
-    renderWithContextProvider(
-      <SWRConfig value={{provider: () => new Map()}}>
-        <SelectTest isDiscardButtonClicked={false} />,
-      </SWRConfig>,
-    )
+    mockOpenmrsApi()
+    await renderSelectTestComponent()
+
     await waitFor(() =>
       expect(screen.getByText('Available Tests ( 4 )')).toBeInTheDocument(),
     )
@@ -34,11 +30,7 @@ describe('Select Test', () => {
     const mockedOpenmrsFetch = openmrsFetch as jest.Mock
     mockedOpenmrsFetch.mockRejectedValueOnce(mockLabTestsErrorResponse)
 
-    renderWithContextProvider(
-      <SWRConfig value={{provider: () => new Map()}}>
-        <SelectTest isDiscardButtonClicked={false} />,
-      </SWRConfig>,
-    )
+    await renderSelectTestComponent()
 
     await waitFor(() => {
       expect(
@@ -48,28 +40,15 @@ describe('Select Test', () => {
   })
 
   it('should show loader when fetching lab result data', async () => {
-    const mockedOpenmrsFetch = openmrsFetch as jest.Mock
-    mockedOpenmrsFetch.mockReturnValue(mockLabTestsPendingResponse)
-
-    renderWithContextProvider(
-      <SWRConfig value={{provider: () => new Map()}}>
-        <SelectTest isDiscardButtonClicked={false} />,
-      </SWRConfig>,
-    )
+    mockOpenmrsApi(mockLabTestsPendingResponse)
+    await renderSelectTestComponent(false)
 
     expect(screen.getByText(/loading \.\.\./i)).toBeInTheDocument()
   })
 
   it('should move test from available to selected list when selecting a test', async () => {
-    const mockedOpenmrsFetch = openmrsFetch as jest.Mock
-    mockedOpenmrsFetch.mockResolvedValue(mockLabTestsResponse)
-    renderWithContextProvider(
-      <SWRConfig value={{provider: () => new Map()}}>
-        <SelectTest isDiscardButtonClicked={false} />
-      </SWRConfig>,
-    )
-
-    await waitForLoaderToComplete()
+    mockOpenmrsApi()
+    await renderSelectTestComponent()
 
     userEvent.click(
       screen.getByRole('checkbox', {name: /Absolute Eosinphil Count/i}),
@@ -82,16 +61,8 @@ describe('Select Test', () => {
     )
   })
   it('should filter tests based on search value', async () => {
-    const mockedOpenmrsFetch = openmrsFetch as jest.Mock
-    mockedOpenmrsFetch.mockResolvedValue(mockLabTestsResponse)
-
-    renderWithContextProvider(
-      <SWRConfig value={{provider: () => new Map()}}>
-        <SelectTest isDiscardButtonClicked={false} />
-      </SWRConfig>,
-    )
-
-    await waitForLoaderToComplete()
+    mockOpenmrsApi()
+    await renderSelectTestComponent()
 
     expect(screen.getByTestId(/available-tests/i)).toHaveTextContent(
       /Absolute Eosinphil Count/i,
@@ -112,16 +83,8 @@ describe('Select Test', () => {
   })
 
   it('should show message when search value has no matching tests', async () => {
-    const mockedOpenmrsFetch = openmrsFetch as jest.Mock
-    mockedOpenmrsFetch.mockResolvedValue(mockLabTestsResponse)
-
-    renderWithContextProvider(
-      <SWRConfig value={{provider: () => new Map()}}>
-        <SelectTest isDiscardButtonClicked={false} />
-      </SWRConfig>,
-    )
-
-    await waitForLoaderToComplete()
+    mockOpenmrsApi()
+    await renderSelectTestComponent()
 
     userEvent.type(screen.getByRole('searchbox', {name: /search/i}), 'abc')
 
@@ -129,15 +92,8 @@ describe('Select Test', () => {
   })
 
   it('should move test from selected to available when unselecting a test', async () => {
-    const mockedOpenmrsFetch = openmrsFetch as jest.Mock
-    mockedOpenmrsFetch.mockResolvedValue(mockLabTestsResponse)
-    renderWithContextProvider(
-      <SWRConfig value={{provider: () => new Map()}}>
-        <SelectTest isDiscardButtonClicked={false} />
-      </SWRConfig>,
-    )
-
-    await waitForLoaderToComplete()
+    mockOpenmrsApi()
+    await renderSelectTestComponent()
 
     userEvent.click(
       screen.getByRole('checkbox', {name: /Absolute Eosinphil Count/i}),
@@ -168,15 +124,8 @@ describe('Select Test', () => {
     ).toBeInTheDocument()
   })
   it('should not include unselected test if it does not contains search value', async () => {
-    const mockedOpenmrsFetch = openmrsFetch as jest.Mock
-    mockedOpenmrsFetch.mockResolvedValue(mockLabTestsResponse)
-    renderWithContextProvider(
-      <SWRConfig value={{provider: () => new Map()}}>
-        <SelectTest isDiscardButtonClicked={false} />
-      </SWRConfig>,
-    )
-
-    await waitForLoaderToComplete()
+    mockOpenmrsApi()
+    await renderSelectTestComponent()
 
     userEvent.click(
       screen.getByRole('checkbox', {name: /Absolute Eosinphil Count/i}),
@@ -209,15 +158,8 @@ describe('Select Test', () => {
     ).toBeInTheDocument()
   })
   it('should include unselected test if it contains search value', async () => {
-    const mockedOpenmrsFetch = openmrsFetch as jest.Mock
-    mockedOpenmrsFetch.mockResolvedValue(mockLabTestsResponse)
-    renderWithContextProvider(
-      <SWRConfig value={{provider: () => new Map()}}>
-        <SelectTest isDiscardButtonClicked={false} />
-      </SWRConfig>,
-    )
-
-    await waitForLoaderToComplete()
+    mockOpenmrsApi()
+    await renderSelectTestComponent()
 
     userEvent.click(
       screen.getByRole('checkbox', {name: /Absolute Eosinphil Count/i}),
@@ -239,16 +181,10 @@ describe('Select Test', () => {
       screen.getByText(/You have not selected any tests/i),
     ).toBeInTheDocument()
   })
-  it('should load all the test on clearing search value', async () => {
-    const mockedOpenmrsFetch = openmrsFetch as jest.Mock
-    mockedOpenmrsFetch.mockResolvedValue(mockLabTestsResponse)
-    renderWithContextProvider(
-      <SWRConfig value={{provider: () => new Map()}}>
-        <SelectTest isDiscardButtonClicked={false} />
-      </SWRConfig>,
-    )
 
-    await waitForLoaderToComplete()
+  it('should load all the test on clearing search value', async () => {
+    mockOpenmrsApi()
+    await renderSelectTestComponent()
 
     userEvent.type(screen.getByRole('searchbox', {name: /search/i}), 'ab')
     expect(screen.getByTestId(/available-tests/i)).toHaveTextContent(
@@ -268,15 +204,8 @@ describe('Select Test', () => {
     )
   })
   it('should exclude selected in available test test on clearing search value', async () => {
-    const mockedOpenmrsFetch = openmrsFetch as jest.Mock
-    mockedOpenmrsFetch.mockResolvedValue(mockLabTestsResponse)
-    renderWithContextProvider(
-      <SWRConfig value={{provider: () => new Map()}}>
-        <SelectTest isDiscardButtonClicked={false} />
-      </SWRConfig>,
-    )
-
-    await waitForLoaderToComplete()
+    mockOpenmrsApi()
+    await renderSelectTestComponent()
 
     userEvent.click(
       screen.getByRole('checkbox', {name: /Absolute Eosinphil Count/i}),
@@ -301,30 +230,16 @@ describe('Select Test', () => {
     )
   })
   it('should show panel tag against each panel', async () => {
-    const mockedOpenmrsFetch = openmrsFetch as jest.Mock
-    mockedOpenmrsFetch.mockResolvedValue(mockLabTestsResponse)
-    renderWithContextProvider(
-      <SWRConfig value={{provider: () => new Map()}}>
-        <SelectTest isDiscardButtonClicked={false} />
-      </SWRConfig>,
-    )
-
-    await waitForLoaderToComplete()
+    mockOpenmrsApi()
+    await renderSelectTestComponent()
 
     const panelCount = screen.getAllByTitle(/panel/i).length
     expect(panelCount).toBe(2)
   })
 
   it('should update available tests when user selects a panel', async () => {
-    const mockedOpenmrsFetch = openmrsFetch as jest.Mock
-    mockedOpenmrsFetch.mockResolvedValue(mockLabTestsResponse)
-    renderWithContextProvider(
-      <SWRConfig value={{provider: () => new Map()}}>
-        <SelectTest isDiscardButtonClicked={false} />
-      </SWRConfig>,
-    )
-
-    await waitForLoaderToComplete()
+    mockOpenmrsApi()
+    await renderSelectTestComponent()
 
     userEvent.click(screen.getByRole('checkbox', {name: /TLC/i}))
 
@@ -336,15 +251,8 @@ describe('Select Test', () => {
   })
 
   it('should not display test in both lists when user selects a test and a panel containing the same test', async () => {
-    const mockedOpenmrsFetch = openmrsFetch as jest.Mock
-    mockedOpenmrsFetch.mockResolvedValue(mockLabTestsResponse)
-    renderWithContextProvider(
-      <SWRConfig value={{provider: () => new Map()}}>
-        <SelectTest isDiscardButtonClicked={false} />
-      </SWRConfig>,
-    )
-
-    await waitForLoaderToComplete()
+    mockOpenmrsApi()
+    await renderSelectTestComponent()
 
     userEvent.click(
       screen.getByRole('checkbox', {name: /Absolute Eosinphil Count/i}),
@@ -362,15 +270,8 @@ describe('Select Test', () => {
   })
 
   it('should display tests in panel when user unselects a panel', async () => {
-    const mockedOpenmrsFetch = openmrsFetch as jest.Mock
-    mockedOpenmrsFetch.mockResolvedValue(mockLabTestsResponse)
-    renderWithContextProvider(
-      <SWRConfig value={{provider: () => new Map()}}>
-        <SelectTest isDiscardButtonClicked={false} />
-      </SWRConfig>,
-    )
-
-    await waitForLoaderToComplete()
+    mockOpenmrsApi()
+    await renderSelectTestComponent()
 
     userEvent.click(screen.getByRole('checkbox', {name: /TLC/i}))
     expect(screen.getByText('Available Tests ( 2 )')).toBeInTheDocument()
@@ -387,15 +288,8 @@ describe('Select Test', () => {
   })
 
   it('should show test in available list if user unselects multiple panels that contains the common test', async () => {
-    const mockedOpenmrsFetch = openmrsFetch as jest.Mock
-    mockedOpenmrsFetch.mockResolvedValue(mockLabTestsResponse)
-    renderWithContextProvider(
-      <SWRConfig value={{provider: () => new Map()}}>
-        <SelectTest isDiscardButtonClicked={false} />
-      </SWRConfig>,
-    )
-
-    await waitForLoaderToComplete()
+    mockOpenmrsApi()
+    await renderSelectTestComponent()
 
     userEvent.click(screen.getByRole('checkbox', {name: /TLC/i}))
     userEvent.click(screen.getByRole('checkbox', {name: /Anaemia Panel/i}))
@@ -417,15 +311,8 @@ describe('Select Test', () => {
   })
 
   it('should show test in available list if test matches the search value on unselecting multiple panels that contains the common test', async () => {
-    const mockedOpenmrsFetch = openmrsFetch as jest.Mock
-    mockedOpenmrsFetch.mockResolvedValue(mockLabTestsResponse)
-    renderWithContextProvider(
-      <SWRConfig value={{provider: () => new Map()}}>
-        <SelectTest isDiscardButtonClicked={false} />
-      </SWRConfig>,
-    )
-
-    await waitForLoaderToComplete()
+    mockOpenmrsApi()
+    await renderSelectTestComponent()
 
     userEvent.click(screen.getByRole('checkbox', {name: /TLC/i}))
     userEvent.click(screen.getByRole('checkbox', {name: /Anaemia Panel/i}))
@@ -452,6 +339,20 @@ const waitForLoaderToComplete = async () =>
   await waitFor(() =>
     expect(screen.queryByText(/loading \.\.\./i)).not.toBeInTheDocument(),
   )
+
+async function renderSelectTestComponent(waitForLoader: boolean = true) {
+  renderWithContextProvider(
+    <SWRConfig value={{provider: () => new Map()}}>
+      <SelectTest isDiscardButtonClicked={false} />
+    </SWRConfig>,
+  )
+  if (waitForLoader) await waitForLoaderToComplete()
+}
+
+function mockOpenmrsApi(apiResponse: any = mockLabTestsResponse) {
+  const mockedOpenmrsFetch = openmrsFetch as jest.Mock
+  mockedOpenmrsFetch.mockResolvedValue(apiResponse)
+}
 
 function renderWithContextProvider(children) {
   return render(<UploadReportProvider>{children}</UploadReportProvider>)
