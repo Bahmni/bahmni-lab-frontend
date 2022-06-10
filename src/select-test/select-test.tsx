@@ -91,26 +91,16 @@ const SelectTest = ({isDiscardButtonClicked}) => {
         ) > -1,
     )
     handleMultipleSelect(initialSelectedFromOrdersTable)
-    if (selectedPendingOrder.length > 0)
-      setSearchResults(prevSearchResults => {
-        if (prevSearchResults.length > 0) {
-          return prevSearchResults.filter(
-            pendingOrderTest =>
-              selectedPendingOrder.findIndex(
-                tempPendingTest =>
-                  tempPendingTest.conceptUuid === pendingOrderTest.uuid,
-              ) === -1,
-          )
-        } else {
-          return allTests.filter(
-            pendingOrderTest =>
-              selectedPendingOrder.findIndex(
-                tempPendingTest =>
-                  tempPendingTest.conceptUuid === pendingOrderTest.uuid,
-              ) === -1,
-          )
-        }
-      })
+    if (selectedPendingOrder.length > 0) {
+      const tempSearchResults = allTests.filter(
+        pendingOrderTest =>
+          selectedPendingOrder.findIndex(
+            tempPendingTest =>
+              tempPendingTest.conceptUuid === pendingOrderTest.uuid,
+          ) === -1,
+      )
+      setSearchResults(tempSearchResults)
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedPendingOrder, labTestResults])
 
@@ -202,16 +192,6 @@ const SelectTest = ({isDiscardButtonClicked}) => {
   }
 
   const handleMultipleSelect = (selectedTests: Array<LabTest>) => {
-    const remainingTests = searchResults.filter((test: LabTest) => {
-      let isCommonTestPresentInSelectedTests = false
-      selectedTests.forEach(selectedTest => {
-        isCommonTestPresentInSelectedTests =
-          isCommonTestPresentInSelectedTests ||
-          isCommonTestPresent(test, selectedTest)
-      })
-      return isCommonTestPresentInSelectedTests
-    })
-
     selectedTests.forEach(selectedTest => {
       if (!isLabTest(selectedTest)) {
         let listOfSelectedTests = selectedTests
@@ -226,9 +206,6 @@ const SelectTest = ({isDiscardButtonClicked}) => {
           if (isTestInPanel)
             listOfSelectedTests = filterTests(listOfSelectedTests, testInPanel)
         }
-        removeTestsInPanel(selectedTest, remainingTests)
-      } else {
-        setSearchResults(remainingTests)
       }
       setSelectedTests((prevSelectedTest: Array<LabTest>) => [
         ...prevSelectedTest,

@@ -207,6 +207,8 @@ describe('Patient lab details', () => {
     expect(screen.getByRole('cell', {name: 'Haemoglobin'})).toBeInTheDocument()
 
     userEvent.click(screen.getByRole('checkbox', {name: /Select Row/i}))
+    userEvent.click(screen.getByRole('checkbox', {name: /Select Row/i}))
+    userEvent.click(screen.getByRole('checkbox', {name: /Select Row/i}))
     userEvent.click(screen.getByRole('button', {name: /upload report/i}))
 
     expect(
