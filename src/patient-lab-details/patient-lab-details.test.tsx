@@ -3,6 +3,7 @@ import {
   openmrsFetch,
   useLayoutType,
   usePatient,
+  usePagination,
 } from '@openmrs/esm-framework'
 import {fireEvent, render, screen, waitFor} from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
@@ -170,6 +171,65 @@ describe('Patient lab details', () => {
     userEvent.click(screen.getByRole('button', {name: /upload report/i}))
 
     expect(screen.getByLabelText(/overlay/i)).toBeInTheDocument()
+  })
+
+  it('should pre-populate the selected tests in upload report and makes pending lab order table read only', async () => {
+    when(usePatient)
+      .calledWith(mockPatientUuid)
+      .mockReturnValue({
+        patient: {id: mockPatientUuid},
+      })
+
+    const mockedOpenmrsFetch = openmrsFetch as jest.Mock
+    mockedOpenmrsFetch
+      .mockReturnValueOnce(mockPendingLabOrdersResponse)
+      .mockReturnValue(mockLabTestsResponse)
+    when(usePagination)
+      .calledWith(expect.anything(), 5)
+      .mockReturnValue({
+        results: [
+          {
+            id: 'abc-123',
+            testName: 'Haemoglobin',
+            date: 'May 03, 2022',
+            orderedBy: 'Superman',
+          },
+        ],
+        goTo: jest.fn(),
+        currentPage: 1,
+      })
+    render(
+      <SWRConfig value={{provider: () => new Map()}}>
+        <BrowserRouter>
+          <PatientLabDetails
+            match={matchParams}
+            history={undefined}
+            location={undefined}
+          />
+        </BrowserRouter>
+      </SWRConfig>,
+    )
+
+    await waitFor(() => {
+      expect(screen.getByText(/Pending lab orders/i)).toBeInTheDocument()
+    })
+
+    expect(screen.getByRole('cell', {name: 'Haemoglobin'})).toBeInTheDocument()
+
+    userEvent.click(screen.getByRole('checkbox', {name: /Select Row/i}))
+    userEvent.click(screen.getByRole('button', {name: /upload report/i}))
+
+    expect(
+      screen.getByRole('button', {name: /save and upload/i}),
+    ).toBeDisabled()
+
+    await waitFor(() => {
+      expect(screen.getByTestId(/selected-tests/i)).toHaveTextContent(
+        'Selected Tests ( 1 )',
+      )
+    })
+
+    expect(screen.getByRole('checkbox', {name: /Select Row/i})).toBeDisabled()
   })
 
   it('should show success notification on report upload', async () => {

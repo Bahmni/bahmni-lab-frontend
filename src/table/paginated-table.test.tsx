@@ -160,4 +160,24 @@ describe('Paginated Table', () => {
       ),
     ).not.toBeInTheDocument()
   })
+
+  it('should throw error message paginated table is not used with context', async () => {
+    const mockedOpenmrsFetch = openmrsFetch as jest.Mock
+    mockedOpenmrsFetch.mockRejectedValueOnce(mockPendingLabOrdersErrorResponse)
+
+    expect(() =>
+      render(
+        <SWRConfig value={{provider: () => new Map()}}>
+          <BrowserRouter>
+            <PaginatedTable
+              patientUuid={mockPatientUuid}
+              onButtonClick={false}
+            />
+          </BrowserRouter>
+        </SWRConfig>,
+      ),
+    ).toThrow(
+      'usePendingLabOrderContext must be used within Pending Lab Orders scope',
+    )
+  })
 })
