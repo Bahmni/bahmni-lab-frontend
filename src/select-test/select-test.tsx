@@ -87,7 +87,7 @@ const SelectTest = ({isDiscardButtonClicked}) => {
       pendingOrderTest =>
         selectedPendingOrder.findIndex(
           tempPendingTest =>
-            tempPendingTest.conceptUuid === pendingOrderTest.uuid,
+            tempPendingTest?.conceptUuid === pendingOrderTest.uuid,
         ) > -1,
     )
     handleMultipleSelect(initialSelectedFromOrdersTable)
@@ -96,7 +96,7 @@ const SelectTest = ({isDiscardButtonClicked}) => {
         pendingOrderTest =>
           selectedPendingOrder.findIndex(
             tempPendingTest =>
-              tempPendingTest.conceptUuid === pendingOrderTest.uuid,
+              tempPendingTest?.conceptUuid === pendingOrderTest.uuid,
           ) === -1,
       )
       setSearchResults(tempSearchResults)
