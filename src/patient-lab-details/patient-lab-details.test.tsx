@@ -204,9 +204,15 @@ describe('Patient lab details', () => {
       expect(screen.getByText(/Pending lab orders/i)).toBeInTheDocument()
     })
 
-    expect(screen.getByRole('cell', {name: 'Haemoglobin'})).toBeInTheDocument()
+    expect(
+      screen.getByRole('cell', {name: 'Routine Blood'}),
+    ).toBeInTheDocument()
+    expect(
+      screen.getByRole('cell', {name: 'Anaemia Panel'}),
+    ).toBeInTheDocument()
 
     userEvent.click(screen.getAllByRole('checkbox', {name: /Select row/i})[0])
+    userEvent.click(screen.getAllByRole('checkbox', {name: /Select row/i})[1])
 
     userEvent.click(screen.getByRole('button', {name: /upload report/i}))
 
@@ -216,7 +222,7 @@ describe('Patient lab details', () => {
 
     await waitFor(() => {
       expect(screen.getByTestId(/selected-tests/i)).toHaveTextContent(
-        'Selected Tests ( 1 )Haemoglobin',
+        'Selected Tests ( 2 )',
       )
     })
 
@@ -228,6 +234,16 @@ describe('Patient lab details', () => {
     expect(
       screen.getAllByRole('checkbox', {name: /Select Row/i})[0],
     ).toBeEnabled()
+
+    userEvent.click(screen.getAllByRole('checkbox', {name: /Select row/i})[0])
+
+    userEvent.click(screen.getByRole('button', {name: /upload report/i}))
+
+    await waitFor(() => {
+      expect(screen.getByTestId(/selected-tests/i)).toHaveTextContent(
+        'Selected Tests ( 1 )',
+      )
+    })
   })
 
   it('should show success notification on report upload', async () => {

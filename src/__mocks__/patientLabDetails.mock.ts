@@ -2,7 +2,7 @@ export const mockPendingLabOrder = {
   results: [
     {
       id: 'abc-123',
-      testName: 'Haemoglobin',
+      testName: 'Routine Blood',
       date: 'May 03, 2022',
       orderedBy: 'Superman',
     },

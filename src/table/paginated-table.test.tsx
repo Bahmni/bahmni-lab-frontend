@@ -29,18 +29,7 @@ describe('Paginated Table', () => {
     const mockedOpenmrsFetch = openmrsFetch as jest.Mock
     mockedOpenmrsFetch.mockReturnValue(mockPendingLabOrdersResponse)
     when(usePagination)
-      .calledWith(
-        [
-          {
-            id: 'abc-123',
-            testName: 'Routine Blood',
-            date: 'April 19, 2022',
-            orderedBy: 'Test Orderer',
-            conceptUuid: 'fe769568-16da-4d9e-9c99-fbed0a8a60f5',
-          },
-        ],
-        5,
-      )
+      .calledWith(expect.anything(), 5)
       .mockReturnValue({
         results: [
           {
@@ -96,7 +85,7 @@ describe('Paginated Table', () => {
         name: /select row/i,
       }).length,
     ).toEqual(1)
-    expect(screen.getByText(/1 \/ 1 items/i)).toBeInTheDocument()
+    expect(screen.getByText(/2 \/ 2 items/i)).toBeInTheDocument()
 
     expect(
       screen.queryByText(
