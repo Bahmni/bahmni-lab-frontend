@@ -6,16 +6,12 @@ import DoctorListDropdown from './doctor-list-dropdown'
 import {openmrsFetch} from '@openmrs/esm-framework'
 import {mockDoctorNames} from '../__mocks__/doctorNames.mock'
 import {UploadReportContext} from '../context/upload-report-context'
+import {DoctorDetailsData} from '../types'
 
 describe('upload file', () => {
-  let performerUuid: string
-  const setPerformerUuid = (input: string) => {
-    performerUuid = input
-  }
-
-  let doctorName: string
-  const setDoctorName = (input: string) => {
-    doctorName = input
+  let doctor: DoctorDetailsData
+  const setDoctor = (input: DoctorDetailsData) => {
+    doctor = {display: input.display, uuid: input.uuid, links: [], type: ''}
   }
   beforeEach(() => {
     Object.defineProperty(window, 'localStorage', {value: localStorageMock})
@@ -24,10 +20,8 @@ describe('upload file', () => {
     mockedOpenmrsFetch.mockResolvedValue(mockDoctorNames)
 
     const value = {
-      doctorName,
-      setDoctorName,
-      performerUuid,
-      setPerformerUuid,
+      doctor,
+      setDoctor,
     }
     renderWithContextProvider(<DoctorListDropdown />, value)
   })
@@ -48,20 +42,20 @@ describe('upload file', () => {
         name: /Please select the doctor name/i,
       }),
     )
-    expect(doctorName).toBe(undefined)
+    expect(doctor).toBe(undefined)
 
     userEvent.click(await screen.findByText('admin - Super User'))
     expect(await screen.findByText(/admin - Super User/i)).toBeInTheDocument()
-    expect(doctorName).toBe('admin - Super User')
-    expect(performerUuid).toBe('1')
+    expect(doctor.display).toBe('admin - Super User')
+    expect(doctor.uuid).toBe('1')
 
     userEvent.click(screen.getByText('admin - Super User'))
 
     userEvent.click(screen.getByText('8-3 - user'))
 
     expect(screen.getByText(/8-3 - user/i)).toBeInTheDocument()
-    expect(doctorName).toBe('8-3 - user')
-    expect(performerUuid).toBe('3')
+    expect(doctor.display).toBe('8-3 - user')
+    expect(doctor.uuid).toBe('3')
   })
 })
 

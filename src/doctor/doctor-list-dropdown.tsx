@@ -12,25 +12,19 @@ const DoctorListDropdown = () => {
   >(getDoctorsURL, fetcher)
 
   const [items, setItems] = useState([])
-  const [doctorMap, setDoctorMap] = useState(null)
-  const {doctorName, setDoctorName, setPerformerUuid} = useDoctorDetails()
+  const {doctor, setDoctor} = useDoctorDetails()
 
   useMemo(() => {
-    let map = new Map<string, string>()
     let arr = []
-    map.set('Self', null)
-    arr.push('Self')
+    arr.push({display: 'Self'})
     doctorList?.data?.results?.map(doctorDetails => {
-      map.set(doctorDetails.display, doctorDetails.uuid)
-      arr.push(doctorDetails.display)
+      arr.push(doctorDetails)
     })
-    setDoctorMap(map)
     setItems(arr)
   }, [doctorList])
 
   const updateDoctorDetails = selectedItem => {
-    setDoctorName(selectedItem)
-    setPerformerUuid(doctorMap.get(selectedItem))
+    setDoctor(selectedItem)
   }
 
   return (
@@ -42,9 +36,10 @@ const DoctorListDropdown = () => {
           id="doctor-list-dropdown"
           title="doctor list"
           items={items}
+          itemToString={data => data.display}
           label="Please select the doctor name"
           onChange={({selectedItem}) => updateDoctorDetails(selectedItem)}
-          selectedItem={doctorName}
+          selectedItem={doctor}
         ></Dropdown>
       )}
     </div>

@@ -113,10 +113,14 @@ const PatientLabDetails: React.FC<RouteComponentProps<PatientParamsType>> = ({
             <br></br>
             <br></br>
           </PendingLabOrdersProvider>
+<<<<<<< HEAD
           <ReportTable
             patientUuid={patientUuid}
             reloadTableData={reloadReportTable}
           />
+=======
+          <ReportTable patientUuid={patientUuid} />
+>>>>>>> 7bdc3b8 (BAH-1813 | Upload report against open orders (UI only) (#19))
           <br></br>
           <br></br>
         </div>

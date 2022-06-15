@@ -158,11 +158,19 @@ describe('Patient lab details', () => {
   })
 
   it('should pre-populate the selected tests in upload report and makes pending lab order table read only', async () => {
+    when(usePatient)
+      .calledWith(mockPatientUuid)
+      .mockReturnValue({
+        patient: {id: mockPatientUuid},
+      })
+
     const mockedOpenmrsFetch = openmrsFetch as jest.Mock
     mockedOpenmrsFetch
       .mockReturnValueOnce(mockPendingLabOrdersResponse)
       .mockReturnValue(mockLabTestsResponse)
-
+    when(usePagination)
+      .calledWith(expect.anything(), 5)
+      .mockReturnValue(mockPendingLabOrder)
     render(
       <SWRConfig value={{provider: () => new Map()}}>
         <BrowserRouter>
@@ -198,6 +206,42 @@ describe('Patient lab details', () => {
     await waitFor(() => {
       expect(screen.getByTestId(/selected-tests/i)).toHaveTextContent(
         'Selected Tests ( 2 )',
+      )
+    })
+
+    expect(
+      screen.getAllByRole('checkbox', {name: /Select Row/i})[0],
+    ).toBeDisabled()
+
+    userEvent.click(screen.getByRole('button', {name: /close-icon/i}))
+    expect(
+      screen.getAllByRole('checkbox', {name: /Select Row/i})[0],
+    ).toBeEnabled()
+
+    userEvent.click(screen.getAllByRole('checkbox', {name: /Select row/i})[0])
+
+    userEvent.click(screen.getByRole('button', {name: /upload report/i}))
+
+    await waitFor(() => {
+      expect(screen.getByTestId(/selected-tests/i)).toHaveTextContent(
+        'Selected Tests ( 1 )',
+      )
+    })
+  })
+
+  it('should show success notification on report upload', async () => {
+    Object.defineProperty(window, 'localStorage', {value: localStorageMock})
+    when(usePatient)
+      .calledWith(mockPatientUuid)
+      .mockReturnValue({
+        patient: {id: mockPatientUuid},
+      })
+    when(ExtensionSlot).mockImplementation((props: any) => {
+      return (
+        <>
+          <div>Extension slot name : {props.extensionSlotName} </div>
+          <div>State : {JSON.stringify(props.state)}</div>
+        </>
       )
     })
 
