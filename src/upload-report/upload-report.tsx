@@ -40,12 +40,7 @@ const UploadReport: React.FC<UploadReportProps> = ({
   const [isDiscardButtonClicked, setIsDiscardButtonClicked] = useState<boolean>(
     false,
   )
-  const {
-    doctorName,
-    setDoctorName,
-    performerUuid,
-    setPerformerUuid,
-  } = useDoctorDetails()
+  const {doctor, setDoctor} = useDoctorDetails()
   const {selectedTests, setSelectedTests} = useSelectedTests()
   const maxCount: number = 500
   const {selectedFile, setSelectedFile} = useSelectedFile()
@@ -57,8 +52,7 @@ const UploadReport: React.FC<UploadReportProps> = ({
     setReportConclusion('')
     setSelectedFile(null)
     setSelectedTests([])
-    setDoctorName(null)
-    setPerformerUuid(null)
+    setDoctor(null)
   }
 
   const saveReport = () => {
@@ -78,7 +72,7 @@ const UploadReport: React.FC<UploadReportProps> = ({
           await uploadSelectedTests(
             selectedTests,
             patientUuid,
-            performerUuid,
+            doctor.uuid,
             reportDate,
             url,
             selectedFile,
@@ -102,10 +96,7 @@ const UploadReport: React.FC<UploadReportProps> = ({
         onClick={saveReport}
         size="lg"
         disabled={
-          !reportDate ||
-          !selectedFile ||
-          !doctorName ||
-          selectedTests.length === 0
+          !reportDate || !selectedFile || !doctor || selectedTests.length === 0
         }
       >
         Save and Upload

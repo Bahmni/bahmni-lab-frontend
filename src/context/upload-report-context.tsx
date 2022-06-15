@@ -1,4 +1,5 @@
 import React, {useState} from 'react'
+import {DoctorDetailsData} from '../types'
 import {LabTest} from '../types/selectTest'
 
 interface UploadReportContextProps {
@@ -6,10 +7,8 @@ interface UploadReportContextProps {
   setSelectedFile: Function
   selectedTests: LabTest[]
   setSelectedTests: Function
-  doctorName: string
-  setDoctorName: Function
-  performerUuid: string
-  setPerformerUuid: Function
+  doctor: DoctorDetailsData
+  setDoctor: Function
 }
 const UploadReportContext = React.createContext<UploadReportContextProps>(null)
 
@@ -28,10 +27,8 @@ function useSelectedFile() {
 function useDoctorDetails() {
   const context = React.useContext(UploadReportContext)
   return {
-    doctorName: context.doctorName,
-    setDoctorName: context.setDoctorName,
-    performerUuid: context.performerUuid,
-    setPerformerUuid: context.setPerformerUuid,
+    doctor: context.doctor,
+    setDoctor: context.setDoctor,
   }
 }
 
@@ -50,20 +47,17 @@ function useSelectedTests() {
 }
 
 function UploadReportProvider({children}) {
-  const [doctorName, setDoctorName] = useState<string>()
   const [selectedFile, setSelectedFile] = useState<File>()
   const [selectedTests, setSelectedTests] = React.useState<LabTest[]>([])
-  const [performerUuid, setPerformerUuid] = useState<string>()
+  const [doctor, setDoctor] = useState<DoctorDetailsData>()
 
   const value = {
     selectedFile,
     setSelectedFile,
     selectedTests,
     setSelectedTests,
-    doctorName,
-    setDoctorName,
-    performerUuid,
-    setPerformerUuid,
+    doctor,
+    setDoctor,
   }
 
   return (
