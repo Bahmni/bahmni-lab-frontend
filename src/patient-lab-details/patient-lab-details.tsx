@@ -14,6 +14,7 @@ import Loader from '../loader/loader.component'
 import PaginatedTable from '../table/paginated-table'
 import ReportTable from '../report-table/report-table.component'
 import UploadReport from '../upload-report/upload-report'
+import PendingLabOrdersProvider from '../context/pending-orders-context'
 import styles from './patient-lab-details.scss'
 
 interface PatientParamsType {
@@ -81,23 +82,28 @@ const PatientLabDetails: React.FC<RouteComponentProps<PatientParamsType>> = ({
           </div>
           <br></br>
           <br></br>
-          <PaginatedTable patientUuid={patientUuid} />
-          <br></br>
-          <br></br>
-          <Button renderIcon={AddFilled16} onClick={handleClick}>
-            Upload Report
-          </Button>
-          {onButtonClick && (
-            <UploadReportProvider>
-              <UploadReport
-                close={(isSaveSuccess = false) => handleClose(isSaveSuccess)}
-                header="Upload Report"
-                patientUuid={patientUuid}
-              />
-            </UploadReportProvider>
-          )}
-          <br></br>
-          <br></br>
+          <PendingLabOrdersProvider>
+            <PaginatedTable
+              patientUuid={patientUuid}
+              onButtonClick={onButtonClick}
+            />
+            <br></br>
+            <br></br>
+            <Button renderIcon={AddFilled16} onClick={handleClick}>
+              Upload Report
+            </Button>
+            {onButtonClick && (
+              <UploadReportProvider>
+                <UploadReport
+                  close={(isSaveSuccess = false) => handleClose(isSaveSuccess)}
+                  header="Upload Report"
+                  patientUuid={patientUuid}
+                />
+              </UploadReportProvider>
+            )}
+            <br></br>
+            <br></br>
+          </PendingLabOrdersProvider>
           <ReportTable patientUuid={patientUuid} />
           <br></br>
           <br></br>

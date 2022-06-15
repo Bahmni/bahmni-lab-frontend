@@ -87,3 +87,11 @@ export interface ReportTableFetchResponse {
     entry: Array<ReportEntry>
   }
 }
+
+export interface PendingLabOrders {
+  id: string
+  testName: string
+  date: string
+  orderedBy: string
+  conceptUuid: string
+}

@@ -8,6 +8,7 @@ import {
 import React, {useEffect, useState} from 'react'
 import useSWR from 'swr'
 import {useSelectedTests} from '../context/upload-report-context'
+import {usePendingLabOrderContext} from '../context/pending-orders-context'
 import Loader from '../loader/loader.component'
 import {LabTest} from '../types/selectTest'
 import {fetcher, getLabTests} from '../utils/api-utils'
@@ -22,6 +23,7 @@ const SelectTest = ({isDiscardButtonClicked}) => {
   >(true)
   const {selectedTests, setSelectedTests} = useSelectedTests()
   const [allTestsAndPanels, setAllTestsAndPanels] = useState<Array<LabTest>>([])
+  const {selectedPendingOrder} = usePendingLabOrderContext()
 
   const {data: labTestResults, error: labTestResultsError} = useSWR<any, Error>(
     getLabTests,
@@ -73,6 +75,34 @@ const SelectTest = ({isDiscardButtonClicked}) => {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchValue])
+
+  useEffect(() => {
+    const allTests: Array<LabTest> = []
+    labTestResults?.data?.results[0]?.setMembers?.map(sample => {
+      sample.setMembers.map(tests => {
+        allTests.push(tests)
+      })
+    })
+    const initialSelectedFromOrdersTable = allTests.filter(
+      pendingOrderTest =>
+        selectedPendingOrder.findIndex(
+          tempPendingTest =>
+            tempPendingTest?.conceptUuid === pendingOrderTest.uuid,
+        ) > -1,
+    )
+    handleMultipleSelect(initialSelectedFromOrdersTable)
+    if (selectedPendingOrder.length > 0) {
+      const tempSearchResults = allTests.filter(
+        pendingOrderTest =>
+          selectedPendingOrder.findIndex(
+            tempPendingTest =>
+              tempPendingTest?.conceptUuid === pendingOrderTest.uuid,
+          ) === -1,
+      )
+      setSearchResults(tempSearchResults)
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedPendingOrder, labTestResults])
 
   const getTestsInLabOrder = (labOrder: LabTest) => labOrder?.setMembers
 
@@ -161,6 +191,29 @@ const SelectTest = ({isDiscardButtonClicked}) => {
     removeSelectedTest(selectedTest)
   }
 
+  const handleMultipleSelect = (selectedTests: Array<LabTest>) => {
+    selectedTests.forEach(selectedTest => {
+      if (!isLabTest(selectedTest)) {
+        let listOfSelectedTests = selectedTests
+        for (let testInPanel of getTestsInLabOrder(selectedTest)) {
+          let isTestInPanel = false
+          for (let labTest of selectedTests) {
+            if (isCommonTestPresent(testInPanel, labTest)) {
+              isTestInPanel = true
+              break
+            }
+          }
+          if (isTestInPanel)
+            listOfSelectedTests = filterTests(listOfSelectedTests, testInPanel)
+        }
+      }
+      setSelectedTests((prevSelectedTest: Array<LabTest>) => [
+        ...prevSelectedTest,
+        selectedTest,
+      ])
+    })
+  }
+
   const removeTestsInPanel = (
     selectedTest: LabTest,
     remainingTests: Array<LabTest>,
@@ -242,10 +295,12 @@ const SelectTest = ({isDiscardButtonClicked}) => {
           {searchValue && showSearchCount()}
         </div>
         {searchResults.map((searchResult, index) => (
-          <div style={{display: 'flex'}} key={index}>
+          <div
+            style={{display: 'flex'}}
+            key={`search-${searchResult.name.uuid}${index}`}
+          >
             <Checkbox
               id={searchResult.name.uuid}
-              key={`${searchResult.name.uuid}${index}`}
               labelText={searchResult.name.display}
               onChange={() => handleSelect(searchResult)}
             />
@@ -271,11 +326,13 @@ const SelectTest = ({isDiscardButtonClicked}) => {
     return (
       <div>
         {selectedTests.map((selectedTest, index) => (
-          <div style={{display: 'flex'}}>
+          <div
+            style={{display: 'flex'}}
+            key={`select-${selectedTest.name.uuid}${index}`}
+          >
             <Checkbox
               id={selectedTest.name.uuid}
               checked={true}
-              key={`${selectedTest.name.uuid}${index}`}
               labelText={selectedTest.name.display}
               onChange={() => handleUnselect(selectedTest)}
             />

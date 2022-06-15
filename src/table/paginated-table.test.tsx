@@ -12,6 +12,7 @@ import {
   mockPendingLabOrdersResponse,
 } from '../__mocks__/pendingLabOrders.mock'
 import PaginatedTable from './paginated-table'
+import PendingLabOrdersProvider from '../context/pending-orders-context'
 
 const mockPatientUuid = '1'
 
@@ -28,17 +29,7 @@ describe('Paginated Table', () => {
     const mockedOpenmrsFetch = openmrsFetch as jest.Mock
     mockedOpenmrsFetch.mockReturnValue(mockPendingLabOrdersResponse)
     when(usePagination)
-      .calledWith(
-        [
-          {
-            id: 'abc-123',
-            testName: 'Routine Blood',
-            date: 'April 19, 2022',
-            orderedBy: 'Test Orderer',
-          },
-        ],
-        5,
-      )
+      .calledWith(expect.anything(), 5)
       .mockReturnValue({
         results: [
           {
@@ -55,7 +46,12 @@ describe('Paginated Table', () => {
     render(
       <SWRConfig value={{provider: () => new Map()}}>
         <BrowserRouter>
-          <PaginatedTable patientUuid={mockPatientUuid} />
+          <PendingLabOrdersProvider>
+            <PaginatedTable
+              patientUuid={mockPatientUuid}
+              onButtonClick={false}
+            />
+          </PendingLabOrdersProvider>
         </BrowserRouter>
       </SWRConfig>,
     )
@@ -89,7 +85,7 @@ describe('Paginated Table', () => {
         name: /select row/i,
       }).length,
     ).toEqual(1)
-    expect(screen.getByText(/1 \/ 1 items/i)).toBeInTheDocument()
+    expect(screen.getByText(/2 \/ 2 items/i)).toBeInTheDocument()
 
     expect(
       screen.queryByText(
@@ -104,7 +100,12 @@ describe('Paginated Table', () => {
     render(
       <SWRConfig value={{provider: () => new Map()}}>
         <BrowserRouter>
-          <PaginatedTable patientUuid={mockPatientUuid} />
+          <PendingLabOrdersProvider>
+            <PaginatedTable
+              patientUuid={mockPatientUuid}
+              onButtonClick={false}
+            />
+          </PendingLabOrdersProvider>
         </BrowserRouter>
       </SWRConfig>,
     )
@@ -127,7 +128,12 @@ describe('Paginated Table', () => {
     render(
       <SWRConfig value={{provider: () => new Map()}}>
         <BrowserRouter>
-          <PaginatedTable patientUuid={mockPatientUuid} />
+          <PendingLabOrdersProvider>
+            <PaginatedTable
+              patientUuid={mockPatientUuid}
+              onButtonClick={false}
+            />
+          </PendingLabOrdersProvider>
         </BrowserRouter>
       </SWRConfig>,
     )
@@ -142,5 +148,25 @@ describe('Paginated Table', () => {
         /Something went wrong in fetching pending lab orders\.\.\./i,
       ),
     ).not.toBeInTheDocument()
+  })
+
+  it('should throw error message paginated table is not used with context', async () => {
+    const mockedOpenmrsFetch = openmrsFetch as jest.Mock
+    mockedOpenmrsFetch.mockRejectedValueOnce(mockPendingLabOrdersErrorResponse)
+
+    expect(() =>
+      render(
+        <SWRConfig value={{provider: () => new Map()}}>
+          <BrowserRouter>
+            <PaginatedTable
+              patientUuid={mockPatientUuid}
+              onButtonClick={false}
+            />
+          </BrowserRouter>
+        </SWRConfig>,
+      ),
+    ).toThrow(
+      'usePendingLabOrderContext must be used within Pending Lab Orders scope',
+    )
   })
 })
