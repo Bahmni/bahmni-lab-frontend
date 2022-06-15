@@ -22,6 +22,11 @@ interface ReferenceRequestType {
   reference: string
 }
 
+export interface BasedOnType {
+  reference: string
+  display: string
+}
+
 interface DiagnosticReportRequestType {
   resourceType: string
   status: string
@@ -40,6 +45,7 @@ interface DiagnosticReportRequestType {
     url: string
     title: string
   }
+  basedOn: Array<BasedOnType>
 }
 
 export function uploadFile(
@@ -71,6 +77,7 @@ export function saveDiagnosticReport(
   uploadedFileName: string,
   reportConclusion: string,
   ac: AbortController,
+  basedOn: Array<BasedOnType>,
 ) {
   const requestBody: DiagnosticReportRequestType = {
     resourceType: 'DiagnosticReport',
@@ -92,6 +99,7 @@ export function saveDiagnosticReport(
       url: uploadFileUrl,
       title: uploadedFileName,
     },
+    basedOn,
   }
   return postApiCall(saveDiagnosticReportURL, requestBody, ac)
 }

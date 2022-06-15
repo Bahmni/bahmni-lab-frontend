@@ -13,8 +13,13 @@ import {
 import Overlay from '../overlay'
 import SelectTest from '../select-test/select-test'
 import UploadFile from '../upload-file/upload-file'
-import {saveDiagnosticReport, uploadFile} from './upload-report.resources'
+import {
+  BasedOnType,
+  saveDiagnosticReport,
+  uploadFile,
+} from './upload-report.resources'
 import styles from './upload-report.scss'
+import {usePendingLabOrderContext} from '../context/pending-orders-context'
 
 interface UploadReportProps {
   close: Function
@@ -37,6 +42,7 @@ const UploadReport: React.FC<UploadReportProps> = ({
   const {selectedTests, setSelectedTests} = useSelectedTests()
   const maxCount: number = 500
   const {selectedFile, setSelectedFile} = useSelectedFile()
+  const {selectedPendingOrder} = usePendingLabOrderContext()
 
   const handleDiscard = () => {
     setIsDiscardButtonClicked(true)
@@ -58,6 +64,18 @@ const UploadReport: React.FC<UploadReportProps> = ({
       )
       if (uploadFileResponse.ok) {
         const url = uploadFileResponse.data.url
+        const isPendingOrderInPayload =
+          selectedPendingOrder.filter(
+            pendingOrder => pendingOrder.conceptUuid === selectedTests[0].uuid,
+          ).length == 1
+        let basedOn: Array<BasedOnType> = null
+        if (isPendingOrderInPayload)
+          basedOn = [
+            {
+              reference: 'ServiceRequest',
+              display: selectedTests[0].name.display,
+            },
+          ]
         if (url) {
           const diagnosticReportResponse = await saveDiagnosticReport(
             patientUuid,
@@ -67,6 +85,7 @@ const UploadReport: React.FC<UploadReportProps> = ({
             selectedFile.name,
             reportConclusion,
             ac,
+            basedOn,
           )
           if (diagnosticReportResponse.ok) {
             close(true)
