@@ -334,6 +334,98 @@ describe('Patient lab details', () => {
       ).toBeInTheDocument(),
     )
   })
+
+  it('should populate based on property if a pending order is selected', async () => {
+    const file = new File(['content'], 'test.pdf', {type: 'application/pdf'})
+    when(usePatient)
+      .calledWith(mockPatientUuid)
+      .mockReturnValue({
+        patient: {id: mockPatientUuid},
+      })
+
+    const mockedOpenmrsFetch = openmrsFetch as jest.Mock
+    mockedOpenmrsFetch
+      .mockReturnValueOnce(mockPendingLabOrdersResponse)
+      .mockReturnValue(mockLabTestsResponse)
+    when(usePagination)
+      .calledWith(expect.anything(), 5)
+      .mockReturnValue(mockPendingLabOrder)
+    render(
+      <SWRConfig value={{provider: () => new Map()}}>
+        <BrowserRouter>
+          <PatientLabDetails
+            match={matchParams}
+            history={undefined}
+            location={undefined}
+          />
+        </BrowserRouter>
+      </SWRConfig>,
+    )
+
+    await waitFor(() => {
+      expect(screen.getByText(/Pending lab orders/i)).toBeInTheDocument()
+    })
+
+    userEvent.click(screen.getAllByRole('checkbox', {name: /Select row/i})[1])
+
+    userEvent.click(screen.getByRole('button', {name: /upload report/i}))
+
+    expect(
+      screen.getByRole('button', {name: /save and upload/i}),
+    ).toBeDisabled()
+
+    await waitFor(() => {
+      expect(screen.getByTestId(/selected-tests/i)).toHaveTextContent(
+        'Selected Tests ( 1 )',
+      )
+    })
+
+    userEvent.click(screen.getByRole('button', {name: /upload report/i}))
+
+    expect(
+      screen.getByRole('button', {name: /save and upload/i}),
+    ).toBeDisabled()
+
+    userEvent.click(
+      screen.getByRole('textbox', {
+        name: /report date/i,
+      }),
+    )
+
+    const currentDay: string = getFormatedDate(0)
+
+    userEvent.click(screen.getByLabelText(currentDay))
+
+    await waitFor(() =>
+      expect(
+        screen.getByRole('checkbox', {name: /Absolute Eosinphil Count/i}),
+      ).toBeInTheDocument(),
+    )
+    expect(screen.getByText(/select tests/i)).toBeInTheDocument()
+
+    userEvent.click(
+      screen.getByRole('checkbox', {name: /Absolute Eosinphil Count/i}),
+    )
+
+    const fileInput = screen.getByLabelText(
+      'Drag and drop files here or click to upload',
+    ) as HTMLInputElement
+
+    uploadFiles(fileInput, [file])
+
+    const saveButton = screen.getByRole('button', {name: /save and upload/i})
+
+    expect(saveButton).not.toBeDisabled()
+    userEvent.click(saveButton)
+
+    await waitFor(() => {
+      expect(mockedOpenmrsFetch).toBeCalledTimes(4)
+    })
+    expect(mockedOpenmrsFetch.mock.calls[4][1].method).toBe('POST')
+    expect(mockedOpenmrsFetch.mock.calls[4][1].body).toBe(
+      'uploadFileRequestBody',
+    )
+  })
 })
 
 function getFormatedDate(addDays: number): string {
