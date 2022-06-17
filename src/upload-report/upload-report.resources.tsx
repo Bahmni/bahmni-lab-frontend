@@ -47,6 +47,7 @@ interface DiagnosticReportRequestType {
     title: string
   }
   basedOn: Array<BasedOnType>
+  performer?: ReferenceRequestType
 }
 
 export function uploadFile(
@@ -72,6 +73,7 @@ const uploadFileRequestBody = (fileContent, fileType, patientUuid) => {
 
 export function saveDiagnosticReport(
   patientUuid: string,
+  performerUuid: string,
   reportDate: Date,
   selectedTest: LabTest,
   uploadFileUrl: string,
@@ -114,6 +116,12 @@ export function saveDiagnosticReport(
     },
     basedOn,
   }
+  if (performerUuid) {
+    requestBody.performer = {
+      reference: 'Practitioner/' + performerUuid,
+    }
+  }
+
   return postApiCall(saveDiagnosticReportURL, requestBody, ac)
 }
 

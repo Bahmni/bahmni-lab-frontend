@@ -12,6 +12,16 @@ interface Concept {
 export interface LabOrdersFetchResponse {
   data: Array<LabOrders>
 }
+export interface DoctorDetailsData {
+  uuid: string
+  display: string
+  links: Array<Links>
+  type: string
+}
+
+export interface DoctorsResponse {
+  data: {results: Array<DoctorDetailsData>}
+}
 interface GeneralInfo {
   uuid: string
   display: string

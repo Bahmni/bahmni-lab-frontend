@@ -6,6 +6,10 @@ interface UploadReportContextProps {
   setSelectedFile: Function
   selectedTests: LabTest[]
   setSelectedTests: Function
+  doctorName: string
+  setDoctorName: Function
+  performerUuid: string
+  setPerformerUuid: Function
 }
 const UploadReportContext = React.createContext<UploadReportContextProps>(null)
 
@@ -18,6 +22,16 @@ function useSelectedFile() {
   return {
     selectedFile: context.selectedFile,
     setSelectedFile: context.setSelectedFile,
+  }
+}
+
+function useDoctorDetails() {
+  const context = React.useContext(UploadReportContext)
+  return {
+    doctorName: context.doctorName,
+    setDoctorName: context.setDoctorName,
+    performerUuid: context.performerUuid,
+    setPerformerUuid: context.setPerformerUuid,
   }
 }
 
@@ -36,14 +50,20 @@ function useSelectedTests() {
 }
 
 function UploadReportProvider({children}) {
+  const [doctorName, setDoctorName] = useState<string>()
   const [selectedFile, setSelectedFile] = useState<File>()
   const [selectedTests, setSelectedTests] = React.useState<LabTest[]>([])
+  const [performerUuid, setPerformerUuid] = useState<string>()
 
   const value = {
     selectedFile,
     setSelectedFile,
     selectedTests,
     setSelectedTests,
+    doctorName,
+    setDoctorName,
+    performerUuid,
+    setPerformerUuid,
   }
 
   return (
@@ -53,4 +73,10 @@ function UploadReportProvider({children}) {
   )
 }
 
-export {UploadReportProvider, useSelectedTests, useSelectedFile}
+export {
+  UploadReportProvider,
+  useSelectedTests,
+  useSelectedFile,
+  useDoctorDetails,
+  UploadReportContext,
+}

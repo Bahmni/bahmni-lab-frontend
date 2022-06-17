@@ -12,6 +12,7 @@ import {BrowserRouter} from 'react-router-dom'
 import {SWRConfig} from 'swr'
 import {localStorageMock} from '../utils/test-utils'
 import {mockPendingLabOrder} from '../__mocks__/patientLabDetails.mock'
+import {mockDoctorNames} from '../__mocks__/doctorNames.mock'
 import {mockPendingLabOrdersResponse} from '../__mocks__/pendingLabOrders.mock'
 import {
   mockEmptyReportTableResponse,
@@ -226,6 +227,7 @@ describe('Patient lab details', () => {
       .mockReturnValueOnce(mockPendingLabOrdersResponse)
       .mockReturnValueOnce(mockEmptyReportTableResponse)
       .mockReturnValueOnce(mockLabTestsResponse)
+      .mockReturnValueOnce(mockDoctorNames)
       .mockReturnValueOnce(mockUploadFileResponse)
       .mockReturnValue(mockDiagnosticReportResponse)
 
@@ -276,6 +278,14 @@ describe('Patient lab details', () => {
     const fileName = await screen.findByText('test.pdf')
     expect(fileName).toBeInTheDocument()
 
+    userEvent.click(
+      screen.getByRole('button', {
+        name: /Please select the doctor name/i,
+      }),
+    )
+
+    userEvent.click(await screen.findByText('admin - Super User'))
+    expect(await screen.findByText(/admin - Super user/i)).toBeInTheDocument()
     const saveButton = screen.getByRole('button', {name: /save and upload/i})
 
     expect(saveButton).not.toBeDisabled()
