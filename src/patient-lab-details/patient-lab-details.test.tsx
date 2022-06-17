@@ -336,20 +336,29 @@ describe('Patient lab details', () => {
   })
 
   it('should populate based on property if a pending order is selected', async () => {
-    const file = new File(['content'], 'test.pdf', {type: 'application/pdf'})
+    Object.defineProperty(window, 'localStorage', {value: localStorageMock})
     when(usePatient)
       .calledWith(mockPatientUuid)
       .mockReturnValue({
         patient: {id: mockPatientUuid},
       })
+    localStorage.setItem('i18nextLng', 'en')
 
+    const file = new File(['content'], 'test.pdf', {type: 'application/pdf'})
     const mockedOpenmrsFetch = openmrsFetch as jest.Mock
     mockedOpenmrsFetch
       .mockReturnValueOnce(mockPendingLabOrdersResponse)
-      .mockReturnValue(mockLabTestsResponse)
+      .mockReturnValueOnce(mockLabTestsResponse)
+      .mockReturnValueOnce(mockUploadFileResponse)
+      .mockReturnValue(mockDiagnosticReportResponse)
+
+    const mockedLayout = useLayoutType as jest.Mock
+    mockedLayout.mockReturnValue('desktop')
+
     when(usePagination)
       .calledWith(expect.anything(), 5)
       .mockReturnValue(mockPendingLabOrder)
+
     render(
       <SWRConfig value={{provider: () => new Map()}}>
         <BrowserRouter>
@@ -361,24 +370,6 @@ describe('Patient lab details', () => {
         </BrowserRouter>
       </SWRConfig>,
     )
-
-    await waitFor(() => {
-      expect(screen.getByText(/Pending lab orders/i)).toBeInTheDocument()
-    })
-
-    userEvent.click(screen.getAllByRole('checkbox', {name: /Select row/i})[1])
-
-    userEvent.click(screen.getByRole('button', {name: /upload report/i}))
-
-    expect(
-      screen.getByRole('button', {name: /save and upload/i}),
-    ).toBeDisabled()
-
-    await waitFor(() => {
-      expect(screen.getByTestId(/selected-tests/i)).toHaveTextContent(
-        'Selected Tests ( 1 )',
-      )
-    })
 
     userEvent.click(screen.getByRole('button', {name: /upload report/i}))
 
@@ -402,10 +393,21 @@ describe('Patient lab details', () => {
       ).toBeInTheDocument(),
     )
     expect(screen.getByText(/select tests/i)).toBeInTheDocument()
+    userEvent.click(screen.getByRole('button', {name: /close-icon/i}))
 
-    userEvent.click(
-      screen.getByRole('checkbox', {name: /Absolute Eosinphil Count/i}),
-    )
+    userEvent.click(screen.getAllByRole('checkbox', {name: /Select row/i})[0])
+
+    userEvent.click(screen.getByRole('button', {name: /upload report/i}))
+
+    expect(
+      screen.getByRole('button', {name: /save and upload/i}),
+    ).toBeDisabled()
+
+    await waitFor(() => {
+      expect(screen.getByTestId(/selected-tests/i)).toHaveTextContent(
+        'Selected Tests ( 1 )',
+      )
+    })
 
     const fileInput = screen.getByLabelText(
       'Drag and drop files here or click to upload',
@@ -413,18 +415,29 @@ describe('Patient lab details', () => {
 
     uploadFiles(fileInput, [file])
 
+    expect(fileInput.files.length).toBe(1)
+    const fileName = await screen.findByText('test.pdf')
+    expect(fileName).toBeInTheDocument()
+
+    userEvent.click(screen.getByLabelText(currentDay))
+
     const saveButton = screen.getByRole('button', {name: /save and upload/i})
 
     expect(saveButton).not.toBeDisabled()
     userEvent.click(saveButton)
 
+    await waitFor(() =>
+      expect(
+        screen.getByText(/Report successfully uploaded/i),
+      ).toBeInTheDocument(),
+    )
     await waitFor(() => {
       expect(mockedOpenmrsFetch).toBeCalledTimes(4)
     })
-    expect(mockedOpenmrsFetch.mock.calls[4][1].method).toBe('POST')
-    expect(mockedOpenmrsFetch.mock.calls[4][1].body).toBe(
-      'uploadFileRequestBody',
-    )
+    expect(mockedOpenmrsFetch.mock.calls[3][1].method).toBe('POST')
+    expect(
+      JSON.parse(mockedOpenmrsFetch.mock.calls[3][1].body).basedOn.length,
+    ).toBe(1)
   })
 })
 
