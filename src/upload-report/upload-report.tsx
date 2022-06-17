@@ -9,6 +9,7 @@ import React, {useState} from 'react'
 import {
   useSelectedFile,
   useSelectedTests,
+  useDoctorDetails,
 } from '../context/upload-report-context'
 import Overlay from '../overlay'
 import SelectTest from '../select-test/select-test'
@@ -18,6 +19,8 @@ import styles from './upload-report.scss'
 import {usePendingLabOrderContext} from '../context/pending-orders-context'
 import {LabTest} from '../types/selectTest'
 import {PendingLabOrders} from '../types'
+
+import DoctorListDropdown from '../doctor/doctor-list-dropdown'
 
 interface UploadReportProps {
   close: Function
@@ -37,6 +40,12 @@ const UploadReport: React.FC<UploadReportProps> = ({
   const [isDiscardButtonClicked, setIsDiscardButtonClicked] = useState<boolean>(
     false,
   )
+  const {
+    doctorName,
+    setDoctorName,
+    performerUuid,
+    setPerformerUuid,
+  } = useDoctorDetails()
   const {selectedTests, setSelectedTests} = useSelectedTests()
   const maxCount: number = 500
   const {selectedFile, setSelectedFile} = useSelectedFile()
@@ -48,6 +57,8 @@ const UploadReport: React.FC<UploadReportProps> = ({
     setReportConclusion('')
     setSelectedFile(null)
     setSelectedTests([])
+    setDoctorName(null)
+    setPerformerUuid(null)
   }
 
   const saveReport = () => {
@@ -67,6 +78,7 @@ const UploadReport: React.FC<UploadReportProps> = ({
           await uploadSelectedTests(
             selectedTests,
             patientUuid,
+            performerUuid,
             reportDate,
             url,
             selectedFile,
@@ -89,7 +101,12 @@ const UploadReport: React.FC<UploadReportProps> = ({
       <Button
         onClick={saveReport}
         size="lg"
-        disabled={!reportDate || !selectedFile || selectedTests.length === 0}
+        disabled={
+          !reportDate ||
+          !selectedFile ||
+          !doctorName ||
+          selectedTests.length === 0
+        }
       >
         Save and Upload
       </Button>
@@ -119,6 +136,8 @@ const UploadReport: React.FC<UploadReportProps> = ({
           />
         </label>
       </DatePicker>
+      <br></br>
+      <DoctorListDropdown />
 
       <div style={{paddingTop: '1rem'}}>
         <div

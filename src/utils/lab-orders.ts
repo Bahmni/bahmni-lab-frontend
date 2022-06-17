@@ -11,3 +11,4 @@ export const fetcher = url =>
 
 export const getReportTableDataURL = patientUuid =>
   `/ws/fhir2/R4/DiagnosticReport?patient=${patientUuid}&_count=${maxPageSizeForDiagnosticReport}`
+export const getDoctorsURL = () => `/ws/rest/v1/provider`
