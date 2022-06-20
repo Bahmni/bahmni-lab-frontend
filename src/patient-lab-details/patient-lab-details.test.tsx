@@ -15,6 +15,10 @@ import {localStorageMock} from '../utils/test-utils'
 import {mockPendingLabOrder} from '../__mocks__/patientLabDetails.mock'
 import {mockPendingLabOrdersResponse} from '../__mocks__/pendingLabOrders.mock'
 import {
+  mockEmptyReportTableResponse,
+  mockReportTableResponse,
+} from '../__mocks__/reportTable.mock'
+import {
   mockLabTestsResponse,
   mockUploadFileResponse,
   mockDiagnosticReportResponse,
@@ -267,6 +271,7 @@ describe('Patient lab details', () => {
     const mockedOpenmrsFetch = openmrsFetch as jest.Mock
     mockedOpenmrsFetch
       .mockReturnValueOnce(mockPendingLabOrdersResponse)
+      .mockReturnValueOnce(mockEmptyReportTableResponse)
       .mockReturnValueOnce(mockLabTestsResponse)
       .mockReturnValueOnce(mockUploadFileResponse)
       .mockReturnValue(mockDiagnosticReportResponse)

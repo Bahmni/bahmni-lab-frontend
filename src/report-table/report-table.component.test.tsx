@@ -113,13 +113,10 @@ describe('Paginated Reports Table', () => {
     )
 
     await waitFor(() => {
-      expect(screen.queryByText('Reports table')).not.toBeInTheDocument()
+      expect(screen.queryByText('Reports table')).toBeInTheDocument()
     })
-    expect(screen.queryByText(/1 \/ 1 items/i)).not.toBeInTheDocument()
     expect(
-      screen.queryByText(
-        /Something went wrong in fetching Report tables\.\.\./i,
-      ),
-    ).not.toBeInTheDocument()
+      screen.queryByText(/No previous reports found for this patient/i),
+    ).toBeInTheDocument()
   })
 })

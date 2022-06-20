@@ -34,7 +34,6 @@ const SelectTest = ({isDiscardButtonClicked}) => {
       revalidateOnReconnect: false,
     },
   )
-
   useEffect(() => {
     isDiscardButtonClicked && setSearchValue('')
   }, [isDiscardButtonClicked])

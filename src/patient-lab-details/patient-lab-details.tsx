@@ -7,7 +7,7 @@ import {
   Row,
   ToastNotification,
 } from 'carbon-components-react'
-import React, {useState} from 'react'
+import React, {useCallback, useEffect, useState} from 'react'
 import {RouteComponentProps} from 'react-router-dom'
 import {UploadReportProvider} from '../context/upload-report-context'
 import Loader from '../loader/loader.component'
@@ -16,6 +16,9 @@ import ReportTable from '../report-table/report-table.component'
 import UploadReport from '../upload-report/upload-report'
 import PendingLabOrdersProvider from '../context/pending-orders-context'
 import styles from './patient-lab-details.scss'
+import {fetcher, getReportTableDataURL} from '../utils/lab-orders'
+import {ReportTableFetchResponse} from '../types'
+import useSWR, {SWRResponse} from 'swr'
 
 interface PatientParamsType {
   patientUuid: string
@@ -28,14 +31,16 @@ const PatientLabDetails: React.FC<RouteComponentProps<PatientParamsType>> = ({
   const {isLoading, patient, error} = usePatient(patientUuid)
   const [onButtonClick, setOnButtonClick] = useState<boolean>(false)
   const [onSaveSuccess, setOnSaveSuccess] = useState<boolean>(false)
+  const [reloadReportTable, setReloadReportTable] = useState<boolean>(false)
 
   const handleClick = () => {
-    setOnButtonClick(true), setOnSaveSuccess(false)
+    setOnButtonClick(true), setOnSaveSuccess(false), setReloadReportTable(false)
   }
 
   const handleClose = (isSaveSuccess: boolean) => {
     setOnButtonClick(false)
     setOnSaveSuccess(isSaveSuccess)
+    setReloadReportTable(true)
   }
 
   const renderSuccessMessage = () => (
@@ -44,6 +49,10 @@ const PatientLabDetails: React.FC<RouteComponentProps<PatientParamsType>> = ({
       lowContrast={true}
       title={'Report successfully uploaded'}
       timeout={1000}
+      onClose={() => {
+        setOnSaveSuccess(false)
+        return true
+      }}
     />
   )
 
@@ -104,7 +113,10 @@ const PatientLabDetails: React.FC<RouteComponentProps<PatientParamsType>> = ({
             <br></br>
             <br></br>
           </PendingLabOrdersProvider>
-          <ReportTable patientUuid={patientUuid} />
+          <ReportTable
+            patientUuid={patientUuid}
+            reloadTableData={reloadReportTable}
+          />
           <br></br>
           <br></br>
         </div>

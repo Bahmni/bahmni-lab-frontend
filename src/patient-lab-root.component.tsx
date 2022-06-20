@@ -7,6 +7,7 @@ import PatientLabDetails from './patient-lab-details/patient-lab-details'
 const swrConfiguration = {
   // Maximum number of retries when the backend returns an error
   errorRetryCount: 3,
+  revalidateOnFocus: false,
 }
 
 const Root: React.FC = () => {
