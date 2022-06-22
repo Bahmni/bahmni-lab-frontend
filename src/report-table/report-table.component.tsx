@@ -20,6 +20,7 @@ import {reportHeaders, defaultPageSize} from '../constants'
 import {ReportTableFetchResponse} from '../types'
 import {fetcher, getReportTableDataURL} from '../utils/lab-orders'
 import classes from './report-table.component.scss'
+import Images from '../images/gallery-component'
 
 const ReportTable = ({patientUuid}) => {
   let {data: reports, error: reportsTableDataError} = useSWR<
@@ -36,6 +37,14 @@ const ReportTable = ({patientUuid}) => {
         )
       })
       .map(row => {
+        let fileName = ''
+        if (row.resource.presentedForm[0].contentType.endsWith('pdf'))
+          fileName = `${row.resource.presentedForm[0].title}.pdf`
+        else if (row.resource.presentedForm[0].contentType.endsWith('jpg'))
+          fileName = `${row.resource.presentedForm[0].title}.jpg`
+        else if (row.resource.presentedForm[0].contentType.endsWith('jpeg'))
+          fileName = `${row.resource.presentedForm[0].title}.jpeg`
+
         return {
           id: row.resource.id,
           tests: row.resource.code.coding[0].display,
@@ -48,7 +57,7 @@ const ReportTable = ({patientUuid}) => {
             day: '2-digit',
           }),
           requester: '-',
-          file: `${row.resource.presentedForm[0].title}.pdf`,
+          file: fileName,
           conclusion: row.resource.conclusion ? row.resource.conclusion : '',
         }
       })
@@ -98,12 +107,21 @@ const ReportTable = ({patientUuid}) => {
                             {row.cells.map(cell => {
                               return cell.id.endsWith('file') ? (
                                 <TableCell key={cell.id}>
-                                  <Link
-                                    href="https://drive.google.com/file/d/1e1J618HFVr_SpGJD1YxXJpY094B1_g8n/view?usp=sharing"
-                                    target={'_blank'}
-                                  >
-                                    {cell.value}
-                                  </Link>
+                                  {cell.value.endsWith('pdf') ? (
+                                    <Link
+                                      href="https://drive.google.com/file/d/1e1J618HFVr_SpGJD1YxXJpY094B1_g8n/view?usp=sharing"
+                                      target={'_blank'}
+                                    >
+                                      {cell.value}
+                                    </Link>
+                                  ) : (
+                                    <Images
+                                      url={
+                                        'https://c2.staticflickr.com/9/8817/28973449265_07e3aa5d2e_b.jpg'
+                                      }
+                                      fileName={cell.value}
+                                    />
+                                  )}
                                 </TableCell>
                               ) : (
                                 <TableCell key={cell.id}>
@@ -214,12 +232,13 @@ const sampleResponse = {
           conclusion: 'Correlate with other findings. inconclusive.',
           presentedForm: [
             {
-              contentType: 'application/pdf',
+              contentType: 'image/jpg',
               language: 'en',
-              url: '/files/uploaded-doc-uuid',
+              url:
+                'https://c2.staticflickr.com/9/8817/28973449265_07e3aa5d2e_b.jpg',
               hash: '571ef9c5655840f324e679072ed62b1b95eef8a0',
               title: 'MP Report',
-              creation: '2022-05-20T20:00:00+11:00',
+              creation: '2022-06-20T20:00:00+11:00',
             },
           ],
         },
