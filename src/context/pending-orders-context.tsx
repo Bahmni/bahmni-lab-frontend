@@ -6,9 +6,9 @@ interface PendingLabOrderContextProps {
   setSelectedPendingOrder: Function
 }
 
-const PendingOrdersContext = React.createContext<PendingLabOrderContextProps>(
-  null,
-)
+export const PendingOrdersContext = React.createContext<
+  PendingLabOrderContextProps
+>(null)
 
 export const usePendingLabOrderContext = () => {
   const context = React.useContext(PendingOrdersContext)
