@@ -324,7 +324,7 @@ describe('Patient lab details', () => {
 
     userEvent.click(
       screen.getByRole('button', {
-        name: /Please select the doctor name/i,
+        name: /Select a Doctor/i,
       }),
     )
 

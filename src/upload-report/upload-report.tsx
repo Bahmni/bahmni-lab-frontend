@@ -128,6 +128,17 @@ const UploadReport: React.FC<UploadReportProps> = ({
         </label>
       </DatePicker>
       <br></br>
+      <div
+        className={'bx--label'}
+        style={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          padding: '2px 0px 2px 0px',
+          width: '100%',
+        }}
+      >
+        Requested by
+      </div>
       <DoctorListDropdown />
 
       <div style={{paddingTop: '1rem'}}>

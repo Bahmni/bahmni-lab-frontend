@@ -191,7 +191,7 @@ describe('Upload Report', () => {
     )
     userEvent.click(
       screen.getByRole('button', {
-        name: /Please select the doctor name/i,
+        name: /Select a Doctor/i,
       }),
     )
 
@@ -262,7 +262,7 @@ describe('Upload Report', () => {
 
     userEvent.click(
       screen.getByRole('button', {
-        name: /Please select the doctor name/i,
+        name: /Select a Doctor/i,
       }),
     )
 
@@ -338,7 +338,7 @@ it('should check for fhir diagnostic api call without having doctor uuid in requ
 
   userEvent.click(
     screen.getByRole('button', {
-      name: /Please select the doctor name/i,
+      name: /Select a Doctor/i,
     }),
   )
 
