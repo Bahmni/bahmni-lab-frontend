@@ -28,8 +28,33 @@ const matchParams = {
   path: '',
   url: '',
 }
+const file = new File(['content'], 'test.pdf', {type: 'application/pdf'})
+const currentDay: string = getFormatedDate(0)
 
 describe('Patient lab details', () => {
+  beforeEach(() => {
+    Object.defineProperty(window, 'localStorage', {value: localStorageMock})
+    when(usePatient)
+      .calledWith(mockPatientUuid)
+      .mockReturnValue({
+        patient: {id: mockPatientUuid},
+      })
+    localStorage.setItem('i18nextLng', 'en')
+    when(ExtensionSlot).mockImplementation((props: any) => {
+      return (
+        <>
+          <div>Extension slot name : {props.extensionSlotName} </div>
+          <div>State : {JSON.stringify(props.state)}</div>
+        </>
+      )
+    })
+    when(usePagination)
+      .calledWith(expect.anything(), 5)
+      .mockReturnValue(mockPendingLabOrder)
+    const mockedLayout = useLayoutType as jest.Mock
+    mockedLayout.mockReturnValue('desktop')
+  })
+
   afterEach(() => {
     jest.clearAllMocks()
   })
@@ -74,20 +99,6 @@ describe('Patient lab details', () => {
   })
 
   it('should show patient information in the patient header slot when usePatient call succeeds', () => {
-    when(usePatient)
-      .calledWith(mockPatientUuid)
-      .mockReturnValue({
-        patient: {id: mockPatientUuid},
-      })
-    when(ExtensionSlot).mockImplementation((props: any) => {
-      return (
-        <>
-          <div>Extension slot name : {props.extensionSlotName} </div>
-          <div>State : {JSON.stringify(props.state)}</div>
-        </>
-      )
-    })
-
     render(
       <BrowserRouter>
         <PatientLabDetails
@@ -115,20 +126,6 @@ describe('Patient lab details', () => {
   })
 
   it('should render Paginated Table components', () => {
-    when(usePatient)
-      .calledWith(mockPatientUuid)
-      .mockReturnValue({
-        patient: {id: mockPatientUuid},
-      })
-    when(ExtensionSlot).mockImplementation((props: any) => {
-      return (
-        <>
-          <div>Extension slot name : {props.extensionSlotName} </div>
-          <div>State : {JSON.stringify(props.state)}</div>
-        </>
-      )
-    })
-
     render(
       <BrowserRouter>
         <PatientLabDetails
@@ -143,22 +140,6 @@ describe('Patient lab details', () => {
   })
 
   it('should display Overlay on click of upload report button', () => {
-    Object.defineProperty(window, 'localStorage', {value: localStorageMock})
-    when(usePatient)
-      .calledWith(mockPatientUuid)
-      .mockReturnValue({
-        patient: {id: mockPatientUuid},
-      })
-    when(ExtensionSlot).mockImplementation((props: any) => {
-      return (
-        <>
-          <div>Extension slot name : {props.extensionSlotName} </div>
-          <div>State : {JSON.stringify(props.state)}</div>
-        </>
-      )
-    })
-    localStorage.setItem('i18nextLng', 'en')
-
     render(
       <BrowserRouter>
         <PatientLabDetails
@@ -175,19 +156,11 @@ describe('Patient lab details', () => {
   })
 
   it('should pre-populate the selected tests in upload report and makes pending lab order table read only', async () => {
-    when(usePatient)
-      .calledWith(mockPatientUuid)
-      .mockReturnValue({
-        patient: {id: mockPatientUuid},
-      })
-
     const mockedOpenmrsFetch = openmrsFetch as jest.Mock
     mockedOpenmrsFetch
       .mockReturnValueOnce(mockPendingLabOrdersResponse)
       .mockReturnValue(mockLabTestsResponse)
-    when(usePagination)
-      .calledWith(expect.anything(), 5)
-      .mockReturnValue(mockPendingLabOrder)
+
     render(
       <SWRConfig value={{provider: () => new Map()}}>
         <BrowserRouter>
@@ -247,32 +220,12 @@ describe('Patient lab details', () => {
   })
 
   it('should show success notification on report upload', async () => {
-    Object.defineProperty(window, 'localStorage', {value: localStorageMock})
-    when(usePatient)
-      .calledWith(mockPatientUuid)
-      .mockReturnValue({
-        patient: {id: mockPatientUuid},
-      })
-    when(ExtensionSlot).mockImplementation((props: any) => {
-      return (
-        <>
-          <div>Extension slot name : {props.extensionSlotName} </div>
-          <div>State : {JSON.stringify(props.state)}</div>
-        </>
-      )
-    })
-    localStorage.setItem('i18nextLng', 'en')
-
-    const file = new File(['content'], 'test.pdf', {type: 'application/pdf'})
     const mockedOpenmrsFetch = openmrsFetch as jest.Mock
     mockedOpenmrsFetch
       .mockReturnValueOnce(mockPendingLabOrdersResponse)
       .mockReturnValueOnce(mockLabTestsResponse)
       .mockReturnValueOnce(mockUploadFileResponse)
       .mockReturnValue(mockDiagnosticReportResponse)
-
-    const mockedLayout = useLayoutType as jest.Mock
-    mockedLayout.mockReturnValue('desktop')
 
     render(
       <SWRConfig value={{provider: () => new Map()}}>
@@ -297,8 +250,6 @@ describe('Patient lab details', () => {
         name: /report date/i,
       }),
     )
-
-    const currentDay: string = getFormatedDate(0)
 
     userEvent.click(screen.getByLabelText(currentDay))
 
@@ -336,28 +287,12 @@ describe('Patient lab details', () => {
   })
 
   it('should populate based on property if a pending order is selected', async () => {
-    Object.defineProperty(window, 'localStorage', {value: localStorageMock})
-    when(usePatient)
-      .calledWith(mockPatientUuid)
-      .mockReturnValue({
-        patient: {id: mockPatientUuid},
-      })
-    localStorage.setItem('i18nextLng', 'en')
-
-    const file = new File(['content'], 'test.pdf', {type: 'application/pdf'})
     const mockedOpenmrsFetch = openmrsFetch as jest.Mock
     mockedOpenmrsFetch
       .mockReturnValueOnce(mockPendingLabOrdersResponse)
       .mockReturnValueOnce(mockLabTestsResponse)
       .mockReturnValueOnce(mockUploadFileResponse)
       .mockReturnValue(mockDiagnosticReportResponse)
-
-    const mockedLayout = useLayoutType as jest.Mock
-    mockedLayout.mockReturnValue('desktop')
-
-    when(usePagination)
-      .calledWith(expect.anything(), 5)
-      .mockReturnValue(mockPendingLabOrder)
 
     render(
       <SWRConfig value={{provider: () => new Map()}}>
@@ -382,8 +317,6 @@ describe('Patient lab details', () => {
         name: /report date/i,
       }),
     )
-
-    const currentDay: string = getFormatedDate(0)
 
     userEvent.click(screen.getByLabelText(currentDay))
 
