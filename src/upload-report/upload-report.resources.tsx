@@ -1,4 +1,5 @@
 import {FetchResponse, PatientUuid} from '@openmrs/esm-framework'
+import {PendingLabOrders} from '../types'
 import {LabTest} from '../types/selectTest'
 import {
   postApiCall,
@@ -77,8 +78,20 @@ export function saveDiagnosticReport(
   uploadedFileName: string,
   reportConclusion: string,
   ac: AbortController,
-  basedOn: Array<BasedOnType>,
+  selectedPendingOrder: PendingLabOrders[],
 ) {
+  const isPendingOrderInPayload =
+    selectedPendingOrder.filter(
+      pendingOrder => pendingOrder.conceptUuid === selectedTest.uuid,
+    ).length == 1
+  let basedOn: Array<BasedOnType> = null
+  if (isPendingOrderInPayload)
+    basedOn = [
+      {
+        reference: 'ServiceRequest',
+        display: selectedTest.name.display,
+      },
+    ]
   const requestBody: DiagnosticReportRequestType = {
     resourceType: 'DiagnosticReport',
     status: 'final',

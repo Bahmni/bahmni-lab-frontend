@@ -27,10 +27,6 @@ const ReportTable = ({patientUuid}) => {
     Error
   >(getReportTableDataURL(patientUuid), fetcher)
 
-  // if (reports?.data) {
-  //   reports.data = sampleResponse.data
-  // }
-
   const rows = useMemo(() => {
     return reports?.data?.entry
       ?.sort((reportEntry1, reportEntry2) => {
