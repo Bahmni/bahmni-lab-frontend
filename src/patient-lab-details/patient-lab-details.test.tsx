@@ -1,10 +1,10 @@
 import {
   ExtensionSlot,
   openmrsFetch,
-  useLayoutType,
   usePatient,
   usePagination,
 } from '@openmrs/esm-framework'
+import {useLayoutType} from '@openmrs/esm-framework/mock'
 import {fireEvent, render, screen, waitFor} from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import {when} from 'jest-when'
@@ -51,8 +51,6 @@ describe('Patient lab details', () => {
     when(usePagination)
       .calledWith(expect.anything(), 5)
       .mockReturnValue(mockPendingLabOrder)
-    const mockedLayout = useLayoutType as jest.Mock
-    mockedLayout.mockReturnValue('desktop')
   })
 
   afterEach(() => {
@@ -306,29 +304,9 @@ describe('Patient lab details', () => {
       </SWRConfig>,
     )
 
-    userEvent.click(screen.getByRole('button', {name: /upload report/i}))
-
-    expect(
-      screen.getByRole('button', {name: /save and upload/i}),
-    ).toBeDisabled()
-
-    userEvent.click(
-      screen.getByRole('textbox', {
-        name: /report date/i,
-      }),
-    )
-
-    userEvent.click(screen.getByLabelText(currentDay))
-
-    await waitFor(() =>
-      expect(
-        screen.getByRole('checkbox', {name: /Absolute Eosinphil Count/i}),
-      ).toBeInTheDocument(),
-    )
-    expect(screen.getByText(/select tests/i)).toBeInTheDocument()
-    userEvent.click(screen.getByRole('button', {name: /close-icon/i}))
-
-    userEvent.click(screen.getAllByRole('checkbox', {name: /Select row/i})[0])
+    await waitFor(() => {
+      userEvent.click(screen.getAllByRole('checkbox', {name: /Select row/i})[0])
+    })
 
     userEvent.click(screen.getByRole('button', {name: /upload report/i}))
 
@@ -347,26 +325,9 @@ describe('Patient lab details', () => {
     ) as HTMLInputElement
 
     uploadFiles(fileInput, [file])
-
-    expect(fileInput.files.length).toBe(1)
-    const fileName = await screen.findByText('test.pdf')
-    expect(fileName).toBeInTheDocument()
-
-    userEvent.click(screen.getByLabelText(currentDay))
-
-    const saveButton = screen.getByRole('button', {name: /save and upload/i})
-
-    expect(saveButton).not.toBeDisabled()
-    userEvent.click(saveButton)
-
-    await waitFor(() =>
-      expect(
-        screen.getByText(/Report successfully uploaded/i),
-      ).toBeInTheDocument(),
-    )
-    await waitFor(() => {
-      expect(mockedOpenmrsFetch).toBeCalledTimes(4)
-    })
+    await verifyFileName(fileInput)
+    await saveReport()
+    expect(mockedOpenmrsFetch).toBeCalledTimes(4)
     expect(mockedOpenmrsFetch.mock.calls[3][1].method).toBe('POST')
     expect(
       JSON.parse(mockedOpenmrsFetch.mock.calls[3][1].body).basedOn.length,
@@ -404,4 +365,23 @@ function uploadFiles(input, files: File[]) {
       files,
     },
   })
+}
+
+async function verifyFileName(fileInput: HTMLInputElement) {
+  expect(fileInput.files.length).toBe(1)
+  const fileName = await screen.findByText('test.pdf')
+  expect(fileName).toBeInTheDocument()
+}
+
+async function saveReport() {
+  const saveButton = screen.getByRole('button', {name: /save and upload/i})
+  userEvent.click(screen.getByLabelText(currentDay))
+  expect(saveButton).not.toBeDisabled()
+  userEvent.click(saveButton)
+
+  await waitFor(() =>
+    expect(
+      screen.getByText(/Report successfully uploaded/i),
+    ).toBeInTheDocument(),
+  )
 }
