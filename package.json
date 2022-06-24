@@ -54,8 +54,7 @@
     "carbon-components-react": "^7.25.0",
     "copy-webpack-plugin": "^10.2.4",
     "jest-coverage-badges": "^1.0.0",
-    "lodash-es": "^4.17.15",
-    "react-image-lightbox": "^5.1.4"
+    "lodash-es": "^4.17.15"
   },
   "peerDependencies": {
     "@openmrs/esm-framework": "3.x",

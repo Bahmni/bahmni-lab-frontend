@@ -408,7 +408,7 @@ export const mockReportTableResponse: ReportTableFetchResponse = {
           valueQuantity: {value: 34.0, unit: 'mmHg'},
           presentedForm: [
             {
-              contentType: 'application/pdf',
+              contentType: 'image/jpeg',
               language: 'en',
               url: '/files/uploaded-doc-uuid',
               hash: '571ef9c5655840f324e679072ed62b1b95eef8a0',
@@ -463,7 +463,7 @@ export const mockReportTableResponse: ReportTableFetchResponse = {
           valueQuantity: {value: 34.0, unit: 'mmHg'},
           presentedForm: [
             {
-              contentType: 'application/pdf',
+              contentType: 'image/jpg',
               language: 'en',
               url: '/files/uploaded-doc-uuid',
               hash: '571ef9c5655840f324e679072ed62b1b95eef8a0',

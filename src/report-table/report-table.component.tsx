@@ -20,7 +20,7 @@ import {reportHeaders, defaultPageSize} from '../constants'
 import {ReportTableFetchResponse} from '../types'
 import {fetcher, getReportTableDataURL} from '../utils/lab-orders'
 import classes from './report-table.component.scss'
-import Images from '../images/gallery-component'
+import Images from '../images/image-component'
 
 const ReportTable = ({patientUuid}) => {
   let {data: reports, error: reportsTableDataError} = useSWR<
@@ -38,11 +38,12 @@ const ReportTable = ({patientUuid}) => {
       })
       .map(row => {
         let fileName = ''
-        if (row.resource.presentedForm[0].contentType.endsWith('pdf'))
+        const contentType = row.resource.presentedForm[0].contentType
+        if (contentType?.endsWith('pdf'))
           fileName = `${row.resource.presentedForm[0].title}.pdf`
-        else if (row.resource.presentedForm[0].contentType.endsWith('jpg'))
+        else if (contentType?.endsWith('jpg'))
           fileName = `${row.resource.presentedForm[0].title}.jpg`
-        else if (row.resource.presentedForm[0].contentType.endsWith('jpeg'))
+        else if (contentType?.endsWith('jpeg'))
           fileName = `${row.resource.presentedForm[0].title}.jpeg`
 
         return {
@@ -107,7 +108,7 @@ const ReportTable = ({patientUuid}) => {
                             {row.cells.map(cell => {
                               return cell.id.endsWith('file') ? (
                                 <TableCell key={cell.id}>
-                                  {cell.value.endsWith('pdf') ? (
+                                  {cell.value?.endsWith('pdf') ? (
                                     <Link
                                       href="https://drive.google.com/file/d/1e1J618HFVr_SpGJD1YxXJpY094B1_g8n/view?usp=sharing"
                                       target={'_blank'}
