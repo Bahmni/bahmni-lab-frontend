@@ -377,6 +377,9 @@ describe('Patient lab details', () => {
       expect(screen.getByTestId(/selected-tests/i)).toHaveTextContent(
         'Selected Tests ( 1 )',
       )
+      expect(screen.getByTitle(/doctor list/i)).toHaveTextContent(
+        'Test Orderer',
+      )
     })
 
     const fileInput = screen.getByLabelText(
@@ -391,6 +394,9 @@ describe('Patient lab details', () => {
     expect(
       JSON.parse(mockedOpenmrsFetch.mock.calls[4][1].body).basedOn.length,
     ).toBe(1)
+    expect(
+      JSON.parse(mockedOpenmrsFetch.mock.calls[4][1].body).performer,
+    ).toStrictEqual({reference: 'Practitioner/dathb-76897'})
   })
 
   it('should make multiple POST calls when multiple tests are selected', async () => {
