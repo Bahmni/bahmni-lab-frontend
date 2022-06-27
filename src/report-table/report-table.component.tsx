@@ -20,7 +20,14 @@ import {reportHeaders, defaultPageSize} from '../constants'
 import {ReportTableFetchResponse} from '../types'
 import {fetcher, getReportTableDataURL} from '../utils/lab-orders'
 import classes from './report-table.component.scss'
-import Images from '../images/image-component'
+import ImagePreviewComponent from '../image-preview-component/image-preview-component'
+
+function deriveFileName(title, contentType) {
+  if (contentType.endsWith('pdf')) return `${title}.pdf`
+  else if (contentType.endsWith('jpg')) return `${title}.jpg`
+  else if (contentType.endsWith('jpeg')) return `${title}.jpeg`
+  return ''
+}
 
 const ReportTable = ({patientUuid}) => {
   let {data: reports, error: reportsTableDataError} = useSWR<
@@ -37,14 +44,8 @@ const ReportTable = ({patientUuid}) => {
         )
       })
       .map(row => {
-        let fileName = ''
+        const title = row.resource.presentedForm[0].title
         const contentType = row.resource.presentedForm[0].contentType
-        if (contentType?.endsWith('pdf'))
-          fileName = `${row.resource.presentedForm[0].title}.pdf`
-        else if (contentType?.endsWith('jpg'))
-          fileName = `${row.resource.presentedForm[0].title}.jpg`
-        else if (contentType?.endsWith('jpeg'))
-          fileName = `${row.resource.presentedForm[0].title}.jpeg`
 
         return {
           id: row.resource.id,
@@ -58,7 +59,7 @@ const ReportTable = ({patientUuid}) => {
             day: '2-digit',
           }),
           requester: '-',
-          file: fileName,
+          file: deriveFileName(title, contentType),
           conclusion: row.resource.conclusion ? row.resource.conclusion : '',
         }
       })
@@ -116,7 +117,7 @@ const ReportTable = ({patientUuid}) => {
                                       {cell.value}
                                     </Link>
                                   ) : (
-                                    <Images
+                                    <ImagePreviewComponent
                                       url={
                                         'https://c2.staticflickr.com/9/8817/28973449265_07e3aa5d2e_b.jpg'
                                       }
