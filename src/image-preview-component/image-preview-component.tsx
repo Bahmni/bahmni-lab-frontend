@@ -1,8 +1,8 @@
 import React, {useState} from 'react'
 import {Modal, Button} from 'carbon-components-react'
-import classes from './images-component.scss'
+import classes from './image-preview-component.scss'
 
-const Images = ({url, fileName}) => {
+const ImagePreviewComponent = ({url, fileName}) => {
   const [showModal, setShowModal] = useState(false)
   return (
     <>
@@ -30,4 +30,4 @@ const Images = ({url, fileName}) => {
     </>
   )
 }
-export default Images
+export default ImagePreviewComponent
