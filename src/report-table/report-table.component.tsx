@@ -20,6 +20,11 @@ import {reportHeaders, defaultPageSize} from '../constants'
 import {ReportTableFetchResponse} from '../types'
 import {fetcher, getReportTableDataURL} from '../utils/lab-orders'
 import classes from './report-table.component.scss'
+import ImagePreviewComponent from '../image-preview-component/image-preview-component'
+
+function getUrl(rows, row) {
+  return rows?.find(intialRow => intialRow.id === row.id)?.url
+}
 
 const ReportTable = props => {
   const {patientUuid, reloadTableData} = props
@@ -32,7 +37,7 @@ const ReportTable = props => {
   let {data: reports, error: reportsTableDataError} = useSWR<
     ReportTableFetchResponse,
     Error
-  >(reportTableDataUrl, fetcher)
+  >(getReportTableDataURL(patientUuid), fetcher)
 
   const rows = useMemo(() => {
     return reports?.data?.entry
@@ -43,6 +48,8 @@ const ReportTable = props => {
         )
       })
       .map(row => {
+        const title = row.resource.presentedForm[0].title
+
         return {
           id: row.resource.id,
           tests: row.resource.code.coding[0].display,
@@ -56,7 +63,7 @@ const ReportTable = props => {
             },
           ),
           requester: '-',
-          file: `${row.resource.presentedForm[0].title}`,
+          file: title,
           conclusion: row.resource.conclusion ? row.resource.conclusion : '',
         }
       })
@@ -106,16 +113,19 @@ const ReportTable = props => {
                             {row.cells.map(cell => {
                               return cell.id.endsWith('file') ? (
                                 <TableCell key={cell.id}>
-                                  <Link
-                                    href={
-                                      rows?.find(
-                                        intialRow => intialRow.id === row.id,
-                                      )?.url
-                                    }
-                                    target={'_blank'}
-                                  >
-                                    {cell.value}
-                                  </Link>
+                                  {cell.value?.endsWith('pdf') ? (
+                                    <Link
+                                      href={getUrl(rows, row)}
+                                      target={'_blank'}
+                                    >
+                                      {cell.value}
+                                    </Link>
+                                  ) : (
+                                    <ImagePreviewComponent
+                                      url={getUrl(rows, row)}
+                                      fileName={cell.value}
+                                    />
+                                  )}
                                 </TableCell>
                               ) : (
                                 <TableCell key={cell.id}>
@@ -161,9 +171,5 @@ const ReportTable = props => {
     </div>
   )
 }
-
-// ReportTable.defaultProps = {
-//   reloadData: true
-// }
 
 export default ReportTable
