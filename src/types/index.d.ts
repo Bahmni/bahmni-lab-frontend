@@ -85,6 +85,7 @@ export interface ReportTableFetchResponse {
     resourceType: string
     id: string
     entry: Array<ReportEntry>
+    total: number
   }
 }
 

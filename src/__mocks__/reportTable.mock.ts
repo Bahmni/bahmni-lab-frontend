@@ -4,6 +4,7 @@ export const mockReportTableResponse: ReportTableFetchResponse = {
   data: {
     resourceType: 'Bundle',
     id: '1178aaed-e352-48f8-8685-4ae8d17d732e',
+    total: 5,
     entry: [
       {
         fullUrl:

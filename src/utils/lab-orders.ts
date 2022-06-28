@@ -10,4 +10,4 @@ export const fetcher = url =>
   })
 
 export const getReportTableDataURL = patientUuid =>
-  `/ws/rest/v1/order?patient=${patientUuid}&orderType=Lab Order&v=default`
+  `/ws/fhir2/R4/DiagnosticReport?patient=${patientUuid}`
