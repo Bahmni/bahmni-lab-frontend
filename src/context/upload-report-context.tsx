@@ -10,7 +10,10 @@ interface UploadReportContextProps {
   doctor: DoctorDetailsData
   setDoctor: Function
 }
-const UploadReportContext = React.createContext<UploadReportContextProps>(null)
+
+const UploadReportContext = React.createContext<
+  UploadReportContextProps | undefined
+>(undefined)
 
 function useSelectedFile() {
   const context = React.useContext(UploadReportContext)
@@ -26,6 +29,11 @@ function useSelectedFile() {
 
 function useDoctorDetails() {
   const context = React.useContext(UploadReportContext)
+  if (!context) {
+    throw new Error(
+      'useDoctorDetails must be used within a UploadReportProvider',
+    )
+  }
   return {
     doctor: context.doctor,
     setDoctor: context.setDoctor,
@@ -72,5 +80,4 @@ export {
   useSelectedTests,
   useSelectedFile,
   useDoctorDetails,
-  UploadReportContext,
 }

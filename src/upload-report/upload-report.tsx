@@ -20,7 +20,7 @@ import {usePendingLabOrderContext} from '../context/pending-orders-context'
 import {LabTest} from '../types/selectTest'
 import {PendingLabOrders} from '../types'
 
-import DoctorListDropdown from '../doctor/doctor-list-dropdown'
+import DoctorListDropdown from '../doctors-list-dropdown/doctor-list-dropdown'
 
 interface UploadReportProps {
   close: Function

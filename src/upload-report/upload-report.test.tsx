@@ -295,7 +295,7 @@ describe('Upload Report', () => {
   })
 })
 
-it('should check for fhir diagnostic api call without having doctor uuid in request body on click of save and upload button for selecting self in doctors dropdown list', async () => {
+it('should save and upload report when user selects self in doctors dropdown and click save and upload button', async () => {
   const file = new File(['content'], 'test.pdf', {type: 'application/pdf'})
   localStorage.setItem('i18nextLng', 'en')
   const close = jest.fn()

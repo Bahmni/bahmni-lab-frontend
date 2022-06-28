@@ -342,6 +342,46 @@ describe('Patient lab details', () => {
     )
   })
 
+  it('should be able to change the docter name when we have pre-populated doctor name', async () => {
+    const mockedOpenmrsFetch = openmrsFetch as jest.Mock
+    mockedOpenmrsFetch
+      .mockReturnValueOnce(mockPendingLabOrdersResponse)
+      .mockReturnValueOnce(mockLabTestsResponse)
+      .mockReturnValue(mockDoctorNames)
+
+    render(
+      <SWRConfig value={{provider: () => new Map()}}>
+        <BrowserRouter>
+          <PatientLabDetails
+            match={matchParams}
+            history={undefined}
+            location={undefined}
+          />
+        </BrowserRouter>
+      </SWRConfig>,
+    )
+
+    await waitFor(() => {
+      userEvent.click(screen.getAllByRole('checkbox', {name: /Select row/i})[0])
+    })
+
+    userEvent.click(screen.getByRole('button', {name: /upload report/i}))
+
+    await waitFor(() => {
+      expect(screen.getByTitle(/doctor list/i)).toHaveTextContent(
+        'Test Orderer',
+      )
+    })
+
+    userEvent.click(screen.getByText('Test Orderer'))
+
+    userEvent.click(screen.getByText('8-3 - user'))
+
+    expect(await screen.findByTitle(/doctor list/i)).toHaveTextContent(
+      '8-3 - user',
+    )
+  })
+
   it('should populate based on property if a pending order is selected', async () => {
     const mockedOpenmrsFetch = openmrsFetch as jest.Mock
     mockedOpenmrsFetch
