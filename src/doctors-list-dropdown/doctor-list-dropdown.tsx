@@ -1,4 +1,4 @@
-import React, {useMemo, useState} from 'react'
+import React, {useEffect, useState} from 'react'
 import useSWR from 'swr'
 import {DoctorsResponse} from '../types'
 import {fetcher, getDoctorsURL} from '../utils/lab-orders'
@@ -16,7 +16,7 @@ const DoctorListDropdown = () => {
   const [items, setItems] = useState([])
   const {doctor, setDoctor} = useDoctorDetails()
 
-  useMemo(() => {
+  useEffect(() => {
     if (selectedPendingOrder.length > 0) {
       const requestedBy = {
         uuid: selectedPendingOrder[0].ordererUuid,
@@ -26,7 +26,7 @@ const DoctorListDropdown = () => {
     }
   }, [selectedPendingOrder])
 
-  useMemo(() => {
+  useEffect(() => {
     let arr = []
     arr.push({display: 'self (patient)'})
     doctorList?.data?.results?.map(doctorDetails => {
