@@ -25,7 +25,8 @@
     "test": "jest --config jest.config.json --verbose false --passWithNoTests",
     "test:watch": "jest --config jest.config.json  --verbose false --passWithNoTests --watch",
     "coverage": "npm test -- --coverage",
-    "badges": "npm run coverage && jest-coverage-badges --output './badges' "
+    "badges": "npm run coverage && jest-coverage-badges --output './badges' ",
+    "postinstall": "patch-package"
   },
   "browserslist": [
     "extends browserslist-config-openmrs"
@@ -54,7 +55,9 @@
     "carbon-components-react": "^7.25.0",
     "copy-webpack-plugin": "^10.2.4",
     "jest-coverage-badges": "^1.0.0",
-    "lodash-es": "^4.17.15"
+    "lodash-es": "^4.17.15",
+    "patch-package": "^6.4.7",
+    "postinstall-postinstall": "^2.1.0"
   },
   "peerDependencies": {
     "@openmrs/esm-framework": "3.x",
