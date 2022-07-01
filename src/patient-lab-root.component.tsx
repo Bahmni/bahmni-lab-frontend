@@ -1,7 +1,7 @@
 import React from 'react'
 import {SWRConfig} from 'swr'
 import {BrowserRouter, Route} from 'react-router-dom'
-import {patientLabDetailsRoute, spaRoot} from './constants'
+import {patientLabDetailsRoute, spaRoot, privilegeLabLite} from './constants'
 import PatientLabDetails from './patient-lab-details/patient-lab-details'
 import {UserHasAccess} from '@openmrs/esm-framework'
 
@@ -14,7 +14,7 @@ const swrConfiguration = {
 const Root: React.FC = () => {
   return (
     <UserHasAccess
-      privilege="app:lab-lite"
+      privilege={privilegeLabLite}
       unauthorisedResponse="You are unauthorised to view this page. Please contact your administrator"
     >
       <main>
