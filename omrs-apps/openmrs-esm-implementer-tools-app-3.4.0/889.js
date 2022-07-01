@@ -18394,7 +18394,6 @@
           'i18next',
           'react-i18next',
           '@openmrs/esm-api',
-          'react-router-dom',
           'dayjs',
         ],
         function(i, u) {
@@ -18406,8 +18405,7 @@
             d = {},
             p = {},
             h = {},
-            v = {},
-            y = {}
+            v = {}
           return {
             setters: [
               function(t) {
@@ -18463,10 +18461,7 @@
                   (h.userHasAccess = t.userHasAccess)
               },
               function(t) {
-                v.Redirect = t.Redirect
-              },
-              function(t) {
-                y.default = t.default
+                v.default = t.default
               },
             ],
             execute: function() {
@@ -24767,7 +24762,7 @@
                       },
                       688: function(t) {
                         'use strict'
-                        t.exports = y
+                        t.exports = v
                       },
                       64: function(t) {
                         'use strict'
@@ -24785,24 +24780,20 @@
                         'use strict'
                         t.exports = p
                       },
-                      880: function(t) {
-                        'use strict'
-                        t.exports = v
-                      },
                     },
-                    g = {}
-                  function m(t) {
-                    var e = g[t]
+                    y = {}
+                  function g(t) {
+                    var e = y[t]
                     if (void 0 !== e) return e.exports
-                    var n = (g[t] = {id: t, loaded: !1, exports: {}})
+                    var n = (y[t] = {id: t, loaded: !1, exports: {}})
                     return (
-                      i[t].call(n.exports, n, n.exports, m),
+                      i[t].call(n.exports, n, n.exports, g),
                       (n.loaded = !0),
                       n.exports
                     )
                   }
-                  ;(m.y = u),
-                    (m.n = function(t) {
+                  ;(g.y = u),
+                    (g.n = function(t) {
                       var e =
                         t && t.__esModule
                           ? function() {
@@ -24811,18 +24802,18 @@
                           : function() {
                               return t
                             }
-                      return m.d(e, {a: e}), e
+                      return g.d(e, {a: e}), e
                     }),
-                    (m.d = function(t, e) {
+                    (g.d = function(t, e) {
                       for (var n in e)
-                        m.o(e, n) &&
-                          !m.o(t, n) &&
+                        g.o(e, n) &&
+                          !g.o(t, n) &&
                           Object.defineProperty(t, n, {
                             enumerable: !0,
                             get: e[n],
                           })
                     }),
-                    (m.g = (function() {
+                    (g.g = (function() {
                       if ('object' == typeof globalThis) return globalThis
                       try {
                         return this || new Function('return this')()
@@ -24830,10 +24821,10 @@
                         if ('object' == typeof window) return window
                       }
                     })()),
-                    (m.o = function(t, e) {
+                    (g.o = function(t, e) {
                       return Object.prototype.hasOwnProperty.call(t, e)
                     }),
-                    (m.r = function(t) {
+                    (g.r = function(t) {
                       'undefined' != typeof Symbol &&
                         Symbol.toStringTag &&
                         Object.defineProperty(t, Symbol.toStringTag, {
@@ -24841,13 +24832,13 @@
                         }),
                         Object.defineProperty(t, '__esModule', {value: !0})
                     }),
-                    (m.nmd = function(t) {
+                    (g.nmd = function(t) {
                       return (t.paths = []), t.children || (t.children = []), t
                     }),
                     (function() {
                       var t
-                      m.g.importScripts && (t = m.g.location + '')
-                      var e = m.g.document
+                      g.g.importScripts && (t = g.g.location + '')
+                      var e = g.g.document
                       if (
                         !t &&
                         e &&
@@ -24864,11 +24855,11 @@
                         .replace(/#.*$/, '')
                         .replace(/\?.*$/, '')
                         .replace(/\/[^\/]+$/, '/')),
-                        (m.p = t)
+                        (g.p = t)
                     })()
-                  var b = {}
+                  var m = {}
                   return (
-                    (0, m(968).s)(1),
+                    (0, g(968).s)(1),
                     (function() {
                       'use strict'
                       var i = function(t, e) {
@@ -25268,7 +25259,7 @@
                             n(r)
                           return t
                         },
-                        g = function(t) {
+                        b = function(t) {
                           return t
                         },
                         w = function(t, e) {
@@ -27971,7 +27962,7 @@
                           var e =
                               arguments.length > 1 && void 0 !== arguments[1]
                                 ? arguments[1]
-                                : Po,
+                                : Ao,
                             n = arguments.length > 2 ? arguments[2] : void 0,
                             r = zt(
                               (0, ne.useState)(function() {
@@ -27983,7 +27974,7 @@
                             i = r[1]
                           ;(0, ne.useEffect)(
                             function() {
-                              return (0, Ao.subscribeTo)(t, e, i)
+                              return (0, ko.subscribeTo)(t, e, i)
                             },
                             [t, e],
                           )
@@ -28000,7 +27991,7 @@
                           )
                         },
                         Zt = function(t, e) {
-                          return qt(t, Po, e)
+                          return qt(t, Ao, e)
                         },
                         Wt = function(t, e, n, o) {
                           return new (n || (n = Promise))(function(i, u) {
@@ -28139,7 +28130,7 @@
                         },
                         Jt = function(t) {
                           var e,
-                            n = bi(
+                            n = mi(
                               t
                                 ? '/ws/rest/v1/visit?patient='
                                     .concat(t, '&v=')
@@ -28165,7 +28156,7 @@
                                       : r.data.results.find(function(t) {
                                           return (
                                             null === t.stopDatetime &&
-                                            (0, wi.default)(
+                                            (0, bi.default)(
                                               t.startDatetime,
                                             ).isToday()
                                           )
@@ -28382,8 +28373,8 @@
                             },
                           }
                         }
-                      m.r(b),
-                        m.d(b, {
+                      g.r(m),
+                        g.d(m, {
                           ComponentContext: function() {
                             return re
                           },
@@ -28397,7 +28388,7 @@
                             return de
                           },
                           UserHasAccess: function() {
-                            return ko
+                            return Co
                           },
                           createUseStore: function() {
                             return a
@@ -28484,9 +28475,9 @@
                             return Qt
                           },
                         })
-                      var ne = m(954),
+                      var ne = g(954),
                         re = ne.default.createContext({moduleName: ''}),
-                        oe = m(824)
+                        oe = g(824)
                       function ie() {
                         return (
                           (ie =
@@ -28559,7 +28550,7 @@
                             n,
                           )
                         },
-                        ae = m(45),
+                        ae = g(45),
                         ce = function(t) {
                           var e,
                             n = t.state,
@@ -28660,8 +28651,8 @@
                           })
                           return a && r ? r(l, a) : l
                         },
-                        se = m(728),
-                        le = m(891)
+                        se = g(728),
+                        le = g(891)
                       function fe() {
                         return (
                           (fe =
@@ -28681,7 +28672,7 @@
                       var de = function(t) {
                           var e = t.extensionSlotName,
                             n = t.select,
-                            r = void 0 === n ? g : n,
+                            r = void 0 === n ? b : n,
                             o = t.children,
                             i = t.state,
                             u = t.style,
@@ -28782,7 +28773,7 @@
                             p,
                           )
                         },
-                        pe = m(493)
+                        pe = g(493)
                       function he(t) {
                         return (he =
                           'function' == typeof Symbol &&
@@ -28838,8 +28829,8 @@
                           renderResults: {},
                           updateResolves: {},
                         },
-                        me = m(64),
-                        be = m(281)
+                        me = g(64),
+                        be = g(281)
                       function we() {
                         return (
                           (we =
@@ -29662,7 +29653,7 @@
                           return _r(t, e)
                         },
                         xr = {},
-                        Or = m(766)
+                        Or = g(766)
                       !(function(t) {
                         ;(t.loadPatient = 'loadPatient'),
                           (t.newPatient = 'newPatient'),
@@ -29684,10 +29675,10 @@
                       var Cr = {patient: null, isLoadingPatient: !0, err: null},
                         kr = a((0, ae.getExtensionInternalStore)()),
                         Ar = a((0, ae.getExtensionStore)()),
-                        Pr = m(216),
-                        Ir = m.n(Pr),
-                        Tr = m(841),
-                        Rr = m.n(Tr),
+                        Pr = g(216),
+                        Ir = g.n(Pr),
+                        Tr = g(841),
+                        Rr = g.n(Tr),
                         Dr = ['width', 'height', 'viewBox'],
                         Mr = ['tabindex'],
                         Lr = {
@@ -30376,8 +30367,7 @@
                       var Oo,
                         jo,
                         Eo,
-                        Co = m(880),
-                        ko = function(t) {
+                        Co = function(t) {
                           var e,
                             n = t.privilege,
                             r = t.unauthorisedResponse,
@@ -30475,44 +30465,42 @@
                                     kind: 'error',
                                   }),
                                 )
-                              : o
-                              ? ne.default.createElement(Co.Redirect, {to: o})
-                              : null
+                              : (o && window.location.replace(o), null)
                           )
                         },
-                        Ao = m(385),
-                        Po = function(t) {
+                        ko = g(385),
+                        Ao = function(t) {
                           return t
                         },
-                        Io = function() {},
-                        To = void 0,
-                        Ro = Object,
-                        Do = function(t) {
-                          return t === To
+                        Po = function() {},
+                        Io = void 0,
+                        To = Object,
+                        Ro = function(t) {
+                          return t === Io
                         },
-                        Mo = function(t) {
+                        Do = function(t) {
                           return 'function' == typeof t
                         },
-                        Lo = function(t, e) {
-                          return Ro.assign({}, t, e)
+                        Mo = function(t, e) {
+                          return To.assign({}, t, e)
                         },
-                        Bo = 'undefined',
-                        No = function() {
+                        Lo = 'undefined',
+                        Bo = function() {
                           return (
                             ('undefined' == typeof window
                               ? 'undefined'
-                              : o(window)) != Bo
+                              : o(window)) != Lo
                           )
                         },
-                        Uo = new WeakMap(),
-                        Ho = 0,
-                        Fo = function(t) {
+                        No = new WeakMap(),
+                        Uo = 0,
+                        Ho = function(t) {
                           var e,
                             n,
                             r = void 0 === t ? 'undefined' : o(t),
                             i = t && t.constructor,
                             u = i == Date
-                          if (Ro(t) !== t || u || i == RegExp)
+                          if (To(t) !== t || u || i == RegExp)
                             e = u
                               ? t.toJSON()
                               : 'symbol' == r
@@ -30521,90 +30509,90 @@
                               ? JSON.stringify(t)
                               : '' + t
                           else {
-                            if ((e = Uo.get(t))) return e
-                            if (((e = ++Ho + '~'), Uo.set(t, e), i == Array)) {
+                            if ((e = No.get(t))) return e
+                            if (((e = ++Uo + '~'), No.set(t, e), i == Array)) {
                               for (e = '@', n = 0; n < t.length; n++)
-                                e += Fo(t[n]) + ','
-                              Uo.set(t, e)
+                                e += Ho(t[n]) + ','
+                              No.set(t, e)
                             }
-                            if (i == Ro) {
+                            if (i == To) {
                               e = '#'
                               for (
-                                var a = Ro.keys(t).sort();
-                                !Do((n = a.pop()));
+                                var a = To.keys(t).sort();
+                                !Ro((n = a.pop()));
 
                               )
-                                Do(t[n]) || (e += n + ':' + Fo(t[n]) + ',')
-                              Uo.set(t, e)
+                                Ro(t[n]) || (e += n + ':' + Ho(t[n]) + ',')
+                              No.set(t, e)
                             }
                           }
                           return e
                         },
-                        Vo = !0,
-                        $o = No(),
-                        zo =
+                        Fo = !0,
+                        Vo = Bo(),
+                        $o =
                           ('undefined' == typeof document
                             ? 'undefined'
-                            : o(document)) != Bo,
-                        Ko =
-                          $o && window.addEventListener
+                            : o(document)) != Lo,
+                        zo =
+                          Vo && window.addEventListener
                             ? window.addEventListener.bind(window)
-                            : Io,
-                        qo = zo ? document.addEventListener.bind(document) : Io,
-                        Zo =
-                          $o && window.removeEventListener
+                            : Po,
+                        Ko = $o ? document.addEventListener.bind(document) : Po,
+                        qo =
+                          Vo && window.removeEventListener
                             ? window.removeEventListener.bind(window)
-                            : Io,
-                        Wo = zo
+                            : Po,
+                        Zo = $o
                           ? document.removeEventListener.bind(document)
-                          : Io,
-                        Go = {
+                          : Po,
+                        Wo = {
                           isOnline: function() {
-                            return Vo
+                            return Fo
                           },
                           isVisible: function() {
-                            var t = zo && document.visibilityState
-                            return Do(t) || 'hidden' !== t
+                            var t = $o && document.visibilityState
+                            return Ro(t) || 'hidden' !== t
                           },
                         },
-                        Jo = {
+                        Go = {
                           initFocus: function(t) {
                             return (
-                              qo('visibilitychange', t),
-                              Ko('focus', t),
+                              Ko('visibilitychange', t),
+                              zo('focus', t),
                               function() {
-                                Wo('visibilitychange', t), Zo('focus', t)
+                                Zo('visibilitychange', t), qo('focus', t)
                               }
                             )
                           },
                           initReconnect: function(t) {
                             var e = function() {
-                                ;(Vo = !0), t()
+                                ;(Fo = !0), t()
                               },
                               n = function() {
-                                Vo = !1
+                                Fo = !1
                               }
                             return (
-                              Ko('online', e),
-                              Ko('offline', n),
+                              zo('online', e),
+                              zo('offline', n),
                               function() {
-                                Zo('online', e), Zo('offline', n)
+                                qo('online', e), qo('offline', n)
                               }
                             )
                           },
                         },
-                        Yo = !No() || 'Deno' in window,
-                        Qo = Yo ? ne.useEffect : ne.useLayoutEffect,
-                        Xo =
+                        Jo = !Bo() || 'Deno' in window,
+                        Yo = Jo ? ne.useEffect : ne.useLayoutEffect,
+                        Qo =
                           'undefined' != typeof navigator &&
                           navigator.connection,
-                        ti =
-                          !Yo &&
-                          Xo &&
-                          (['slow-2g', '2g'].includes(Xo.effectiveType) ||
-                            Xo.saveData),
-                        ei = function(t) {
-                          if (Mo(t))
+                        Xo =
+                          !Jo &&
+                          Qo &&
+                          (['slow-2g', '2g'].includes(Qo.effectiveType) ||
+                            Qo.saveData),
+                        ti = function(t) {
+                          if (Do(t))
                             try {
                               t = t()
                             } catch (e) {
@@ -30618,16 +30606,16 @@
                                 : (Array.isArray(t)
                                   ? t.length
                                   : t)
-                                ? Fo(t)
+                                ? Ho(t)
                                 : ''),
                             e,
                             t ? '$swr$' + t : '',
                           ]
                         },
-                        ni = new WeakMap(),
-                        ri = function(t, e, n, r, o, i, u) {
+                        ei = new WeakMap(),
+                        ni = function(t, e, n, r, o, i, u) {
                           void 0 === u && (u = !0)
-                          var a = ni.get(t),
+                          var a = ei.get(t),
                             c = a[0],
                             s = a[1],
                             l = a[3],
@@ -30641,11 +30629,11 @@
                               })
                             : t.get(e)
                         },
-                        oi = 0,
-                        ii = function() {
-                          return ++oi
+                        ri = 0,
+                        oi = function() {
+                          return ++ri
                         },
-                        ui = function() {
+                        ii = function() {
                           for (var t = [], e = 0; e < arguments.length; e++)
                             t[e] = arguments[e]
                           return Wt(void 0, void 0, void 0, function() {
@@ -30678,7 +30666,7 @@
                                     (r = t[2]),
                                     (o = t[3]),
                                     (u =
-                                      !!Do(
+                                      !!Ro(
                                         (i =
                                           'boolean' == typeof o
                                             ? {revalidate: o}
@@ -30687,34 +30675,34 @@
                                     (a = !1 !== i.revalidate),
                                     (c = !1 !== i.rollbackOnError),
                                     (s = i.optimisticData),
-                                    (l = ei(n)),
+                                    (l = ti(n)),
                                     (f = l[0]),
                                     (d = l[2]),
                                     !f)
                                   )
                                     return [2]
                                   if (
-                                    ((p = ni.get(e)), (h = p[2]), t.length < 3)
+                                    ((p = ei.get(e)), (h = p[2]), t.length < 3)
                                   )
                                     return [
                                       2,
-                                      ri(e, f, e.get(f), To, To, a, !0),
+                                      ni(e, f, e.get(f), Io, Io, a, !0),
                                     ]
                                   if (
                                     ((v = r),
-                                    (g = ii()),
+                                    (g = oi()),
                                     (h[f] = [g, 0]),
-                                    (m = !Do(s)),
+                                    (m = !Ro(s)),
                                     (b = e.get(f)),
-                                    m && (e.set(f, s), ri(e, f, s)),
-                                    Mo(v))
+                                    m && (e.set(f, s), ni(e, f, s)),
+                                    Do(v))
                                   )
                                     try {
                                       v = v(e.get(f))
                                     } catch (t) {
                                       y = t
                                     }
-                                  return v && Mo(v.then)
+                                  return v && Do(v.then)
                                     ? [
                                         4,
                                         v.catch(function(t) {
@@ -30736,10 +30724,10 @@
                                   return (
                                     u &&
                                       (y ||
-                                        (Mo(u) && (v = u(v, b)), e.set(f, v)),
-                                      e.set(d, Lo(e.get(d), {error: y}))),
-                                    (h[f][1] = ii()),
-                                    [4, ri(e, f, v, y, To, a, !!u)]
+                                        (Do(u) && (v = u(v, b)), e.set(f, v)),
+                                      e.set(d, Mo(e.get(d), {error: y}))),
+                                    (h[f][1] = oi()),
+                                    [4, ni(e, f, v, y, Io, a, !!u)]
                                   )
                                 case 3:
                                   if (((w = _.sent()), y)) throw y
@@ -30748,38 +30736,38 @@
                             })
                           })
                         },
-                        ai = function(t, e) {
+                        ui = function(t, e) {
                           for (var n in t) t[n][0] && t[n][0](e)
                         },
-                        ci = function(t, e) {
-                          if (!ni.has(t)) {
-                            var n = Lo(Jo, e),
+                        ai = function(t, e) {
+                          if (!ei.has(t)) {
+                            var n = Mo(Go, e),
                               r = {},
-                              o = ui.bind(To, t),
-                              i = Io
-                            if ((ni.set(t, [r, {}, {}, {}, o]), !Yo)) {
+                              o = ii.bind(Io, t),
+                              i = Po
+                            if ((ei.set(t, [r, {}, {}, {}, o]), !Jo)) {
                               var u = n.initFocus(
-                                  setTimeout.bind(To, ai.bind(To, r, 0)),
+                                  setTimeout.bind(Io, ui.bind(Io, r, 0)),
                                 ),
                                 a = n.initReconnect(
-                                  setTimeout.bind(To, ai.bind(To, r, 1)),
+                                  setTimeout.bind(Io, ui.bind(Io, r, 1)),
                                 )
                               i = function() {
-                                u && u(), a && a(), ni.delete(t)
+                                u && u(), a && a(), ei.delete(t)
                               }
                             }
                             return [t, o, i]
                           }
-                          return [t, ni.get(t)[4]]
+                          return [t, ei.get(t)[4]]
                         },
-                        si = ci(new Map()),
-                        li = si[0],
-                        fi = si[1],
-                        di = Lo(
+                        ci = ai(new Map()),
+                        si = ci[0],
+                        li = ci[1],
+                        fi = Mo(
                           {
-                            onLoadingSlow: Io,
-                            onSuccess: Io,
-                            onError: Io,
+                            onLoadingSlow: Po,
+                            onSuccess: Po,
+                            onError: Po,
                             onErrorRetry: function(t, e, n, r, o) {
                               var i = n.errorRetryCount,
                                 u = o.retryCount,
@@ -30788,51 +30776,51 @@
                                     (Math.random() + 0.5) *
                                     (1 << (u < 8 ? u : 8))
                                   ) * n.errorRetryInterval
-                              ;(!Do(i) && u > i) || setTimeout(r, a, o)
+                              ;(!Ro(i) && u > i) || setTimeout(r, a, o)
                             },
-                            onDiscarded: Io,
+                            onDiscarded: Po,
                             revalidateOnFocus: !0,
                             revalidateOnReconnect: !0,
                             revalidateIfStale: !0,
                             shouldRetryOnError: !0,
-                            errorRetryInterval: ti ? 1e4 : 5e3,
+                            errorRetryInterval: Xo ? 1e4 : 5e3,
                             focusThrottleInterval: 5e3,
                             dedupingInterval: 2e3,
-                            loadingTimeout: ti ? 5e3 : 3e3,
+                            loadingTimeout: Xo ? 5e3 : 3e3,
                             compare: function(t, e) {
-                              return Fo(t) == Fo(e)
+                              return Ho(t) == Ho(e)
                             },
                             isPaused: function() {
                               return !1
                             },
-                            cache: li,
-                            mutate: fi,
+                            cache: si,
+                            mutate: li,
                             fallback: {},
                           },
-                          Go,
+                          Wo,
                         ),
-                        pi = function(t, e) {
-                          var n = Lo(t, e)
+                        di = function(t, e) {
+                          var n = Mo(t, e)
                           if (e) {
                             var r = t.use,
                               o = t.fallback,
                               i = e.use,
                               u = e.fallback
                             r && i && (n.use = r.concat(i)),
-                              o && u && (n.fallback = Lo(o, u))
+                              o && u && (n.fallback = Mo(o, u))
                           }
                           return n
                         },
-                        hi = (0, ne.createContext)({}),
-                        vi = function(t) {
-                          return Mo(t[1])
+                        pi = (0, ne.createContext)({}),
+                        hi = function(t) {
+                          return Do(t[1])
                             ? [t[0], t[1], t[2] || {}]
                             : [t[0], null, (null === t[1] ? t[2] : t[1]) || {}]
                         },
-                        yi = function() {
-                          return Lo(di, (0, ne.useContext)(hi))
+                        vi = function() {
+                          return Mo(fi, (0, ne.useContext)(pi))
                         },
-                        gi = function(t, e, n) {
+                        yi = function(t, e, n) {
                           var r = e[t] || (e[t] = [])
                           return (
                             r.push(n),
@@ -30842,29 +30830,29 @@
                             }
                           )
                         },
-                        mi = {dedupe: !0},
-                        bi =
-                          (Ro.defineProperty(
+                        gi = {dedupe: !0},
+                        mi =
+                          (To.defineProperty(
                             function(t) {
                               var e = t.value,
-                                n = pi((0, ne.useContext)(hi), e),
+                                n = di((0, ne.useContext)(pi), e),
                                 r = e && e.provider,
                                 o = (0, ne.useState)(function() {
-                                  return r ? ci(r(n.cache || li), e) : To
+                                  return r ? ai(r(n.cache || si), e) : Io
                                 })[0]
                               return (
                                 o && ((n.cache = o[0]), (n.mutate = o[1])),
-                                Qo(function() {
-                                  return o ? o[2] : To
+                                Yo(function() {
+                                  return o ? o[2] : Io
                                 }, []),
                                 (0, ne.createElement)(
-                                  hi.Provider,
-                                  Lo(t, {value: n}),
+                                  pi.Provider,
+                                  Mo(t, {value: n}),
                                 )
                               )
                             },
                             'default',
-                            {value: di},
+                            {value: fi},
                           ),
                           (Eo = function(t, e, n) {
                             var r = n.cache,
@@ -30875,12 +30863,12 @@
                               s = n.refreshInterval,
                               l = n.refreshWhenHidden,
                               f = n.refreshWhenOffline,
-                              d = ni.get(r),
+                              d = ei.get(r),
                               p = d[0],
                               h = d[1],
                               v = d[2],
                               y = d[3],
-                              g = ei(t),
+                              g = ti(t),
                               m = g[0],
                               b = g[1],
                               w = g[2],
@@ -30896,21 +30884,21 @@
                                 return E().isVisible() && E().isOnline()
                               },
                               k = function(t) {
-                                return r.set(w, Lo(r.get(w), t))
+                                return r.set(w, Mo(r.get(w), t))
                               },
                               A = r.get(m),
-                              P = Do(u) ? n.fallback[m] : u,
-                              I = Do(A) ? P : A,
+                              P = Ro(u) ? n.fallback[m] : u,
+                              I = Ro(A) ? P : A,
                               T = r.get(w) || {},
                               R = T.error,
                               D = !_.current,
                               M = function() {
-                                return D && !Do(c)
+                                return D && !Ro(c)
                                   ? c
                                   : !E().isPaused() &&
                                       (a
-                                        ? !Do(I)
-                                        : Do(I) || n.revalidateIfStale)
+                                        ? !Ro(I)
+                                        : Ro(I) || n.revalidateIfStale)
                               },
                               L =
                                 !(!m || !e) && (!!T.isValidating || (D && M())),
@@ -30934,7 +30922,7 @@
                                     i && !e.current && n({})
                                   }, [])
                                 return (
-                                  Qo(function() {
+                                  Yo(function() {
                                     r.current = t
                                   }),
                                   [r, o.current, i]
@@ -30983,7 +30971,7 @@
                                           return (
                                             j.trys.push([1, 3, , 4]),
                                             s &&
-                                              (ri(
+                                              (ni(
                                                 r,
                                                 m,
                                                 N.current.data,
@@ -30999,7 +30987,7 @@
                                                 }, n.loadingTimeout),
                                               (y[m] = [
                                                 e.apply(void 0, b),
-                                                ii(),
+                                                oi(),
                                               ])),
                                             (w = y[m]),
                                             (o = w[0]),
@@ -31012,10 +31000,10 @@
                                             s &&
                                               setTimeout(f, n.dedupingInterval),
                                             y[m] && y[m][1] === u
-                                              ? (k({error: To}),
-                                                (d.error = To),
+                                              ? (k({error: Io}),
+                                                (d.error = Io),
                                                 (h = v[m]),
-                                                !Do(h) &&
+                                                !Ro(h) &&
                                                 (u <= h[0] ||
                                                   u <= h[1] ||
                                                   0 === h[1])
@@ -31050,7 +31038,7 @@
                                                 (('boolean' ==
                                                   typeof n.shouldRetryOnError &&
                                                   n.shouldRetryOnError) ||
-                                                  (Mo(n.shouldRetryOnError) &&
+                                                  (Do(n.shouldRetryOnError) &&
                                                     n.shouldRetryOnError(g))) &&
                                                   C() &&
                                                   E().onErrorRetry(g, m, n, F, {
@@ -31066,7 +31054,7 @@
                                             p(),
                                             l() &&
                                               s &&
-                                              ri(r, m, d.data, d.error, !1),
+                                              ni(r, m, d.data, d.error, !1),
                                             [2, !0]
                                           )
                                       }
@@ -31076,32 +31064,32 @@
                                 [m],
                               ),
                               V = (0, ne.useCallback)(
-                                ui.bind(To, r, function() {
+                                ii.bind(Io, r, function() {
                                   return x.current
                                 }),
                                 [],
                               )
                             if (
-                              (Qo(function() {
+                              (Yo(function() {
                                 ;(O.current = e), (j.current = n)
                               }),
-                              Qo(
+                              Yo(
                                 function() {
                                   if (m) {
                                     var t = m !== x.current,
-                                      e = F.bind(To, mi),
+                                      e = F.bind(Io, gi),
                                       n = 0,
-                                      r = gi(m, h, function(t, e, n) {
+                                      r = yi(m, h, function(t, e, n) {
                                         H(
-                                          Lo(
+                                          Mo(
                                             {error: e, isValidating: n},
                                             i(N.current.data, t)
-                                              ? To
+                                              ? Io
                                               : {data: t},
                                           ),
                                         )
                                       }),
-                                      u = gi(m, p, function(t) {
+                                      u = yi(m, p, function(t) {
                                         if (0 == t) {
                                           var r = Date.now()
                                           E().revalidateOnFocus &&
@@ -31123,12 +31111,12 @@
                                       t &&
                                         H({data: I, error: R, isValidating: L}),
                                       M() &&
-                                        (Do(I) || Yo
+                                        (Ro(I) || Jo
                                           ? e()
                                           : ((a = e),
-                                            No() &&
+                                            Bo() &&
                                             o(window.requestAnimationFrame) !=
-                                              Bo
+                                              Lo
                                               ? window.requestAnimationFrame(a)
                                               : setTimeout(a, 1))),
                                       function() {
@@ -31140,11 +31128,11 @@
                                 },
                                 [m, F],
                               ),
-                              Qo(
+                              Yo(
                                 function() {
                                   var t,
                                     e = function() {
-                                      var e = Mo(s) ? s(I) : s
+                                      var e = Do(s) ? s(I) : s
                                       e && -1 !== t && (t = setTimeout(n, e))
                                     },
                                     n = function() {
@@ -31152,7 +31140,7 @@
                                       (!l && !E().isVisible()) ||
                                       (!f && !E().isOnline())
                                         ? e()
-                                        : F(mi).then(e)
+                                        : F(gi).then(e)
                                     }
                                   return (
                                     e(),
@@ -31164,12 +31152,12 @@
                                 [s, l, f, F],
                               ),
                               (0, ne.useDebugValue)(I),
-                              a && Do(I) && m)
+                              a && Ro(I) && m)
                             )
                               throw ((O.current = e),
                               (j.current = n),
                               (S.current = !1),
-                              Do(R) ? F(mi) : R)
+                              Ro(R) ? F(gi) : R)
                             return {
                               mutate: V,
                               get data() {
@@ -31186,23 +31174,23 @@
                           function() {
                             for (var t = [], e = 0; e < arguments.length; e++)
                               t[e] = arguments[e]
-                            var n = yi(),
-                              r = vi(t),
+                            var n = vi(),
+                              r = hi(t),
                               o = r[0],
                               i = r[1],
                               u = r[2],
-                              a = pi(n, u),
+                              a = di(n, u),
                               c = Eo,
                               s = a.use
                             if (s) for (var l = s.length; l-- > 0; ) c = s[l](c)
                             return c(o, i || a.fetcher, a)
                           }),
-                        wi = m(688),
-                        _i = m(332),
-                        Si = m.n(_i)
-                      wi.default.extend(Si())
+                        bi = g(688),
+                        wi = g(332),
+                        _i = g.n(wi)
+                      bi.default.extend(_i())
                     })(),
-                    b
+                    m
                   )
                 })(),
               )

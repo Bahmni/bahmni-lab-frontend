@@ -1,14 +1,13 @@
 diff --git a/node_modules/@openmrs/esm-react-utils/src/UserHasAccess.tsx b/node_modules/@openmrs/esm-react-utils/src/UserHasAccess.tsx
-index 2de7d88..50850b5 100644
+index 2de7d88..55912d3 100644
 --- a/node_modules/@openmrs/esm-react-utils/src/UserHasAccess.tsx
 +++ b/node_modules/@openmrs/esm-react-utils/src/UserHasAccess.tsx
-@@ -1,13 +1,19 @@
+@@ -1,13 +1,18 @@
  /** @module @category API */
 +import { getCurrentUser, LoggedInUser, userHasAccess } from "@openmrs/esm-api";
 +import { InlineNotification } from "carbon-components-react";
  import React, { useEffect, useState } from "react";
 -import { getCurrentUser, userHasAccess, LoggedInUser } from "@openmrs/esm-api";
-+import { Redirect } from "react-router-dom";
  
  export interface UserHasAccessProps {
    privilege: string;
@@ -23,7 +22,7 @@ index 2de7d88..50850b5 100644
    children,
  }) => {
    const [user, setUser] = useState<LoggedInUser | null>(null);
-@@ -23,5 +29,21 @@ export const UserHasAccess: React.FC<UserHasAccessProps> = ({
+@@ -23,5 +28,21 @@ export const UserHasAccess: React.FC<UserHasAccessProps> = ({
      return <>{children}</>;
    }
  
@@ -40,7 +39,7 @@ index 2de7d88..50850b5 100644
 +  }
 +
 +  if (redirectUrl) {
-+    return <Redirect to={redirectUrl} />;
++    window.location.replace(redirectUrl);
 +  }
 +
    return null;

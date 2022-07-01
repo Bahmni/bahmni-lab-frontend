@@ -538,9 +538,9 @@
       "entry": false,
       "recorded": false,
       "reason": "reused as split chunk (cache group: default)",
-      "size": 1246732,
+      "size": 1246476,
       "sizes": {
-        "javascript": 1246732
+        "javascript": 1246476
       },
       "names": [],
       "idHints": [],
@@ -551,7 +551,7 @@
         "889.js"
       ],
       "auxiliaryFiles": [],
-      "hash": "5d396d65e34fff834260",
+      "hash": "7406ff65f375206ecb81",
       "childrenByOrder": {}
     },
     {
