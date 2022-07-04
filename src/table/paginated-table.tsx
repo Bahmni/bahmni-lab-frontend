@@ -11,7 +11,7 @@ import {
   TableSelectRow,
   TableCell,
 } from 'carbon-components-react'
-import React, {useMemo} from 'react'
+import React, {useMemo, useState} from 'react'
 import useSWR from 'swr'
 import {headers, defaultPageSize} from '../constants'
 import {LabOrdersFetchResponse} from '../types'
@@ -105,6 +105,11 @@ const PaginatedTable = ({patientUuid, onButtonClick}) => {
                             }
                           }}
                           disabled={onButtonClick}
+                          checked={
+                            selectedPendingOrder.filter(
+                              tempRow => tempRow.id === row.id,
+                            ).length == 1
+                          }
                         />
                         {row.cells.map(cell => (
                           <TableCell key={cell.id}>{cell.value}</TableCell>
@@ -122,7 +127,6 @@ const PaginatedTable = ({patientUuid, onButtonClick}) => {
               totalItems={rows?.length}
               onPageNumberChange={({page}) => {
                 goTo(page)
-                setSelectedPendingOrder([])
               }}
             />
           </>
