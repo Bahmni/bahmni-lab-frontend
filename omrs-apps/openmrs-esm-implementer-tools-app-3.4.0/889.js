@@ -284,8 +284,8 @@
                               )
                                 .slash(':target.id')
                                 .slash(':target.versionId'),
-                              R = y('Prefer', 'return=representation'),
-                              D = p(r.$Paging)
+                              L = y('Prefer', 'return=representation'),
+                              R = p(r.$Paging)
                             return d(
                               {
                                 conformance: b.and(E.slash('metadata')).end(O),
@@ -296,15 +296,15 @@
                                 transaction: w.and(E).end(O),
                                 history: b
                                   .and(E.slash('_history'))
-                                  .and(D)
+                                  .and(R)
                                   .end(O),
                                 typeHistory: b
                                   .and(k)
-                                  .and(D)
+                                  .and(R)
                                   .end(O),
                                 resourceHistory: b
                                   .and(P)
-                                  .and(D)
+                                  .and(R)
                                   .end(O),
                                 read: b
                                   .and(s.$WithPatient)
@@ -312,11 +312,11 @@
                                   .end(O),
                                 vread: b.and(I).end(O),
                                 delete: S.and(A)
-                                  .and(R)
+                                  .and(L)
                                   .end(O),
                                 create: w
                                   .and(C)
-                                  .and(R)
+                                  .and(L)
                                   .end(O),
                                 validate: w.and(C.slash('_validate')).end(O),
                                 meta: {
@@ -328,18 +328,18 @@
                                   .and(C)
                                   .and(s.$WithPatient)
                                   .and(r.$SearchParams)
-                                  .and(D)
+                                  .and(R)
                                   .end(O),
                                 update: _.and(A)
-                                  .and(R)
+                                  .and(L)
                                   .end(O),
                                 conditionalUpdate: _.and(C)
                                   .and(r.$SearchParams)
-                                  .and(R)
+                                  .and(L)
                                   .end(O),
                                 conditionalDelete: S.and(C)
                                   .and(r.$SearchParams)
-                                  .and(R)
+                                  .and(L)
                                   .end(O),
                                 nextPage: b
                                   .and(c.$$BundleLinkUrl('next'))
@@ -2064,7 +2064,7 @@
                           function n() {
                             this.constructor = t
                           }
-                          W(t, e),
+                          Z(t, e),
                             (t.prototype =
                               null === e
                                 ? Object.create(e)
@@ -2188,9 +2188,9 @@
                             o = Error()
                           return window.fetch(n, e).then(
                             ((r = p(
-                              Z().mark(function t(e) {
+                              W().mark(function t(e) {
                                 var r, i
-                                return Z().wrap(function(t) {
+                                return W().wrap(function(t) {
                                   for (;;)
                                     switch ((t.prev = t.next)) {
                                       case 0:
@@ -2333,7 +2333,7 @@
                               ? arguments[0]
                               : {includeAuthStatus: !0}
                           return (
-                            (Dt < Date.now() - 6e4 || !Rt.getState().loaded) &&
+                            (Rt < Date.now() - 6e4 || !Lt.getState().loaded) &&
                               x(),
                             new it(function(e) {
                               var n = function(n) {
@@ -2347,20 +2347,20 @@
                                           : r.user,
                                       ))
                               }
-                              return n(Rt.getState()), Rt.subscribe(n)
+                              return n(Lt.getState()), Lt.subscribe(n)
                             })
                           )
                         },
                         S = function() {
                           return (
-                            (Dt < Date.now() - 6e4 || !Rt.getState().loaded) &&
+                            (Rt < Date.now() - 6e4 || !Lt.getState().loaded) &&
                               x(),
-                            Rt
+                            Lt
                           )
                         },
                         x = function() {
                           return new Promise(function(t, e) {
-                            ;(Dt = Date.now()),
+                            ;(Rt = Date.now()),
                               g(kt)
                                 .then(function(n) {
                                   if (
@@ -2389,7 +2389,7 @@
                                       a,
                                     ),
                                     t(n.data),
-                                    Rt.setState({loaded: !0, session: n.data})
+                                    Lt.setState({loaded: !0, session: n.data})
                                 })
                                 .catch(function(t) {
                                   return (
@@ -2405,7 +2405,7 @@
                           })
                         },
                         O = function() {
-                          Rt.setState({
+                          Lt.setState({
                             loaded: !0,
                             session: {authenticated: !1, sessionId: ''},
                           })
@@ -2432,7 +2432,7 @@
                                 n(r.session.user),
                                 e && e())
                             }
-                            o(Rt.getState()), t || (e = Rt.subscribe(o))
+                            o(Lt.getState()), t || (e = Lt.subscribe(o))
                           })
                         },
                         C = function() {
@@ -2531,10 +2531,10 @@
                         },
                         T = function(t) {
                           return function(e) {
-                            return 0 === t ? qt : e.lift(new Zt(t))
+                            return 0 === t ? qt : e.lift(new Wt(t))
                           }
                         },
-                        R = function(t, e) {
+                        L = function(t, e) {
                           return function(n) {
                             if ('function' != typeof t)
                               throw new TypeError(
@@ -2543,7 +2543,7 @@
                             return n.lift(new Gt(t, e))
                           }
                         },
-                        D = function(t, e, n) {
+                        R = function(t, e, n) {
                           var r = null != n ? n : Yt
                           return m(
                             '/ws/rest/v1/visit?patient='
@@ -2557,7 +2557,7 @@
                           )
                             .pipe(T(1))
                             .pipe(
-                              R(function(t) {
+                              L(function(t) {
                                 return t
                               }),
                             )
@@ -2570,7 +2570,7 @@
                             body: t,
                           })
                         },
-                        L = function(t, e, n) {
+                        D = function(t, e, n) {
                           return m('/ws/rest/v1/visit/'.concat(t), {
                             signal: n.signal,
                             method: 'POST',
@@ -2588,7 +2588,7 @@
                         N = function() {
                           return m('/ws/rest/v1/visittype')
                             .pipe(
-                              R(function(t) {
+                              L(function(t) {
                                 return t.data.results.map(B)
                               }),
                             )
@@ -2600,7 +2600,7 @@
                         H = function() {
                           return m('/ws/rest/v1/location')
                             .pipe(
-                              R(function(t) {
+                              L(function(t) {
                                 return t.data.results.map(U)
                               }),
                             )
@@ -2612,7 +2612,7 @@
                             return At
                           },
                           VisitMode: function() {
-                            return Lt
+                            return Dt
                           },
                           VisitStatus: function() {
                             return Bt
@@ -2657,7 +2657,7 @@
                             return N
                           },
                           getVisitsForPatient: function() {
-                            return D
+                            return R
                           },
                           makeUrl: function() {
                             return y
@@ -2690,7 +2690,7 @@
                             return B
                           },
                           updateVisit: function() {
-                            return L
+                            return D
                           },
                           userHasAccess: function() {
                             return j
@@ -2702,9 +2702,9 @@
                         z,
                         K,
                         q = c(602),
-                        Z = c.n(q),
-                        W = function(t, e) {
-                          return (W =
+                        W = c.n(q),
+                        Z = function(t, e) {
+                          return (Z =
                             Object.setPrototypeOf ||
                             (r({__proto__: []}, Array) &&
                               function(t, e) {
@@ -3436,15 +3436,15 @@
                           },
                         ),
                         Tt = c(254),
-                        Rt = (0, c(385).createGlobalStore)('session', {
+                        Lt = (0, c(385).createGlobalStore)('session', {
                           loaded: !1,
                           session: null,
                         }),
-                        Dt = 0
+                        Rt = 0
                       function Mt() {
                         return (Mt = w(
-                          Z().mark(function t(e, n) {
-                            return Z().wrap(function(t) {
+                          W().mark(function t(e, n) {
+                            return W().wrap(function(t) {
                               for (;;)
                                 switch ((t.prev = t.next)) {
                                   case 0:
@@ -3469,7 +3469,7 @@
                           }),
                         )).apply(this, arguments)
                       }
-                      var Lt,
+                      var Dt,
                         Bt,
                         Nt,
                         Ut = (function() {
@@ -3687,19 +3687,19 @@
                         qt = new it(function(t) {
                           return t.complete()
                         }),
-                        Zt = (function() {
+                        Wt = (function() {
                           var t = function(t) {
                             if (((this.total = t), this.total < 0))
                               throw new Kt()
                           }
                           return (
                             (t.prototype.call = function(t, e) {
-                              return e.subscribe(new Wt(t, this.total))
+                              return e.subscribe(new Zt(t, this.total))
                             }),
                             t
                           )
                         })(),
-                        Wt = (function(e) {
+                        Zt = (function(e) {
                           var n = function(t, n) {
                             var r = e.call(this, t) || this
                             return (r.total = n), (r.count = 0), r
@@ -3762,7 +3762,7 @@
                         Yt =
                           'custom:(uuid,encounters:(uuid,encounterDatetime,form:(uuid,name),location:ref,encounterType:ref,encounterProviders:(uuid,display,provider:(uuid,display))),patient:(uuid,uuid),visitType:(uuid,name,display),attributes:(uuid,display,value),location:(uuid,name,display),startDatetime,stopDatetime)',
                         Qt = new zt(null)
-                      ;((Nt = Lt || (Lt = {})).NEWVISIT = 'startVisit'),
+                      ;((Nt = Dt || (Dt = {})).NEWVISIT = 'startVisit'),
                         (Nt.EDITVISIT = 'editVisit'),
                         (Nt.LOADING = 'loadingVisit'),
                         (function(t) {
@@ -4953,7 +4953,7 @@
                           }
                           return n
                         })(t, e)
-                        Lt.setState({config: n})
+                        Dt.setState({config: n})
                       },
                       T = function(t, e, n) {
                         var r = {},
@@ -4992,12 +4992,12 @@
                         }
                         w().setState({configs: r})
                       },
-                      R = function(t, e) {
+                      L = function(t, e) {
                         Ut(t, e)
                         var n = Tt.getState()
                         Tt.setState({schemas: j({}, n.schemas, O({}, t, e))})
                       },
-                      D = function(t, e) {
+                      R = function(t, e) {
                         Ut(t, e)
                         var n = Tt.getState()
                         n.schemas[t] &&
@@ -5021,7 +5021,7 @@
                           ]),
                         })
                       },
-                      L = function(t) {
+                      D = function(t) {
                         return new Promise(function(e) {
                           var n = function(t) {
                               t.loaded && t.config && (e(t.config), o && o())
@@ -5118,7 +5118,7 @@
                                   ".order' is invalid. Must be an array of strings (extension IDs)",
                               )),
                           t.configure &&
-                            (W(t.configure) ||
+                            (Z(t.configure) ||
                               console.error(
                                 r +
                                   ".configure' is invalid. Must be an object with extension IDs for keys",
@@ -5258,7 +5258,7 @@
                             )
                           }
                       },
-                      Z = function(t) {
+                      W = function(t) {
                         return (
                           !!t &&
                           Object.keys(t).filter(function(t) {
@@ -5266,7 +5266,7 @@
                           }).length > 0
                         )
                       },
-                      W = function(t) {
+                      Z = function(t) {
                         return (
                           'object' == typeof t &&
                           !Array.isArray(t) &&
@@ -5305,13 +5305,13 @@
                           return Tt
                         },
                         defineConfigSchema: function() {
-                          return R
+                          return L
                         },
                         defineExtensionConfigSchema: function() {
-                          return D
+                          return R
                         },
                         getConfig: function() {
-                          return L
+                          return D
                         },
                         getConfigStore: function() {
                           return y
@@ -5335,7 +5335,7 @@
                           return w
                         },
                         implementerToolsConfigStore: function() {
-                          return Lt
+                          return Dt
                         },
                         inRange: function() {
                           return zt
@@ -5356,7 +5356,7 @@
                           return Y
                         },
                         oneOf: function() {
-                          return Zt
+                          return Wt
                         },
                         processConfig: function() {
                           return B
@@ -5365,13 +5365,13 @@
                           return M
                         },
                         temporaryConfigStore: function() {
-                          return Dt
+                          return Rt
                         },
                         validator: function() {
                           return h
                         },
                         validators: function() {
-                          return Wt
+                          return Zt
                         },
                       })
                     var Q =
@@ -5814,18 +5814,18 @@
                         devDefaultsAreOn: v(),
                       },
                       Tt = (0, Pt.createGlobalStore)('config-internal', It),
-                      Rt = v()
+                      Lt = v()
                     Tt.subscribe(function(t) {
                       var e
-                      t.devDefaultsAreOn != Rt &&
+                      t.devDefaultsAreOn != Lt &&
                         ((e = t.devDefaultsAreOn),
                         localStorage.setItem(
                           'openmrs:configAreDevDefaultsOn',
                           JSON.stringify(e),
                         ),
-                        (Rt = t.devDefaultsAreOn))
+                        (Lt = t.devDefaultsAreOn))
                     })
-                    var Dt = (0, Pt.createGlobalStore)('temporary-config', {
+                    var Rt = (0, Pt.createGlobalStore)('temporary-config', {
                       config: (function() {
                         try {
                           return JSON.parse(
@@ -5837,7 +5837,7 @@
                         }
                       })(),
                     })
-                    Dt.subscribe(function(t) {
+                    Rt.subscribe(function(t) {
                       var e
                       ;(e = t.config),
                         localStorage.setItem(
@@ -5849,21 +5849,21 @@
                       Pt.createGlobalStore)('config-store-of-extension-state', {
                         mountedExtensions: [],
                       }),
-                      Lt = (0, Pt.createGlobalStore)(
+                      Dt = (0, Pt.createGlobalStore)(
                         'config-implementer-tools',
                         {config: {}},
                       )
                     function Bt(t) {
                       return t.hasOwnProperty('_default')
                         ? j({}, t, {_value: t._default, _source: 'default'})
-                        : W(t)
+                        : Z(t)
                         ? Object.keys(t).reduce(function(e, n) {
                             return (e[n] = Bt(t[n])), e
                           }, {})
                         : {}
                     }
                     function Nt(t, e) {
-                      return W(t)
+                      return Z(t)
                         ? Object.keys(t).reduce(function(n, r) {
                             return (n[r] = Nt(t[r], e)), n
                           }, {})
@@ -5886,7 +5886,7 @@
                               var u = i.value,
                                 a = n + (n && '.') + u,
                                 c = e[u]
-                              if (!W(c))
+                              if (!Z(c))
                                 return (
                                   console.error(
                                     ''
@@ -5902,7 +5902,7 @@
                               c.hasOwnProperty('_default') || Ut(t, c, a)
                               var s = c._elements
                               if (
-                                (Z(s) && Ut(t, s, a + '._elements'),
+                                (W(s) && Ut(t, s, a + '._elements'),
                                 c._validators)
                               ) {
                                 var l = !0,
@@ -6011,7 +6011,7 @@
                     }
                     function Ht(t, e, n) {
                       K(n, t._type, e),
-                        W(e)
+                        Z(e)
                           ? t._type === ft.Object
                             ? (function(t, e, n) {
                                 if (t._elements) {
@@ -6047,7 +6047,7 @@
                             : t.hasOwnProperty('_default') || z(t, e, n)
                           : t._type === ft.Array &&
                             (function(t, e, n) {
-                              if (Z(t._elements))
+                              if (W(t._elements))
                                 for (var r = 0; r < e.length; r++)
                                   Ht(
                                     t._elements,
@@ -6073,7 +6073,7 @@
                           : ''
                       if (t)
                         if (
-                          (e !== t._default && q(n, t._validators, e), W(e))
+                          (e !== t._default && q(n, t._validators, e), Z(e))
                         ) {
                           var r = !0,
                             o = !1,
@@ -6109,35 +6109,35 @@
                               ''.concat(n, '[').concat(d, ']'),
                             )
                     }
-                    A(Tt.getState(), Dt.getState()),
+                    A(Tt.getState(), Rt.getState()),
                       Tt.subscribe(function(t) {
-                        return A(t, Dt.getState())
+                        return A(t, Rt.getState())
                       }),
-                      Dt.subscribe(function(t) {
+                      Rt.subscribe(function(t) {
                         return A(Tt.getState(), t)
                       }),
-                      I(Tt.getState(), Dt.getState()),
+                      I(Tt.getState(), Rt.getState()),
                       Tt.subscribe(function(t) {
-                        return I(t, Dt.getState())
+                        return I(t, Rt.getState())
                       }),
-                      Dt.subscribe(function(t) {
+                      Rt.subscribe(function(t) {
                         return I(Tt.getState(), t)
                       }),
-                      P(Tt.getState(), Dt.getState()),
+                      P(Tt.getState(), Rt.getState()),
                       Tt.subscribe(function(t) {
-                        return P(t, Dt.getState())
+                        return P(t, Rt.getState())
                       }),
-                      Dt.subscribe(function(t) {
+                      Rt.subscribe(function(t) {
                         return P(Tt.getState(), t)
                       }),
-                      T(Tt.getState(), Mt.getState(), Dt.getState()),
+                      T(Tt.getState(), Mt.getState(), Rt.getState()),
                       Tt.subscribe(function(t) {
-                        T(t, Mt.getState(), Dt.getState())
+                        T(t, Mt.getState(), Rt.getState())
                       }),
                       Mt.subscribe(function(t) {
-                        T(Tt.getState(), t, Dt.getState())
+                        T(Tt.getState(), t, Rt.getState())
                       }),
-                      Dt.subscribe(function(t) {
+                      Rt.subscribe(function(t) {
                         T(Tt.getState(), Mt.getState(), t)
                       })
                     var Vt = function(t, e, n) {
@@ -6159,7 +6159,7 @@
                                     r[i] = n ? c : a._default
                                   }
                                   var s = a._elements
-                                  if (u && Z(s))
+                                  if (u && W(s))
                                     if (
                                       a._type === ft.Array &&
                                       Array.isArray(u)
@@ -6194,9 +6194,9 @@
                                         }
                                       }
                                     }
-                                } else if (W(a)) {
+                                } else if (Z(a)) {
                                   var g = r.hasOwnProperty(i) ? u : {}
-                                  W(g) && (r[i] = Vt(a, g, n))
+                                  Z(g) && (r[i] = Vt(a, g, n))
                                 }
                               },
                               s = Object.keys(t)[Symbol.iterator]();
@@ -6241,7 +6241,7 @@
                         )
                       },
                       qt = Kt([]),
-                      Zt = function(t) {
+                      Wt = function(t) {
                         return h(function(e) {
                           return t.includes(e)
                         }, "Must be one of the following: '".concat(
@@ -6249,11 +6249,11 @@
                           "'.",
                         ))
                       },
-                      Wt = {
+                      Zt = {
                         inRange: zt,
                         isUrl: qt,
                         isUrlWithTemplateParameters: Kt,
-                        oneOf: Zt,
+                        oneOf: Wt,
                       }
                   })(),
                   u
@@ -6715,11 +6715,11 @@
                             }
                           }
                           Te(
-                            Re.configExtensionStore.getState()
+                            Le.configExtensionStore.getState()
                               .mountedExtensions,
                             e,
                           ) ||
-                            Re.configExtensionStore.setState({
+                            Le.configExtensionStore.setState({
                               mountedExtensions: e,
                             })
                         },
@@ -6876,7 +6876,7 @@
                                 d = P(
                                   l,
                                   t,
-                                  (0, Re.getExtensionSlotConfigFromStore)(
+                                  (0, Le.getExtensionSlotConfigFromStore)(
                                     e,
                                     f.name,
                                   ).config,
@@ -7000,7 +7000,7 @@
                                 : null,
                             n = null != e ? e : navigator.onLine
                           return t.filter(function(t) {
-                            return R(n, t.online, t.offline)
+                            return L(n, t.online, t.offline)
                           })
                         },
                         P = function(t, e, n, r) {
@@ -7054,7 +7054,7 @@
                               d = !0
                             ) {
                               var g = v.value,
-                                b = (0, Re.getExtensionConfigFromStore)(r, t, g)
+                                b = (0, Le.getExtensionConfigFromStore)(r, t, g)
                                   .config,
                                 w = S(g),
                                 _ = e.extensions[w]
@@ -7084,7 +7084,7 @@
                           return P(
                             t,
                             Ne.getState(),
-                            (0, Re.getExtensionSlotConfig)(t).config,
+                            (0, Le.getExtensionSlotConfig)(t).config,
                             Fe.getState(),
                           )
                         },
@@ -7098,9 +7098,9 @@
                               void 0 !== arguments[1] &&
                               arguments[1],
                             n = navigator.onLine
-                          return R(n, t, e)
+                          return L(n, t, e)
                         },
-                        R = function(t) {
+                        L = function(t) {
                           var e =
                               !(
                                 arguments.length > 1 && void 0 !== arguments[1]
@@ -7111,7 +7111,7 @@
                               arguments[2]
                           return Boolean(t ? e : n)
                         },
-                        D = function(t, e) {
+                        R = function(t, e) {
                           var n = navigator.onLine ? t : e
                           return 'object' == typeof n ? n : {}
                         },
@@ -7121,7 +7121,7 @@
                             r[n] = t[n]
                           return r
                         },
-                        L = function(t, e, n) {
+                        D = function(t, e, n) {
                           return (
                             e in t
                               ? Object.defineProperty(t, e, {
@@ -7153,7 +7153,7 @@
                                     ),
                                   )),
                                   o.forEach(function(e) {
-                                    L(t, e, r[e])
+                                    D(t, e, r[e])
                                   })
                               },
                               r = 1;
@@ -7265,7 +7265,7 @@
                                 c &&
                                   (s = (0, Ke.mountRootParcel)(
                                     o(null != a ? a : l),
-                                    B({}, D(d, p), i, {
+                                    B({}, R(d, p), i, {
                                       _meta: h,
                                       _extensionContext: {
                                         extensionId: r,
@@ -7288,7 +7288,7 @@
                                   extensions: B(
                                     {},
                                     o.extensions,
-                                    L(
+                                    D(
                                       {},
                                       u,
                                       B({}, o.extensions[u], {
@@ -7328,7 +7328,7 @@
                             return T
                           },
                           checkStatusFor: function() {
-                            return R
+                            return L
                           },
                           detach: function() {
                             return E
@@ -7346,10 +7346,10 @@
                             return A
                           },
                           getCustomProps: function() {
-                            return D
+                            return R
                           },
                           getExtensionInternalStore: function() {
-                            return Le
+                            return De
                           },
                           getExtensionNameFromId: function() {
                             return S
@@ -7426,13 +7426,13 @@
                           n.g &&
                           n.g.Object === Object &&
                           n.g,
-                        Z =
+                        W =
                           'object' == typeof self &&
                           self &&
                           self.Object === Object &&
                           self,
-                        W = q || Z || Function('return this')(),
-                        G = W.Symbol,
+                        Z = q || W || Function('return this')(),
+                        G = Z.Symbol,
                         J = Object.prototype,
                         Y = J.hasOwnProperty,
                         Q = J.toString,
@@ -7472,7 +7472,7 @@
                             '[object Proxy]' == e
                           )
                         },
-                        it = W['__core-js_shared__'],
+                        it = Z['__core-js_shared__'],
                         ut = (z = /[^.]+$/.exec(
                           (it && it.keys && it.keys.IE_PROTO) || '',
                         ))
@@ -7519,7 +7519,7 @@
                             ? r
                             : void 0
                         },
-                        yt = vt(W, 'Map'),
+                        yt = vt(Z, 'Map'),
                         gt = vt(Object, 'create'),
                         mt = Object.prototype.hasOwnProperty,
                         bt = Object.prototype.hasOwnProperty
@@ -7687,7 +7687,7 @@
                           }
                           return i.delete(t), i.delete(e), d
                         },
-                        Ct = W.Uint8Array,
+                        Ct = Z.Uint8Array,
                         kt = function(t) {
                           var e = -1,
                             n = Array(t.size)
@@ -7711,9 +7711,9 @@
                         Pt = G ? G.prototype : void 0,
                         It = Pt ? Pt.valueOf : void 0,
                         Tt = Array.isArray,
-                        Rt = Object.prototype.propertyIsEnumerable,
-                        Dt = Object.getOwnPropertySymbols,
-                        Mt = Dt
+                        Lt = Object.prototype.propertyIsEnumerable,
+                        Rt = Object.getOwnPropertySymbols,
+                        Mt = Rt
                           ? function(t) {
                               return null == t
                                 ? []
@@ -7731,18 +7731,18 @@
                                       e(u) && (i[o++] = u)
                                     }
                                     return i
-                                  })(Dt(t), function(e) {
-                                    return Rt.call(t, e)
+                                  })(Rt(t), function(e) {
+                                    return Lt.call(t, e)
                                   }))
                             }
                           : function() {
                               return []
                             },
-                        Lt = function(t) {
+                        Dt = function(t) {
                           return null != t && 'object' == typeof t
                         },
                         Bt = function(t) {
-                          return Lt(t) && '[object Arguments]' == nt(t)
+                          return Dt(t) && '[object Arguments]' == nt(t)
                         },
                         Nt = Object.prototype,
                         Ut = Nt.hasOwnProperty,
@@ -7755,7 +7755,7 @@
                           ? Bt
                           : function(t) {
                               return (
-                                Lt(t) &&
+                                Dt(t) &&
                                 Ut.call(t, 'callee') &&
                                 !Ht.call(t, 'callee')
                               )
@@ -7763,14 +7763,14 @@
                         Vt = Ft,
                         $t = e && !e.nodeType && e,
                         zt = $t && t && !t.nodeType && t,
-                        Kt = zt && zt.exports === $t ? W.Buffer : void 0,
+                        Kt = zt && zt.exports === $t ? Z.Buffer : void 0,
                         qt =
                           (Kt ? Kt.isBuffer : void 0) ||
                           function() {
                             return !1
                           },
-                        Zt = /^(?:0|[1-9]\d*)$/,
-                        Wt = function(t) {
+                        Wt = /^(?:0|[1-9]\d*)$/,
+                        Zt = function(t) {
                           return (
                             'number' == typeof t &&
                             t > -1 &&
@@ -7820,7 +7820,7 @@
                               return Jt(t)
                             })
                           : function(t) {
-                              return Lt(t) && Wt(t.length) && !!Gt[nt(t)]
+                              return Dt(t) && Zt(t.length) && !!Gt[nt(t)]
                             },
                         ie = Object.prototype.hasOwnProperty,
                         ue = Object.prototype,
@@ -7835,7 +7835,7 @@
                           return (
                             (n = Mt),
                             (r = (function(t) {
-                              return null != (e = t) && Wt(e.length) && !ot(e)
+                              return null != (e = t) && Zt(e.length) && !ot(e)
                                 ? (function(t, e) {
                                     var n,
                                       r,
@@ -7879,7 +7879,7 @@
                                                 : r) &&
                                               ('number' == i ||
                                                 ('symbol' != i &&
-                                                  Zt.test(n))) &&
+                                                  Wt.test(n))) &&
                                               n > -1 &&
                                               n % 1 == 0 &&
                                               n < r))) ||
@@ -7921,10 +7921,10 @@
                           var e, n, r
                         },
                         le = Object.prototype.hasOwnProperty,
-                        fe = vt(W, 'DataView'),
-                        de = vt(W, 'Promise'),
-                        pe = vt(W, 'Set'),
-                        he = vt(W, 'WeakMap'),
+                        fe = vt(Z, 'DataView'),
+                        de = vt(Z, 'Promise'),
+                        pe = vt(Z, 'Set'),
+                        he = vt(Z, 'WeakMap'),
                         ve = '[object Map]',
                         ye = '[object Promise]',
                         ge = '[object Set]',
@@ -7968,7 +7968,7 @@
                         Ie = function t(e, n, o, i, u) {
                           return (
                             e === n ||
-                            (null == e || null == n || (!Lt(e) && !Lt(n))
+                            (null == e || null == n || (!Dt(e) && !Dt(n))
                               ? e != e && n != n
                               : (function(t, e, n, o, i, u) {
                                   var a = Tt(t),
@@ -8112,28 +8112,28 @@
                         Te = function(t, e) {
                           return Ie(t, e)
                         },
-                        Re = f(824),
-                        De = f(685),
-                        Me = (0, De.createGlobalStore)('extensionsInternal', {
+                        Le = f(824),
+                        Re = f(685),
+                        Me = (0, Re.createGlobalStore)('extensionsInternal', {
                           slots: {},
                           extensions: {},
                         }),
-                        Le = function() {
-                          return (0, De.getGlobalStore)('extensionsInternal', {
+                        De = function() {
+                          return (0, Re.getGlobalStore)('extensionsInternal', {
                             slots: {},
                             extensions: {},
                           })
                         },
                         Be = function() {
-                          return (0, De.getGlobalStore)('extensions', {
+                          return (0, Re.getGlobalStore)('extensions', {
                             slots: {},
                           })
                         }
                       p(Me.getState()), Me.subscribe(p)
-                      var Ne = Le(),
+                      var Ne = De(),
                         Ue = Be(),
-                        He = (0, Re.getExtensionSlotsConfigStore)(),
-                        Fe = (0, Re.getExtensionsConfigStore)()
+                        He = (0, Le.getExtensionSlotsConfigStore)(),
+                        Fe = (0, Le.getExtensionsConfigStore)()
                       Ne.subscribe(function(t) {
                         w(t, He.getState(), Fe.getState())
                       }),
@@ -8180,7 +8180,7 @@
                           return {slots: {}, extensions: {}}
                         }),
                         Ke = f(645),
-                        qe = Le()
+                        qe = De()
                     })(),
                     d
                   )
@@ -9411,32 +9411,32 @@
                       T = function() {
                         return Kn.apply(this, arguments)
                       },
-                      R = function(t, e) {
+                      L = function(t, e) {
                         return (
                           'object' != typeof e ||
-                            Zn(e).forEach(function(n) {
+                            Wn(e).forEach(function(n) {
                               t[n] = e[n]
                             }),
                           t
                         )
                       },
-                      D = function(t, e) {
+                      R = function(t, e) {
                         return Jn.call(t, e)
                       },
                       M = function(t, e) {
                         'function' == typeof e && (e = e(Gn(t))),
                           ('undefined' == typeof Reflect
-                            ? Zn
+                            ? Wn
                             : Reflect.ownKeys)(e).forEach(function(n) {
-                            L(t, n, e[n])
+                            D(t, n, e[n])
                           })
                       },
-                      L = function(t, e, n, r) {
+                      D = function(t, e, n, r) {
                         Yn(
                           t,
                           e,
-                          R(
-                            n && D(n, 'get') && 'function' == typeof n.get
+                          L(
+                            n && R(n, 'get') && 'function' == typeof n.get
                               ? {get: n.get, set: n.set, configurable: !0}
                               : {value: n, configurable: !0, writable: !0},
                             r,
@@ -9448,7 +9448,7 @@
                           from: function(e) {
                             return (
                               (t.prototype = Object.create(e.prototype)),
-                              L(t.prototype, 'constructor', t),
+                              D(t.prototype, 'constructor', t),
                               {extend: M.bind(null, t.prototype)}
                             )
                           },
@@ -9474,7 +9474,7 @@
                       },
                       $ = function(t) {
                         var e = {}
-                        for (var n in t) D(t, n) && (e[n] = t[n])
+                        for (var n in t) R(t, n) && (e[n] = t[n])
                         return e
                       },
                       z = function(t) {
@@ -9488,10 +9488,10 @@
                       q = function(t) {
                         return cr.call(t).slice(8, -1)
                       },
-                      Z = function(t) {
+                      W = function(t) {
                         var e, n, r, o
                         if (1 === arguments.length) {
-                          if (Wn(t)) return t.slice()
+                          if (Zn(t)) return t.slice()
                           if (this === fr && 'string' == typeof t) return [t]
                           if ((o = lr(t))) {
                             for (n = []; !(r = o.next()).done; ) n.push(r.value)
@@ -9508,7 +9508,7 @@
                           n[e] = arguments[e]
                         return n
                       },
-                      W = function(t, e) {
+                      Z = function(t, e) {
                         ;(pr = t), (hr = e)
                       },
                       G = function(t, e) {
@@ -9623,7 +9623,7 @@
                           ? e
                           : function(n) {
                               var r = t.apply(this, arguments)
-                              R(n, r)
+                              L(n, r)
                               var o = this.onsuccess,
                                 i = this.onerror
                               ;(this.onsuccess = null), (this.onerror = null)
@@ -9641,7 +9641,7 @@
                                   ? void 0 === u
                                     ? void 0
                                     : u
-                                  : R(r, u)
+                                  : L(r, u)
                               )
                             }
                       },
@@ -9702,7 +9702,7 @@
                         ;(this._state = null),
                           (this._value = null),
                           ++e.ref,
-                          Wr(this, t)
+                          Zr(this, t)
                       },
                       lt = function(t, e, n, r, o) {
                         ;(this.onFulfilled = 'function' == typeof t ? t : null),
@@ -9726,9 +9726,9 @@
                                   ;(function() {
                                     var n = Xn(e, 'stack')
                                     ;(e._promise = t),
-                                      L(e, 'stack', {
+                                      D(e, 'stack', {
                                         get: function() {
-                                          return Rr
+                                          return Lr
                                             ? n &&
                                                 (n.get
                                                   ? n.get.apply(e)
@@ -9800,8 +9800,8 @@
                         gt() && mt()
                       },
                       gt = function() {
-                        var t = Lr
-                        return (Lr = !1), (Br = !1), t
+                        var t = Dr
+                        return (Dr = !1), (Br = !1), t
                       },
                       mt = function() {
                         var t, e, n
@@ -9816,7 +9816,7 @@
                               r[0].apply(null, r[1])
                             }
                         } while (zr.length > 0)
-                        ;(Lr = !0), (Br = !0)
+                        ;(Dr = !0), (Br = !0)
                       },
                       bt = function() {
                         var t = Nr
@@ -9865,11 +9865,11 @@
                               any: st.any,
                               resolve: st.resolve,
                               reject: st.reject,
-                              nthen: Rt(u.nthen, i),
-                              gthen: Rt(u.gthen, i),
+                              nthen: Lt(u.nthen, i),
+                              gthen: Lt(u.gthen, i),
                             }
                           : {}),
-                          e && R(i, e),
+                          e && L(i, e),
                           ++o.ref,
                           (i.finalize = function() {
                             --this.parent.ref || this.parent.finalize()
@@ -9989,12 +9989,12 @@
                               }
                             }
                       },
-                      Rt = function(t, e) {
+                      Lt = function(t, e) {
                         return function(n, r) {
                           return t.call(this, Tt(n, e), Tt(r, e))
                         }
                       },
-                      Dt = function(t, e) {
+                      Rt = function(t, e) {
                         var n
                         try {
                           n = e.onuncatched(t)
@@ -10008,9 +10008,9 @@
                                 ? ((r = document.createEvent(
                                     'Event',
                                   )).initEvent('unhandledrejection', !0, !0),
-                                  R(r, o))
+                                  L(r, o))
                                 : qn.CustomEvent &&
-                                  R(
+                                  L(
                                     (r = new CustomEvent('unhandledrejection', {
                                       detail: o,
                                     })),
@@ -10045,7 +10045,7 @@
                             : t
                           : e
                       },
-                      Lt = function(t) {
+                      Dt = function(t) {
                         return 'string' != typeof t || /\./.test(t)
                           ? function(t) {
                               return t
@@ -10099,9 +10099,9 @@
                           return (e[t] = n[t] = i), i
                         }
                         function u(t) {
-                          Zn(t).forEach(function(e) {
+                          Wn(t).forEach(function(e) {
                             var n = t[e]
-                            if (Wn(n)) i(e, t[e][0], t[e][1])
+                            if (Zn(n)) i(e, t[e][0], t[e][1])
                             else {
                               if ('asap' !== n)
                                 throw new Sr.InvalidArgument(
@@ -10192,7 +10192,7 @@
                                   a = '' + u
                                 '[object ArrayBuffer]' === a &&
                                   (a = '' + new Uint8Array(u)),
-                                  D(i, a) || ((i[a] = !0), e(t, n, r))
+                                  R(i, a) || ((i[a] = !0), e(t, n, r))
                               }
                             }
                           return Promise.all([
@@ -10253,14 +10253,14 @@
                         var n = q(t)
                         return 'ArrayBuffer' === n ? 'binary' : n
                       },
-                      Zt = function(t) {
+                      Wt = function(t) {
                         return c(t, Uint8Array)
                           ? t
                           : ArrayBuffer.isView(t)
                           ? new Uint8Array(t.buffer, t.byteOffset, t.byteLength)
                           : new Uint8Array(t)
                       },
-                      Wt = function(t, e) {
+                      Zt = function(t, e) {
                         return t < e ? -1 : t === e ? 0 : 1
                       },
                       Gt = function(t, e) {
@@ -10334,7 +10334,7 @@
                                 : function(t) {
                                     return t.toUpperCase()
                                   }),
-                            (u = 'next' === t ? Wt : Gt)
+                            (u = 'next' === t ? Zt : Gt)
                           var e = n
                             .map(function(t) {
                               return {lower: i(t), upper: o(t)}
@@ -10515,7 +10515,7 @@
                                         .map(function(t) {
                                           var e = t.keyPath,
                                             n = t.autoIncrement,
-                                            r = Wn(e),
+                                            r = Zn(e),
                                             o = null == e,
                                             i = {},
                                             u = {
@@ -10541,7 +10541,7 @@
                                                     o = t.keyPath,
                                                     u = {
                                                       name: e,
-                                                      compound: Wn(o),
+                                                      compound: Zn(o),
                                                       keyPath: o,
                                                       unique: n,
                                                       multiEntry: r,
@@ -10945,7 +10945,7 @@
                             ;(!r || ('value' in r && void 0 === r.value)) &&
                               (e === o.Transaction.prototype ||
                               c(e, o.Transaction)
-                                ? L(e, t, {
+                                ? D(e, t, {
                                     get: function() {
                                       return this.table(t)
                                     },
@@ -11162,7 +11162,7 @@
                               ? i
                               : i && 'function' == typeof i.then
                               ? i.then(n, r)
-                              : Wn(i)
+                              : Zn(i)
                               ? Promise.all(i).then(n, r)
                               : n(i)
                           }
@@ -11180,7 +11180,7 @@
                         return [t, i, n]
                       },
                       je = function(t, e, n) {
-                        for (var r = Wn(t) ? t.slice() : [t], o = 0; o < n; ++o)
+                        for (var r = Zn(t) ? t.slice() : [t], o = 0; o < n; ++o)
                           r.push(e)
                         return r
                       },
@@ -11273,21 +11273,21 @@
                       },
                       Te = function(t, e) {
                         return (
-                          Zn(e).forEach(function(n) {
+                          Wn(e).forEach(function(n) {
                             ke(t[n] || (t[n] = new ko()), e[n])
                           }),
                           t
                         )
                       },
-                      Re = function(t) {
-                        var e = Lo
+                      Le = function(t) {
+                        var e = Do
                         try {
-                          ;(Lo = !0), mo.storagemutated.fire(t)
+                          ;(Do = !0), mo.storagemutated.fire(t)
                         } finally {
-                          Lo = e
+                          Do = e
                         }
                       },
-                      De = function(t, e) {
+                      Re = function(t, e) {
                         return !e ||
                           ('object' !== zo(e) && 'function' != typeof e)
                           ? (function(t) {
@@ -11302,7 +11302,7 @@
                       Me = function() {
                         return new Ko()
                       },
-                      Le = function(t, e) {
+                      De = function(t, e) {
                         ;(null == e || e > t.length) && (e = t.length)
                         for (var n = 0, r = new Array(e); n < e; n++)
                           r[n] = t[n]
@@ -11414,7 +11414,7 @@
                           })(t, e) ||
                           (function(t, e) {
                             if (t) {
-                              if ('string' == typeof t) return Le(t, e)
+                              if ('string' == typeof t) return De(t, e)
                               var n = Object.prototype.toString
                                 .call(t)
                                 .slice(8, -1)
@@ -11428,7 +11428,7 @@
                                     /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(
                                       n,
                                     )
-                                  ? Le(t, e)
+                                  ? De(t, e)
                                   : void 0
                               )
                             }
@@ -11441,7 +11441,7 @@
                         )
                       },
                       Ve = function() {
-                        return Wo
+                        return Zo
                       },
                       $e = function() {
                         return Go.apply(this, arguments)
@@ -11455,10 +11455,10 @@
                       qe = function(t, e, n, r) {
                         return Qo.apply(this, arguments)
                       },
-                      Ze = function(t, e, n) {
+                      We = function(t, e, n) {
                         return Xo.apply(this, arguments)
                       },
-                      We = function(t, e) {
+                      Ze = function(t, e) {
                         return ti.apply(this, arguments)
                       },
                       Ge = function(t, e) {
@@ -11475,7 +11475,7 @@
                       },
                       Xe = function(t) {
                         var e
-                        return !!(null === (e = Zo[t]) || void 0 === e
+                        return !!(null === (e = Wo[t]) || void 0 === e
                           ? void 0
                           : e.options.onBeginEditSyncItem)
                       },
@@ -11490,7 +11490,7 @@
                           arguments.length > 3 && void 0 !== arguments[3]
                             ? arguments[3]
                             : {}
-                        Zo[t] = {type: t, dependsOn: e, process: n, options: r}
+                        Wo[t] = {type: t, dependsOn: e, process: n, options: r}
                       },
                       rn = function() {
                         if (
@@ -11734,7 +11734,7 @@
                           return Je
                         },
                         getSynchronizationItemsFor: function() {
-                          return We
+                          return Ze
                         },
                         isOfflineUuid: function() {
                           return un
@@ -11749,10 +11749,10 @@
                           return Mn
                         },
                         omrsOfflineResponseBodyHttpHeaderName: function() {
-                          return Rn
+                          return Ln
                         },
                         omrsOfflineResponseStatusHttpHeaderName: function() {
-                          return Dn
+                          return Rn
                         },
                         putDynamicOfflineData: function() {
                           return vn
@@ -11761,7 +11761,7 @@
                           return yn
                         },
                         queueSynchronizationItem: function() {
-                          return Ze
+                          return We
                         },
                         queueSynchronizationItemFor: function() {
                           return qe
@@ -12104,11 +12104,11 @@
                         })(),
                       ),
                       Tn = void 0,
-                      Rn = 'x-omrs-offline-response-body',
-                      Dn = 'x-omrs-offline-response-status',
+                      Ln = 'x-omrs-offline-response-body',
+                      Rn = 'x-omrs-offline-response-status',
                       Mn = 'x-omrs-offline-caching-strategy',
-                      Ln = h(602),
-                      Bn = h.n(Ln)
+                      Dn = h(602),
+                      Bn = h.n(Dn)
                     function Nn() {
                       return (Nn = S(
                         Bn().mark(function t(e) {
@@ -12298,8 +12298,8 @@
                           : 'undefined' != typeof window
                           ? window
                           : n.g,
-                      Zn = Object.keys,
-                      Wn = Array.isArray
+                      Wn = Object.keys,
+                      Zn = Array.isArray
                     'undefined' == typeof Promise ||
                       qn.Promise ||
                       (qn.Promise = Promise)
@@ -12313,7 +12313,7 @@
                     }
                     var tr = [].slice
                     function er(t, e) {
-                      if (D(t, e)) return t[e]
+                      if (R(t, e)) return t[e]
                       if (!e) return t
                       if ('string' != typeof e) {
                         for (var n = [], r = 0, o = e.length; r < o; ++r) {
@@ -12345,7 +12345,7 @@
                               a = e.substr(i + 1)
                             if ('' === a)
                               void 0 === n
-                                ? Wn(t) && !isNaN(parseInt(u))
+                                ? Zn(t) && !isNaN(parseInt(u))
                                   ? t.splice(u, 1)
                                   : delete t[u]
                                 : (t[u] = n)
@@ -12355,7 +12355,7 @@
                             }
                           } else
                             void 0 === n
-                              ? Wn(t) && !isNaN(parseInt(e))
+                              ? Zn(t) && !isNaN(parseInt(e))
                                 ? t.splice(e, 1)
                                 : delete t[e]
                               : (t[e] = n)
@@ -12387,7 +12387,7 @@
                       if (!t || 'object' != typeof t) return t
                       var e = ur && ur.get(t)
                       if (e) return e
-                      if (Wn(t)) {
+                      if (Zn(t)) {
                         ;(e = []), ur && ur.set(t, e)
                         for (var n = 0, r = t.length; n < r; ++n)
                           e.push(ar(t[n]))
@@ -12398,7 +12398,7 @@
                           o === Object.prototype ? {} : Object.create(o)),
                         ur && ur.set(t, e),
                         t))
-                          D(t, i) && (e[i] = ar(t[i]))
+                          R(t, i) && (e[i] = ar(t[i]))
                       }
                       return e
                     }
@@ -12571,8 +12571,8 @@
                       Pr = kr && kr.then,
                       Ir = Cr && Cr.constructor,
                       Tr = !!Ar,
-                      Rr = !1,
-                      Dr = Ar
+                      Lr = !1,
+                      Rr = Ar
                         ? function() {
                             Ar.then(yt)
                           }
@@ -12590,9 +12590,9 @@
                             setTimeout(yt, 0)
                           },
                       Mr = function(t, e) {
-                        zr.push([t, e]), Br && (Dr(), (Br = !1))
+                        zr.push([t, e]), Br && (Rr(), (Br = !1))
                       },
-                      Lr = !0,
+                      Dr = !0,
                       Br = !0,
                       Nr = [],
                       Ur = [],
@@ -12603,13 +12603,13 @@
                         global: !0,
                         ref: 0,
                         unhandleds: [],
-                        onunhandled: Dt,
+                        onunhandled: Rt,
                         pgp: !1,
                         env: {},
                         finalize: function() {
                           this.unhandleds.forEach(function(t) {
                             try {
-                              Dt(t[0], t[1])
+                              Rt(t[0], t[1])
                             } catch (t) {}
                           })
                         },
@@ -12618,7 +12618,7 @@
                       zr = [],
                       Kr = 0,
                       qr = [],
-                      Zr = {
+                      Wr = {
                         get: function() {
                           var t = function(t, r) {
                               var o = this,
@@ -12643,21 +12643,21 @@
                           return (t.prototype = jr), t
                         },
                         set: function(t) {
-                          L(
+                          D(
                             this,
                             'then',
                             t && t.prototype === jr
-                              ? Zr
+                              ? Wr
                               : {
                                   get: function() {
                                     return t
                                   },
-                                  set: Zr.set,
+                                  set: Wr.set,
                                 },
                           )
                         },
                       }
-                    function Wr(t, e) {
+                    function Zr(t, e) {
                       try {
                         e(function(e) {
                           if (null === t._state) {
@@ -12667,7 +12667,7 @@
                               )
                             var n = t._lib && gt()
                             e && 'function' == typeof e.then
-                              ? Wr(t, function(t, n) {
+                              ? Zr(t, function(t, n) {
                                   c(e, st) ? e._then(t, n) : e.then(t, n)
                                 })
                               : ((t._state = !0), (t._value = e), dt(t)),
@@ -12702,7 +12702,7 @@
                       )
                     }
                     M(st.prototype, {
-                      then: Zr,
+                      then: Wr,
                       _then: function(t, e) {
                         pt(this, new lt(null, null, t, e, $r))
                       },
@@ -12732,11 +12732,11 @@
                         get: function() {
                           if (this._stack) return this._stack
                           try {
-                            Rr = !0
+                            Lr = !0
                             var t = Gr(this, [], 20).join('\nFrom previous: ')
                             return null !== this._state && (this._stack = t), t
                           } finally {
-                            Rr = !1
+                            Lr = !1
                           }
                         },
                       },
@@ -12754,11 +12754,11 @@
                     }),
                       'undefined' != typeof Symbol &&
                         Symbol.toStringTag &&
-                        L(st.prototype, Symbol.toStringTag, 'Dexie.Promise'),
+                        D(st.prototype, Symbol.toStringTag, 'Dexie.Promise'),
                       (Vr.env = At()),
                       M(st, {
                         all: function() {
-                          var t = Z.apply(null, arguments).map(jt)
+                          var t = W.apply(null, arguments).map(jt)
                           return new st(function(e, n) {
                             0 === t.length && e([])
                             var r = t.length
@@ -12780,7 +12780,7 @@
                         },
                         reject: wt,
                         race: function() {
-                          var t = Z.apply(null, arguments).map(jt)
+                          var t = W.apply(null, arguments).map(jt)
                           return new st(function(e, n) {
                             t.map(function(t) {
                               return st.resolve(t).then(e, n)
@@ -12849,8 +12849,8 @@
                       }),
                       Ir &&
                         (Ir.allSettled &&
-                          L(st, 'allSettled', function() {
-                            var t = Z.apply(null, arguments).map(jt)
+                          D(st, 'allSettled', function() {
+                            var t = W.apply(null, arguments).map(jt)
                             return new st(function(e) {
                               0 === t.length && e([])
                               var n = t.length,
@@ -12880,8 +12880,8 @@
                           }),
                         Ir.any &&
                           'undefined' != typeof AggregateError &&
-                          L(st, 'any', function() {
-                            var t = Z.apply(null, arguments).map(jt)
+                          D(st, 'any', function() {
+                            var t = W.apply(null, arguments).map(jt)
                             return new st(function(e, n) {
                               0 === t.length && n(new AggregateError([]))
                               var r = t.length,
@@ -13034,12 +13034,12 @@
                                 }
                                 if ('string' == typeof t)
                                   return new this.db.WhereClause(this, t)
-                                if (Wn(t))
+                                if (Zn(t))
                                   return new this.db.WhereClause(
                                     this,
                                     '['.concat(t.join('+'), ']'),
                                   )
-                                var n = Zn(t)
+                                var n = Wn(t)
                                 if (1 === n.length)
                                   return this.where(n[0]).equals(t[n[0]])
                                 var r = this.schema.indexes
@@ -13091,7 +13091,7 @@
                                                   ? function(t) {
                                                       var n = er(t, r)
                                                       return (
-                                                        Wn(n) &&
+                                                        Zn(n) &&
                                                         n.some(function(t) {
                                                           return e(s, t)
                                                         })
@@ -13169,7 +13169,7 @@
                                 return new this.db.Collection(
                                   new this.db.WhereClause(
                                     this,
-                                    Wn(t) ? '['.concat(t.join('+'), ']') : t,
+                                    Zn(t) ? '['.concat(t.join('+'), ']') : t,
                                   ),
                                 )
                               },
@@ -13188,7 +13188,7 @@
                                   if (!e) return e
                                   var n = Object.create(t.prototype)
                                   for (var r in e)
-                                    if (D(e, r))
+                                    if (R(e, r))
                                       try {
                                         n[r] = e[r]
                                       } catch (t) {}
@@ -13209,7 +13209,7 @@
                               key: 'defineClass',
                               value: function() {
                                 return this.mapToClass(function(t) {
-                                  R(this, t)
+                                  L(this, t)
                                 })
                               },
                             },
@@ -13222,7 +13222,7 @@
                                   i = r.keyPath,
                                   u = t
                                 return (
-                                  i && o && (u = Lt(i)(t)),
+                                  i && o && (u = Dt(i)(t)),
                                   this._trans('readwrite', function(t) {
                                     return n.core.mutate({
                                       trans: t,
@@ -13249,7 +13249,7 @@
                             {
                               key: 'update',
                               value: function(t, e) {
-                                if ('object' != typeof t || Wn(t))
+                                if ('object' != typeof t || Zn(t))
                                   return this.where(':id')
                                     .equals(t)
                                     .modify(e)
@@ -13262,7 +13262,7 @@
                                   )
                                 try {
                                   'function' != typeof e
-                                    ? Zn(e).forEach(function(n) {
+                                    ? Wn(e).forEach(function(n) {
                                         nr(t, n, e[n])
                                       })
                                     : e(t, {value: t, primKey: n})
@@ -13281,7 +13281,7 @@
                                   i = r.keyPath,
                                   u = t
                                 return (
-                                  i && o && (u = Lt(i)(t)),
+                                  i && o && (u = Dt(i)(t)),
                                   this._trans('readwrite', function(t) {
                                     return n.core.mutate({
                                       trans: t,
@@ -13376,7 +13376,7 @@
                                       'Arguments objects and keys must have the same length',
                                     )
                                   var s = t.length,
-                                    l = c && a ? t.map(Lt(c)) : t
+                                    l = c && a ? t.map(Dt(c)) : t
                                   return r.core
                                     .mutate({
                                       trans: e,
@@ -13424,7 +13424,7 @@
                                       'Arguments objects and keys must have the same length',
                                     )
                                   var s = t.length,
-                                    l = c && a ? t.map(Lt(c)) : t
+                                    l = c && a ? t.map(Dt(c)) : t
                                   return r.core
                                     .mutate({
                                       trans: e,
@@ -13519,7 +13519,7 @@
                               )
                                 if (t[i] !== e[i]) return t[i] < e[i] ? -1 : 1
                               return n === r ? 0 : n < r ? -1 : 1
-                            })(Zt(t), Zt(e))
+                            })(Wt(t), Wt(e))
                           case 'Array':
                             return (function(t, e) {
                               for (
@@ -13583,7 +13583,7 @@
                                     this.constructor.prototype,
                                   ),
                                   n = Object.create(this._ctx)
-                                return t && R(n, t), (e._ctx = n), e
+                                return t && L(n, t), (e._ctx = n), e
                               },
                             },
                             {
@@ -13938,7 +13938,7 @@
                                 return (
                                   Ht(this._ctx, function(t) {
                                     var e = t.primaryKey.toString(),
-                                      r = D(n, e)
+                                      r = R(n, e)
                                     return (n[e] = !0), !r
                                   }),
                                   this
@@ -13954,7 +13954,7 @@
                                   var o
                                   if ('function' == typeof t) o = t
                                   else {
-                                    var i = Zn(t),
+                                    var i = Wn(t),
                                       u = i.length
                                     o = function(e) {
                                       for (var n = !1, r = 0; r < u; ++r) {
@@ -13983,7 +13983,7 @@
                                         u = void 0
                                       try {
                                         for (
-                                          var a, c = Zn(n)[Symbol.iterator]();
+                                          var a, c = Wn(n)[Symbol.iterator]();
                                           !(o = (a = c.next()).done);
                                           o = !0
                                         ) {
@@ -14287,7 +14287,7 @@
                             {
                               key: 'anyOfIgnoreCase',
                               value: function() {
-                                var t = Z.apply(fr, arguments)
+                                var t = W.apply(fr, arguments)
                                 return 0 === t.length
                                   ? Yt(this)
                                   : Xt(
@@ -14303,7 +14303,7 @@
                             {
                               key: 'startsWithAnyOfIgnoreCase',
                               value: function() {
-                                var t = Z.apply(fr, arguments)
+                                var t = W.apply(fr, arguments)
                                 return 0 === t.length
                                   ? Yt(this)
                                   : Xt(
@@ -14322,7 +14322,7 @@
                               key: 'anyOf',
                               value: function() {
                                 var t = this,
-                                  e = Z.apply(fr, arguments),
+                                  e = W.apply(fr, arguments),
                                   n = this._cmp
                                 try {
                                   e.sort(n)
@@ -14372,7 +14372,7 @@
                             {
                               key: 'noneOf',
                               value: function() {
-                                var t = Z.apply(fr, arguments)
+                                var t = W.apply(fr, arguments)
                                 if (0 === t.length)
                                   return new this.Collection(this)
                                 try {
@@ -14497,7 +14497,7 @@
                             {
                               key: 'startsWithAnyOf',
                               value: function() {
-                                var t = Z.apply(fr, arguments)
+                                var t = W.apply(fr, arguments)
                                 return t.every(function(t) {
                                   return 'string' == typeof t
                                 })
@@ -14736,7 +14736,7 @@
                                 var e =
                                   this._memoizedTables ||
                                   (this._memoizedTables = {})
-                                if (D(e, t)) return e[t]
+                                if (R(e, t)) return e[t]
                                 var n = this.schema[t]
                                 if (!n)
                                   throw new Sr.NotFound(
@@ -14782,7 +14782,7 @@
                             {
                               key: '_parseStoresSpec',
                               value: function(t, e) {
-                                Zn(t).forEach(function(n) {
+                                Wn(t).forEach(function(n) {
                                   if (null !== t[n]) {
                                     var r = t[n].split(',').map(function(t, e) {
                                         var n = (t = t.trim()).replace(
@@ -14800,7 +14800,7 @@
                                           /\&/.test(t),
                                           /\*/.test(t),
                                           /\+\+/.test(t),
-                                          Wn(r),
+                                          Zn(r),
                                           0 === e,
                                         )
                                       }),
@@ -14829,14 +14829,14 @@
                               value: function(t) {
                                 var e = this.db
                                 this._cfg.storesSource = this._cfg.storesSource
-                                  ? R(this._cfg.storesSource, t)
+                                  ? L(this._cfg.storesSource, t)
                                   : t
                                 var n = e._versions,
                                   r = {},
                                   o = {}
                                 return (
                                   n.forEach(function(t) {
-                                    R(r, t._cfg.storesSource),
+                                    L(r, t._cfg.storesSource),
                                       (o = t._cfg.dbschema = {}),
                                       t._parseStoresSpec(r, o)
                                   }),
@@ -14854,10 +14854,10 @@
                                       e.Transaction.prototype,
                                       this._cfg.tables,
                                     ],
-                                    Zn(o),
+                                    Wn(o),
                                     o,
                                   ),
-                                  (e._storeNames = Zn(o)),
+                                  (e._storeNames = Wn(o)),
                                   this
                                 )
                               },
@@ -15133,8 +15133,8 @@
                       return (
                         (n = n || {}),
                         (r = r || ''),
-                        Zn(t).forEach(function(o) {
-                          if (D(e, o)) {
+                        Wn(t).forEach(function(o) {
+                          if (R(e, o)) {
                             var i = t[o],
                               u = e[o]
                             if (
@@ -15152,8 +15152,8 @@
                             } else i !== u && (n[r + o] = e[o])
                           } else n[r + o] = void 0
                         }),
-                        Zn(e).forEach(function(o) {
-                          D(t, o) || (n[r + o] = e[o])
+                        Wn(e).forEach(function(o) {
+                          R(t, o) || (n[r + o] = e[o])
                         }),
                         n
                       )
@@ -15234,7 +15234,7 @@
                                                   var h = t.values[o]
                                                   Object.keys(p).forEach(
                                                     function(t) {
-                                                      D(h, t)
+                                                      R(h, t)
                                                         ? (h[t] = p[t])
                                                         : nr(h, t, p[t])
                                                     },
@@ -15420,9 +15420,9 @@
                       ko = function(t, e) {
                         if (!this) {
                           var n = new ko()
-                          return t && 'd' in t && R(n, t), n
+                          return t && 'd' in t && L(n, t), n
                         }
-                        R(
+                        L(
                           this,
                           arguments.length
                             ? {d: 1, from: t, to: arguments.length > 1 ? e : t}
@@ -15433,7 +15433,7 @@
                       var r = ho(e, n)
                       if (!isNaN(r)) {
                         if (r > 0) throw RangeError()
-                        if (Ce(t)) return R(t, {from: e, to: n, d: 1})
+                        if (Ce(t)) return L(t, {from: e, to: n, d: 1})
                         var o = t.l,
                           i = t.r
                         if (ho(n, t.from) < 0)
@@ -15541,7 +15541,7 @@
                                       v = p[1],
                                       y = t.trans._cache
                                     return o.mutate(t).then(function(t) {
-                                      if (Wn(h)) {
+                                      if (Zn(h)) {
                                         'delete' !== d && (h = t.results),
                                           s.addKeys(h)
                                         var e = Ee(h, y)
@@ -15558,7 +15558,7 @@
                                                 },
                                                 n = o(t.name || ''),
                                                 r = function(e) {
-                                                  return t.multiEntry && Wn(e)
+                                                  return t.multiEntry && Zn(e)
                                                     ? e.forEach(function(t) {
                                                         return n.addKey(t)
                                                       })
@@ -15616,7 +15616,7 @@
                                   openCursor: d,
                                 }
                               return (
-                                Zn(p).forEach(function(t) {
+                                Wn(p).forEach(function(t) {
                                   f[t] = function(i) {
                                     var u = $r.subscr
                                     if (u) {
@@ -16201,7 +16201,7 @@
                                                       ;($r.trans = i),
                                                         ($r.transless = a),
                                                         0 === e
-                                                          ? (Zn(o).forEach(
+                                                          ? (Wn(o).forEach(
                                                               function(t) {
                                                                 ve(
                                                                   n,
@@ -16360,7 +16360,7 @@
                                                                               .Transaction
                                                                               .prototype,
                                                                           ],
-                                                                          Zn(i),
+                                                                          Wn(i),
                                                                           i,
                                                                         ),
                                                                         (s.schema = i)
@@ -16467,7 +16467,7 @@
                                                               function() {
                                                                 var t, e
                                                                 ;(e = l),
-                                                                  Zn(
+                                                                  Wn(
                                                                     (t = h),
                                                                   ).forEach(
                                                                     function(
@@ -16525,7 +16525,7 @@
                                                           fe(
                                                             r,
                                                             [r._allTables],
-                                                            Zn(o),
+                                                            Wn(o),
                                                             o,
                                                           )
                                                       })(t, f, p)
@@ -16739,7 +16739,7 @@
                               key: 'tables',
                               get: function() {
                                 var t = this
-                                return Zn(this._allTables).map(function(e) {
+                                return Wn(this._allTables).map(function(e) {
                                   return t._allTables[e]
                                 })
                               },
@@ -16833,7 +16833,7 @@
                             {
                               key: 'table',
                               value: function(t) {
-                                if (!D(this._allTables, t))
+                                if (!R(this._allTables, t))
                                   throw new Sr.InvalidTable(
                                     'Table '.concat(t, ' does not exist'),
                                   )
@@ -16844,11 +16844,11 @@
                           t
                         )
                       })(),
-                      Ro =
+                      Lo =
                         'undefined' != typeof Symbol && 'observable' in Symbol
                           ? Symbol.observable
                           : '@@observable',
-                      Do = (function() {
+                      Ro = (function() {
                         function t(e) {
                           o(this, t), (this._subscribe = e)
                         }
@@ -16865,7 +16865,7 @@
                               },
                             },
                             {
-                              key: Ro,
+                              key: Lo,
                               value: function() {
                                 return this
                               },
@@ -16930,7 +16930,7 @@
                         },
                         defineClass: function() {
                           return function(t) {
-                            R(this, t)
+                            L(this, t)
                           }
                         },
                         ignoreTransaction: function(t) {
@@ -16980,7 +16980,7 @@
                             return pr
                           },
                           set: function(t) {
-                            W(
+                            Z(
                               t,
                               'dexie' === t
                                 ? function() {
@@ -16991,15 +16991,15 @@
                           },
                         },
                         derive: B,
-                        extend: R,
+                        extend: L,
                         props: M,
                         override: U,
                         Events: Bt,
                         on: mo,
                         liveQuery: function(t) {
-                          return new Do(function(e) {
+                          return new Ro(function(e) {
                             var n = function() {
-                                return Zn(u).some(function(t) {
+                                return Wn(u).some(function(t) {
                                   return (
                                     i[t] &&
                                     (function(t, e) {
@@ -17118,7 +17118,7 @@
                         'undefined' != typeof addEventListener &&
                         (mo('storagemutated', function(t) {
                           var e
-                          Lo ||
+                          Do ||
                             (ao
                               ? (e = document.createEvent(
                                   'CustomEvent',
@@ -17131,22 +17131,22 @@
                               : (e = new CustomEvent('x-storagemutated-1', {
                                   detail: t,
                                 })),
-                            (Lo = !0),
+                            (Do = !0),
                             dispatchEvent(e),
-                            (Lo = !1))
+                            (Do = !1))
                         }),
                         addEventListener('x-storagemutated-1', function(t) {
                           var e = t.detail
-                          Lo || Re(e)
+                          Do || Le(e)
                         }))
-                    var Lo = !1
+                    var Do = !1
                     if ('undefined' != typeof BroadcastChannel) {
                       var Bo = new BroadcastChannel('x-storagemutated-1')
                       mo('storagemutated', function(t) {
-                        Lo || Bo.postMessage(t)
+                        Do || Bo.postMessage(t)
                       }),
                         (Bo.onmessage = function(t) {
-                          t.data && Re(t.data)
+                          t.data && Le(t.data)
                         })
                     } else if (
                       'undefined' != typeof self &&
@@ -17154,7 +17154,7 @@
                     ) {
                       mo('storagemutated', function(t) {
                         try {
-                          Lo ||
+                          Do ||
                             ('undefined' != typeof localStorage &&
                               localStorage.setItem(
                                 'x-storagemutated-1',
@@ -17179,7 +17179,7 @@
                         addEventListener('storage', function(t) {
                           if ('x-storagemutated-1' === t.key) {
                             var e = JSON.parse(t.newValue)
-                            e && Re(e.changedParts)
+                            e && Le(e.changedParts)
                           }
                         })
                       var No = self.document && navigator.serviceWorker
@@ -17188,7 +17188,7 @@
                           var e = t.data
                           e &&
                             'x-storagemutated-1' === e.type &&
-                            Re(e.changedParts)
+                            Le(e.changedParts)
                         })
                     }
                     ;(st.rejectionMapper = function(t, e) {
@@ -17204,7 +17204,7 @@
                       var n = new xr[t.name](e || t.message, t)
                       return (
                         'stack' in t &&
-                          L(n, 'stack', {
+                          D(n, 'stack', {
                             get: function() {
                               return this.inner.stack
                             },
@@ -17212,7 +17212,7 @@
                         n
                       )
                     }),
-                      W(pr, lo)
+                      Z(pr, lo)
                     var Uo = h(766),
                       Ho = h(685)
                     function Fo(t) {
@@ -17288,7 +17288,7 @@
                                 var o = Fo(this).constructor
                                 t = Reflect.construct(r, arguments, o)
                               } else t = r.apply(this, arguments)
-                              return De(this, t)
+                              return Re(this, t)
                             })
                         function o() {
                           var t
@@ -17316,8 +17316,8 @@
                         return o
                       })(To),
                       qo = new Ko(),
-                      Zo = {},
-                      Wo = (0, Ho.createGlobalStore)(
+                      Wo = {},
+                      Zo = (0, Ho.createGlobalStore)(
                         'offline-synchronization',
                         {},
                       )
@@ -17331,7 +17331,7 @@
                                 for (;;)
                                   switch ((t.prev = t.next)) {
                                     case 0:
-                                      if (!Wo.getState().synchronization) {
+                                      if (!Zo.getState().synchronization) {
                                         t.next = 2
                                         break
                                       }
@@ -17341,20 +17341,20 @@
                                     case 4:
                                       ;(e = t.sent),
                                         (n = {}),
-                                        (r = Object.entries(Zo)),
+                                        (r = Object.entries(Wo)),
                                         (o = r.length),
                                         (i = {}),
                                         (u = new AbortController()),
                                         (a = function() {
-                                          var t = Wo.getState().synchronization
-                                          Wo.setState({
+                                          var t = Zo.getState().synchronization
+                                          Zo.setState({
                                             synchronization: He({}, t, {
                                               pendingCount: t.pendingCount - 1,
                                             }),
                                           })
                                         }),
                                         (t.prev = 11),
-                                        Wo.setState({
+                                        Zo.setState({
                                           synchronization: {
                                             totalCount: e,
                                             pendingCount: e,
@@ -17405,7 +17405,7 @@
                                     case 32:
                                       return (
                                         (t.prev = 32),
-                                        Wo.setState({synchronization: void 0}),
+                                        Zo.setState({synchronization: void 0}),
                                         t.finish(32)
                                       )
                                     case 35:
@@ -17715,7 +17715,7 @@
                                 case 0:
                                   return (t.next = 2), Ke()
                                 case 2:
-                                  return (n = t.sent), (t.next = 5), We(n, e)
+                                  return (n = t.sent), (t.next = 5), Ze(n, e)
                                 case 5:
                                   return t.abrupt('return', t.sent)
                                 case 6:
@@ -17796,7 +17796,7 @@
                                 case 6:
                                   if (
                                     (o =
-                                      null === (n = Zo[r.type]) || void 0 === n
+                                      null === (n = Wo[r.type]) || void 0 === n
                                         ? void 0
                                         : n.options.onBeginEditSyncItem)
                                   ) {
@@ -18468,35 +18468,6 @@
               i(
                 (function() {
                   var i = {
-                      841: function(t, e) {
-                        var n
-                        !(function() {
-                          'use strict'
-                          var r = {}.hasOwnProperty
-                          function i() {
-                            for (var t = [], e = 0; e < arguments.length; e++) {
-                              var n = arguments[e]
-                              if (n) {
-                                var u = void 0 === n ? 'undefined' : o(n)
-                                if ('string' === u || 'number' === u) t.push(n)
-                                else if (Array.isArray(n) && n.length) {
-                                  var a = i.apply(null, n)
-                                  a && t.push(a)
-                                } else if ('object' === u)
-                                  for (var c in n)
-                                    r.call(n, c) && n[c] && t.push(c)
-                              }
-                            }
-                            return t.join(' ')
-                          }
-                          t.exports
-                            ? ((i.default = i), (t.exports = i))
-                            : void 0 ===
-                                (n = function() {
-                                  return i
-                                }.apply(e, [])) || (t.exports = n)
-                        })()
-                      },
                       332: function(t) {
                         t.exports = (function() {
                           'use strict'
@@ -18716,12 +18687,12 @@
                                   return t(e)
                                 }
                               },
-                              R = function(t, e) {
+                              L = function(t, e) {
                                 return v(e, function(e) {
                                   return t[e]
                                 })
                               },
-                              D = function(t, e) {
+                              R = function(t, e) {
                                 return t.has(e)
                               },
                               M = function(t, e) {
@@ -18732,7 +18703,7 @@
                                 );
                                 return n
                               },
-                              L = function(t, e) {
+                              D = function(t, e) {
                                 for (
                                   var n = t.length;
                                   n-- && S(e, t[n], 0) > -1;
@@ -18749,7 +18720,7 @@
                                 return '\\' + Ve[t]
                               },
                               U = function(t) {
-                                return Le.test(t)
+                                return De.test(t)
                               },
                               H = function(t) {
                                 var e = -1,
@@ -18792,8 +18763,8 @@
                                 return U(t)
                                   ? (function(t) {
                                       for (
-                                        var e = (De.lastIndex = 0);
-                                        De.test(t);
+                                        var e = (Re.lastIndex = 0);
+                                        Re.test(t);
 
                                       )
                                         ++e
@@ -18802,7 +18773,7 @@
                                   : un(t)
                               },
                               K = function(t) {
-                                return U(t) ? t.match(De) || [] : t.split('')
+                                return U(t) ? t.match(Re) || [] : t.split('')
                               },
                               q = function(t) {
                                 for (
@@ -18812,8 +18783,8 @@
                                 );
                                 return e
                               },
-                              Z = 'Expected a function',
-                              W = '__lodash_hash_undefined__',
+                              W = 'Expected a function',
+                              Z = '__lodash_hash_undefined__',
                               G = '__lodash_placeholder__',
                               J = 32,
                               Y = 128,
@@ -18862,10 +18833,10 @@
                               Pt = /\b__p \+= '';/g,
                               It = /\b(__p \+=) '' \+/g,
                               Tt = /(__e\(.*?\)|\b__t\)) \+\n'';/g,
-                              Rt = /&(?:amp|lt|gt|quot|#39);/g,
-                              Dt = /[&<>"']/g,
-                              Mt = RegExp(Rt.source),
-                              Lt = RegExp(Dt.source),
+                              Lt = /&(?:amp|lt|gt|quot|#39);/g,
+                              Rt = /[&<>"']/g,
+                              Mt = RegExp(Lt.source),
+                              Dt = RegExp(Rt.source),
                               Bt = /<%-([\s\S]+?)%>/g,
                               Nt = /<%([\s\S]+?)%>/g,
                               Ut = /<%=([\s\S]+?)%>/g,
@@ -18876,8 +18847,8 @@
                               zt = RegExp($t.source),
                               Kt = /^\s+/,
                               qt = /\s/,
-                              Zt = /\{(?:\n\/\* \[wrapped with .+\] \*\/)?\n?/,
-                              Wt = /\{\n\/\* \[wrapped with (.+)\] \*/,
+                              Wt = /\{(?:\n\/\* \[wrapped with .+\] \*\/)?\n?/,
+                              Zt = /\{\n\/\* \[wrapped with (.+)\] \*/,
                               Gt = /,? & /,
                               Jt = /[^\x00-\x2f\x3a-\x40\x5b-\x60\x7b-\x7f]+/g,
                               Yt = /[()=,{}\[\]\/\s]/,
@@ -18946,8 +18917,8 @@
                                 ].join('|') +
                                 ')',
                               Te = RegExp("['’]", 'g'),
-                              Re = RegExp(he, 'g'),
-                              De = RegExp(
+                              Le = RegExp(he, 'g'),
+                              Re = RegExp(
                                 me + '(?=' + me + ')|' + Ie + Ae,
                                 'g',
                               ),
@@ -18976,7 +18947,7 @@
                                 ].join('|'),
                                 'g',
                               ),
-                              Le = RegExp(
+                              De = RegExp(
                                 '[\\u200d\ud800-\udfff' +
                                   se +
                                   '\\ufe0e\\ufe0f]',
@@ -19053,10 +19024,10 @@
                                 self &&
                                 self.Object === Object &&
                                 self,
-                              Ze = Ke || qe || Function('return this')(),
-                              We = e && !e.nodeType && e,
-                              Ge = We && t && !t.nodeType && t,
-                              Je = Ge && Ge.exports === We,
+                              We = Ke || qe || Function('return this')(),
+                              Ze = e && !e.nodeType && e,
+                              Ge = Ze && t && !t.nodeType && t,
+                              Je = Ge && Ge.exports === Ze,
                               Ye = Je && Ke.process,
                               Qe = (function() {
                                 try {
@@ -19447,7 +19418,7 @@
                                     return !0
                                   },
                                   Ae = function(t, e, n) {
-                                    if ('function' != typeof t) throw new pi(Z)
+                                    if ('function' != typeof t) throw new pi(W)
                                     return Fu(function() {
                                       t.apply(u, n)
                                     }, e)
@@ -19464,7 +19435,7 @@
                                       r
                                         ? ((i = h), (u = !1))
                                         : e.length >= 200 &&
-                                          ((i = D), (u = !1), (e = new he(e)))
+                                          ((i = R), (u = !1), (e = new he(e)))
                                     t: for (; ++o < a; ) {
                                       var l = t[o],
                                         f = null == n ? l : n(l)
@@ -19488,20 +19459,20 @@
                                       n
                                     )
                                   },
-                                  De = function(t, e, n) {
+                                  Re = function(t, e, n) {
                                     for (var r = -1, o = t.length; ++r < o; ) {
                                       var i = t[r],
                                         a = e(i)
                                       if (
                                         null != a &&
-                                        (c === u ? a == a && !Do(a) : n(a, c))
+                                        (c === u ? a == a && !Ro(a) : n(a, c))
                                       )
                                         var c = a,
                                           s = i
                                     }
                                     return s
                                   },
-                                  Le = function(t, e) {
+                                  De = function(t, e) {
                                     var n = []
                                     return (
                                       mu(t, function(t, r, o) {
@@ -19521,7 +19492,7 @@
                                       return Eo(t[e])
                                     })
                                   },
-                                  We = function(t, e) {
+                                  Ze = function(t, e) {
                                     for (
                                       var n = 0, r = (e = Jn(e, t)).length;
                                       null != t && n < r;
@@ -19539,18 +19510,18 @@
                                       ? t === u
                                         ? '[object Undefined]'
                                         : '[object Null]'
-                                      : Li && Li in li(t)
+                                      : Di && Di in li(t)
                                       ? (function(t) {
-                                          var e = bi.call(t, Li),
-                                            n = t[Li]
+                                          var e = bi.call(t, Di),
+                                            n = t[Di]
                                           try {
-                                            t[Li] = u
+                                            t[Di] = u
                                             var r = !0
                                           } catch (t) {}
                                           var o = Si.call(t)
                                           return (
                                             r &&
-                                              (e ? (t[Li] = n) : delete t[Li]),
+                                              (e ? (t[Di] = n) : delete t[Di]),
                                             o
                                           )
                                         })(t)
@@ -19595,11 +19566,11 @@
                                         m = e ? e(g) : g
                                       if (
                                         ((g = n || 0 !== g ? g : 0),
-                                        !(y ? D(y, m) : r(l, m, n)))
+                                        !(y ? R(y, m) : r(l, m, n)))
                                       ) {
                                         for (a = i; --a; ) {
                                           var b = c[a]
-                                          if (!(b ? D(b, m) : r(t[a], m, n)))
+                                          if (!(b ? R(b, m) : r(t[a], m, n)))
                                             continue t
                                         }
                                         y && y.push(m), l.push(g)
@@ -19609,7 +19580,7 @@
                                   },
                                   pn = function(t, e, n) {
                                     var r =
-                                      null == (t = Wr(t, (e = Jn(e, t))))
+                                      null == (t = Zr(t, (e = Jn(e, t))))
                                         ? t
                                         : t[to(ao(e))]
                                     return null == r ? u : a(r, t, n)
@@ -19665,7 +19636,7 @@
                                       : ni(t)
                                   },
                                   mn = function(t) {
-                                    if (!zr(t)) return Zi(t)
+                                    if (!zr(t)) return Wi(t)
                                     var e = []
                                     for (var n in li(t))
                                       bi.call(t, n) &&
@@ -19716,7 +19687,7 @@
                                       ? v(e, function(t) {
                                           return Pa(t)
                                             ? function(e) {
-                                                return We(
+                                                return Ze(
                                                   e,
                                                   1 === t.length ? t[0] : t,
                                                 )
@@ -19726,7 +19697,7 @@
                                       : [Qo]
                                     var r = -1
                                     return (
-                                      (e = v(e, T(Rr()))),
+                                      (e = v(e, T(Lr()))),
                                       (function(t, e) {
                                         var r = t.length
                                         for (
@@ -19778,8 +19749,8 @@
 
                                     ) {
                                       var u = e[r],
-                                        a = We(t, u)
-                                      n(a, u) && Rn(i, Jn(u, t), a)
+                                        a = Ze(t, u)
+                                      n(a, u) && Ln(i, Jn(u, t), a)
                                     }
                                     return i
                                   },
@@ -19799,8 +19770,8 @@
                                         (c = o(a, l, c, r)) > -1;
 
                                       )
-                                        a !== t && Ri.call(a, c, 1),
-                                          Ri.call(t, c, 1)
+                                        a !== t && Li.call(a, c, 1),
+                                          Li.call(t, c, 1)
                                     return t
                                   },
                                   Cn = function(t, e) {
@@ -19812,7 +19783,7 @@
                                       var o = e[n]
                                       if (n == r || o !== i) {
                                         var i = o
-                                        Hr(o) ? Ri.call(t, o, 1) : Vn(t, o)
+                                        Hr(o) ? Li.call(t, o, 1) : Vn(t, o)
                                       }
                                     }
                                     return t
@@ -19830,16 +19801,16 @@
                                     return n
                                   },
                                   Pn = function(t, e) {
-                                    return Vu(Zr(t, e, Qo), t + '')
+                                    return Vu(Wr(t, e, Qo), t + '')
                                   },
                                   In = function(t) {
-                                    return ge(Zo(t))
+                                    return ge(Wo(t))
                                   },
                                   Tn = function(t, e) {
-                                    var n = Zo(t)
+                                    var n = Wo(t)
                                     return Xr(n, Ce(e, 0, n.length))
                                   },
-                                  Rn = function(t, e, n, r) {
+                                  Ln = function(t, e, n, r) {
                                     if (!Ao(t)) return t
                                     for (
                                       var o = -1,
@@ -19870,8 +19841,8 @@
                                     }
                                     return t
                                   },
-                                  Dn = function(t) {
-                                    return Xr(Zo(t))
+                                  Rn = function(t) {
+                                    return Xr(Wo(t))
                                   },
                                   Mn = function(t, e, n) {
                                     var r = -1,
@@ -19884,7 +19855,7 @@
                                       i[r] = t[r + e]
                                     return i
                                   },
-                                  Ln = function(t, e) {
+                                  Dn = function(t, e) {
                                     var n
                                     return (
                                       mu(t, function(t, r, o) {
@@ -19905,7 +19876,7 @@
                                         var i = (r + o) >>> 1,
                                           u = t[i]
                                         null !== u &&
-                                        !Do(u) &&
+                                        !Ro(u) &&
                                         (n ? u <= e : u < e)
                                           ? (r = i + 1)
                                           : (o = i)
@@ -19921,7 +19892,7 @@
                                     for (
                                       var a = (e = n(e)) != e,
                                         c = null === e,
-                                        s = Do(e),
+                                        s = Ro(e),
                                         l = e === u;
                                       o < i;
 
@@ -19931,7 +19902,7 @@
                                         p = d !== u,
                                         h = null === d,
                                         v = d == d,
-                                        y = Do(d)
+                                        y = Ro(d)
                                       if (a) var g = r || v
                                       else
                                         g = l
@@ -19963,7 +19934,7 @@
                                   Hn = function(t) {
                                     return 'number' == typeof t
                                       ? t
-                                      : Do(t)
+                                      : Ro(t)
                                       ? tt
                                       : +t
                                   },
@@ -19978,7 +19949,7 @@
                                     else if (i >= 200) {
                                       var s = e ? null : Iu(t)
                                       if (s) return $(s)
-                                      ;(u = !1), (o = D), (c = new he())
+                                      ;(u = !1), (o = R), (c = new he())
                                     } else c = e ? [] : a
                                     t: for (; ++r < i; ) {
                                       var l = t[r],
@@ -19998,12 +19969,12 @@
                                   },
                                   Vn = function(t, e) {
                                     return (
-                                      null == (t = Wr(t, (e = Jn(e, t)))) ||
+                                      null == (t = Zr(t, (e = Jn(e, t)))) ||
                                       delete t[to(ao(e))]
                                     )
                                   },
                                   $n = function(t, e, n, r) {
-                                    return Rn(t, e, n(We(t, e)), r)
+                                    return Ln(t, e, n(Ze(t, e)), r)
                                   },
                                   zn = function(t, e, n, r) {
                                     for (
@@ -20040,7 +20011,7 @@
                                           (i[o] = Pe(i[o] || u, t[a], e, n))
                                     return Fn(wu(i, 1), e, n)
                                   },
-                                  Zn = function(t, e, n) {
+                                  Wn = function(t, e, n) {
                                     for (
                                       var r = -1,
                                         o = t.length,
@@ -20054,7 +20025,7 @@
                                     }
                                     return a
                                   },
-                                  Wn = function(t) {
+                                  Zn = function(t) {
                                     return Oo(t) ? t : []
                                   },
                                   Gn = function(t) {
@@ -20097,11 +20068,11 @@
                                       var n = t !== u,
                                         r = null === t,
                                         o = t == t,
-                                        i = Do(t),
+                                        i = Ro(t),
                                         a = e !== u,
                                         c = null === e,
                                         s = e == e,
-                                        l = Do(e)
+                                        l = Ro(e)
                                       if (
                                         (!c && !l && !i && t > e) ||
                                         (i && a && s && !c && !l) ||
@@ -20128,7 +20099,7 @@
                                         u = n.length,
                                         a = -1,
                                         c = e.length,
-                                        s = Wi(i - u, 0),
+                                        s = Zi(i - u, 0),
                                         l = ii(c + s),
                                         f = !r;
                                       ++a < c;
@@ -20148,7 +20119,7 @@
                                         a = n.length,
                                         c = -1,
                                         s = e.length,
-                                        l = Wi(i - a, 0),
+                                        l = Zi(i - a, 0),
                                         f = ii(l + s),
                                         d = !r;
                                       ++o < l;
@@ -20182,7 +20153,7 @@
                                     return function(n, r) {
                                       var o = Pa(n) ? c : xe,
                                         i = e ? e() : {}
-                                      return o(n, t, Rr(r, 2), i)
+                                      return o(n, t, Lr(r, 2), i)
                                     }
                                   },
                                   ar = function(t) {
@@ -20304,7 +20275,7 @@
                                     return function(e, n, r) {
                                       var o = li(e)
                                       if (!xo(e)) {
-                                        var i = Rr(n, 3)
+                                        var i = Lr(n, 3)
                                         ;(e = zo(e)),
                                           (n = function(t) {
                                             return i(o[t], t, o)
@@ -20322,13 +20293,13 @@
                                       for (t && e.reverse(); r--; ) {
                                         var i = e[r]
                                         if ('function' != typeof i)
-                                          throw new pi(Z)
+                                          throw new pi(W)
                                         if (o && !a && 'wrapper' == Ir(i))
                                           var a = new se([], !0)
                                       }
                                       for (r = a ? r : n; ++r < n; ) {
                                         var c = Ir((i = e[r])),
-                                          s = 'wrapper' == c ? Ru(i) : u
+                                          s = 'wrapper' == c ? Lu(i) : u
                                         a =
                                           s &&
                                           $r(s[0]) &&
@@ -20389,7 +20360,7 @@
                                   gr = function(t) {
                                     return kr(function(e) {
                                       return (
-                                        (e = v(e, T(Rr()))),
+                                        (e = v(e, T(Lr()))),
                                         Pn(function(n) {
                                           var r = this
                                           return t(e, function(t) {
@@ -20414,14 +20385,14 @@
                                           'number' != typeof r &&
                                           Fr(e, n, r) &&
                                           (n = r = u),
-                                        (e = Lo(e)),
+                                        (e = Do(e)),
                                         n === u
                                           ? ((n = e), (e = 0))
-                                          : (n = Lo(n)),
+                                          : (n = Do(n)),
                                         (function(t, e, n, r) {
                                           for (
                                             var o = -1,
-                                              i = Wi(Fi((e - t) / (n || 1)), 0),
+                                              i = Zi(Fi((e - t) / (n || 1)), 0),
                                               u = ii(i);
                                             i--;
 
@@ -20432,7 +20403,7 @@
                                           e,
                                           n,
                                           (r =
-                                            r === u ? (e < n ? 1 : -1) : Lo(r)),
+                                            r === u ? (e < n ? 1 : -1) : Do(r)),
                                           t,
                                         )
                                       )
@@ -20496,7 +20467,7 @@
                                     return function(e) {
                                       var n,
                                         r,
-                                        o = Lu(e)
+                                        o = Du(e)
                                       return o == lt
                                         ? H(e)
                                         : o == vt
@@ -20520,11 +20491,11 @@
                                   Or = function(t, e, n, o, i, c, s, l) {
                                     var f = 2 & e
                                     if (!f && 'function' != typeof t)
-                                      throw new pi(Z)
+                                      throw new pi(W)
                                     var d = o ? o.length : 0
                                     if (
                                       (d || ((e &= -97), (o = i = u)),
-                                      (s = s === u ? s : Wi(Bo(s), 0)),
+                                      (s = s === u ? s : Zi(Bo(s), 0)),
                                       (l = l === u ? l : Bo(l)),
                                       (d -= i ? i.length : 0),
                                       64 & e)
@@ -20537,7 +20508,7 @@
                                       y,
                                       g,
                                       m,
-                                      b = f ? u : Ru(t),
+                                      b = f ? u : Lu(t),
                                       w = [t, e, n, o, i, p, h, c, s, l]
                                     if (
                                       (b &&
@@ -20588,7 +20559,7 @@
                                           ? f
                                             ? 0
                                             : t.length
-                                          : Wi(w[9] - d, 0)) &&
+                                          : Zi(w[9] - d, 0)) &&
                                         24 & e &&
                                         (e &= -25),
                                       e && 1 != e)
@@ -20629,7 +20600,7 @@
                                                   )
                                                 : a(
                                                     this &&
-                                                      this !== Ze &&
+                                                      this !== We &&
                                                       r(this, t)
                                                       ? m
                                                       : v,
@@ -20651,7 +20622,7 @@
                                                     d = ii(f + s),
                                                     p =
                                                       this &&
-                                                      this !== Ze &&
+                                                      this !== We &&
                                                       r(this, e)
                                                         ? u
                                                         : t;
@@ -20670,7 +20641,7 @@
                                           i = dr(t)
                                         return function e() {
                                           return (this &&
-                                          this !== Ze &&
+                                          this !== We &&
                                           r(this, e)
                                             ? i
                                             : t
@@ -20715,7 +20686,7 @@
                                         if (
                                           !b(e, function(t, e) {
                                             if (
-                                              !D(h, e) &&
+                                              !R(h, e) &&
                                               (v === t || o(v, t, n, r, i))
                                             )
                                               return h.push(e)
@@ -20732,10 +20703,10 @@
                                     return i.delete(t), i.delete(e), p
                                   },
                                   kr = function(t) {
-                                    return Vu(Zr(t, u, io), t + '')
+                                    return Vu(Wr(t, u, io), t + '')
                                   },
                                   Ar = function(t) {
-                                    return Ge(t, zo, Du)
+                                    return Ge(t, zo, Ru)
                                   },
                                   Pr = function(t) {
                                     return Ge(t, Ko, Mu)
@@ -20758,7 +20729,7 @@
                                     return (bi.call(C, 'placeholder') ? C : t)
                                       .placeholder
                                   },
-                                  Rr = function() {
+                                  Lr = function() {
                                     var t = C.iteratee || Xo
                                     return (
                                       (t = t === Xo ? gn : t),
@@ -20767,7 +20738,7 @@
                                         : t
                                     )
                                   },
-                                  Dr = function(t, e) {
+                                  Rr = function(t, e) {
                                     var n,
                                       r,
                                       i = t.__data__
@@ -20792,7 +20763,7 @@
                                     }
                                     return e
                                   },
-                                  Lr = function(t, e) {
+                                  Dr = function(t, e) {
                                     var n,
                                       r = null == (n = t) ? u : n[e]
                                     return yn(r) ? r : u
@@ -20824,7 +20795,7 @@
                                   },
                                   Ur = function(t) {
                                     return (
-                                      Pa(t) || Aa(t) || !!(Di && t && t[Di])
+                                      Pa(t) || Aa(t) || !!(Ri && t && t[Ri])
                                     )
                                   },
                                   Hr = function(t, e) {
@@ -20857,7 +20828,7 @@
                                         'symbol' != n &&
                                         'boolean' != n &&
                                         null != t &&
-                                        !Do(t)
+                                        !Ro(t)
                                       ) ||
                                       Ft.test(t) ||
                                       !Ht.test(t) ||
@@ -20873,7 +20844,7 @@
                                     )
                                       return !1
                                     if (t === n) return !0
-                                    var r = Ru(n)
+                                    var r = Lu(n)
                                     return !!r && t === r[0]
                                   },
                                   zr = function(t) {
@@ -20897,14 +20868,14 @@
                                       )
                                     }
                                   },
-                                  Zr = function(t, e, n) {
+                                  Wr = function(t, e, n) {
                                     return (
-                                      (e = Wi(e === u ? t.length - 1 : e, 0)),
+                                      (e = Zi(e === u ? t.length - 1 : e, 0)),
                                       function() {
                                         for (
                                           var r = arguments,
                                             o = -1,
-                                            i = Wi(r.length - e, 0),
+                                            i = Zi(r.length - e, 0),
                                             u = ii(i);
                                           ++o < i;
 
@@ -20917,10 +20888,10 @@
                                       }
                                     )
                                   },
-                                  Wr = function(t, e) {
+                                  Zr = function(t, e) {
                                     return e.length < 2
                                       ? t
-                                      : We(t, Mn(e, 0, -1))
+                                      : Ze(t, Mn(e, 0, -1))
                                   },
                                   Gr = function(t, e) {
                                     for (
@@ -20958,7 +20929,7 @@
                                           (e[r] = (n > 1 ? '& ' : '') + e[r]),
                                           (e = e.join(n > 2 ? ', ' : ' ')),
                                           t.replace(
-                                            Zt,
+                                            Wt,
                                             '{\n/* [wrapped with ' +
                                               e +
                                               '] */\n',
@@ -20966,7 +20937,7 @@
                                         )
                                       })(
                                         u,
-                                        ((o = (r = u.match(Wt))
+                                        ((o = (r = u.match(Zt))
                                           ? r[1].split(Gt)
                                           : []),
                                         (i = n),
@@ -21002,7 +20973,7 @@
                                     return (t.length = e), t
                                   },
                                   to = function(t) {
-                                    if ('string' == typeof t || Do(t)) return t
+                                    if ('string' == typeof t || Ro(t)) return t
                                     var e = t + ''
                                     return '0' == e && 1 / t == -1 / 0
                                       ? '-0'
@@ -21034,8 +21005,8 @@
                                     if (!r) return -1
                                     var o = null == n ? 0 : Bo(n)
                                     return (
-                                      o < 0 && (o = Wi(r + o, 0)),
-                                      _(t, Rr(e, 3), o)
+                                      o < 0 && (o = Zi(r + o, 0)),
+                                      _(t, Lr(e, 3), o)
                                     )
                                   },
                                   oo = function(t, e, n) {
@@ -21046,8 +21017,8 @@
                                       n !== u &&
                                         ((o = Bo(n)),
                                         (o =
-                                          n < 0 ? Wi(r + o, 0) : Gi(o, r - 1))),
-                                      _(t, Rr(e, 3), o, !0)
+                                          n < 0 ? Zi(r + o, 0) : Gi(o, r - 1))),
+                                      _(t, Lr(e, 3), o, !0)
                                     )
                                   },
                                   io = function(t) {
@@ -21074,7 +21045,7 @@
                                     return (
                                       (t = d(t, function(t) {
                                         if (Oo(t))
-                                          return (e = Wi(t.length, e)), !0
+                                          return (e = Zi(t.length, e)), !0
                                       })),
                                       P(e, function(e) {
                                         return v(t, E(e))
@@ -21098,13 +21069,13 @@
                                     return e(t)
                                   },
                                   vo = function(t, e) {
-                                    return (Pa(t) ? s : mu)(t, Rr(e, 3))
+                                    return (Pa(t) ? s : mu)(t, Lr(e, 3))
                                   },
                                   yo = function(t, e) {
-                                    return (Pa(t) ? l : bu)(t, Rr(e, 3))
+                                    return (Pa(t) ? l : bu)(t, Lr(e, 3))
                                   },
                                   go = function(t, e) {
-                                    return (Pa(t) ? v : wn)(t, Rr(e, 3))
+                                    return (Pa(t) ? v : wn)(t, Lr(e, 3))
                                   },
                                   mo = function(t, e, n) {
                                     return (
@@ -21115,7 +21086,7 @@
                                   },
                                   bo = function(t, e) {
                                     var n
-                                    if ('function' != typeof e) throw new pi(Z)
+                                    if ('function' != typeof e) throw new pi(W)
                                     return (
                                       (t = Bo(t)),
                                       function() {
@@ -21139,7 +21110,7 @@
                                       f = !1,
                                       d = !1,
                                       p = !0
-                                    if ('function' != typeof t) throw new pi(Z)
+                                    if ('function' != typeof t) throw new pi(W)
                                     function h(e) {
                                       var n = r,
                                         i = o
@@ -21200,7 +21171,7 @@
                                       Ao(n) &&
                                         ((f = !!n.leading),
                                         (i = (d = 'maxWait' in n)
-                                          ? Wi(Uo(n.maxWait) || 0, e)
+                                          ? Zi(Uo(n.maxWait) || 0, e)
                                           : i),
                                         (p =
                                           'trailing' in n ? !!n.trailing : p)),
@@ -21216,7 +21187,7 @@
                                     )
                                   },
                                   _o = function(t) {
-                                    if ('function' != typeof t) throw new pi(Z)
+                                    if ('function' != typeof t) throw new pi(W)
                                     return function() {
                                       var e = arguments
                                       switch (e.length) {
@@ -21301,13 +21272,13 @@
                                       mi.call(n) == xi
                                     )
                                   },
-                                  Ro = function(t) {
+                                  Lo = function(t) {
                                     return (
                                       'string' == typeof t ||
                                       (!Pa(t) && Po(t) && Ye(t) == yt)
                                     )
                                   },
-                                  Do = function(t) {
+                                  Ro = function(t) {
                                     return (
                                       'symbol' ==
                                         (void 0 === t ? 'undefined' : o(t)) ||
@@ -21316,7 +21287,7 @@
                                   },
                                   Mo = function(t) {
                                     if (!t) return []
-                                    if (xo(t)) return Ro(t) ? K(t) : or(t)
+                                    if (xo(t)) return Lo(t) ? K(t) : or(t)
                                     if (Mi && t[Mi])
                                       return (function(t) {
                                         for (
@@ -21327,10 +21298,10 @@
                                           n.push(e.value)
                                         return n
                                       })(t[Mi]())
-                                    var e = Lu(t)
-                                    return (e == lt ? H : e == vt ? $ : Zo)(t)
+                                    var e = Du(t)
+                                    return (e == lt ? H : e == vt ? $ : Wo)(t)
                                   },
-                                  Lo = function(t) {
+                                  Do = function(t) {
                                     return t
                                       ? (t = Uo(t)) === Q || t === -1 / 0
                                         ? 17976931348623157e292 *
@@ -21343,7 +21314,7 @@
                                       : 0
                                   },
                                   Bo = function(t) {
-                                    var e = Lo(t),
+                                    var e = Do(t),
                                       n = e % 1
                                     return e == e ? (n ? e - n : e) : 0
                                   },
@@ -21352,7 +21323,7 @@
                                   },
                                   Uo = function(t) {
                                     if ('number' == typeof t) return t
-                                    if (Do(t)) return tt
+                                    if (Ro(t)) return tt
                                     if (Ao(t)) {
                                       var e =
                                         'function' == typeof t.valueOf
@@ -21377,7 +21348,7 @@
                                     return null == t ? '' : Cu(t)
                                   },
                                   Vo = function(t, e, n) {
-                                    var r = null == t ? u : We(t, e)
+                                    var r = null == t ? u : Ze(t, e)
                                     return r === u ? n : r
                                   },
                                   $o = function(t, e) {
@@ -21412,22 +21383,22 @@
                                       return [t]
                                     })
                                     return (
-                                      (e = Rr(e)),
+                                      (e = Lr(e)),
                                       jn(t, n, function(t, n) {
                                         return e(t, n[0])
                                       })
                                     )
                                   },
-                                  Zo = function(t) {
-                                    return null == t ? [] : R(t, zo(t))
-                                  },
                                   Wo = function(t) {
+                                    return null == t ? [] : L(t, zo(t))
+                                  },
+                                  Zo = function(t) {
                                     return sc(Fo(t).toLowerCase())
                                   },
                                   Go = function(t) {
                                     return (
                                       (t = Fo(t)) &&
-                                      t.replace(ue, an).replace(Re, '')
+                                      t.replace(ue, an).replace(Le, '')
                                     )
                                   },
                                   Jo = function(t, e, n) {
@@ -21511,7 +21482,7 @@
                                       ? E(to(t))
                                       : ((e = t),
                                         function(t) {
-                                          return We(t, e)
+                                          return Ze(t, e)
                                         })
                                     var e
                                   },
@@ -21523,11 +21494,11 @@
                                   },
                                   ii = (e =
                                     null == e
-                                      ? Ze
+                                      ? We
                                       : ln.defaults(
-                                          Ze.Object(),
+                                          We.Object(),
                                           e,
-                                          ln.pick(Ze, Ne),
+                                          ln.pick(We, Ne),
                                         )).Array,
                                   ui = e.Date,
                                   ai = e.Error,
@@ -21551,7 +21522,7 @@
                                     : '',
                                   Si = yi.toString,
                                   xi = mi.call(li),
-                                  Oi = Ze._,
+                                  Oi = We._,
                                   ji = fi(
                                     '^' +
                                       mi
@@ -21570,22 +21541,22 @@
                                   Pi = F(li.getPrototypeOf, li),
                                   Ii = li.create,
                                   Ti = yi.propertyIsEnumerable,
-                                  Ri = hi.splice,
-                                  Di = Ci ? Ci.isConcatSpreadable : u,
+                                  Li = hi.splice,
+                                  Ri = Ci ? Ci.isConcatSpreadable : u,
                                   Mi = Ci ? Ci.iterator : u,
-                                  Li = Ci ? Ci.toStringTag : u,
+                                  Di = Ci ? Ci.toStringTag : u,
                                   Bi = (function() {
                                     try {
-                                      var t = Lr(li, 'defineProperty')
+                                      var t = Dr(li, 'defineProperty')
                                       return t({}, '', {}), t
                                     } catch (t) {}
                                   })(),
                                   Ni =
-                                    e.clearTimeout !== Ze.clearTimeout &&
+                                    e.clearTimeout !== We.clearTimeout &&
                                     e.clearTimeout,
-                                  Ui = ui && ui.now !== Ze.Date.now && ui.now,
+                                  Ui = ui && ui.now !== We.Date.now && ui.now,
                                   Hi =
-                                    e.setTimeout !== Ze.setTimeout &&
+                                    e.setTimeout !== We.setTimeout &&
                                     e.setTimeout,
                                   Fi = si.ceil,
                                   Vi = si.floor,
@@ -21593,19 +21564,19 @@
                                   zi = Ei ? Ei.isBuffer : u,
                                   Ki = e.isFinite,
                                   qi = hi.join,
-                                  Zi = F(li.keys, li),
-                                  Wi = si.max,
+                                  Wi = F(li.keys, li),
+                                  Zi = si.max,
                                   Gi = si.min,
                                   Ji = ui.now,
                                   Yi = e.parseInt,
                                   Qi = si.random,
                                   Xi = hi.reverse,
-                                  tu = Lr(e, 'DataView'),
-                                  eu = Lr(e, 'Map'),
-                                  nu = Lr(e, 'Promise'),
-                                  ru = Lr(e, 'Set'),
-                                  ou = Lr(e, 'WeakMap'),
-                                  iu = Lr(li, 'create'),
+                                  tu = Dr(e, 'DataView'),
+                                  eu = Dr(e, 'Map'),
+                                  nu = Dr(e, 'Promise'),
+                                  ru = Dr(e, 'Set'),
+                                  ou = Dr(e, 'WeakMap'),
+                                  iu = Dr(li, 'create'),
                                   uu = ou && new ou(),
                                   au = {},
                                   cu = eo(tu),
@@ -21654,7 +21625,7 @@
                                     )
                                       return or(t, a)
                                   } else {
-                                    var y = Lu(t),
+                                    var y = Du(t),
                                       g = y == ct || y == st
                                     if (Ta(t)) return Qn(t, c)
                                     if (y == dt || y == rt || (g && !o)) {
@@ -21669,7 +21640,7 @@
                                               })(a, t),
                                             )
                                           : (function(t, e) {
-                                              return ir(t, Du(t), e)
+                                              return ir(t, Ru(t), e)
                                             })(t, Oe(a, t))
                                     } else {
                                       if (!Fe[y]) return o ? t : {}
@@ -21732,11 +21703,11 @@
                                   var m = i.get(t)
                                   if (m) return m
                                   i.set(t, a),
-                                    La(t)
+                                    Da(t)
                                       ? t.forEach(function(r) {
                                           a.add(gu(r, e, n, r, t, i))
                                         })
-                                      : Da(t) &&
+                                      : Ra(t) &&
                                         t.forEach(function(r, o) {
                                           a.set(o, gu(r, e, n, o, t, i))
                                         })
@@ -21777,7 +21748,7 @@
                                     var e = this.__data__
                                     if (iu) {
                                       var n = e[t]
-                                      return n === W ? u : n
+                                      return n === Z ? u : n
                                     }
                                     return bi.call(e, t) ? e[t] : u
                                   }),
@@ -21789,7 +21760,7 @@
                                     var n = this.__data__
                                     return (
                                       (this.size += this.has(t) ? 0 : 1),
-                                      (n[t] = iu && e === u ? W : e),
+                                      (n[t] = iu && e === u ? Z : e),
                                       this
                                     )
                                   }),
@@ -21803,7 +21774,7 @@
                                       n < 0 ||
                                       (n == e.length - 1
                                         ? e.pop()
-                                        : Ri.call(e, n, 1),
+                                        : Li.call(e, n, 1),
                                       --this.size,
                                       0)
                                     )
@@ -21835,17 +21806,17 @@
                                       })
                                   }),
                                   (pe.prototype.delete = function(t) {
-                                    var e = Dr(this, t).delete(t)
+                                    var e = Rr(this, t).delete(t)
                                     return (this.size -= e ? 1 : 0), e
                                   }),
                                   (pe.prototype.get = function(t) {
-                                    return Dr(this, t).get(t)
+                                    return Rr(this, t).get(t)
                                   }),
                                   (pe.prototype.has = function(t) {
-                                    return Dr(this, t).has(t)
+                                    return Rr(this, t).has(t)
                                   }),
                                   (pe.prototype.set = function(t, e) {
-                                    var n = Dr(this, t),
+                                    var n = Rr(this, t),
                                       r = n.size
                                     return (
                                       n.set(t, e),
@@ -21856,7 +21827,7 @@
                                   (he.prototype.add = he.prototype.push = function(
                                     t,
                                   ) {
-                                    return this.__data__.set(t, W), this
+                                    return this.__data__.set(t, Z), this
                                   }),
                                   (he.prototype.has = function(t) {
                                     return this.__data__.has(t)
@@ -21922,8 +21893,8 @@
                                       : (function(t, e, n, o, i, a) {
                                           var c = Pa(t),
                                             s = Pa(e),
-                                            l = c ? ot : Lu(t),
-                                            f = s ? ot : Lu(e),
+                                            l = c ? ot : Du(t),
+                                            f = s ? ot : Du(e),
                                             d = (l = l == rt ? dt : l) == dt,
                                             p = (f = f == rt ? dt : f) == dt,
                                             h = l == f
@@ -22156,7 +22127,7 @@
                                 function Cu(t) {
                                   if ('string' == typeof t) return t
                                   if (Pa(t)) return v(t, Cu) + ''
-                                  if (Do(t)) return vu ? vu.call(t) : ''
+                                  if (Ro(t)) return vu ? vu.call(t) : ''
                                   var e = t + ''
                                   return '0' == e && 1 / t == -1 / 0 ? '-0' : e
                                 }
@@ -22164,7 +22135,7 @@
                                   Au =
                                     Ni ||
                                     function(t) {
-                                      return Ze.clearTimeout(t)
+                                      return We.clearTimeout(t)
                                     }
                                 function Pu(t, e, n, o, i, a, c, s, l, f) {
                                   var d = e & Y,
@@ -22214,7 +22185,7 @@
                                         : y && m > 1 && b.reverse(),
                                       d && l < m && (b.length = l),
                                       this &&
-                                        this !== Ze &&
+                                        this !== We &&
                                         r(this, u) &&
                                         (j = g || dr(j)),
                                       j.apply(O, b)
@@ -22237,12 +22208,12 @@
                                     t
                                   )
                                 }
-                                var Ru = uu
+                                var Lu = uu
                                     ? function(t) {
                                         return uu.get(t)
                                       }
                                     : ei,
-                                  Du = $i
+                                  Ru = $i
                                     ? function(t) {
                                         return null == t
                                           ? []
@@ -22255,18 +22226,18 @@
                                   Mu = $i
                                     ? function(t) {
                                         for (var e = []; t; )
-                                          y(e, Du(t)), (t = Pi(t))
+                                          y(e, Ru(t)), (t = Pi(t))
                                         return e
                                       }
                                     : ri,
-                                  Lu = Ye
+                                  Du = Ye
                                 ;((tu &&
-                                  Lu(new tu(new ArrayBuffer(1))) != wt) ||
-                                  (eu && Lu(new eu()) != lt) ||
-                                  (nu && Lu(nu.resolve()) != pt) ||
-                                  (ru && Lu(new ru()) != vt) ||
-                                  (ou && Lu(new ou()) != mt)) &&
-                                  (Lu = function(t) {
+                                  Du(new tu(new ArrayBuffer(1))) != wt) ||
+                                  (eu && Du(new eu()) != lt) ||
+                                  (nu && Du(nu.resolve()) != pt) ||
+                                  (ru && Du(new ru()) != vt) ||
+                                  (ou && Du(new ou()) != mt)) &&
+                                  (Du = function(t) {
                                     var e = Ye(t),
                                       n = e == dt ? t.constructor : u,
                                       r = n ? eo(n) : ''
@@ -22292,7 +22263,7 @@
                                   Fu =
                                     Hi ||
                                     function(t, e) {
-                                      return Ze.setTimeout(t, e)
+                                      return We.setTimeout(t, e)
                                     },
                                   Vu = Qr(Eu),
                                   $u =
@@ -22323,7 +22294,7 @@
                                     return (
                                       Oo(n) && (n = u),
                                       Oo(t)
-                                        ? Pe(t, wu(e, 1, Oo, !0), Rr(n, 2))
+                                        ? Pe(t, wu(e, 1, Oo, !0), Lr(n, 2))
                                         : []
                                     )
                                   }),
@@ -22334,25 +22305,25 @@
                                       Oo(t) ? Pe(t, wu(e, 1, Oo, !0), u, n) : []
                                     )
                                   }),
-                                  Zu = Pn(function(t) {
-                                    var e = v(t, Wn)
+                                  Wu = Pn(function(t) {
+                                    var e = v(t, Zn)
                                     return e.length && e[0] === t[0]
                                       ? dn(e)
                                       : []
                                   }),
-                                  Wu = Pn(function(t) {
+                                  Zu = Pn(function(t) {
                                     var e = ao(t),
-                                      n = v(t, Wn)
+                                      n = v(t, Zn)
                                     return (
                                       e === ao(n) ? (e = u) : n.pop(),
                                       n.length && n[0] === t[0]
-                                        ? dn(n, Rr(e, 2))
+                                        ? dn(n, Lr(e, 2))
                                         : []
                                     )
                                   }),
                                   Gu = Pn(function(t) {
                                     var e = ao(t),
-                                      n = v(t, Wn)
+                                      n = v(t, Zn)
                                     return (
                                       (e = 'function' == typeof e ? e : u) &&
                                         n.pop(),
@@ -22382,7 +22353,7 @@
                                     var e = ao(t)
                                     return (
                                       Oo(e) && (e = u),
-                                      Fn(wu(t, 1, Oo, !0), Rr(e, 2))
+                                      Fn(wu(t, 1, Oo, !0), Lr(e, 2))
                                     )
                                   }),
                                   ta = Pn(function(t) {
@@ -22401,7 +22372,7 @@
                                   ra = Pn(function(t) {
                                     var e = ao(t)
                                     return (
-                                      Oo(e) && (e = u), qn(d(t, Oo), Rr(e, 2))
+                                      Oo(e) && (e = u), qn(d(t, Oo), Lr(e, 2))
                                     )
                                   }),
                                   oa = Pn(function(t) {
@@ -22494,7 +22465,7 @@
                                   ya =
                                     Ui ||
                                     function() {
-                                      return Ze.Date.now()
+                                      return We.Date.now()
                                     },
                                   ga = Pn(function(t, e, n) {
                                     var r = 1
@@ -22523,7 +22494,7 @@
                                     'function' != typeof t ||
                                     (null != e && 'function' != typeof e)
                                   )
-                                    throw new pi(Z)
+                                    throw new pi(W)
                                   var n = function() {
                                     var r = arguments,
                                       o = e ? e.apply(this, r) : r[0],
@@ -22539,8 +22510,8 @@
                                   xa = ku(function(t, e) {
                                     var n = (e =
                                       1 == e.length && Pa(e[0])
-                                        ? v(e[0], T(Rr()))
-                                        : v(wu(e, 1), T(Rr()))).length
+                                        ? v(e[0], T(Lr()))
+                                        : v(wu(e, 1), T(Lr()))).length
                                     return Pn(function(r) {
                                       for (
                                         var o = -1, i = Gi(r.length, n);
@@ -22586,25 +22557,25 @@
                                         return Po(t) && Ye(t) == bt
                                       },
                                   Ta = zi || oi,
-                                  Ra = tn
+                                  La = tn
                                     ? T(tn)
                                     : function(t) {
                                         return Po(t) && Ye(t) == ut
                                       },
-                                  Da = en
+                                  Ra = en
                                     ? T(en)
                                     : function(t) {
-                                        return Po(t) && Lu(t) == lt
+                                        return Po(t) && Du(t) == lt
                                       },
                                   Ma = nn
                                     ? T(nn)
                                     : function(t) {
                                         return Po(t) && Ye(t) == ht
                                       },
-                                  La = rn
+                                  Da = rn
                                     ? T(rn)
                                     : function(t) {
-                                        return Po(t) && Lu(t) == vt
+                                        return Po(t) && Du(t) == vt
                                       },
                                   Ba = on
                                     ? T(on)
@@ -22662,20 +22633,20 @@
                                   qa = Pn(function(t) {
                                     return t.push(u, Tu), a(Ya, u, t)
                                   }),
-                                  Za = vr(function(t, e, n) {
+                                  Wa = vr(function(t, e, n) {
                                     null != e &&
                                       'function' != typeof e.toString &&
                                       (e = Si.call(e)),
                                       (t[e] = n)
                                   }, Yo(Qo)),
-                                  Wa = vr(function(t, e, n) {
+                                  Za = vr(function(t, e, n) {
                                     null != e &&
                                       'function' != typeof e.toString &&
                                       (e = Si.call(e)),
                                       bi.call(t, e)
                                         ? t[e].push(n)
                                         : (t[e] = [n])
-                                  }, Rr),
+                                  }, Lr),
                                   Ga = Pn(pn),
                                   Ja = ar(function(t, e, n) {
                                     Ou(t, e, n)
@@ -22711,7 +22682,7 @@
                                   ec = xr(Ko),
                                   nc = fr(function(t, e, n) {
                                     return (
-                                      (e = e.toLowerCase()), t + (n ? Wo(e) : e)
+                                      (e = e.toLowerCase()), t + (n ? Zo(e) : e)
                                     )
                                   }),
                                   rc = fr(function(t, e, n) {
@@ -22780,7 +22751,7 @@
                                   }, 0)
                                 return (
                                   (C.after = function(t, e) {
-                                    if ('function' != typeof e) throw new pi(Z)
+                                    if ('function' != typeof e) throw new pi(W)
                                     return (
                                       (t = Bo(t)),
                                       function() {
@@ -22810,7 +22781,7 @@
                                     ? Fr(t, e, n)
                                     : e === u)
                                       ? 1
-                                      : Wi(Bo(e), 0)
+                                      : Zi(Bo(e), 0)
                                     var r = null == t ? 0 : t.length
                                     if (!r || e < 1) return []
                                     for (
@@ -22850,12 +22821,12 @@
                                   }),
                                   (C.cond = function(t) {
                                     var e = null == t ? 0 : t.length,
-                                      n = Rr()
+                                      n = Lr()
                                     return (
                                       (t = e
                                         ? v(t, function(t) {
                                             if ('function' != typeof t[1])
-                                              throw new pi(Z)
+                                              throw new pi(W)
                                             return [n(t[0]), t[1]]
                                           })
                                         : []),
@@ -22946,12 +22917,12 @@
                                   }),
                                   (C.dropRightWhile = function(t, e) {
                                     return t && t.length
-                                      ? zn(t, Rr(e, 3), !0, !0)
+                                      ? zn(t, Lr(e, 3), !0, !0)
                                       : []
                                   }),
                                   (C.dropWhile = function(t, e) {
                                     return t && t.length
-                                      ? zn(t, Rr(e, 3), !0)
+                                      ? zn(t, Lr(e, 3), !0)
                                       : []
                                   }),
                                   (C.fill = function(t, e, n, r) {
@@ -22979,7 +22950,7 @@
                                       : []
                                   }),
                                   (C.filter = function(t, e) {
-                                    return (Pa(t) ? d : Le)(t, Rr(e, 3))
+                                    return (Pa(t) ? d : De)(t, Lr(e, 3))
                                   }),
                                   (C.flatMap = function(t, e) {
                                     return wu(go(t, e), 1)
@@ -23031,11 +23002,11 @@
                                       ? Mn(t, 0, -1)
                                       : []
                                   }),
-                                  (C.intersection = Zu),
-                                  (C.intersectionBy = Wu),
+                                  (C.intersection = Wu),
+                                  (C.intersectionBy = Zu),
                                   (C.intersectionWith = Gu),
-                                  (C.invert = Za),
-                                  (C.invertBy = Wa),
+                                  (C.invert = Wa),
+                                  (C.invertBy = Za),
                                   (C.invokeMap = da),
                                   (C.iteratee = Xo),
                                   (C.keyBy = pa),
@@ -23045,7 +23016,7 @@
                                   (C.mapKeys = function(t, e) {
                                     var n = {}
                                     return (
-                                      (e = Rr(e, 3)),
+                                      (e = Lr(e, 3)),
                                       Ve(t, function(t, r, o) {
                                         je(n, e(t, r, o), t)
                                       }),
@@ -23055,7 +23026,7 @@
                                   (C.mapValues = function(t, e) {
                                     var n = {}
                                     return (
-                                      (e = Rr(e, 3)),
+                                      (e = Lr(e, 3)),
                                       Ve(t, function(t, r, o) {
                                         je(n, r, e(t, r, o))
                                       }),
@@ -23085,7 +23056,7 @@
                                   }),
                                   (C.omit = Qa),
                                   (C.omitBy = function(t, e) {
-                                    return qo(t, _o(Rr(e)))
+                                    return qo(t, _o(Lr(e)))
                                   }),
                                   (C.once = function(t) {
                                     return bo(2, t)
@@ -23110,14 +23081,14 @@
                                   (C.property = ni),
                                   (C.propertyOf = function(t) {
                                     return function(e) {
-                                      return null == t ? u : We(t, e)
+                                      return null == t ? u : Ze(t, e)
                                     }
                                   }),
                                   (C.pull = Ju),
                                   (C.pullAll = co),
                                   (C.pullAllBy = function(t, e, n) {
                                     return t && t.length && e && e.length
-                                      ? En(t, e, Rr(n, 2))
+                                      ? En(t, e, Lr(n, 2))
                                       : t
                                   }),
                                   (C.pullAllWith = function(t, e, n) {
@@ -23130,7 +23101,7 @@
                                   (C.rangeRight = wc),
                                   (C.rearg = Ea),
                                   (C.reject = function(t, e) {
-                                    return (Pa(t) ? d : Le)(t, _o(Rr(e, 3)))
+                                    return (Pa(t) ? d : De)(t, _o(Lr(e, 3)))
                                   }),
                                   (C.remove = function(t, e) {
                                     var n = []
@@ -23138,14 +23109,14 @@
                                     var r = -1,
                                       o = [],
                                       i = t.length
-                                    for (e = Rr(e, 3); ++r < i; ) {
+                                    for (e = Lr(e, 3); ++r < i; ) {
                                       var u = t[r]
                                       e(u, r, t) && (n.push(u), o.push(r))
                                     }
                                     return Cn(t, o), n
                                   }),
                                   (C.rest = function(t, e) {
-                                    if ('function' != typeof t) throw new pi(Z)
+                                    if ('function' != typeof t) throw new pi(W)
                                     return Pn(t, (e = e === u ? e : Bo(e)))
                                   }),
                                   (C.reverse = so),
@@ -23160,16 +23131,16 @@
                                     )
                                   }),
                                   (C.set = function(t, e, n) {
-                                    return null == t ? t : Rn(t, e, n)
+                                    return null == t ? t : Ln(t, e, n)
                                   }),
                                   (C.setWith = function(t, e, n, r) {
                                     return (
                                       (r = 'function' == typeof r ? r : u),
-                                      null == t ? t : Rn(t, e, n, r)
+                                      null == t ? t : Ln(t, e, n, r)
                                     )
                                   }),
                                   (C.shuffle = function(t) {
-                                    return (Pa(t) ? be : Dn)(t)
+                                    return (Pa(t) ? be : Rn)(t)
                                   }),
                                   (C.slice = function(t, e, n) {
                                     var r = null == t ? 0 : t.length
@@ -23188,7 +23159,7 @@
                                     return t && t.length ? Un(t) : []
                                   }),
                                   (C.sortedUniqBy = function(t, e) {
-                                    return t && t.length ? Un(t, Rr(e, 2)) : []
+                                    return t && t.length ? Un(t, Lr(e, 2)) : []
                                   }),
                                   (C.split = function(t, e, n) {
                                     return (
@@ -23208,9 +23179,9 @@
                                     )
                                   }),
                                   (C.spread = function(t, e) {
-                                    if ('function' != typeof t) throw new pi(Z)
+                                    if ('function' != typeof t) throw new pi(W)
                                     return (
-                                      (e = null == e ? 0 : Wi(Bo(e), 0)),
+                                      (e = null == e ? 0 : Zi(Bo(e), 0)),
                                       Pn(function(n) {
                                         var r = n[e],
                                           o = Yn(n, 0, e)
@@ -23249,11 +23220,11 @@
                                   }),
                                   (C.takeRightWhile = function(t, e) {
                                     return t && t.length
-                                      ? zn(t, Rr(e, 3), !1, !0)
+                                      ? zn(t, Lr(e, 3), !1, !0)
                                       : []
                                   }),
                                   (C.takeWhile = function(t, e) {
-                                    return t && t.length ? zn(t, Rr(e, 3)) : []
+                                    return t && t.length ? zn(t, Lr(e, 3)) : []
                                   }),
                                   (C.tap = function(t, e) {
                                     return e(t), t
@@ -23261,7 +23232,7 @@
                                   (C.throttle = function(t, e, n) {
                                     var r = !0,
                                       o = !0
-                                    if ('function' != typeof t) throw new pi(Z)
+                                    if ('function' != typeof t) throw new pi(W)
                                     return (
                                       Ao(n) &&
                                         ((r = 'leading' in n ? !!n.leading : r),
@@ -23281,7 +23252,7 @@
                                   (C.toPath = function(t) {
                                     return Pa(t)
                                       ? v(t, to)
-                                      : Do(t)
+                                      : Ro(t)
                                       ? [t]
                                       : or($u(Fo(t)))
                                   }),
@@ -23289,7 +23260,7 @@
                                   (C.transform = function(t, e, n) {
                                     var r = Pa(t),
                                       o = r || Ta(t) || Ba(t)
-                                    if (((e = Rr(e, 4)), null == n)) {
+                                    if (((e = Lr(e, 4)), null == n)) {
                                       var i = t && t.constructor
                                       n = o
                                         ? r
@@ -23316,7 +23287,7 @@
                                     return t && t.length ? Fn(t) : []
                                   }),
                                   (C.uniqBy = function(t, e) {
-                                    return t && t.length ? Fn(t, Rr(e, 2)) : []
+                                    return t && t.length ? Fn(t, Lr(e, 2)) : []
                                   }),
                                   (C.uniqWith = function(t, e) {
                                     return (
@@ -23338,9 +23309,9 @@
                                       null == t ? t : $n(t, e, Gn(n), r)
                                     )
                                   }),
-                                  (C.values = Zo),
+                                  (C.values = Wo),
                                   (C.valuesIn = function(t) {
-                                    return null == t ? [] : R(t, Ko(t))
+                                    return null == t ? [] : L(t, Ko(t))
                                   }),
                                   (C.without = ea),
                                   (C.words = Jo),
@@ -23352,10 +23323,10 @@
                                   (C.xorWith = oa),
                                   (C.zip = ia),
                                   (C.zipObject = function(t, e) {
-                                    return Zn(t || [], e || [], _e)
+                                    return Wn(t || [], e || [], _e)
                                   }),
                                   (C.zipObjectDeep = function(t, e) {
-                                    return Zn(t || [], e || [], Rn)
+                                    return Wn(t || [], e || [], Ln)
                                   }),
                                   (C.zipWith = ua),
                                   (C.entries = tc),
@@ -23366,7 +23337,7 @@
                                   (C.add = _c),
                                   (C.attempt = lc),
                                   (C.camelCase = nc),
-                                  (C.capitalize = Wo),
+                                  (C.capitalize = Zo),
                                   (C.ceil = Sc),
                                   (C.clamp = function(t, e, n) {
                                     return (
@@ -23414,8 +23385,8 @@
                                   }),
                                   (C.eq = So),
                                   (C.escape = function(t) {
-                                    return (t = Fo(t)) && Lt.test(t)
-                                      ? t.replace(Dt, cn)
+                                    return (t = Fo(t)) && Dt.test(t)
+                                      ? t.replace(Rt, cn)
                                       : t
                                   }),
                                   (C.escapeRegExp = function(t) {
@@ -23427,33 +23398,33 @@
                                     var r = Pa(t) ? f : Ie
                                     return (
                                       n && Fr(t, e, n) && (e = u),
-                                      r(t, Rr(e, 3))
+                                      r(t, Lr(e, 3))
                                     )
                                   }),
                                   (C.find = sa),
                                   (C.findIndex = ro),
                                   (C.findKey = function(t, e) {
-                                    return w(t, Rr(e, 3), Ve)
+                                    return w(t, Lr(e, 3), Ve)
                                   }),
                                   (C.findLast = la),
                                   (C.findLastIndex = oo),
                                   (C.findLastKey = function(t, e) {
-                                    return w(t, Rr(e, 3), Ke)
+                                    return w(t, Lr(e, 3), Ke)
                                   }),
                                   (C.floor = Oc),
                                   (C.forEach = vo),
                                   (C.forEachRight = yo),
                                   (C.forIn = function(t, e) {
-                                    return null == t ? t : _u(t, Rr(e, 3), Ko)
+                                    return null == t ? t : _u(t, Lr(e, 3), Ko)
                                   }),
                                   (C.forInRight = function(t, e) {
-                                    return null == t ? t : Su(t, Rr(e, 3), Ko)
+                                    return null == t ? t : Su(t, Lr(e, 3), Ko)
                                   }),
                                   (C.forOwn = function(t, e) {
-                                    return t && Ve(t, Rr(e, 3))
+                                    return t && Ve(t, Lr(e, 3))
                                   }),
                                   (C.forOwnRight = function(t, e) {
-                                    return t && Ke(t, Rr(e, 3))
+                                    return t && Ke(t, Lr(e, 3))
                                   }),
                                   (C.get = Vo),
                                   (C.gt = Ca),
@@ -23465,12 +23436,12 @@
                                   (C.head = uo),
                                   (C.identity = Qo),
                                   (C.includes = function(t, e, n, r) {
-                                    ;(t = xo(t) ? t : Zo(t)),
+                                    ;(t = xo(t) ? t : Wo(t)),
                                       (n = n && !r ? Bo(n) : 0)
                                     var o = t.length
                                     return (
-                                      n < 0 && (n = Wi(o + n, 0)),
-                                      Ro(t)
+                                      n < 0 && (n = Zi(o + n, 0)),
+                                      Lo(t)
                                         ? n <= o && t.indexOf(e, n) > -1
                                         : !!o && S(t, e, n) > -1
                                     )
@@ -23480,17 +23451,17 @@
                                     if (!r) return -1
                                     var o = null == n ? 0 : Bo(n)
                                     return (
-                                      o < 0 && (o = Wi(r + o, 0)), S(t, e, o)
+                                      o < 0 && (o = Zi(r + o, 0)), S(t, e, o)
                                     )
                                   }),
                                   (C.inRange = function(t, e, n) {
                                     return (
-                                      (e = Lo(e)),
+                                      (e = Do(e)),
                                       n === u
                                         ? ((n = e), (e = 0))
-                                        : (n = Lo(n)),
+                                        : (n = Do(n)),
                                       (r = t = Uo(t)) >= Gi((o = e), (i = n)) &&
-                                        r < Wi(o, i)
+                                        r < Zi(o, i)
                                     )
                                     var r, o, i
                                   }),
@@ -23508,7 +23479,7 @@
                                     )
                                   }),
                                   (C.isBuffer = Ta),
-                                  (C.isDate = Ra),
+                                  (C.isDate = La),
                                   (C.isElement = function(t) {
                                     return Po(t) && 1 === t.nodeType && !To(t)
                                   }),
@@ -23524,7 +23495,7 @@
                                         Aa(t))
                                     )
                                       return !t.length
-                                    var e = Lu(t)
+                                    var e = Du(t)
                                     if (e == lt || e == vt) return !t.size
                                     if (zr(t)) return !mn(t).length
                                     for (var n in t)
@@ -23547,7 +23518,7 @@
                                   (C.isFunction = Eo),
                                   (C.isInteger = Co),
                                   (C.isLength = ko),
-                                  (C.isMap = Da),
+                                  (C.isMap = Ra),
                                   (C.isMatch = function(t, e) {
                                     return t === e || vn(t, e, Mr(e))
                                   }),
@@ -23583,15 +23554,15 @@
                                       Co(t) && t >= -9007199254740991 && t <= X
                                     )
                                   }),
-                                  (C.isSet = La),
-                                  (C.isString = Ro),
-                                  (C.isSymbol = Do),
+                                  (C.isSet = Da),
+                                  (C.isString = Lo),
+                                  (C.isSymbol = Ro),
                                   (C.isTypedArray = Ba),
                                   (C.isUndefined = function(t) {
                                     return t === u
                                   }),
                                   (C.isWeakMap = function(t) {
-                                    return Po(t) && Lu(t) == mt
+                                    return Po(t) && Du(t) == mt
                                   }),
                                   (C.isWeakSet = function(t) {
                                     return Po(t) && '[object WeakSet]' == Ye(t)
@@ -23609,7 +23580,7 @@
                                       n !== u &&
                                         (o =
                                           (o = Bo(n)) < 0
-                                            ? Wi(r + o, 0)
+                                            ? Zi(r + o, 0)
                                             : Gi(o, r - 1)),
                                       e == e
                                         ? (function(t, e, n) {
@@ -23625,25 +23596,25 @@
                                   (C.lt = Na),
                                   (C.lte = Ua),
                                   (C.max = function(t) {
-                                    return t && t.length ? De(t, Qo, Qe) : u
+                                    return t && t.length ? Re(t, Qo, Qe) : u
                                   }),
                                   (C.maxBy = function(t, e) {
                                     return t && t.length
-                                      ? De(t, Rr(e, 2), Qe)
+                                      ? Re(t, Lr(e, 2), Qe)
                                       : u
                                   }),
                                   (C.mean = function(t) {
                                     return j(t, Qo)
                                   }),
                                   (C.meanBy = function(t, e) {
-                                    return j(t, Rr(e, 2))
+                                    return j(t, Lr(e, 2))
                                   }),
                                   (C.min = function(t) {
-                                    return t && t.length ? De(t, Qo, bn) : u
+                                    return t && t.length ? Re(t, Qo, bn) : u
                                   }),
                                   (C.minBy = function(t, e) {
                                     return t && t.length
-                                      ? De(t, Rr(e, 2), bn)
+                                      ? Re(t, Lr(e, 2), bn)
                                       : u
                                   }),
                                   (C.stubArray = ri),
@@ -23662,7 +23633,7 @@
                                     return t && t.length ? xn(t, Bo(e)) : u
                                   }),
                                   (C.noConflict = function() {
-                                    return Ze._ === this && (Ze._ = Oi), this
+                                    return We._ === this && (We._ = Oi), this
                                   }),
                                   (C.noop = ei),
                                   (C.now = ya),
@@ -23702,10 +23673,10 @@
                                             ((n = t), (t = u))),
                                       t === u && e === u
                                         ? ((t = 0), (e = 1))
-                                        : ((t = Lo(t)),
+                                        : ((t = Do(t)),
                                           e === u
                                             ? ((e = t), (t = 0))
-                                            : (e = Lo(e))),
+                                            : (e = Do(e))),
                                       t > e)
                                     ) {
                                       var r = t
@@ -23729,12 +23700,12 @@
                                   (C.reduce = function(t, e, n) {
                                     var r = Pa(t) ? g : k,
                                       o = arguments.length < 3
-                                    return r(t, Rr(e, 4), n, o, mu)
+                                    return r(t, Lr(e, 4), n, o, mu)
                                   }),
                                   (C.reduceRight = function(t, e, n) {
                                     var r = Pa(t) ? m : k,
                                       o = arguments.length < 3
-                                    return r(t, Rr(e, 4), n, o, bu)
+                                    return r(t, Lr(e, 4), n, o, bu)
                                   }),
                                   (C.repeat = function(t, e, n) {
                                     return (
@@ -23770,25 +23741,25 @@
                                   }),
                                   (C.size = function(t) {
                                     if (null == t) return 0
-                                    if (xo(t)) return Ro(t) ? z(t) : t.length
-                                    var e = Lu(t)
+                                    if (xo(t)) return Lo(t) ? z(t) : t.length
+                                    var e = Du(t)
                                     return e == lt || e == vt
                                       ? t.size
                                       : mn(t).length
                                   }),
                                   (C.snakeCase = uc),
                                   (C.some = function(t, e, n) {
-                                    var r = Pa(t) ? b : Ln
+                                    var r = Pa(t) ? b : Dn
                                     return (
                                       n && Fr(t, e, n) && (e = u),
-                                      r(t, Rr(e, 3))
+                                      r(t, Lr(e, 3))
                                     )
                                   }),
                                   (C.sortedIndex = function(t, e) {
                                     return Bn(t, e)
                                   }),
                                   (C.sortedIndexBy = function(t, e, n) {
-                                    return Nn(t, e, Rr(n, 2))
+                                    return Nn(t, e, Lr(n, 2))
                                   }),
                                   (C.sortedIndexOf = function(t, e) {
                                     var n = null == t ? 0 : t.length
@@ -23802,7 +23773,7 @@
                                     return Bn(t, e, !0)
                                   }),
                                   (C.sortedLastIndexBy = function(t, e, n) {
-                                    return Nn(t, e, Rr(n, 2), !0)
+                                    return Nn(t, e, Lr(n, 2), !0)
                                   }),
                                   (C.sortedLastIndexOf = function(t, e) {
                                     if (null != t && t.length) {
@@ -23826,7 +23797,7 @@
                                     return t && t.length ? A(t, Qo) : 0
                                   }),
                                   (C.sumBy = function(t, e) {
-                                    return t && t.length ? A(t, Rr(e, 2)) : 0
+                                    return t && t.length ? A(t, Lr(e, 2)) : 0
                                   }),
                                   (C.template = function(t, e, n) {
                                     var r = C.templateSettings
@@ -23837,7 +23808,7 @@
                                       i,
                                       a = Va({}, e.imports, r.imports, jr),
                                       c = zo(a),
-                                      s = R(a, c),
+                                      s = L(a, c),
                                       l = 0,
                                       f = e.interpolate || ae,
                                       d = "__p += '",
@@ -23918,11 +23889,11 @@
                                     if ((t = Bo(t)) < 1 || t > X) return []
                                     var n = et,
                                       r = Gi(t, et)
-                                    ;(e = Rr(e)), (t -= et)
+                                    ;(e = Lr(e)), (t -= et)
                                     for (var o = P(r, e); ++n < t; ) e(n)
                                     return o
                                   }),
-                                  (C.toFinite = Lo),
+                                  (C.toFinite = Do),
                                   (C.toInteger = Bo),
                                   (C.toLength = No),
                                   (C.toLower = function(t) {
@@ -23946,14 +23917,14 @@
                                     if (!t || !(e = Cu(e))) return t
                                     var r = K(t),
                                       o = K(e)
-                                    return Yn(r, M(r, o), L(r, o) + 1).join('')
+                                    return Yn(r, M(r, o), D(r, o) + 1).join('')
                                   }),
                                   (C.trimEnd = function(t, e, n) {
                                     if ((t = Fo(t)) && (n || e === u))
                                       return t.slice(0, q(t) + 1)
                                     if (!t || !(e = Cu(e))) return t
                                     var r = K(t)
-                                    return Yn(r, 0, L(r, K(e)) + 1).join('')
+                                    return Yn(r, 0, D(r, K(e)) + 1).join('')
                                   }),
                                   (C.trimStart = function(t, e, n) {
                                     if ((t = Fo(t)) && (n || e === u))
@@ -24008,7 +23979,7 @@
                                   }),
                                   (C.unescape = function(t) {
                                     return (t = Fo(t)) && Mt.test(t)
-                                      ? t.replace(Rt, sn)
+                                      ? t.replace(Lt, sn)
                                       : t
                                   }),
                                   (C.uniqueId = function(t) {
@@ -24045,7 +24016,7 @@
                                   ),
                                   s(['drop', 'take'], function(t, e) {
                                     ;(le.prototype[t] = function(n) {
-                                      n = n === u ? 1 : Wi(Bo(n), 0)
+                                      n = n === u ? 1 : Zi(Bo(n), 0)
                                       var r =
                                         this.__filtered__ && !e
                                           ? new le(this)
@@ -24081,7 +24052,7 @@
                                       var e = this.clone()
                                       return (
                                         e.__iteratees__.push({
-                                          iteratee: Rr(t, 3),
+                                          iteratee: Lr(t, 3),
                                           type: n,
                                         }),
                                         (e.__filtered__ = e.__filtered__ || r),
@@ -24120,7 +24091,7 @@
                                         })
                                   })),
                                   (le.prototype.reject = function(t) {
-                                    return this.filter(_o(Rr(t)))
+                                    return this.filter(_o(Lr(t)))
                                   }),
                                   (le.prototype.slice = function(t, e) {
                                     t = Bo(t)
@@ -24284,7 +24255,7 @@
                                               e = Gi(e, t + u)
                                               break
                                             case 'takeRight':
-                                              t = Wi(t, e - u)
+                                              t = Zi(t, e - u)
                                           }
                                         }
                                         return {start: t, end: e}
@@ -24381,64 +24352,11 @@
                                   C
                                 )
                               })()
-                            ;(Ze._ = ln),
+                            ;(We._ = ln),
                               (i = function() {
                                 return ln
                               }.call(e, n, e, t)) === u || (t.exports = i)
                           }.call(this)
-                      },
-                      459: function(t, e, n) {
-                        'use strict'
-                        var r = function() {},
-                          o = function() {},
-                          i = n(704)
-                        ;(o.resetWarningCache = r),
-                          (t.exports = function() {
-                            var t = function(t, e, n, r, o, u) {
-                                if (u !== i) {
-                                  var a = new Error(
-                                    'Calling PropTypes validators directly is not supported by the `prop-types` package. Use PropTypes.checkPropTypes() to call them. Read more at http://fb.me/use-check-prop-types',
-                                  )
-                                  throw ((a.name = 'Invariant Violation'), a)
-                                }
-                              },
-                              e = function() {
-                                return t
-                              }
-                            t.isRequired = t
-                            var n = {
-                              array: t,
-                              bigint: t,
-                              bool: t,
-                              func: t,
-                              number: t,
-                              object: t,
-                              string: t,
-                              symbol: t,
-                              any: t,
-                              arrayOf: e,
-                              element: t,
-                              elementType: t,
-                              instanceOf: e,
-                              node: t,
-                              objectOf: e,
-                              oneOf: e,
-                              oneOfType: e,
-                              shape: e,
-                              exact: e,
-                              checkPropTypes: o,
-                              resetWarningCache: r,
-                            }
-                            return (n.PropTypes = n), n
-                          })
-                      },
-                      216: function(t, e, n) {
-                        t.exports = n(459)()
-                      },
-                      704: function(t) {
-                        'use strict'
-                        t.exports =
-                          'SECRET_DO_NOT_PASS_THIS_OR_YOU_WILL_BE_FIRED'
                       },
                       385: function() {
                         System.register([], function(t, e) {
@@ -24887,7 +24805,7 @@
                               r =
                                 (function(t) {
                                   if (Array.isArray(t)) return t
-                                })((n = (0, ne.useState)(t.getState()))) ||
+                                })((n = (0, Lt.useState)(t.getState()))) ||
                                 (function(t, e) {
                                   var n =
                                     null == t
@@ -24948,7 +24866,7 @@
                                 })(),
                               o = r[0],
                               a = r[1]
-                            ;(0, ne.useEffect)(function() {
+                            ;(0, Lt.useEffect)(function() {
                               return t.subscribe(function(t) {
                                 return a(t)
                               })
@@ -24956,7 +24874,7 @@
                             var c = {}
                             return (
                               e &&
-                                (c = (0, ne.useMemo)(
+                                (c = (0, Lt.useMemo)(
                                   function() {
                                     return (function(t, e) {
                                       'function' == typeof e && (e = e(t))
@@ -25017,7 +24935,7 @@
                               (function(t) {
                                 if (Array.isArray(t)) return t
                               })(
-                                (t = (0, ne.useState)(window.navigator.onLine)),
+                                (t = (0, Lt.useState)(window.navigator.onLine)),
                               ) ||
                               (function(t, e) {
                                 var n =
@@ -25080,9 +24998,9 @@
                             n = e[0],
                             r = e[1]
                           return (
-                            (0, ne.useEffect)(function() {
+                            (0, Lt.useEffect)(function() {
                               return (0,
-                              se.subscribeConnectivityChanged)(function(t) {
+                              Ht.subscribeConnectivityChanged)(function(t) {
                                 var e = t.online
                                 return r(e)
                               })
@@ -25101,7 +25019,7 @@
                             n =
                               (function(t) {
                                 if (Array.isArray(t)) return t
-                              })((e = (0, ne.useState)([]))) ||
+                              })((e = (0, Lt.useState)([]))) ||
                               (function(t, e) {
                                 var n =
                                   null == t
@@ -25163,7 +25081,7 @@
                             r = n[0],
                             o = n[1]
                           return (
-                            (0, ne.useEffect)(
+                            (0, Lt.useEffect)(
                               function() {
                                 var e = function(e) {
                                   var n,
@@ -25178,11 +25096,11 @@
                                       void 0 !== i
                                         ? i
                                         : []
-                                  ;(0, le.isEqual)(u, r) || o(u)
+                                  ;(0, Ft.isEqual)(u, r) || o(u)
                                 }
                                 return (
-                                  e((0, ae.getExtensionStore)().getState()),
-                                  (0, ae.getExtensionStore)().subscribe(e)
+                                  e((0, Nt.getExtensionStore)().getState()),
+                                  (0, Nt.getExtensionStore)().subscribe(e)
                                 )
                               },
                               [t, r],
@@ -25193,22 +25111,22 @@
                         p = function(t) {
                           var e = l(),
                             n = d(t)
-                          return (0, ne.useMemo)(
+                          return (0, Lt.useMemo)(
                             function() {
-                              return (0, ae.getConnectedExtensions)(n, e)
+                              return (0, Nt.getConnectedExtensions)(n, e)
                             },
                             [n, e],
                           )
                         },
                         h = function(t) {
-                          var e = (0, ne.useContext)(re).moduleName
+                          var e = (0, Lt.useContext)(Rt).moduleName
                           if (!e)
                             throw Error(
                               'ComponentContext has not been provided. This should come from @openmrs/esm-react-utils.',
                             )
                           return (
-                            (0, ne.useEffect)(function() {
-                              ;(0, ae.registerExtensionSlot)(e, t)
+                            (0, Lt.useEffect)(function() {
+                              ;(0, Nt.registerExtensionSlot)(e, t)
                             }, []),
                             {
                               extensions: p(t),
@@ -25357,7 +25275,7 @@
                                   e.name,
                                   "'. Expected a function, received ",
                                 )
-                                .concat(ve(n)),
+                                .concat(qt(n)),
                             )
                           return function() {
                             var t = n(e)
@@ -25368,17 +25286,17 @@
                                     e.name,
                                     "'. Expected HTMLElement, received ",
                                   )
-                                  .concat(ve(t)),
+                                  .concat(qt(t)),
                               )
                             return t
                           }
                         },
                         O = function(t) {
-                          if ('object' !== he(t))
+                          if ('object' !== Kt(t))
                             throw new Error(
                               'single-spa-react requires a configuration object',
                             )
-                          var e = _(_({}, ge), t)
+                          var e = _(_({}, Zt), t)
                           if (!e.React)
                             throw new Error(
                               'single-spa-react must be passed opts.React',
@@ -25398,9 +25316,9 @@
                             throw Error(
                               'The errorBoundary opt for single-spa-react must either be omitted or be a function that returns React elements',
                             )
-                          !ye &&
+                          !Wt &&
                             e.React.createContext &&
-                            (ye = e.React.createContext()),
+                            (Wt = e.React.createContext()),
                             (e.SingleSpaRoot = (function(t) {
                               function e(t) {
                                 e.displayName = 'SingleSpaRoot('.concat(
@@ -25543,9 +25461,9 @@
                         },
                         A = function(t, e, n) {
                           var r = t.React.createElement(t.rootComponent, e),
-                            o = ye
+                            o = Wt
                               ? t.React.createElement(
-                                  ye.Provider,
+                                  Wt.Provider,
                                   {value: e},
                                   r,
                                 )
@@ -25627,7 +25545,7 @@
                         },
                         P = function(t, e) {
                           return !e ||
-                            ('object' !== xe(e) && 'function' != typeof e)
+                            ('object' !== te(e) && 'function' != typeof e)
                             ? (function(t) {
                                 if (void 0 === t)
                                   throw new ReferenceError(
@@ -25644,7 +25562,7 @@
                             'string' != typeof t.moduleName
                           )
                             throw new Error('Invalid options')
-                          var e = Object.assign({}, je, t)
+                          var e = Object.assign({}, ne, t)
                           return function(t) {
                             var n
                             return (
@@ -25664,7 +25582,7 @@
                                       },
                                     },
                                   )),
-                                    e && Se(t, e)
+                                    e && Xt(t, e)
                                 })(a, n)
                                 var o,
                                   i,
@@ -25695,9 +25613,9 @@
                                     })()),
                                     function() {
                                       var t,
-                                        e = _e(o)
+                                        e = Qt(o)
                                       if (i) {
-                                        var n = _e(this).constructor
+                                        var n = Qt(this).constructor
                                         t = Reflect.construct(e, arguments, n)
                                       } else t = e.apply(this, arguments)
                                       return P(this, t)
@@ -25741,50 +25659,50 @@
                                   }),
                                   (c.render = function() {
                                     if (this.state.caughtError)
-                                      return ne.default.createElement(
+                                      return Lt.default.createElement(
                                         'div',
                                         null,
                                         'An error has occurred. Please try reloading the page.',
                                       )
                                     var n = this,
-                                      r = ne.default.createElement(
-                                        re.Provider,
+                                      r = Lt.default.createElement(
+                                        Rt.Provider,
                                         {value: this.state.config},
-                                        ne.default.createElement(
-                                          ne.default.Suspense,
+                                        Lt.default.createElement(
+                                          Lt.default.Suspense,
                                           {fallback: null},
                                           e.disableTranslations
-                                            ? ne.default.createElement(
+                                            ? Lt.default.createElement(
                                                 t,
-                                                we({}, this.props),
+                                                Yt({}, this.props),
                                               )
-                                            : ne.default.createElement(
-                                                Ee,
+                                            : Lt.default.createElement(
+                                                re,
                                                 {
                                                   ns: e.moduleName,
                                                   forceUpdate: function() {
                                                     return n.forceUpdate()
                                                   },
                                                 },
-                                                ne.default.createElement(
-                                                  be.I18nextProvider,
+                                                Lt.default.createElement(
+                                                  Jt.I18nextProvider,
                                                   {
-                                                    i18n: Oe,
+                                                    i18n: ee,
                                                     defaultNS: e.moduleName,
                                                   },
-                                                  ne.default.createElement(
+                                                  Lt.default.createElement(
                                                     t,
-                                                    we({}, this.props),
+                                                    Yt({}, this.props),
                                                   ),
                                                 ),
                                               ),
                                         ),
                                       )
                                     return e.strictMode ||
-                                      !ne.default.StrictMode
+                                      !Lt.default.StrictMode
                                       ? r
-                                      : ne.default.createElement(
-                                          ne.default.StrictMode,
+                                      : Lt.default.createElement(
+                                          Lt.default.StrictMode,
                                           null,
                                           r,
                                         )
@@ -25792,7 +25710,7 @@
                                   a
                                 )
                               })(
-                                ne.default.Component,
+                                Lt.default.Component,
                               )).displayName = 'OpenmrsReactComponent('.concat(
                                 e.featureName,
                                 ')',
@@ -25803,19 +25721,19 @@
                         },
                         T = function(t, e) {
                           return O({
-                            React: ne.default,
-                            ReactDOM: pe.default,
+                            React: Lt.default,
+                            ReactDOM: zt.default,
                             rootComponent: I(e)(t),
                           })
                         },
-                        R = function(t, e) {
+                        L = function(t, e) {
                           return function() {
                             return t().then(function(t) {
                               return T(t.default, e)
                             })
                           }
                         },
-                        D = function(t, e) {
+                        R = function(t, e) {
                           return function() {
                             return Promise.resolve(T(t, e))
                           }
@@ -25826,12 +25744,12 @@
                             r[n] = t[n]
                           return r
                         },
-                        L = function(t) {
+                        D = function(t) {
                           var e,
                             n =
                               (function(t) {
                                 if (Array.isArray(t)) return t
-                              })((e = (0, ne.useState)([]))) ||
+                              })((e = (0, Lt.useState)([]))) ||
                               (function(t, e) {
                                 var n =
                                   null == t
@@ -25893,8 +25811,8 @@
                             r = n[0],
                             o = n[1]
                           return (
-                            (0, ne.useEffect)(function() {
-                              return (0, ae.getExtensionStore)().subscribe(
+                            (0, Lt.useEffect)(function() {
+                              return (0, Nt.getExtensionStore)().subscribe(
                                 function(e) {
                                   var n,
                                     i,
@@ -25911,7 +25829,7 @@
                                               })) && void 0 !== i
                                         ? i
                                         : []
-                                  ;(0, le.isEqual)(u, r) || o(u)
+                                  ;(0, Ft.isEqual)(u, r) || o(u)
                                 },
                               )
                             }, []),
@@ -25919,7 +25837,7 @@
                           )
                         },
                         B = function(t) {
-                          ;(0, ne.useEffect)(
+                          ;(0, Lt.useEffect)(
                             function() {
                               if (t) {
                                 var e = window.getComputedStyle(document.body)
@@ -25960,13 +25878,13 @@
                           }
                         },
                         F = function(t) {
-                          var e = (this.__data__ = new Te(t))
+                          var e = (this.__data__ = new se(t))
                           this.size = e.size
                         },
                         V = function(t) {
                           var e = -1,
                             n = null == t ? 0 : t.length
-                          for (this.__data__ = new ln(); ++e < n; )
+                          for (this.__data__ = new He(); ++e < n; )
                             this.add(t[e])
                         },
                         $ = function(t, e) {
@@ -26054,7 +25972,7 @@
                           )
                         },
                         q = function() {
-                          var t = (0, ne.useContext)(re),
+                          var t = (0, Lt.useContext)(Rt),
                             e = t.moduleName,
                             n = t.extension
                           if (!e && !n)
@@ -26068,9 +25986,9 @@
                                 o,
                                 i,
                                 u,
-                                a = (0, ne.useMemo)(
+                                a = (0, Lt.useMemo)(
                                   function() {
-                                    return (0, oe.getConfigStore)(t)
+                                    return (0, Mt.getConfigStore)(t)
                                   },
                                   [t],
                                 ),
@@ -26078,7 +25996,7 @@
                                 s =
                                   ((e = a),
                                   (o = (r = K(
-                                    (0, ne.useState)(
+                                    (0, Lt.useState)(
                                       ((n = e),
                                       function() {
                                         var t = n.getState()
@@ -26090,7 +26008,7 @@
                                     2,
                                   ))[0]),
                                   (i = r[1]),
-                                  (0, ne.useEffect)(
+                                  (0, Lt.useEffect)(
                                     function() {
                                       return null == e
                                         ? void 0
@@ -26102,8 +26020,8 @@
                                   ),
                                   o)
                               if (!s)
-                                throw (xr[c] ||
-                                  (xr[c] =
+                                throw (tr[c] ||
+                                  (tr[c] =
                                     ((u = a),
                                     new Promise(function(t) {
                                       var e = u.subscribe(function(n) {
@@ -26112,27 +26030,27 @@
                                           (t(n.config), e())
                                       })
                                     }))),
-                                xr[c])
+                                tr[c])
                               return s
                             })(e),
                             o = (function(t) {
                               var e,
                                 n,
-                                r = (0, ne.useMemo)(
-                                  oe.getExtensionsConfigStore,
+                                r = (0, Lt.useMemo)(
+                                  Mt.getExtensionsConfigStore,
                                   [],
                                 ),
                                 o = (function(t, e) {
                                   var n,
                                     r,
                                     o = K(
-                                      (0, ne.useState)(
+                                      (0, Lt.useState)(
                                         ((n = t),
                                         (r = e)
                                           ? function() {
                                               var t = n.getState(),
                                                 e = (0,
-                                                oe.getExtensionConfigFromStore)(
+                                                Mt.getExtensionConfigFromStore)(
                                                   t,
                                                   r.extensionSlotName,
                                                   r.extensionId,
@@ -26147,19 +26065,19 @@
                                     i = o[0],
                                     u = o[1]
                                   return (
-                                    (0, ne.useEffect)(
+                                    (0, Lt.useEffect)(
                                       function() {
                                         if (e)
                                           return t.subscribe(function(t) {
                                             var n = (0,
-                                            oe.getExtensionConfigFromStore)(
+                                            Mt.getExtensionConfigFromStore)(
                                               t,
                                               e.extensionSlotName,
                                               e.extensionId,
                                             )
                                             n.loaded &&
                                               n.config &&
-                                              !Sr(n.config, i) &&
+                                              !Xn(n.config, i) &&
                                               u(n.config)
                                           })
                                       },
@@ -26172,15 +26090,15 @@
                                 var i = ''
                                   .concat(t.extensionSlotName, '-')
                                   .concat(t.extensionId)
-                                throw (!xr[i] &&
+                                throw (!tr[i] &&
                                   r &&
-                                  (xr[i] =
+                                  (tr[i] =
                                     ((e = r),
                                     (n = t),
                                     new Promise(function(t) {
                                       var r = e.subscribe(function(e) {
                                         var o = (0,
-                                        oe.getExtensionConfigFromStore)(
+                                        Mt.getExtensionConfigFromStore)(
                                           e,
                                           n.extensionSlotName,
                                           n.extensionId,
@@ -26190,11 +26108,11 @@
                                           (t(o.config), r())
                                       })
                                     }))),
-                                xr[i])
+                                tr[i])
                               }
                               return o || {}
                             })(n),
-                            i = (0, ne.useMemo)(
+                            i = (0, Lt.useMemo)(
                               function() {
                                 return (function(t) {
                                   for (
@@ -26230,13 +26148,13 @@
                             )
                           return i
                         },
-                        Z = function(t, e) {
+                        W = function(t, e) {
                           ;(null == e || e > t.length) && (e = t.length)
                           for (var n = 0, r = new Array(e); n < e; n++)
                             r[n] = t[n]
                           return r
                         },
-                        W = function(t, e, n) {
+                        Z = function(t, e, n) {
                           return (
                             e in t
                               ? Object.defineProperty(t, e, {
@@ -26268,7 +26186,7 @@
                                     ),
                                   )),
                                   o.forEach(function(e) {
-                                    W(t, e, r[e])
+                                    Z(t, e, r[e])
                                   })
                               },
                               r = 1;
@@ -26286,7 +26204,7 @@
                         },
                         Y = function(t, e) {
                           switch (e.type) {
-                            case vr.loadPatient:
+                            case qn.loadPatient:
                               return G({}, t, {
                                 patientUuid: e.patientUuid,
                                 patient: null,
@@ -26294,14 +26212,14 @@
                                 isLoadingPatient: !0,
                                 err: null,
                               })
-                            case vr.newPatient:
+                            case qn.newPatient:
                               return G({}, t, {
                                 patient: e.patient,
                                 isPendingUuid: !1,
                                 isLoadingPatient: !1,
                                 err: null,
                               })
-                            case vr.loadError:
+                            case qn.loadError:
                               return G({}, t, {
                                 patient: null,
                                 isPendingUuid: !1,
@@ -26318,9 +26236,9 @@
                               (function(t) {
                                 if (Array.isArray(t)) return t
                               })(
-                                (e = (0, ne.useReducer)(
+                                (e = (0, Lt.useReducer)(
                                   Y,
-                                  G({}, Er, {
+                                  G({}, rr, {
                                     patientUuid: null != t ? t : null,
                                     isPendingUuid: !t,
                                     isLoadingPatient: !!t,
@@ -26361,7 +26279,7 @@
                               })(e) ||
                               (function(t, e) {
                                 if (t) {
-                                  if ('string' == typeof t) return Z(t, 2)
+                                  if ('string' == typeof t) return W(t, 2)
                                   var n = Object.prototype.toString
                                     .call(t)
                                     .slice(8, -1)
@@ -26375,7 +26293,7 @@
                                         /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(
                                           n,
                                         )
-                                      ? Z(t, 2)
+                                      ? W(t, 2)
                                       : void 0
                                   )
                                 }
@@ -26388,21 +26306,21 @@
                             r = n[0],
                             o = n[1]
                           return (
-                            (0, ne.useEffect)(
+                            (0, Lt.useEffect)(
                               function() {
                                 if (r.isPendingUuid) {
                                   var t = J()
                                   o(
                                     t
-                                      ? {type: vr.loadPatient, patientUuid: t}
-                                      : {type: vr.newPatient, patient: null},
+                                      ? {type: qn.loadPatient, patientUuid: t}
+                                      : {type: qn.newPatient, patient: null},
                                   )
                                 }
                                 var e = !0
                                 return (
                                   r.isLoadingPatient &&
                                     r.patientUuid &&
-                                    (0, Or.fetchCurrentPatient)(
+                                    (0, er.fetchCurrentPatient)(
                                       r.patientUuid,
                                     ).then(
                                       function(t) {
@@ -26410,13 +26328,13 @@
                                           e &&
                                           o({
                                             patient: t.data,
-                                            type: vr.newPatient,
+                                            type: qn.newPatient,
                                           })
                                         )
                                       },
                                       function(t) {
                                         return (
-                                          e && o({err: t, type: vr.loadError})
+                                          e && o({err: t, type: qn.loadError})
                                         )
                                       },
                                     ),
@@ -26431,12 +26349,12 @@
                                 r.patientUuid,
                               ],
                             ),
-                            (0, ne.useEffect)(
+                            (0, Lt.useEffect)(
                               function() {
                                 var t = function(t) {
                                   var e = J()
                                   e != r.patientUuid &&
-                                    o({type: vr.loadPatient, patientUuid: e})
+                                    o({type: qn.loadPatient, patientUuid: e})
                                 }
                                 return (
                                   window.addEventListener(
@@ -26582,19 +26500,19 @@
                         },
                         ot = function(t, e) {
                           switch (e.type) {
-                            case jr.loadPatient:
+                            case nr.loadPatient:
                               return et({}, t, {
                                 patient: null,
                                 isLoadingPatient: !0,
                                 err: null,
                               })
-                            case jr.newPatient:
+                            case nr.newPatient:
                               return et({}, t, {
                                 patient: e.patient,
                                 isLoadingPatient: !1,
                                 err: null,
                               })
-                            case jr.loadError:
+                            case nr.loadError:
                               return et({}, t, {
                                 patient: null,
                                 isLoadingPatient: !1,
@@ -26609,33 +26527,33 @@
                               arguments.length > 0 && void 0 !== arguments[0]
                                 ? arguments[0]
                                 : rt(),
-                            e = nt((0, ne.useReducer)(ot, Cr), 2),
+                            e = nt((0, Lt.useReducer)(ot, ar), 2),
                             n = e[0],
                             r = e[1]
                           return (
-                            (0, ne.useEffect)(
+                            (0, Lt.useEffect)(
                               function() {
                                 var e = !0
                                 return (
                                   t
-                                    ? ((0, Or.fetchCurrentPatient)(t).then(
+                                    ? ((0, er.fetchCurrentPatient)(t).then(
                                         function(t) {
                                           return (
                                             e &&
                                             r({
                                               patient: t.data,
-                                              type: jr.newPatient,
+                                              type: nr.newPatient,
                                             })
                                           )
                                         },
                                         function(t) {
                                           return (
-                                            e && r({err: t, type: jr.loadError})
+                                            e && r({err: t, type: nr.loadError})
                                           )
                                         },
                                       ),
-                                      r({type: jr.loadPatient}))
-                                    : r({type: jr.newPatient, patient: null}),
+                                      r({type: nr.loadPatient}))
+                                    : r({type: nr.newPatient, patient: null}),
                                   function() {
                                     e = !1
                                   }
@@ -26648,7 +26566,7 @@
                         },
                         ut = function(t) {
                           var e = p(t)
-                          return (0, ne.useMemo)(
+                          return (0, Lt.useMemo)(
                             function() {
                               return Object.fromEntries(
                                 e.map(function(t) {
@@ -26667,7 +26585,7 @@
                         },
                         ct = function() {
                           var t,
-                            e = ((t = (0, ne.useState)(0)),
+                            e = ((t = (0, Lt.useState)(0)),
                             (function(t) {
                               if (Array.isArray(t)) return t
                             })(t) ||
@@ -26729,7 +26647,7 @@
                                   'Invalid attempt to destructure non-iterable instance.\\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method.',
                                 )
                               })())[1]
-                          return (0, ne.useCallback)(function() {
+                          return (0, Lt.useCallback)(function() {
                             e(function(t) {
                               return t + 1
                             })
@@ -26761,7 +26679,7 @@
                             e =
                               (function(t) {
                                 if (Array.isArray(t)) return t
-                              })((t = (0, ne.useState)(lt))) ||
+                              })((t = (0, Lt.useState)(lt))) ||
                               (function(t, e) {
                                 var n =
                                   null == t
@@ -26823,7 +26741,7 @@
                             n = e[0],
                             r = e[1]
                           return (
-                            (0, ne.useEffect)(function() {
+                            (0, Lt.useEffect)(function() {
                               var t = function() {
                                 r(lt())
                               }
@@ -26848,7 +26766,7 @@
                             e =
                               (function(t) {
                                 if (Array.isArray(t)) return t
-                              })((t = (0, ne.useState)([]))) ||
+                              })((t = (0, Lt.useState)([]))) ||
                               (function(t, e) {
                                 var n =
                                   null == t
@@ -26910,8 +26828,8 @@
                             n = e[0],
                             r = e[1]
                           return (
-                            (0, ne.useEffect)(function() {
-                              var t = (0, Or.getLocations)().subscribe(
+                            (0, Lt.useEffect)(function() {
+                              var t = (0, er.getLocations)().subscribe(
                                 function(t) {
                                   r(t)
                                 },
@@ -26931,9 +26849,9 @@
                               !(
                                 arguments.length > 1 && void 0 !== arguments[1]
                               ) || arguments[1],
-                            n = (0, ne.useRef)(null)
+                            n = (0, Lt.useRef)(null)
                           return (
-                            (0, ne.useEffect)(
+                            (0, Lt.useEffect)(
                               function() {
                                 if (e) {
                                   var r = function(e) {
@@ -26961,777 +26879,23 @@
                           )
                         },
                         vt = function(t, e) {
-                          var n = Object.keys(t)
-                          if (Object.getOwnPropertySymbols) {
-                            var r = Object.getOwnPropertySymbols(t)
-                            e &&
-                              (r = r.filter(function(e) {
-                                return Object.getOwnPropertyDescriptor(
-                                  t,
-                                  e,
-                                ).enumerable
-                              })),
-                              n.push.apply(n, r)
-                          }
-                          return n
-                        },
-                        yt = function(t) {
-                          for (
-                            var e = arguments,
-                              n = function(n) {
-                                var r = null != e[n] ? e[n] : {}
-                                n % 2
-                                  ? vt(Object(r), !0).forEach(function(e) {
-                                      gt(t, e, r[e])
-                                    })
-                                  : Object.getOwnPropertyDescriptors
-                                  ? Object.defineProperties(
-                                      t,
-                                      Object.getOwnPropertyDescriptors(r),
-                                    )
-                                  : vt(Object(r)).forEach(function(e) {
-                                      Object.defineProperty(
-                                        t,
-                                        e,
-                                        Object.getOwnPropertyDescriptor(r, e),
-                                      )
-                                    })
-                              },
-                              r = 1;
-                            r < arguments.length;
-                            r++
-                          )
-                            n(r)
-                          return t
-                        },
-                        gt = function(t, e, n) {
-                          return (
-                            e in t
-                              ? Object.defineProperty(t, e, {
-                                  value: n,
-                                  enumerable: !0,
-                                  configurable: !0,
-                                  writable: !0,
-                                })
-                              : (t[e] = n),
-                            t
-                          )
-                        },
-                        mt = function(t, e) {
-                          if (null == t) return {}
-                          var n,
-                            r,
-                            o = (function(t, e) {
-                              if (null == t) return {}
-                              var n,
-                                r,
-                                o = {},
-                                i = Object.keys(t)
-                              for (r = 0; r < i.length; r++)
-                                (n = i[r]), e.indexOf(n) >= 0 || (o[n] = t[n])
-                              return o
-                            })(t, e)
-                          if (Object.getOwnPropertySymbols) {
-                            var i = Object.getOwnPropertySymbols(t)
-                            for (r = 0; r < i.length; r++)
-                              (n = i[r]),
-                                e.indexOf(n) >= 0 ||
-                                  (Object.prototype.propertyIsEnumerable.call(
-                                    t,
-                                    n,
-                                  ) &&
-                                    (o[n] = t[n]))
-                          }
-                          return o
-                        },
-                        bt = function(t, e) {
-                          var n = Object.keys(t)
-                          if (Object.getOwnPropertySymbols) {
-                            var r = Object.getOwnPropertySymbols(t)
-                            e &&
-                              (r = r.filter(function(e) {
-                                return Object.getOwnPropertyDescriptor(
-                                  t,
-                                  e,
-                                ).enumerable
-                              })),
-                              n.push.apply(n, r)
-                          }
-                          return n
-                        },
-                        wt = function(t) {
-                          for (
-                            var e = arguments,
-                              n = function(n) {
-                                var r = null != e[n] ? e[n] : {}
-                                n % 2
-                                  ? bt(Object(r), !0).forEach(function(e) {
-                                      _t(t, e, r[e])
-                                    })
-                                  : Object.getOwnPropertyDescriptors
-                                  ? Object.defineProperties(
-                                      t,
-                                      Object.getOwnPropertyDescriptors(r),
-                                    )
-                                  : bt(Object(r)).forEach(function(e) {
-                                      Object.defineProperty(
-                                        t,
-                                        e,
-                                        Object.getOwnPropertyDescriptor(r, e),
-                                      )
-                                    })
-                              },
-                              r = 1;
-                            r < arguments.length;
-                            r++
-                          )
-                            n(r)
-                          return t
-                        },
-                        _t = function(t, e, n) {
-                          return (
-                            e in t
-                              ? Object.defineProperty(t, e, {
-                                  value: n,
-                                  enumerable: !0,
-                                  configurable: !0,
-                                  writable: !0,
-                                })
-                              : (t[e] = n),
-                            t
-                          )
-                        },
-                        St = function(t, e) {
-                          if (null == t) return {}
-                          var n,
-                            r,
-                            o = (function(t, e) {
-                              if (null == t) return {}
-                              var n,
-                                r,
-                                o = {},
-                                i = Object.keys(t)
-                              for (r = 0; r < i.length; r++)
-                                (n = i[r]), e.indexOf(n) >= 0 || (o[n] = t[n])
-                              return o
-                            })(t, e)
-                          if (Object.getOwnPropertySymbols) {
-                            var i = Object.getOwnPropertySymbols(t)
-                            for (r = 0; r < i.length; r++)
-                              (n = i[r]),
-                                e.indexOf(n) >= 0 ||
-                                  (Object.prototype.propertyIsEnumerable.call(
-                                    t,
-                                    n,
-                                  ) &&
-                                    (o[n] = t[n]))
-                          }
-                          return o
-                        },
-                        xt = function(t, e) {
-                          var n = Object.keys(t)
-                          if (Object.getOwnPropertySymbols) {
-                            var r = Object.getOwnPropertySymbols(t)
-                            e &&
-                              (r = r.filter(function(e) {
-                                return Object.getOwnPropertyDescriptor(
-                                  t,
-                                  e,
-                                ).enumerable
-                              })),
-                              n.push.apply(n, r)
-                          }
-                          return n
-                        },
-                        Ot = function(t) {
-                          for (
-                            var e = arguments,
-                              n = function(n) {
-                                var r = null != e[n] ? e[n] : {}
-                                n % 2
-                                  ? xt(Object(r), !0).forEach(function(e) {
-                                      jt(t, e, r[e])
-                                    })
-                                  : Object.getOwnPropertyDescriptors
-                                  ? Object.defineProperties(
-                                      t,
-                                      Object.getOwnPropertyDescriptors(r),
-                                    )
-                                  : xt(Object(r)).forEach(function(e) {
-                                      Object.defineProperty(
-                                        t,
-                                        e,
-                                        Object.getOwnPropertyDescriptor(r, e),
-                                      )
-                                    })
-                              },
-                              r = 1;
-                            r < arguments.length;
-                            r++
-                          )
-                            n(r)
-                          return t
-                        },
-                        jt = function(t, e, n) {
-                          return (
-                            e in t
-                              ? Object.defineProperty(t, e, {
-                                  value: n,
-                                  enumerable: !0,
-                                  configurable: !0,
-                                  writable: !0,
-                                })
-                              : (t[e] = n),
-                            t
-                          )
-                        },
-                        Et = function(t, e) {
-                          var n = Object.keys(t)
-                          if (Object.getOwnPropertySymbols) {
-                            var r = Object.getOwnPropertySymbols(t)
-                            e &&
-                              (r = r.filter(function(e) {
-                                return Object.getOwnPropertyDescriptor(
-                                  t,
-                                  e,
-                                ).enumerable
-                              })),
-                              n.push.apply(n, r)
-                          }
-                          return n
-                        },
-                        Ct = function(t) {
-                          for (
-                            var e = arguments,
-                              n = function(n) {
-                                var r = null != e[n] ? e[n] : {}
-                                n % 2
-                                  ? Et(Object(r), !0).forEach(function(e) {
-                                      kt(t, e, r[e])
-                                    })
-                                  : Object.getOwnPropertyDescriptors
-                                  ? Object.defineProperties(
-                                      t,
-                                      Object.getOwnPropertyDescriptors(r),
-                                    )
-                                  : Et(Object(r)).forEach(function(e) {
-                                      Object.defineProperty(
-                                        t,
-                                        e,
-                                        Object.getOwnPropertyDescriptor(r, e),
-                                      )
-                                    })
-                              },
-                              r = 1;
-                            r < arguments.length;
-                            r++
-                          )
-                            n(r)
-                          return t
-                        },
-                        kt = function(t, e, n) {
-                          return (
-                            e in t
-                              ? Object.defineProperty(t, e, {
-                                  value: n,
-                                  enumerable: !0,
-                                  configurable: !0,
-                                  writable: !0,
-                                })
-                              : (t[e] = n),
-                            t
-                          )
-                        },
-                        At = function(t, e) {
-                          return (
-                            (function(t) {
-                              if (Array.isArray(t)) return t
-                            })(t) ||
-                            (function(t, e) {
-                              if (
-                                'undefined' != typeof Symbol &&
-                                Symbol.iterator in Object(t)
-                              ) {
-                                var n = [],
-                                  r = !0,
-                                  o = !1,
-                                  i = void 0
-                                try {
-                                  for (
-                                    var u, a = t[Symbol.iterator]();
-                                    !(r = (u = a.next()).done) &&
-                                    (n.push(u.value), !e || n.length !== e);
-                                    r = !0
-                                  );
-                                } catch (t) {
-                                  ;(o = !0), (i = t)
-                                } finally {
-                                  try {
-                                    r || null == a.return || a.return()
-                                  } finally {
-                                    if (o) throw i
-                                  }
-                                }
-                                return n
-                              }
-                            })(t, e) ||
-                            (function(t, e) {
-                              if (t) {
-                                if ('string' == typeof t) return Pt(t, e)
-                                var n = Object.prototype.toString
-                                  .call(t)
-                                  .slice(8, -1)
-                                return (
-                                  'Object' === n &&
-                                    t.constructor &&
-                                    (n = t.constructor.name),
-                                  'Map' === n || 'Set' === n
-                                    ? Array.from(t)
-                                    : 'Arguments' === n ||
-                                      /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(
-                                        n,
-                                      )
-                                    ? Pt(t, e)
-                                    : void 0
-                                )
-                              }
-                            })(t, e) ||
-                            (function() {
-                              throw new TypeError(
-                                'Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method.',
-                              )
-                            })()
-                          )
-                        },
-                        Pt = function(t, e) {
                           ;(null == e || e > t.length) && (e = t.length)
                           for (var n = 0, r = new Array(e); n < e; n++)
                             r[n] = t[n]
                           return r
                         },
-                        It = function(t, e, n) {
-                          return (
-                            e in t
-                              ? Object.defineProperty(t, e, {
-                                  value: n,
-                                  enumerable: !0,
-                                  configurable: !0,
-                                  writable: !0,
-                                })
-                              : (t[e] = n),
-                            t
-                          )
-                        },
-                        Tt = function(t, e) {
-                          if (null == t) return {}
-                          var n,
-                            r,
-                            o = (function(t, e) {
-                              if (null == t) return {}
-                              var n,
-                                r,
-                                o = {},
-                                i = Object.keys(t)
-                              for (r = 0; r < i.length; r++)
-                                (n = i[r]), e.indexOf(n) >= 0 || (o[n] = t[n])
-                              return o
-                            })(t, e)
-                          if (Object.getOwnPropertySymbols) {
-                            var i = Object.getOwnPropertySymbols(t)
-                            for (r = 0; r < i.length; r++)
-                              (n = i[r]),
-                                e.indexOf(n) >= 0 ||
-                                  (Object.prototype.propertyIsEnumerable.call(
-                                    t,
-                                    n,
-                                  ) &&
-                                    (o[n] = t[n]))
-                          }
-                          return o
-                        },
-                        Rt = function(t) {
-                          var e = t.ariaLabel,
-                            n = t.className,
-                            r = t.iconDescription,
-                            o = t.type,
-                            i = t.renderIcon,
-                            u = t.name,
-                            a = t.notificationType,
-                            c = Tt(t, [
-                              'ariaLabel',
-                              'className',
-                              'iconDescription',
-                              'type',
-                              'renderIcon',
-                              'name',
-                              'notificationType',
-                            ]),
-                            s = Rr()(
-                              n,
-                              It(
-                                {},
-                                ''
-                                  .concat(So, '--')
-                                  .concat(a, '-notification__close-button'),
-                                a,
-                              ),
-                            ),
-                            l = Rr()(
-                              It(
-                                {},
-                                ''
-                                  .concat(So, '--')
-                                  .concat(a, '-notification__close-icon'),
-                                a,
-                              ),
-                            )
-                          return ne.default.createElement(
-                            'button',
-                            _o({}, c, {
-                              type: o,
-                              'aria-label': r,
-                              title: r,
-                              className: s,
-                            }),
-                            i &&
-                              ne.default.createElement(i, {
-                                'aria-label': e,
-                                className: l,
-                                name: u,
-                              }),
-                          )
-                        },
-                        Dt = function(t) {
-                          var e = t.title,
-                            n = t.subtitle,
-                            r = t.caption,
-                            o = t.notificationType,
-                            i = t.children,
-                            u = Tt(t, [
-                              'title',
-                              'subtitle',
-                              'caption',
-                              'notificationType',
-                              'children',
-                            ])
-                          return 'toast' === o
-                            ? ne.default.createElement(
-                                'div',
-                                _o({}, u, {
-                                  className: ''.concat(
-                                    So,
-                                    '--toast-notification__details',
-                                  ),
-                                }),
-                                ne.default.createElement(
-                                  'h3',
-                                  {
-                                    className: ''.concat(
-                                      So,
-                                      '--toast-notification__title',
-                                    ),
-                                  },
-                                  e,
-                                ),
-                                ne.default.createElement(
-                                  'div',
-                                  {
-                                    className: ''.concat(
-                                      So,
-                                      '--toast-notification__subtitle',
-                                    ),
-                                  },
-                                  n,
-                                ),
-                                r &&
-                                  ne.default.createElement(
-                                    'div',
-                                    {
-                                      className: ''.concat(
-                                        So,
-                                        '--toast-notification__caption',
-                                      ),
-                                    },
-                                    r,
-                                  ),
-                                i,
-                              )
-                            : 'inline' === o
-                            ? ne.default.createElement(
-                                'div',
-                                _o({}, u, {
-                                  className: ''.concat(
-                                    So,
-                                    '--inline-notification__text-wrapper',
-                                  ),
-                                }),
-                                ne.default.createElement(
-                                  'p',
-                                  {
-                                    className: ''.concat(
-                                      So,
-                                      '--inline-notification__title',
-                                    ),
-                                  },
-                                  e,
-                                ),
-                                ne.default.createElement(
-                                  'div',
-                                  {
-                                    className: ''.concat(
-                                      So,
-                                      '--inline-notification__subtitle',
-                                    ),
-                                  },
-                                  n,
-                                ),
-                                i,
-                              )
-                            : void 0
-                        },
-                        Mt = function(t) {
-                          var e = t.iconDescription,
-                            n = t.kind,
-                            r = t.notificationType,
-                            o = xo[n]
-                          return o
-                            ? ne.default.createElement(
-                                o,
-                                {
-                                  className: ''
-                                    .concat(So, '--')
-                                    .concat(r, '-notification__icon'),
-                                },
-                                ne.default.createElement('title', null, e),
-                              )
-                            : null
-                        },
-                        Lt = function(t) {
-                          var e,
-                            n = t.role,
-                            r = t.notificationType,
-                            o = t.onCloseButtonClick,
-                            i = t.iconDescription,
-                            u = t.statusIconDescription,
-                            a = t.className,
-                            c = t.caption,
-                            s = t.subtitle,
-                            l = t.title,
-                            f = t.kind,
-                            d = t.lowContrast,
-                            p = t.hideCloseButton,
-                            h = t.children,
-                            v = t.timeout,
-                            y = Tt(t, [
-                              'role',
-                              'notificationType',
-                              'onCloseButtonClick',
-                              'iconDescription',
-                              'statusIconDescription',
-                              'className',
-                              'caption',
-                              'subtitle',
-                              'title',
-                              'kind',
-                              'lowContrast',
-                              'hideCloseButton',
-                              'children',
-                              'timeout',
-                            ]),
-                            g = At((0, ne.useState)(!0), 2),
-                            m = g[0],
-                            b = g[1],
-                            w = Rr()(
-                              a,
-                              (It(
-                                (e = {}),
-                                ''.concat(So, '--toast-notification'),
-                                !0,
-                              ),
-                              It(
-                                e,
-                                ''.concat(
-                                  So,
-                                  '--toast-notification--low-contrast',
-                                ),
-                                d,
-                              ),
-                              It(
-                                e,
-                                ''
-                                  .concat(So, '--toast-notification--')
-                                  .concat(f),
-                                f,
-                              ),
-                              e),
-                            )
-                          return (
-                            (0, ne.useEffect)(
-                              function() {
-                                if (v) {
-                                  var t = window.setTimeout(function() {
-                                    b(!1), o(event)
-                                  }, v)
-                                  return function() {
-                                    window.clearTimeout(t)
-                                  }
-                                }
-                              },
-                              [o, v],
-                            ),
-                            m
-                              ? ne.default.createElement(
-                                  'div',
-                                  _o({}, y, {role: n, kind: f, className: w}),
-                                  ne.default.createElement(Mt, {
-                                    notificationType: r,
-                                    kind: f,
-                                    iconDescription: u || ''.concat(f, ' icon'),
-                                  }),
-                                  ne.default.createElement(
-                                    Dt,
-                                    {
-                                      title: l,
-                                      subtitle: s,
-                                      caption: c,
-                                      notificationType: r,
-                                    },
-                                    h,
-                                  ),
-                                  !p &&
-                                    ne.default.createElement(Rt, {
-                                      iconDescription: i,
-                                      notificationType: r,
-                                      onClick: function(t) {
-                                        b(!1), o(t)
-                                      },
-                                    }),
-                                )
-                              : null
-                          )
-                        },
-                        Bt = function(t) {
-                          var e,
-                            n = t.actions,
-                            r = t.role,
-                            o = t.notificationType,
-                            i = t.onCloseButtonClick,
-                            u = t.iconDescription,
-                            a = t.statusIconDescription,
-                            c = t.className,
-                            s = t.subtitle,
-                            l = t.title,
-                            f = t.kind,
-                            d = t.lowContrast,
-                            p = t.hideCloseButton,
-                            h = t.children,
-                            v = Tt(t, [
-                              'actions',
-                              'role',
-                              'notificationType',
-                              'onCloseButtonClick',
-                              'iconDescription',
-                              'statusIconDescription',
-                              'className',
-                              'subtitle',
-                              'title',
-                              'kind',
-                              'lowContrast',
-                              'hideCloseButton',
-                              'children',
-                            ]),
-                            y = At((0, ne.useState)(!0), 2),
-                            g = y[0],
-                            m = y[1],
-                            b = Rr()(
-                              c,
-                              (It(
-                                (e = {}),
-                                ''.concat(So, '--inline-notification'),
-                                !0,
-                              ),
-                              It(
-                                e,
-                                ''.concat(
-                                  So,
-                                  '--inline-notification--low-contrast',
-                                ),
-                                d,
-                              ),
-                              It(
-                                e,
-                                ''
-                                  .concat(So, '--inline-notification--')
-                                  .concat(f),
-                                f,
-                              ),
-                              It(
-                                e,
-                                ''.concat(
-                                  So,
-                                  '--inline-notification--hide-close-button',
-                                ),
-                                p,
-                              ),
-                              e),
-                            )
-                          return g
-                            ? ne.default.createElement(
-                                'div',
-                                _o({}, v, {role: r, kind: f, className: b}),
-                                ne.default.createElement(
-                                  'div',
-                                  {
-                                    className: ''.concat(
-                                      So,
-                                      '--inline-notification__details',
-                                    ),
-                                  },
-                                  ne.default.createElement(Mt, {
-                                    notificationType: o,
-                                    kind: f,
-                                    iconDescription: a || ''.concat(f, ' icon'),
-                                  }),
-                                  ne.default.createElement(
-                                    Dt,
-                                    {
-                                      title: l,
-                                      subtitle: s,
-                                      notificationType: o,
-                                    },
-                                    h,
-                                  ),
-                                ),
-                                n,
-                                !p &&
-                                  ne.default.createElement(Rt, {
-                                    iconDescription: u,
-                                    notificationType: o,
-                                    onClick: function(t) {
-                                      m(!1), i(t)
-                                    },
-                                  }),
-                              )
-                            : null
-                        },
-                        Nt = function(t, e) {
+                        yt = function(t, e) {
                           ;(null == e || e > t.length) && (e = t.length)
                           for (var n = 0, r = new Array(e); n < e; n++)
                             r[n] = t[n]
                           return r
                         },
-                        Ut = function(t, e) {
-                          ;(null == e || e > t.length) && (e = t.length)
-                          for (var n = 0, r = new Array(e); n < e; n++)
-                            r[n] = t[n]
-                          return r
-                        },
-                        Ht = function() {
+                        gt = function() {
                           var t,
                             e =
                               (function(t) {
                                 if (Array.isArray(t)) return t
-                              })((t = (0, ne.useState)(null))) ||
+                              })((t = (0, Lt.useState)(null))) ||
                               (function(t, e) {
                                 var n =
                                   null == t
@@ -27766,7 +26930,7 @@
                               })(t) ||
                               (function(t, e) {
                                 if (t) {
-                                  if ('string' == typeof t) return Ut(t, 2)
+                                  if ('string' == typeof t) return yt(t, 2)
                                   var n = Object.prototype.toString
                                     .call(t)
                                     .slice(8, -1)
@@ -27780,7 +26944,7 @@
                                         /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(
                                           n,
                                         )
-                                      ? Ut(t, 2)
+                                      ? yt(t, 2)
                                       : void 0
                                   )
                                 }
@@ -27794,30 +26958,30 @@
                             r = e[1],
                             o = null
                           if (!n) {
-                            if (Oo) {
-                              var i = (0, Or.getSessionStore)().getState()
+                            if (or) {
+                              var i = (0, er.getSessionStore)().getState()
                               i.loaded && (o = i.session)
                             } else
-                              Oo = new Promise(function(t) {
+                              or = new Promise(function(t) {
                                 var e = function(e) {
                                   var n = e.loaded,
                                     r = e.session
                                   n &&
-                                    (t(r), (o = r), jo && jo(), (jo = void 0))
+                                    (t(r), (o = r), ir && ir(), (ir = void 0))
                                 }
-                                e((0, Or.getSessionStore)().getState()),
+                                e((0, er.getSessionStore)().getState()),
                                   o ||
-                                    (jo = (0, Or.getSessionStore)().subscribe(
+                                    (ir = (0, er.getSessionStore)().subscribe(
                                       e,
                                     ))
                               })
-                            if (!o) throw Oo
+                            if (!o) throw or
                             r(o)
                           }
-                          ;(0, ne.useEffect)(function() {
+                          ;(0, Lt.useEffect)(function() {
                             return (
-                              jo ||
-                                (jo = (0, Or.getSessionStore)().subscribe(
+                              ir ||
+                                (ir = (0, er.getSessionStore)().subscribe(
                                   function(t) {
                                     var e = t.loaded,
                                       n = t.session
@@ -27825,27 +26989,27 @@
                                   },
                                 )),
                               function() {
-                                jo && jo(), (jo = void 0)
+                                ir && ir(), (ir = void 0)
                               }
                             )
                           }, [])
                           var u = n || o
                           if (!u)
-                            throw Oo
+                            throw or
                               ? (console.warn(
-                                  'useSessionUser is in an unexpected state. Attempting to recover.',
+                                  'useSession is in an unexpected state. Attempting to recover.',
                                 ),
-                                Oo)
-                              : Error('useSessionUser is in an invalid state.')
+                                or)
+                              : Error('useSession is in an invalid state.')
                           return u
                         },
-                        Ft = function(t, e) {
+                        mt = function(t, e) {
                           ;(null == e || e > t.length) && (e = t.length)
                           for (var n = 0, r = new Array(e); n < e; n++)
                             r[n] = t[n]
                           return r
                         },
-                        Vt = function(t, e, n) {
+                        bt = function(t, e, n) {
                           return (
                             e in t
                               ? Object.defineProperty(t, e, {
@@ -27858,7 +27022,7 @@
                             t
                           )
                         },
-                        $t = function(t) {
+                        wt = function(t) {
                           for (
                             var e = arguments,
                               n = function(n) {
@@ -27877,7 +27041,7 @@
                                     ),
                                   )),
                                   o.forEach(function(e) {
-                                    Vt(t, e, r[e])
+                                    bt(t, e, r[e])
                                   })
                               },
                               r = 1;
@@ -27887,7 +27051,7 @@
                             n(r)
                           return t
                         },
-                        zt = function(t, e) {
+                        _t = function(t, e) {
                           return (
                             (function(t) {
                               if (Array.isArray(t)) return t
@@ -27926,7 +27090,7 @@
                             })(t, e) ||
                             (function(t, e) {
                               if (t) {
-                                if ('string' == typeof t) return Ft(t, e)
+                                if ('string' == typeof t) return mt(t, e)
                                 var n = Object.prototype.toString
                                   .call(t)
                                   .slice(8, -1)
@@ -27940,7 +27104,7 @@
                                       /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(
                                         n,
                                       )
-                                    ? Ft(t, e)
+                                    ? mt(t, e)
                                     : void 0
                                 )
                               }
@@ -27952,48 +27116,48 @@
                             })()
                           )
                         },
-                        Kt = function(t, e) {
+                        St = function(t, e) {
                           'function' == typeof e && (e = e(t))
                           var n = {}
                           for (var r in e) n[r] = t.action(e[r])
                           return n
                         },
-                        qt = function(t) {
+                        xt = function(t) {
                           var e =
                               arguments.length > 1 && void 0 !== arguments[1]
                                 ? arguments[1]
-                                : Ao,
+                                : dr,
                             n = arguments.length > 2 ? arguments[2] : void 0,
-                            r = zt(
-                              (0, ne.useState)(function() {
+                            r = _t(
+                              (0, Lt.useState)(function() {
                                 return e(t.getState())
                               }),
                               2,
                             ),
                             o = r[0],
                             i = r[1]
-                          ;(0, ne.useEffect)(
+                          ;(0, Lt.useEffect)(
                             function() {
-                              return (0, ko.subscribeTo)(t, e, i)
+                              return (0, fr.subscribeTo)(t, e, i)
                             },
                             [t, e],
                           )
                           var u = {}
                           return (
                             n &&
-                              (u = (0, ne.useMemo)(
+                              (u = (0, Lt.useMemo)(
                                 function() {
-                                  return Kt(t, n)
+                                  return St(t, n)
                                 },
                                 [t, n],
                               )),
-                            $t({}, o, u)
+                            wt({}, o, u)
                           )
                         },
-                        Zt = function(t, e) {
-                          return qt(t, Ao, e)
+                        Ot = function(t, e) {
+                          return xt(t, dr, e)
                         },
-                        Wt = function(t, e, n, o) {
+                        jt = function(t, e, n, o) {
                           return new (n || (n = Promise))(function(i, u) {
                             function a(t) {
                               try {
@@ -28023,7 +27187,7 @@
                             s((o = o.apply(t, e || [])).next())
                           })
                         },
-                        Gt = function(t, e) {
+                        Et = function(t, e) {
                           var n,
                             r,
                             o,
@@ -28128,18 +27292,18 @@
                             }
                           }
                         },
-                        Jt = function(t) {
+                        Ct = function(t) {
                           var e,
-                            n = mi(
+                            n = eo(
                               t
                                 ? '/ws/rest/v1/visit?patient='
                                     .concat(t, '&v=')
                                     .concat(
-                                      Or.defaultVisitCustomRepresentation,
+                                      er.defaultVisitCustomRepresentation,
                                       '&includeInactive=false',
                                     )
                                 : null,
-                              Or.openmrsFetch,
+                              er.openmrsFetch,
                             ),
                             r = n.data,
                             o = n.error
@@ -28147,7 +27311,7 @@
                             error: o,
                             mutate: n.mutate,
                             isValidating: n.isValidating,
-                            currentVisit: (0, ne.useMemo)(
+                            currentVisit: (0, Lt.useMemo)(
                               function() {
                                 return null !==
                                   (e =
@@ -28156,7 +27320,7 @@
                                       : r.data.results.find(function(t) {
                                           return (
                                             null === t.stopDatetime &&
-                                            (0, bi.default)(
+                                            (0, no.default)(
                                               t.startDatetime,
                                             ).isToday()
                                           )
@@ -28169,18 +27333,18 @@
                             isLoading: !r && !o,
                           }
                         },
-                        Yt = function(t, e) {
+                        kt = function(t, e) {
                           ;(null == e || e > t.length) && (e = t.length)
                           for (var n = 0, r = new Array(e); n < e; n++)
                             r[n] = t[n]
                           return r
                         },
-                        Qt = function() {
+                        At = function() {
                           var t,
                             e =
                               (function(t) {
                                 if (Array.isArray(t)) return t
-                              })((t = (0, ne.useState)([]))) ||
+                              })((t = (0, Lt.useState)([]))) ||
                               (function(t, e) {
                                 var n =
                                   null == t
@@ -28215,7 +27379,7 @@
                               })(t) ||
                               (function(t, e) {
                                 if (t) {
-                                  if ('string' == typeof t) return Yt(t, 2)
+                                  if ('string' == typeof t) return kt(t, 2)
                                   var n = Object.prototype.toString
                                     .call(t)
                                     .slice(8, -1)
@@ -28229,7 +27393,7 @@
                                         /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(
                                           n,
                                         )
-                                      ? Yt(t, 2)
+                                      ? kt(t, 2)
                                       : void 0
                                   )
                                 }
@@ -28242,8 +27406,8 @@
                             n = e[0],
                             r = e[1]
                           return (
-                            (0, ne.useEffect)(function() {
-                              var t = (0, Or.getVisitTypes)().subscribe(
+                            (0, Lt.useEffect)(function() {
+                              var t = (0, er.getVisitTypes)().subscribe(
                                 function(t) {
                                   r(t)
                                 },
@@ -28258,13 +27422,13 @@
                             n
                           )
                         },
-                        Xt = function(t, e) {
+                        Pt = function(t, e) {
                           ;(null == e || e > t.length) && (e = t.length)
                           for (var n = 0, r = new Array(e); n < e; n++)
                             r[n] = t[n]
                           return r
                         },
-                        te = function(t, e) {
+                        It = function(t, e) {
                           return (
                             (function(t) {
                               if (Array.isArray(t)) return t
@@ -28303,7 +27467,7 @@
                             })(t, e) ||
                             (function(t, e) {
                               if (t) {
-                                if ('string' == typeof t) return Xt(t, e)
+                                if ('string' == typeof t) return Pt(t, e)
                                 var n = Object.prototype.toString
                                   .call(t)
                                   .slice(8, -1)
@@ -28317,7 +27481,7 @@
                                       /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(
                                         n,
                                       )
-                                    ? Xt(t, e)
+                                    ? Pt(t, e)
                                     : void 0
                                 )
                               }
@@ -28329,7 +27493,7 @@
                             })()
                           )
                         },
-                        ee = function() {
+                        Tt = function() {
                           var t =
                               arguments.length > 0 && void 0 !== arguments[0]
                                 ? arguments[0]
@@ -28338,16 +27502,16 @@
                               arguments.length > 1 && void 0 !== arguments[1]
                                 ? arguments[1]
                                 : 10,
-                            n = te((0, ne.useState)(1), 2),
+                            n = It((0, Lt.useState)(1), 2),
                             r = n[0],
                             o = n[1],
-                            i = (0, ne.useMemo)(
+                            i = (0, Lt.useMemo)(
                               function() {
                                 return Math.max(1, Math.ceil(t.length / e))
                               },
                               [t.length, e],
                             ),
-                            u = (0, ne.useMemo)(
+                            u = (0, Lt.useMemo)(
                               function() {
                                 var n = (r - 1) * e,
                                   o = (r + 0) * e
@@ -28376,40 +27540,40 @@
                       g.r(m),
                         g.d(m, {
                           ComponentContext: function() {
-                            return re
+                            return Rt
                           },
                           ConfigurableLink: function() {
-                            return ue
+                            return Bt
                           },
                           Extension: function() {
-                            return ce
+                            return Ut
                           },
                           ExtensionSlot: function() {
-                            return de
+                            return $t
                           },
                           UserHasAccess: function() {
-                            return Co
+                            return lr
                           },
                           createUseStore: function() {
                             return a
                           },
                           getAsyncExtensionLifecycle: function() {
-                            return Ce
+                            return oe
                           },
                           getAsyncLifecycle: function() {
-                            return R
+                            return L
                           },
                           getLifecycle: function() {
                             return T
                           },
                           getSyncLifecycle: function() {
-                            return D
+                            return R
                           },
                           openmrsComponentDecorator: function() {
                             return I
                           },
                           useAssignedExtensionIds: function() {
-                            return L
+                            return D
                           },
                           useAssignedExtensions: function() {
                             return d
@@ -28430,7 +27594,7 @@
                             return it
                           },
                           useExtensionInternalStore: function() {
-                            return kr
+                            return cr
                           },
                           useExtensionSlot: function() {
                             return h
@@ -28439,7 +27603,7 @@
                             return ut
                           },
                           useExtensionStore: function() {
-                            return Ar
+                            return sr
                           },
                           useForceUpdate: function() {
                             return ct
@@ -28454,33 +27618,33 @@
                             return ht
                           },
                           usePagination: function() {
-                            return ee
+                            return Tt
                           },
                           usePatient: function() {
                             return Q
                           },
                           useSession: function() {
-                            return Ht
+                            return gt
                           },
                           useStore: function() {
-                            return qt
+                            return xt
                           },
                           useStoreWithActions: function() {
-                            return Zt
+                            return Ot
                           },
                           useVisit: function() {
-                            return Jt
+                            return Ct
                           },
                           useVisitTypes: function() {
-                            return Qt
+                            return At
                           },
                         })
-                      var ne = g(954),
-                        re = ne.default.createContext({moduleName: ''}),
-                        oe = g(824)
-                      function ie() {
+                      var Lt = g(954),
+                        Rt = Lt.default.createContext({moduleName: ''}),
+                        Mt = g(824)
+                      function Dt() {
                         return (
-                          (ie =
+                          (Dt =
                             Object.assign ||
                             function(t) {
                               for (var e = 1; e < arguments.length; e++) {
@@ -28491,10 +27655,10 @@
                               }
                               return t
                             }),
-                          ie.apply(this, arguments)
+                          Dt.apply(this, arguments)
                         )
                       }
-                      var ue = function(t) {
+                      var Bt = function(t) {
                           var e = t.to,
                             n = t.children,
                             r = (function(t, e) {
@@ -28525,9 +27689,9 @@
                               }
                               return o
                             })(t, ['to', 'children'])
-                          return ne.default.createElement(
+                          return Lt.default.createElement(
                             'a',
-                            ie(
+                            Dt(
                               {
                                 onClick: function(t) {
                                   return (
@@ -28538,27 +27702,27 @@
                                       n.shiftKey ||
                                       0 != n.button ||
                                       (n.preventDefault(),
-                                      (0, oe.navigate)({to: r}))
+                                      (0, Mt.navigate)({to: r}))
                                     )
                                   )
                                   var n, r
                                 },
-                                href: (0, oe.interpolateUrl)(e),
+                                href: (0, Mt.interpolateUrl)(e),
                               },
                               r,
                             ),
                             n,
                           )
                         },
-                        ae = g(45),
-                        ce = function(t) {
+                        Nt = g(45),
+                        Ut = function(t) {
                           var e,
                             n = t.state,
                             r = t.wrap,
                             o =
                               (function(t) {
                                 if (Array.isArray(t)) return t
-                              })((e = (0, ne.useState)())) ||
+                              })((e = (0, Lt.useState)())) ||
                               (function(t, e) {
                                 var n =
                                   null == t
@@ -28619,14 +27783,14 @@
                               })(),
                             i = o[0],
                             u = o[1],
-                            a = (0, ne.useContext)(re).extension,
-                            s = (0, ne.useCallback)(function(t) {
+                            a = (0, Lt.useContext)(Rt).extension,
+                            s = (0, Lt.useCallback)(function(t) {
                               u(t)
                             }, [])
-                          ;(0, ne.useEffect)(
+                          ;(0, Lt.useEffect)(
                             function() {
                               if (null != i && a)
-                                return (0, ae.renderExtension)(
+                                return (0, Nt.renderExtension)(
                                   i,
                                   a.extensionSlotName,
                                   a.extensionSlotModuleName,
@@ -28643,7 +27807,7 @@
                               i,
                             ],
                           )
-                          var l = ne.default.createElement('div', {
+                          var l = Lt.default.createElement('div', {
                             ref: s,
                             'data-extension-id':
                               null == a ? void 0 : a.extensionId,
@@ -28651,11 +27815,11 @@
                           })
                           return a && r ? r(l, a) : l
                         },
-                        se = g(728),
-                        le = g(891)
-                      function fe() {
+                        Ht = g(728),
+                        Ft = g(891)
+                      function Vt() {
                         return (
-                          (fe =
+                          (Vt =
                             Object.assign ||
                             function(t) {
                               for (var e = 1; e < arguments.length; e++) {
@@ -28666,10 +27830,10 @@
                               }
                               return t
                             }),
-                          fe.apply(this, arguments)
+                          Vt.apply(this, arguments)
                         )
                       }
-                      var de = function(t) {
+                      var $t = function(t) {
                           var e = t.extensionSlotName,
                             n = t.select,
                             r = void 0 === n ? b : n,
@@ -28710,11 +27874,11 @@
                               'state',
                               'style',
                             ]),
-                            c = (0, ne.useRef)(null),
+                            c = (0, Lt.useRef)(null),
                             s = h(e),
                             l = s.extensions,
                             f = s.extensionSlotModuleName,
-                            d = (0, ne.useRef)(i)
+                            d = (0, Lt.useRef)(i)
                           ;(function(t, e) {
                             if (t === e) return !0
                             if (!t && e) return !1
@@ -28730,13 +27894,13 @@
                             }
                             return !0
                           })(d.current, i) || (d.current = i)
-                          var p = (0, ne.useMemo)(
+                          var p = (0, Lt.useMemo)(
                             function() {
                               return (
                                 e &&
                                 r(l).map(function(t) {
-                                  return ne.default.createElement(
-                                    re.Provider,
+                                  return Lt.default.createElement(
+                                    Rt.Provider,
                                     {
                                       key: t.id,
                                       value: {
@@ -28750,7 +27914,7 @@
                                     },
                                     null != o
                                       ? o
-                                      : ne.default.createElement(ce, {
+                                      : Lt.default.createElement(Ut, {
                                           state: d.current,
                                         }),
                                   )
@@ -28759,9 +27923,9 @@
                             },
                             [r, l, e, d.current],
                           )
-                          return ne.default.createElement(
+                          return Lt.default.createElement(
                             'div',
-                            fe(
+                            Vt(
                               {
                                 ref: c,
                                 'data-extension-slot-name': e,
@@ -28773,9 +27937,9 @@
                             p,
                           )
                         },
-                        pe = g(493)
-                      function he(t) {
-                        return (he =
+                        zt = g(493)
+                      function Kt(t) {
+                        return (Kt =
                           'function' == typeof Symbol &&
                           'symbol' == o(Symbol.iterator)
                             ? function(t) {
@@ -28792,8 +27956,8 @@
                                   : o(t)
                               })(t)
                       }
-                      function ve(t) {
-                        return (ve =
+                      function qt(t) {
+                        return (qt =
                           'function' == typeof Symbol &&
                           'symbol' == o(Symbol.iterator)
                             ? function(t) {
@@ -28810,11 +27974,11 @@
                                   : o(t)
                               })(t)
                       }
-                      var ye = null
+                      var Wt = null
                       try {
-                        ye = n(6983).createContext()
+                        Wt = n(6983).createContext()
                       } catch (t) {}
-                      var ge = {
+                      var Zt = {
                           React: null,
                           ReactDOM: null,
                           rootComponent: null,
@@ -28829,11 +27993,11 @@
                           renderResults: {},
                           updateResolves: {},
                         },
-                        me = g(64),
-                        be = g(281)
-                      function we() {
+                        Gt = g(64),
+                        Jt = g(281)
+                      function Yt() {
                         return (
-                          (we =
+                          (Yt =
                             Object.assign ||
                             function(t) {
                               for (var e = 1; e < arguments.length; e++) {
@@ -28844,24 +28008,24 @@
                               }
                               return t
                             }),
-                          we.apply(this, arguments)
+                          Yt.apply(this, arguments)
                         )
                       }
-                      function _e(t) {
-                        return (_e = Object.setPrototypeOf
+                      function Qt(t) {
+                        return (Qt = Object.setPrototypeOf
                           ? Object.getPrototypeOf
                           : function(t) {
                               return t.__proto__ || Object.getPrototypeOf(t)
                             })(t)
                       }
-                      function Se(t, e) {
-                        return (Se =
+                      function Xt(t, e) {
+                        return (Xt =
                           Object.setPrototypeOf ||
                           function(t, e) {
                             return (t.__proto__ = e), t
                           })(t, e)
                       }
-                      var xe = function(t) {
+                      var te = function(t) {
                           return t &&
                             'undefined' != typeof Symbol &&
                             t.constructor === Symbol
@@ -28870,19 +28034,19 @@
                             ? 'undefined'
                             : o(t)
                         },
-                        Oe = me.default.default || me.default,
-                        je = {
+                        ee = Gt.default.default || Gt.default,
+                        ne = {
                           strictMode: !0,
                           throwErrorsToConsole: !0,
                           disableTranslations: !1,
                         },
-                        Ee = function(t) {
-                          ;(0, ne.useEffect)(
+                        re = function(t) {
+                          ;(0, Lt.useEffect)(
                             function() {
                               return (
-                                Oe.on('languageChanged', t.forceUpdate),
+                                ee.on('languageChanged', t.forceUpdate),
                                 function() {
-                                  return Oe.off(
+                                  return ee.off(
                                     'languageChanged',
                                     t.forceUpdate,
                                   )
@@ -28891,9 +28055,9 @@
                             },
                             [t.forceUpdate],
                           )
-                          var e = (0, ne.useRef)(null)
+                          var e = (0, Lt.useRef)(null)
                           if (e.current) throw e.current
-                          if (!Oe.hasLoadedNamespace(t.ns)) {
+                          if (!ee.hasLoadedNamespace(t.ns)) {
                             var n = setTimeout(function() {
                               console.warn(
                                 "openmrsComponentDecorator: the React suspense promise for i18next.loadNamespaces(['".concat(
@@ -28902,7 +28066,8 @@
                                 ),
                               )
                             }, 3e3)
-                            throw Oe.loadNamespaces([t.ns])
+                            throw ee
+                              .loadNamespaces([t.ns])
                               .then(function() {
                                 return clearTimeout(n)
                               })
@@ -28910,46 +28075,46 @@
                                 clearTimeout(n), (e.current = t)
                               })
                           }
-                          return ne.default.createElement(
-                            ne.default.Fragment,
+                          return Lt.default.createElement(
+                            Lt.default.Fragment,
                             null,
                             t.children,
                           )
                         },
-                        Ce = R,
-                        ke = function(t, e) {
+                        oe = L,
+                        ie = function(t, e) {
                           return t === e || (t != t && e != e)
                         },
-                        Ae = function(t, e) {
+                        ue = function(t, e) {
                           for (var n = t.length; n--; )
-                            if (ke(t[n][0], e)) return n
+                            if (ie(t[n][0], e)) return n
                           return -1
                         },
-                        Pe = Array.prototype.splice
+                        ae = Array.prototype.splice
                       ;(N.prototype.clear = function() {
                         ;(this.__data__ = []), (this.size = 0)
                       }),
                         (N.prototype.delete = function(t) {
                           var e = this.__data__,
-                            n = Ae(e, t)
+                            n = ue(e, t)
                           return !(
                             n < 0 ||
-                            (n == e.length - 1 ? e.pop() : Pe.call(e, n, 1),
+                            (n == e.length - 1 ? e.pop() : ae.call(e, n, 1),
                             --this.size,
                             0)
                           )
                         }),
                         (N.prototype.get = function(t) {
                           var e = this.__data__,
-                            n = Ae(e, t)
+                            n = ue(e, t)
                           return n < 0 ? void 0 : e[n][1]
                         }),
                         (N.prototype.has = function(t) {
-                          return Ae(this.__data__, t) > -1
+                          return ue(this.__data__, t) > -1
                         }),
                         (N.prototype.set = function(t, e) {
                           var n = this.__data__,
-                            r = Ae(n, t)
+                            r = ue(n, t)
                           return (
                             r < 0
                               ? (++this.size, n.push([t, e]))
@@ -28957,52 +28122,52 @@
                             this
                           )
                         })
-                      var Ie,
-                        Te = N,
-                        Re =
+                      var ce,
+                        se = N,
+                        le =
                           'object' == typeof n.g &&
                           n.g &&
                           n.g.Object === Object &&
                           n.g,
-                        De =
+                        fe =
                           'object' == typeof self &&
                           self &&
                           self.Object === Object &&
                           self,
-                        Me = Re || De || Function('return this')(),
-                        Le = Me.Symbol,
-                        Be = Object.prototype,
-                        Ne = Be.hasOwnProperty,
-                        Ue = Be.toString,
-                        He = Le ? Le.toStringTag : void 0,
-                        Fe = Object.prototype.toString,
-                        Ve = Le ? Le.toStringTag : void 0,
-                        $e = function(t) {
+                        de = le || fe || Function('return this')(),
+                        pe = de.Symbol,
+                        he = Object.prototype,
+                        ve = he.hasOwnProperty,
+                        ye = he.toString,
+                        ge = pe ? pe.toStringTag : void 0,
+                        me = Object.prototype.toString,
+                        be = pe ? pe.toStringTag : void 0,
+                        we = function(t) {
                           return null == t
                             ? void 0 === t
                               ? '[object Undefined]'
                               : '[object Null]'
-                            : Ve && Ve in Object(t)
+                            : be && be in Object(t)
                             ? (function(t) {
-                                var e = Ne.call(t, He),
-                                  n = t[He]
+                                var e = ve.call(t, ge),
+                                  n = t[ge]
                                 try {
-                                  t[He] = void 0
+                                  t[ge] = void 0
                                   var r = !0
                                 } catch (t) {}
-                                var o = Ue.call(t)
-                                return r && (e ? (t[He] = n) : delete t[He]), o
+                                var o = ye.call(t)
+                                return r && (e ? (t[ge] = n) : delete t[ge]), o
                               })(t)
-                            : ((e = t), Fe.call(e))
+                            : ((e = t), me.call(e))
                           var e
                         },
-                        ze = function(t) {
+                        _e = function(t) {
                           var e = void 0 === t ? 'undefined' : o(t)
                           return null != t && ('object' == e || 'function' == e)
                         },
-                        Ke = function(t) {
-                          if (!ze(t)) return !1
-                          var e = $e(t)
+                        Se = function(t) {
+                          if (!_e(t)) return !1
+                          var e = we(t)
                           return (
                             '[object Function]' == e ||
                             '[object GeneratorFunction]' == e ||
@@ -29010,17 +28175,17 @@
                             '[object Proxy]' == e
                           )
                         },
-                        qe = Me['__core-js_shared__'],
-                        Ze = (Ie = /[^.]+$/.exec(
-                          (qe && qe.keys && qe.keys.IE_PROTO) || '',
+                        xe = de['__core-js_shared__'],
+                        Oe = (ce = /[^.]+$/.exec(
+                          (xe && xe.keys && xe.keys.IE_PROTO) || '',
                         ))
-                          ? 'Symbol(src)_1.' + Ie
+                          ? 'Symbol(src)_1.' + ce
                           : '',
-                        We = Function.prototype.toString,
-                        Ge = function(t) {
+                        je = Function.prototype.toString,
+                        Ee = function(t) {
                           if (null != t) {
                             try {
-                              return We.call(t)
+                              return je.call(t)
                             } catch (t) {}
                             try {
                               return t + ''
@@ -29028,14 +28193,14 @@
                           }
                           return ''
                         },
-                        Je = /^\[object .+?Constructor\]$/,
-                        Ye = Function.prototype,
-                        Qe = Object.prototype,
-                        Xe = Ye.toString,
-                        tn = Qe.hasOwnProperty,
-                        en = RegExp(
+                        Ce = /^\[object .+?Constructor\]$/,
+                        ke = Function.prototype,
+                        Ae = Object.prototype,
+                        Pe = ke.toString,
+                        Ie = Ae.hasOwnProperty,
+                        Te = RegExp(
                           '^' +
-                            Xe.call(tn)
+                            Pe.call(Ie)
                               .replace(/[\\^$.*+?()[\]{}|]/g, '\\$&')
                               .replace(
                                 /hasOwnProperty|(function).*?(?=\\\()| for .+?(?=\\\])/g,
@@ -29043,25 +28208,25 @@
                               ) +
                             '$',
                         ),
-                        nn = function(t, e) {
+                        Le = function(t, e) {
                           var n,
                             r = null == (n = t) ? void 0 : n[e]
                           return (function(t) {
                             return (
-                              !(!ze(t) || ((e = t), Ze && Ze in e)) &&
-                              (Ke(t) ? en : Je).test(Ge(t))
+                              !(!_e(t) || ((e = t), Oe && Oe in e)) &&
+                              (Se(t) ? Te : Ce).test(Ee(t))
                             )
                             var e
                           })(r)
                             ? r
                             : void 0
                         },
-                        rn = nn(Me, 'Map'),
-                        on = nn(Object, 'create'),
-                        un = Object.prototype.hasOwnProperty,
-                        an = Object.prototype.hasOwnProperty
+                        Re = Le(de, 'Map'),
+                        Me = Le(Object, 'create'),
+                        De = Object.prototype.hasOwnProperty,
+                        Be = Object.prototype.hasOwnProperty
                       ;(U.prototype.clear = function() {
-                        ;(this.__data__ = on ? on(null) : {}), (this.size = 0)
+                        ;(this.__data__ = Me ? Me(null) : {}), (this.size = 0)
                       }),
                         (U.prototype.delete = function(t) {
                           var e = this.has(t) && delete this.__data__[t]
@@ -29069,31 +28234,31 @@
                         }),
                         (U.prototype.get = function(t) {
                           var e = this.__data__
-                          if (on) {
+                          if (Me) {
                             var n = e[t]
                             return '__lodash_hash_undefined__' === n
                               ? void 0
                               : n
                           }
-                          return un.call(e, t) ? e[t] : void 0
+                          return De.call(e, t) ? e[t] : void 0
                         }),
                         (U.prototype.has = function(t) {
                           var e = this.__data__
-                          return on ? void 0 !== e[t] : an.call(e, t)
+                          return Me ? void 0 !== e[t] : Be.call(e, t)
                         }),
                         (U.prototype.set = function(t, e) {
                           var n = this.__data__
                           return (
                             (this.size += this.has(t) ? 0 : 1),
                             (n[t] =
-                              on && void 0 === e
+                              Me && void 0 === e
                                 ? '__lodash_hash_undefined__'
                                 : e),
                             this
                           )
                         })
-                      var cn = U,
-                        sn = function(t, e) {
+                      var Ne = U,
+                        Ue = function(t, e) {
                           var n,
                             r,
                             i = t.__data__
@@ -29109,23 +28274,23 @@
                       ;(H.prototype.clear = function() {
                         ;(this.size = 0),
                           (this.__data__ = {
-                            hash: new cn(),
-                            map: new (rn || Te)(),
-                            string: new cn(),
+                            hash: new Ne(),
+                            map: new (Re || se)(),
+                            string: new Ne(),
                           })
                       }),
                         (H.prototype.delete = function(t) {
-                          var e = sn(this, t).delete(t)
+                          var e = Ue(this, t).delete(t)
                           return (this.size -= e ? 1 : 0), e
                         }),
                         (H.prototype.get = function(t) {
-                          return sn(this, t).get(t)
+                          return Ue(this, t).get(t)
                         }),
                         (H.prototype.has = function(t) {
-                          return sn(this, t).has(t)
+                          return Ue(this, t).has(t)
                         }),
                         (H.prototype.set = function(t, e) {
-                          var n = sn(this, t),
+                          var n = Ue(this, t),
                             r = n.size
                           return (
                             n.set(t, e),
@@ -29133,9 +28298,9 @@
                             this
                           )
                         })
-                      var ln = H
+                      var He = H
                       ;(F.prototype.clear = function() {
-                        ;(this.__data__ = new Te()), (this.size = 0)
+                        ;(this.__data__ = new se()), (this.size = 0)
                       }),
                         (F.prototype.delete = function(t) {
                           var e = this.__data__,
@@ -29150,17 +28315,17 @@
                         }),
                         (F.prototype.set = function(t, e) {
                           var n = this.__data__
-                          if (r(n, Te)) {
+                          if (r(n, se)) {
                             var o = n.__data__
-                            if (!rn || o.length < 199)
+                            if (!Re || o.length < 199)
                               return (
                                 o.push([t, e]), (this.size = ++n.size), this
                               )
-                            n = this.__data__ = new ln(o)
+                            n = this.__data__ = new He(o)
                           }
                           return n.set(t, e), (this.size = n.size), this
                         })
-                      var fn = F
+                      var Fe = F
                       ;(V.prototype.add = V.prototype.push = function(t) {
                         return (
                           this.__data__.set(t, '__lodash_hash_undefined__'),
@@ -29170,8 +28335,8 @@
                         (V.prototype.has = function(t) {
                           return this.__data__.has(t)
                         })
-                      var dn = V,
-                        pn = function(t, e) {
+                      var Ve = V,
+                        $e = function(t, e) {
                           for (
                             var n = -1, r = null == t ? 0 : t.length;
                             ++n < r;
@@ -29180,10 +28345,10 @@
                             if (e(t[n], n, t)) return !0
                           return !1
                         },
-                        hn = function(t, e) {
+                        ze = function(t, e) {
                           return t.has(e)
                         },
-                        vn = function(t, e, n, r, o, i) {
+                        Ke = function(t, e, n, r, o, i) {
                           var u = 1 & n,
                             a = t.length,
                             c = e.length
@@ -29193,7 +28358,7 @@
                           if (s && l) return s == e && l == t
                           var f = -1,
                             d = !0,
-                            p = 2 & n ? new dn() : void 0
+                            p = 2 & n ? new Ve() : void 0
                           for (i.set(t, e), i.set(e, t); ++f < a; ) {
                             var h = t[f],
                               v = e[f]
@@ -29208,9 +28373,9 @@
                             }
                             if (p) {
                               if (
-                                !pn(e, function(t, e) {
+                                !$e(e, function(t, e) {
                                   if (
-                                    !hn(p, e) &&
+                                    !ze(p, e) &&
                                     (h === t || o(h, t, n, r, i))
                                   )
                                     return p.push(e)
@@ -29226,8 +28391,8 @@
                           }
                           return i.delete(t), i.delete(e), d
                         },
-                        yn = Me.Uint8Array,
-                        gn = function(t) {
+                        qe = de.Uint8Array,
+                        We = function(t) {
                           var e = -1,
                             n = Array(t.size)
                           return (
@@ -29237,7 +28402,7 @@
                             n
                           )
                         },
-                        mn = function(t) {
+                        Ze = function(t) {
                           var e = -1,
                             n = Array(t.size)
                           return (
@@ -29247,12 +28412,12 @@
                             n
                           )
                         },
-                        bn = Le ? Le.prototype : void 0,
-                        wn = bn ? bn.valueOf : void 0,
-                        _n = Array.isArray,
-                        Sn = Object.prototype.propertyIsEnumerable,
-                        xn = Object.getOwnPropertySymbols,
-                        On = xn
+                        Ge = pe ? pe.prototype : void 0,
+                        Je = Ge ? Ge.valueOf : void 0,
+                        Ye = Array.isArray,
+                        Qe = Object.prototype.propertyIsEnumerable,
+                        Xe = Object.getOwnPropertySymbols,
+                        tn = Xe
                           ? function(t) {
                               return null == t
                                 ? []
@@ -29270,46 +28435,46 @@
                                       e(u) && (i[o++] = u)
                                     }
                                     return i
-                                  })(xn(t), function(e) {
-                                    return Sn.call(t, e)
+                                  })(Xe(t), function(e) {
+                                    return Qe.call(t, e)
                                   }))
                             }
                           : function() {
                               return []
                             },
-                        jn = function(t) {
+                        en = function(t) {
                           return null != t && 'object' == typeof t
                         },
-                        En = function(t) {
-                          return jn(t) && '[object Arguments]' == $e(t)
+                        nn = function(t) {
+                          return en(t) && '[object Arguments]' == we(t)
                         },
-                        Cn = Object.prototype,
-                        kn = Cn.hasOwnProperty,
-                        An = Cn.propertyIsEnumerable,
-                        Pn = En(
+                        rn = Object.prototype,
+                        on = rn.hasOwnProperty,
+                        un = rn.propertyIsEnumerable,
+                        an = nn(
                           (function() {
                             return arguments
                           })(),
                         )
-                          ? En
+                          ? nn
                           : function(t) {
                               return (
-                                jn(t) &&
-                                kn.call(t, 'callee') &&
-                                !An.call(t, 'callee')
+                                en(t) &&
+                                on.call(t, 'callee') &&
+                                !un.call(t, 'callee')
                               )
                             },
-                        In = Pn,
-                        Tn = e && !e.nodeType && e,
-                        Rn = Tn && t && !t.nodeType && t,
-                        Dn = Rn && Rn.exports === Tn ? Me.Buffer : void 0,
-                        Mn =
-                          (Dn ? Dn.isBuffer : void 0) ||
+                        cn = an,
+                        sn = e && !e.nodeType && e,
+                        ln = sn && t && !t.nodeType && t,
+                        fn = ln && ln.exports === sn ? de.Buffer : void 0,
+                        dn =
+                          (fn ? fn.isBuffer : void 0) ||
                           function() {
                             return !1
                           },
-                        Ln = /^(?:0|[1-9]\d*)$/,
-                        Bn = function(t) {
+                        pn = /^(?:0|[1-9]\d*)$/,
+                        hn = function(t) {
                           return (
                             'number' == typeof t &&
                             t > -1 &&
@@ -29317,72 +28482,72 @@
                             t <= 9007199254740991
                           )
                         },
-                        Nn = {}
-                      ;(Nn['[object Float32Array]'] = Nn[
+                        vn = {}
+                      ;(vn['[object Float32Array]'] = vn[
                         '[object Float64Array]'
-                      ] = Nn['[object Int8Array]'] = Nn[
+                      ] = vn['[object Int8Array]'] = vn[
                         '[object Int16Array]'
-                      ] = Nn['[object Int32Array]'] = Nn[
+                      ] = vn['[object Int32Array]'] = vn[
                         '[object Uint8Array]'
-                      ] = Nn['[object Uint8ClampedArray]'] = Nn[
+                      ] = vn['[object Uint8ClampedArray]'] = vn[
                         '[object Uint16Array]'
-                      ] = Nn['[object Uint32Array]'] = !0),
-                        (Nn['[object Arguments]'] = Nn['[object Array]'] = Nn[
+                      ] = vn['[object Uint32Array]'] = !0),
+                        (vn['[object Arguments]'] = vn['[object Array]'] = vn[
                           '[object ArrayBuffer]'
-                        ] = Nn['[object Boolean]'] = Nn[
+                        ] = vn['[object Boolean]'] = vn[
                           '[object DataView]'
-                        ] = Nn['[object Date]'] = Nn['[object Error]'] = Nn[
+                        ] = vn['[object Date]'] = vn['[object Error]'] = vn[
                           '[object Function]'
-                        ] = Nn['[object Map]'] = Nn['[object Number]'] = Nn[
+                        ] = vn['[object Map]'] = vn['[object Number]'] = vn[
                           '[object Object]'
-                        ] = Nn['[object RegExp]'] = Nn['[object Set]'] = Nn[
+                        ] = vn['[object RegExp]'] = vn['[object Set]'] = vn[
                           '[object String]'
-                        ] = Nn['[object WeakMap]'] = !1)
-                      var Un,
-                        Hn,
-                        Fn,
-                        Vn = e && !e.nodeType && e,
-                        $n = Vn && t && !t.nodeType && t,
-                        zn = $n && $n.exports === Vn && Re.process,
-                        Kn = (function() {
+                        ] = vn['[object WeakMap]'] = !1)
+                      var yn,
+                        gn,
+                        mn,
+                        bn = e && !e.nodeType && e,
+                        wn = bn && t && !t.nodeType && t,
+                        _n = wn && wn.exports === bn && le.process,
+                        Sn = (function() {
                           try {
                             return (
-                              ($n && $n.require && $n.require('util').types) ||
-                              (zn && zn.binding && zn.binding('util'))
+                              (wn && wn.require && wn.require('util').types) ||
+                              (_n && _n.binding && _n.binding('util'))
                             )
                           } catch (t) {}
                         })(),
-                        qn = Kn && Kn.isTypedArray,
-                        Zn = qn
-                          ? ((Un = qn),
+                        xn = Sn && Sn.isTypedArray,
+                        On = xn
+                          ? ((yn = xn),
                             function(t) {
-                              return Un(t)
+                              return yn(t)
                             })
                           : function(t) {
-                              return jn(t) && Bn(t.length) && !!Nn[$e(t)]
+                              return en(t) && hn(t.length) && !!vn[we(t)]
                             },
-                        Wn = Object.prototype.hasOwnProperty,
-                        Gn = Object.prototype,
-                        Jn =
-                          ((Hn = Object.keys),
-                          (Fn = Object),
+                        jn = Object.prototype.hasOwnProperty,
+                        En = Object.prototype,
+                        Cn =
+                          ((gn = Object.keys),
+                          (mn = Object),
                           function(t) {
-                            return Hn(Fn(t))
+                            return gn(mn(t))
                           }),
-                        Yn = Object.prototype.hasOwnProperty,
-                        Qn = function(t) {
+                        kn = Object.prototype.hasOwnProperty,
+                        An = function(t) {
                           return (
-                            (n = On),
+                            (n = tn),
                             (r = (function(t) {
-                              return null != (e = t) && Bn(e.length) && !Ke(e)
+                              return null != (e = t) && hn(e.length) && !Se(e)
                                 ? (function(t, e) {
                                     var n,
                                       r,
                                       i,
-                                      u = _n(t),
-                                      a = !u && In(t),
-                                      c = !u && !a && Mn(t),
-                                      s = !u && !a && !c && Zn(t),
+                                      u = Ye(t),
+                                      a = !u && cn(t),
+                                      c = !u && !a && dn(t),
+                                      s = !u && !a && !c && On(t),
                                       l = u || a || c || s,
                                       f = l
                                         ? (function(t, e) {
@@ -29397,7 +28562,7 @@
                                         : [],
                                       d = f.length
                                     for (var p in t)
-                                      !Wn.call(t, p) ||
+                                      !jn.call(t, p) ||
                                         (l &&
                                           ('length' == p ||
                                             (c &&
@@ -29418,7 +28583,7 @@
                                                 : r) &&
                                               ('number' == i ||
                                                 ('symbol' != i &&
-                                                  Ln.test(n))) &&
+                                                  pn.test(n))) &&
                                               n > -1 &&
                                               n % 1 == 0 &&
                                               n < r))) ||
@@ -29431,21 +28596,21 @@
                                       e !==
                                         (('function' == typeof n &&
                                           n.prototype) ||
-                                          Gn))
+                                          En))
                                     )
-                                      return Jn(t)
+                                      return Cn(t)
                                     var e,
                                       n,
                                       r = []
                                     for (var o in Object(t))
-                                      Yn.call(t, o) &&
+                                      kn.call(t, o) &&
                                         'constructor' != o &&
                                         r.push(o)
                                     return r
                                   })(t)
                               var e
                             })((e = t))),
-                            _n(e)
+                            Ye(e)
                               ? r
                               : (function(t, e) {
                                   for (
@@ -29459,74 +28624,74 @@
                           )
                           var e, n, r
                         },
-                        Xn = Object.prototype.hasOwnProperty,
-                        tr = nn(Me, 'DataView'),
-                        er = nn(Me, 'Promise'),
-                        nr = nn(Me, 'Set'),
-                        rr = nn(Me, 'WeakMap'),
-                        or = '[object Map]',
-                        ir = '[object Promise]',
-                        ur = '[object Set]',
-                        ar = '[object WeakMap]',
-                        cr = '[object DataView]',
-                        sr = Ge(tr),
-                        lr = Ge(rn),
-                        fr = Ge(er),
-                        dr = Ge(nr),
-                        pr = Ge(rr),
-                        hr = $e
-                      ;((tr && hr(new tr(new ArrayBuffer(1))) != cr) ||
-                        (rn && hr(new rn()) != or) ||
-                        (er && hr(er.resolve()) != ir) ||
-                        (nr && hr(new nr()) != ur) ||
-                        (rr && hr(new rr()) != ar)) &&
-                        (hr = function(t) {
-                          var e = $e(t),
+                        Pn = Object.prototype.hasOwnProperty,
+                        In = Le(de, 'DataView'),
+                        Tn = Le(de, 'Promise'),
+                        Ln = Le(de, 'Set'),
+                        Rn = Le(de, 'WeakMap'),
+                        Mn = '[object Map]',
+                        Dn = '[object Promise]',
+                        Bn = '[object Set]',
+                        Nn = '[object WeakMap]',
+                        Un = '[object DataView]',
+                        Hn = Ee(In),
+                        Fn = Ee(Re),
+                        Vn = Ee(Tn),
+                        $n = Ee(Ln),
+                        zn = Ee(Rn),
+                        Kn = we
+                      ;((In && Kn(new In(new ArrayBuffer(1))) != Un) ||
+                        (Re && Kn(new Re()) != Mn) ||
+                        (Tn && Kn(Tn.resolve()) != Dn) ||
+                        (Ln && Kn(new Ln()) != Bn) ||
+                        (Rn && Kn(new Rn()) != Nn)) &&
+                        (Kn = function(t) {
+                          var e = we(t),
                             n = '[object Object]' == e ? t.constructor : void 0,
-                            r = n ? Ge(n) : ''
+                            r = n ? Ee(n) : ''
                           if (r)
                             switch (r) {
-                              case sr:
-                                return cr
-                              case lr:
-                                return or
-                              case fr:
-                                return ir
-                              case dr:
-                                return ur
-                              case pr:
-                                return ar
+                              case Hn:
+                                return Un
+                              case Fn:
+                                return Mn
+                              case Vn:
+                                return Dn
+                              case $n:
+                                return Bn
+                              case zn:
+                                return Nn
                             }
                           return e
                         })
-                      var vr,
-                        yr = hr,
-                        gr = '[object Arguments]',
-                        mr = '[object Array]',
-                        br = '[object Object]',
-                        wr = Object.prototype.hasOwnProperty,
-                        _r = function t(e, n, o, i, u) {
+                      var qn,
+                        Wn = Kn,
+                        Zn = '[object Arguments]',
+                        Gn = '[object Array]',
+                        Jn = '[object Object]',
+                        Yn = Object.prototype.hasOwnProperty,
+                        Qn = function t(e, n, o, i, u) {
                           return (
                             e === n ||
-                            (null == e || null == n || (!jn(e) && !jn(n))
+                            (null == e || null == n || (!en(e) && !en(n))
                               ? e != e && n != n
                               : (function(t, e, n, o, i, u) {
-                                  var a = _n(t),
-                                    c = _n(e),
-                                    s = a ? mr : yr(t),
-                                    l = c ? mr : yr(e),
-                                    f = (s = s == gr ? br : s) == br,
-                                    d = (l = l == gr ? br : l) == br,
+                                  var a = Ye(t),
+                                    c = Ye(e),
+                                    s = a ? Gn : Wn(t),
+                                    l = c ? Gn : Wn(e),
+                                    f = (s = s == Zn ? Jn : s) == Jn,
+                                    d = (l = l == Zn ? Jn : l) == Jn,
                                     p = s == l
-                                  if (p && Mn(t)) {
-                                    if (!Mn(e)) return !1
+                                  if (p && dn(t)) {
+                                    if (!dn(e)) return !1
                                     ;(a = !0), (f = !1)
                                   }
                                   if (p && !f)
                                     return (
-                                      u || (u = new fn()),
-                                      a || Zn(t)
-                                        ? vn(t, e, n, o, i, u)
+                                      u || (u = new Fe()),
+                                      a || On(t)
+                                        ? Ke(t, e, n, o, i, u)
                                         : (function(t, e, n, r, o, i, u) {
                                             switch (n) {
                                               case '[object DataView]':
@@ -29541,12 +28706,12 @@
                                                 return !(
                                                   t.byteLength !=
                                                     e.byteLength ||
-                                                  !i(new yn(t), new yn(e))
+                                                  !i(new qe(t), new qe(e))
                                                 )
                                               case '[object Boolean]':
                                               case '[object Date]':
                                               case '[object Number]':
-                                                return ke(+t, +e)
+                                                return ie(+t, +e)
                                               case '[object Error]':
                                                 return (
                                                   t.name == e.name &&
@@ -29556,18 +28721,18 @@
                                               case '[object String]':
                                                 return t == e + ''
                                               case '[object Map]':
-                                                var a = gn
+                                                var a = We
                                               case '[object Set]':
                                                 var c = 1 & r
                                                 if (
-                                                  (a || (a = mn),
+                                                  (a || (a = Ze),
                                                   t.size != e.size && !c)
                                                 )
                                                   return !1
                                                 var s = u.get(t)
                                                 if (s) return s == e
                                                 ;(r |= 2), u.set(t, e)
-                                                var l = vn(
+                                                var l = Ke(
                                                   a(t),
                                                   a(e),
                                                   r,
@@ -29577,36 +28742,36 @@
                                                 )
                                                 return u.delete(t), l
                                               case '[object Symbol]':
-                                                if (wn)
+                                                if (Je)
                                                   return (
-                                                    wn.call(t) == wn.call(e)
+                                                    Je.call(t) == Je.call(e)
                                                   )
                                             }
                                             return !1
                                           })(t, e, s, n, o, i, u)
                                     )
                                   if (!(1 & n)) {
-                                    var h = f && wr.call(t, '__wrapped__'),
-                                      v = d && wr.call(e, '__wrapped__')
+                                    var h = f && Yn.call(t, '__wrapped__'),
+                                      v = d && Yn.call(e, '__wrapped__')
                                     if (h || v) {
                                       var y = h ? t.value() : t,
                                         g = v ? e.value() : e
                                       return (
-                                        u || (u = new fn()), i(y, g, n, o, u)
+                                        u || (u = new Fe()), i(y, g, n, o, u)
                                       )
                                     }
                                   }
                                   return (
                                     !!p &&
-                                    (u || (u = new fn()),
+                                    (u || (u = new Fe()),
                                     (function(t, e, n, o, i, u) {
                                       var a = 1 & n,
-                                        c = Qn(t),
+                                        c = An(t),
                                         s = c.length
-                                      if (s != Qn(e).length && !a) return !1
+                                      if (s != An(e).length && !a) return !1
                                       for (var l = s; l--; ) {
                                         var f = c[l]
-                                        if (!(a ? f in e : Xn.call(e, f)))
+                                        if (!(a ? f in e : Pn.call(e, f)))
                                           return !1
                                       }
                                       var d = u.get(t),
@@ -29649,18 +28814,18 @@
                                 })(e, n, o, i, t, u))
                           )
                         },
-                        Sr = function(t, e) {
-                          return _r(t, e)
+                        Xn = function(t, e) {
+                          return Qn(t, e)
                         },
-                        xr = {},
-                        Or = g(766)
+                        tr = {},
+                        er = g(766)
                       !(function(t) {
                         ;(t.loadPatient = 'loadPatient'),
                           (t.newPatient = 'newPatient'),
                           (t.loadError = 'patientLoadError')
-                      })(vr || (vr = {}))
-                      var jr,
-                        Er = {
+                      })(qn || (qn = {}))
+                      var nr,
+                        rr = {
                           patientUuid: null,
                           patient: null,
                           isPendingUuid: !0,
@@ -29671,712 +28836,22 @@
                         ;(t.loadPatient = 'loadPatient'),
                           (t.newPatient = 'newPatient'),
                           (t.loadError = 'patientLloadErroroadError')
-                      })(jr || (jr = {}))
-                      var Cr = {patient: null, isLoadingPatient: !0, err: null},
-                        kr = a((0, ae.getExtensionInternalStore)()),
-                        Ar = a((0, ae.getExtensionStore)()),
-                        Pr = g(216),
-                        Ir = g.n(Pr),
-                        Tr = g(841),
-                        Rr = g.n(Tr),
-                        Dr = ['width', 'height', 'viewBox'],
-                        Mr = ['tabindex'],
-                        Lr = {
-                          focusable: 'false',
-                          preserveAspectRatio: 'xMidYMid meet',
-                        }
-                      function Br() {
-                        return (
-                          (Br =
-                            Object.assign ||
-                            function(t) {
-                              for (var e = 1; e < arguments.length; e++) {
-                                var n = arguments[e]
-                                for (var r in n)
-                                  Object.prototype.hasOwnProperty.call(n, r) &&
-                                    (t[r] = n[r])
-                              }
-                              return t
-                            }),
-                          Br.apply(this, arguments)
-                        )
-                      }
-                      var Nr,
-                        Ur,
-                        Hr,
-                        Fr = ['className', 'children', 'tabIndex'],
-                        Vr = ['tabindex'],
-                        $r = ne.default.forwardRef(function(t, e) {
-                          var n = t.className,
-                            r = t.children,
-                            o = t.tabIndex,
-                            i = (function() {
-                              var t =
-                                  arguments.length > 0 &&
-                                  void 0 !== arguments[0]
-                                    ? arguments[0]
-                                    : {},
-                                e = t.width,
-                                n = t.height,
-                                r = t.viewBox,
-                                o =
-                                  void 0 === r
-                                    ? '0 0 '.concat(e, ' ').concat(n)
-                                    : r,
-                                i = mt(t, Dr),
-                                u = i.tabindex,
-                                a = mt(i, Mr),
-                                c = yt(
-                                  yt(yt({}, Lr), a),
-                                  {},
-                                  {width: e, height: n, viewBox: o},
-                                )
-                              return (
-                                c['aria-label'] ||
-                                c['aria-labelledby'] ||
-                                c.title
-                                  ? ((c.role = 'img'),
-                                    null != u &&
-                                      ((c.focusable = 'true'),
-                                      (c.tabindex = u)))
-                                  : (c['aria-hidden'] = !0),
-                                c
-                              )
-                            })(wt(wt({}, St(t, Fr)), {}, {tabindex: o})),
-                            u = i.tabindex,
-                            a = St(i, Vr)
-                          return (
-                            n && (a.className = n),
-                            null != u && (a.tabIndex = u),
-                            e && (a.ref = e),
-                            ne.default.createElement('svg', a, r)
-                          )
-                        })
-                      ;($r.displayName = 'Icon'),
-                        ($r.propTypes = {
-                          'aria-hidden': Ir().string,
-                          'aria-label': Ir().string,
-                          'aria-labelledby': Ir().string,
-                          children: Ir().node,
-                          className: Ir().string,
-                          height: Ir().oneOfType([Ir().number, Ir().string]),
-                          preserveAspectRatio: Ir().string,
-                          tabIndex: Ir().string,
-                          viewBox: Ir().string,
-                          width: Ir().oneOfType([Ir().number, Ir().string]),
-                          xmlns: Ir().string,
-                        }),
-                        ($r.defaultProps = {
-                          xmlns: 'http://www.w3.org/2000/svg',
-                          preserveAspectRatio: 'xMidYMid meet',
-                        })
-                      var zr,
-                        Kr,
-                        qr,
-                        Zr,
-                        Wr,
-                        Gr,
-                        Jr,
-                        Yr,
-                        Qr,
-                        Xr,
-                        to,
-                        eo,
-                        no,
-                        ro = ['children'],
-                        oo = ['children'],
-                        io = ne.default.forwardRef(function(t, e) {
-                          var n = t.children,
-                            r = St(t, ro)
-                          return ne.default.createElement(
-                            $r,
-                            Br(
-                              {
-                                width: 20,
-                                height: 20,
-                                viewBox: '0 0 20 20',
-                                xmlns: 'http://www.w3.org/2000/svg',
-                                fill: 'currentColor',
-                                ref: e,
-                              },
-                              r,
-                            ),
-                            Nr ||
-                              (Nr = ne.default.createElement('path', {
-                                d:
-                                  'M10,1c-4.9,0-9,4.1-9,9s4.1,9,9,9s9-4,9-9S15,1,10,1z M8.7,13.5l-3.2-3.2l1-1l2.2,2.2l4.8-4.8l1,1L8.7,13.5z',
-                              })),
-                            Ur ||
-                              (Ur = ne.default.createElement('path', {
-                                fill: 'none',
-                                d:
-                                  'M8.7,13.5l-3.2-3.2l1-1l2.2,2.2l4.8-4.8l1,1L8.7,13.5z',
-                                'data-icon-path': 'inner-path',
-                                opacity: '0',
-                              })),
-                            n,
-                          )
-                        }),
-                        uo = ne.default.forwardRef(function(t, e) {
-                          var n = t.children,
-                            r = St(t, oo)
-                          return ne.default.createElement(
-                            $r,
-                            Br(
-                              {
-                                width: 20,
-                                height: 20,
-                                viewBox: '0 0 32 32',
-                                xmlns: 'http://www.w3.org/2000/svg',
-                                fill: 'currentColor',
-                                ref: e,
-                              },
-                              r,
-                            ),
-                            Hr ||
-                              (Hr = ne.default.createElement('path', {
-                                d:
-                                  'M24 9.4L22.6 8 16 14.6 9.4 8 8 9.4 14.6 16 8 22.6 9.4 24 16 17.4 22.6 24 24 22.6 17.4 16 24 9.4z',
-                              })),
-                            n,
-                          )
-                        }),
-                        ao = ['children'],
-                        co = ne.default.forwardRef(function(t, e) {
-                          var n = t.children,
-                            r = St(t, ao)
-                          return ne.default.createElement(
-                            $r,
-                            Br(
-                              {
-                                width: 20,
-                                height: 20,
-                                viewBox: '0 0 20 20',
-                                xmlns: 'http://www.w3.org/2000/svg',
-                                fill: 'currentColor',
-                                ref: e,
-                              },
-                              r,
-                            ),
-                            zr ||
-                              (zr = ne.default.createElement('path', {
-                                d:
-                                  'M10,1c-5,0-9,4-9,9s4,9,9,9s9-4,9-9S15,1,10,1z M13.5,14.5l-8-8l1-1l8,8L13.5,14.5z',
-                              })),
-                            Kr ||
-                              (Kr = ne.default.createElement('path', {
-                                d: 'M13.5,14.5l-8-8l1-1l8,8L13.5,14.5z',
-                                'data-icon-path': 'inner-path',
-                                opacity: '0',
-                              })),
-                            n,
-                          )
-                        }),
-                        so = ['children'],
-                        lo = ['children'],
-                        fo = ne.default.forwardRef(function(t, e) {
-                          var n = t.children,
-                            r = St(t, so)
-                          return ne.default.createElement(
-                            $r,
-                            Br(
-                              {
-                                width: 20,
-                                height: 20,
-                                viewBox: '0 0 32 32',
-                                xmlns: 'http://www.w3.org/2000/svg',
-                                fill: 'currentColor',
-                                ref: e,
-                              },
-                              r,
-                            ),
-                            qr ||
-                              (qr = ne.default.createElement('path', {
-                                fill: 'none',
-                                d:
-                                  'M16,26a1.5,1.5,0,1,1,1.5-1.5A1.5,1.5,0,0,1,16,26Zm-1.125-5h2.25V12h-2.25Z',
-                                'data-icon-path': 'inner-path',
-                              })),
-                            Zr ||
-                              (Zr = ne.default.createElement('path', {
-                                d:
-                                  'M16.002,6.1714h-.004L4.6487,27.9966,4.6506,28H27.3494l.0019-.0034ZM14.875,12h2.25v9h-2.25ZM16,26a1.5,1.5,0,1,1,1.5-1.5A1.5,1.5,0,0,1,16,26Z',
-                              })),
-                            Wr ||
-                              (Wr = ne.default.createElement('path', {
-                                d:
-                                  'M29,30H3a1,1,0,0,1-.8872-1.4614l13-25a1,1,0,0,1,1.7744,0l13,25A1,1,0,0,1,29,30ZM4.6507,28H27.3493l.002-.0033L16.002,6.1714h-.004L4.6487,27.9967Z',
-                              })),
-                            n,
-                          )
-                        }),
-                        po = ne.default.forwardRef(function(t, e) {
-                          var n = t.children,
-                            r = St(t, lo)
-                          return ne.default.createElement(
-                            $r,
-                            Br(
-                              {
-                                width: 20,
-                                height: 20,
-                                viewBox: '0 0 20 20',
-                                xmlns: 'http://www.w3.org/2000/svg',
-                                fill: 'currentColor',
-                                ref: e,
-                              },
-                              r,
-                            ),
-                            Gr ||
-                              (Gr = ne.default.createElement('path', {
-                                d:
-                                  'M10,1c-5,0-9,4-9,9s4,9,9,9s9-4,9-9S15,1,10,1z M9.2,5h1.5v7H9.2V5z M10,16c-0.6,0-1-0.4-1-1s0.4-1,1-1\ts1,0.4,1,1S10.6,16,10,16z',
-                              })),
-                            Jr ||
-                              (Jr = ne.default.createElement('path', {
-                                d:
-                                  'M9.2,5h1.5v7H9.2V5z M10,16c-0.6,0-1-0.4-1-1s0.4-1,1-1s1,0.4,1,1S10.6,16,10,16z',
-                                'data-icon-path': 'inner-path',
-                                opacity: '0',
-                              })),
-                            n,
-                          )
-                        }),
-                        ho = ['children'],
-                        vo = ['children'],
-                        yo = ne.default.forwardRef(function(t, e) {
-                          var n = t.children,
-                            r = St(t, ho)
-                          return ne.default.createElement(
-                            $r,
-                            Br(
-                              {
-                                width: 20,
-                                height: 20,
-                                viewBox: '0 0 32 32',
-                                xmlns: 'http://www.w3.org/2000/svg',
-                                fill: 'currentColor',
-                                ref: e,
-                              },
-                              r,
-                            ),
-                            Yr ||
-                              (Yr = ne.default.createElement('path', {
-                                fill: 'none',
-                                d:
-                                  'M16,8a1.5,1.5,0,1,1-1.5,1.5A1.5,1.5,0,0,1,16,8Zm4,13.875H17.125v-8H13v2.25h1.875v5.75H12v2.25h8Z',
-                                'data-icon-path': 'inner-path',
-                              })),
-                            Qr ||
-                              (Qr = ne.default.createElement('path', {
-                                d:
-                                  'M16,2A14,14,0,1,0,30,16,14,14,0,0,0,16,2Zm0,6a1.5,1.5,0,1,1-1.5,1.5A1.5,1.5,0,0,1,16,8Zm4,16.125H12v-2.25h2.875v-5.75H13v-2.25h4.125v8H20Z',
-                              })),
-                            n,
-                          )
-                        }),
-                        go = ne.default.forwardRef(function(t, e) {
-                          var n = t.children,
-                            r = St(t, vo)
-                          return ne.default.createElement(
-                            $r,
-                            Br(
-                              {
-                                width: 20,
-                                height: 20,
-                                viewBox: '0 0 32 32',
-                                xmlns: 'http://www.w3.org/2000/svg',
-                                fill: 'currentColor',
-                                ref: e,
-                              },
-                              r,
-                            ),
-                            Xr ||
-                              (Xr = ne.default.createElement('path', {
-                                fill: 'none',
-                                d:
-                                  'M16,8a1.5,1.5,0,1,1-1.5,1.5A1.5,1.5,0,0,1,16,8Zm4,13.875H17.125v-8H13v2.25h1.875v5.75H12v2.25h8Z',
-                                'data-icon-path': 'inner-path',
-                              })),
-                            to ||
-                              (to = ne.default.createElement('path', {
-                                d:
-                                  'M26,4H6A2,2,0,0,0,4,6V26a2,2,0,0,0,2,2H26a2,2,0,0,0,2-2V6A2,2,0,0,0,26,4ZM16,8a1.5,1.5,0,1,1-1.5,1.5A1.5,1.5,0,0,1,16,8Zm4,16.125H12v-2.25h2.875v-5.75H13v-2.25h4.125v8H20Z',
-                              })),
-                            n,
-                          )
-                        }),
-                        mo = {},
-                        bo = 'bx',
-                        wo = ne.default.forwardRef(function(t, e) {
-                          var n,
-                            r = t.children,
-                            o = t.as,
-                            i = t.className,
-                            u = t.disabled,
-                            a = t.small,
-                            c = t.size,
-                            s = t.kind,
-                            l = t.href,
-                            f = t.isSelected,
-                            d = t.tabIndex,
-                            p = t.type,
-                            h = t.renderIcon,
-                            v = t.iconDescription,
-                            y = t.hasIconOnly,
-                            g = t.tooltipPosition,
-                            m = t.tooltipAlignment,
-                            b = (function(t, e) {
-                              if (null == t) return {}
-                              var n,
-                                r,
-                                o = (function(t, e) {
-                                  if (null == t) return {}
-                                  var n,
-                                    r,
-                                    o = {},
-                                    i = Object.keys(t)
-                                  for (r = 0; r < i.length; r++)
-                                    (n = i[r]),
-                                      e.indexOf(n) >= 0 || (o[n] = t[n])
-                                  return o
-                                })(t, e)
-                              if (Object.getOwnPropertySymbols) {
-                                var i = Object.getOwnPropertySymbols(t)
-                                for (r = 0; r < i.length; r++)
-                                  (n = i[r]),
-                                    e.indexOf(n) >= 0 ||
-                                      (Object.prototype.propertyIsEnumerable.call(
-                                        t,
-                                        n,
-                                      ) &&
-                                        (o[n] = t[n]))
-                              }
-                              return o
-                            })(t, [
-                              'children',
-                              'as',
-                              'className',
-                              'disabled',
-                              'small',
-                              'size',
-                              'kind',
-                              'href',
-                              'isSelected',
-                              'tabIndex',
-                              'type',
-                              'renderIcon',
-                              'iconDescription',
-                              'hasIconOnly',
-                              'tooltipPosition',
-                              'tooltipAlignment',
-                            ]),
-                            w = {
-                              tabIndex: d,
-                              className: Rr()(
-                                i,
-                                (kt((n = {}), ''.concat(bo, '--btn'), !0),
-                                kt(
-                                  n,
-                                  ''.concat(bo, '--btn--field'),
-                                  'field' === c,
-                                ),
-                                kt(
-                                  n,
-                                  ''.concat(bo, '--btn--sm'),
-                                  'small' === c || 'sm' === c || a,
-                                ),
-                                kt(n, ''.concat(bo, '--btn--lg'), 'lg' === c),
-                                kt(n, ''.concat(bo, '--btn--xl'), 'xl' === c),
-                                kt(n, ''.concat(bo, '--btn--').concat(s), s),
-                                kt(n, ''.concat(bo, '--btn--disabled'), u),
-                                kt(n, ''.concat(bo, '--btn--icon-only'), y),
-                                kt(
-                                  n,
-                                  ''.concat(bo, '--btn--selected'),
-                                  y && f && 'ghost' === s,
-                                ),
-                                kt(n, ''.concat(bo, '--tooltip__trigger'), y),
-                                kt(n, ''.concat(bo, '--tooltip--a11y'), y),
-                                kt(
-                                  n,
-                                  ''.concat(bo, '--tooltip--').concat(g),
-                                  y && g,
-                                ),
-                                kt(
-                                  n,
-                                  ''.concat(bo, '--tooltip--align-').concat(m),
-                                  y && m,
-                                ),
-                                n),
-                              ),
-                              ref: e,
-                            },
-                            _ = h
-                              ? ne.default.createElement(h, {
-                                  'aria-label': v,
-                                  className: ''.concat(bo, '--btn__icon'),
-                                  'aria-hidden': 'true',
-                                })
-                              : null,
-                            S = 'button',
-                            x = {
-                              disabled: u,
-                              type: p,
-                              'aria-pressed': y && 'ghost' === s ? f : null,
-                            },
-                            O = {href: l},
-                            j = y
-                              ? ne.default.createElement(
-                                  'span',
-                                  {
-                                    className: ''.concat(
-                                      bo,
-                                      '--assistive-text',
-                                    ),
-                                  },
-                                  v,
-                                )
-                              : null
-                          return (
-                            o
-                              ? ((S = o), (x = Ct(Ct({}, x), O)))
-                              : l && !u && ((S = 'a'), (x = O)),
-                            ne.default.createElement(
-                              S,
-                              Ct(Ct(Ct({}, b), w), x),
-                              j,
-                              r,
-                              _,
-                            )
-                          )
-                        })
-                      function _o() {
-                        return (
-                          (_o =
-                            Object.assign ||
-                            function(t) {
-                              for (var e = 1; e < arguments.length; e++) {
-                                var n = arguments[e]
-                                for (var r in n)
-                                  Object.prototype.hasOwnProperty.call(n, r) &&
-                                    (t[r] = n[r])
-                              }
-                              return t
-                            }),
-                          _o.apply(this, arguments)
-                        )
-                      }
-                      ;(wo.displayName = 'Button'),
-                        (wo.propTypes = {
-                          as: Ir().oneOfType([
-                            Ir().func,
-                            Ir().string,
-                            Ir().elementType,
-                          ]),
-                          children: Ir().node,
-                          className: Ir().string,
-                          disabled: Ir().bool,
-                          hasIconOnly: Ir().bool,
-                          href: Ir().string,
-                          iconDescription: function(t) {
-                            if (
-                              t.renderIcon &&
-                              !t.children &&
-                              !t.iconDescription
-                            )
-                              return new Error(
-                                'renderIcon property specified without also providing an iconDescription property.',
-                              )
-                          },
-                          isSelected: Ir().bool,
-                          kind: Ir().oneOf([
-                            'primary',
-                            'secondary',
-                            'danger',
-                            'ghost',
-                            'danger--primary',
-                            'danger--ghost',
-                            'danger--tertiary',
-                            'tertiary',
-                          ]).isRequired,
-                          renderIcon: Ir().oneOfType([Ir().func, Ir().object]),
-                          role: Ir().string,
-                          size: Ir().oneOf([
-                            'default',
-                            'field',
-                            'small',
-                            'sm',
-                            'lg',
-                            'xl',
-                          ]),
-                          small:
-                            ((eo = Ir().bool),
-                            function(t, e, n) {
-                              if (void 0 !== t[e]) {
-                                ;(mo[n] && mo[n][e]) ||
-                                  (mo[n] = Ot(Ot({}, mo[n]), {}, jt({}, e, !0)))
-                                for (
-                                  var r = arguments.length,
-                                    o = new Array(r > 3 ? r - 3 : 0),
-                                    i = 3;
-                                  i < r;
-                                  i++
-                                )
-                                  o[i - 3] = arguments[i]
-                                return eo.apply(void 0, [t, e, n].concat(o))
-                              }
-                            }),
-                          tabIndex: Ir().number,
-                          tooltipAlignment: Ir().oneOf([
-                            'start',
-                            'center',
-                            'end',
-                          ]),
-                          tooltipPosition: Ir().oneOf([
-                            'top',
-                            'right',
-                            'bottom',
-                            'left',
-                          ]),
-                          type: Ir().oneOf(['button', 'reset', 'submit']),
-                        }),
-                        (wo.defaultProps = {
-                          tabIndex: 0,
-                          type: 'button',
-                          disabled: !1,
-                          kind: 'primary',
-                          size: 'default',
-                          tooltipAlignment: 'center',
-                          tooltipPosition: 'top',
-                        })
-                      var So = 'bx'
-                      Ir().node,
-                        Ir().string,
-                        Ir().func,
-                        (Rt.propTypes = {
-                          ariaLabel: Ir().string,
-                          className: Ir().string,
-                          iconDescription: Ir().string,
-                          name: Ir().string,
-                          notificationType: Ir().oneOf(['toast', 'inline']),
-                          renderIcon: Ir().oneOfType([Ir().func, Ir().object]),
-                          type: Ir().string,
-                        }),
-                        (Rt.defaultProps = {
-                          ariaLabel: 'close notification',
-                          notificationType: 'toast',
-                          type: 'button',
-                          iconDescription: 'close icon',
-                          renderIcon: uo,
-                        }),
-                        (Dt.propTypes = {
-                          caption: Ir().node,
-                          children: Ir().node,
-                          notificationType: Ir().oneOf(['toast', 'inline']),
-                          subtitle: Ir().node,
-                          title: Ir().string,
-                        }),
-                        (Dt.defaultProps = {
-                          title: 'title',
-                          notificationType: 'toast',
-                        })
-                      var xo =
-                        (It(
-                          (no = {error: co, success: io, warning: po}),
-                          'warning-alt',
-                          fo,
-                        ),
-                        It(no, 'info', yo),
-                        It(no, 'info-square', go),
-                        no)
-                      ;(Mt.propTypes = {
-                        iconDescription: Ir().string.isRequired,
-                        kind: Ir().oneOf([
-                          'error',
-                          'success',
-                          'warning',
-                          'warning-alt',
-                          'info',
-                          'info-square',
-                        ]).isRequired,
-                        notificationType: Ir().oneOf(['inline', 'toast'])
-                          .isRequired,
-                      }),
-                        (Lt.propTypes = {
-                          caption: Ir().node,
-                          children: Ir().node,
-                          className: Ir().string,
-                          hideCloseButton: Ir().bool,
-                          iconDescription: Ir().string,
-                          kind: Ir().oneOf([
-                            'error',
-                            'info',
-                            'info-square',
-                            'success',
-                            'warning',
-                            'warning-alt',
-                          ]).isRequired,
-                          lowContrast: Ir().bool,
-                          notificationType: Ir().string,
-                          onCloseButtonClick: Ir().func,
-                          role: Ir().string.isRequired,
-                          statusIconDescription: Ir().string,
-                          subtitle: Ir().node,
-                          timeout: Ir().number,
-                          title: Ir().string.isRequired,
-                        }),
-                        (Lt.defaultProps = {
-                          kind: 'error',
-                          title: 'provide a title',
-                          role: 'alert',
-                          notificationType: 'toast',
-                          iconDescription: 'closes notification',
-                          onCloseButtonClick: function() {},
-                          hideCloseButton: !1,
-                          timeout: 0,
-                        }),
-                        (Bt.propTypes = {
-                          actions: Ir().node,
-                          children: Ir().node,
-                          className: Ir().string,
-                          hideCloseButton: Ir().bool,
-                          iconDescription: Ir().string,
-                          kind: Ir().oneOf([
-                            'error',
-                            'info',
-                            'info-square',
-                            'success',
-                            'warning',
-                            'warning-alt',
-                          ]).isRequired,
-                          lowContrast: Ir().bool,
-                          notificationType: Ir().string,
-                          onCloseButtonClick: Ir().func,
-                          role: Ir().string.isRequired,
-                          statusIconDescription: Ir().string,
-                          subtitle: Ir().node,
-                          title: Ir().string.isRequired,
-                        }),
-                        (Bt.defaultProps = {
-                          role: 'alert',
-                          notificationType: 'inline',
-                          iconDescription: 'closes notification',
-                          onCloseButtonClick: function() {},
-                          hideCloseButton: !1,
-                        })
-                      var Oo,
-                        jo,
-                        Eo,
-                        Co = function(t) {
+                      })(nr || (nr = {}))
+                      var or,
+                        ir,
+                        ur,
+                        ar = {patient: null, isLoadingPatient: !0, err: null},
+                        cr = a((0, Nt.getExtensionInternalStore)()),
+                        sr = a((0, Nt.getExtensionStore)()),
+                        lr = function(t) {
                           var e,
                             n = t.privilege,
-                            r = t.unauthorisedResponse,
-                            o = t.redirectUrl,
-                            i = t.children,
-                            u =
+                            r = t.unauthorisedChildren,
+                            o = t.children,
+                            i =
                               (function(t) {
                                 if (Array.isArray(t)) return t
-                              })((e = (0, ne.useState)(null))) ||
+                              })((e = (0, Lt.useState)(null))) ||
                               (function(t, e) {
                                 var n =
                                   null == t
@@ -30411,7 +28886,7 @@
                               })(e) ||
                               (function(t, e) {
                                 if (t) {
-                                  if ('string' == typeof t) return Nt(t, 2)
+                                  if ('string' == typeof t) return vt(t, 2)
                                   var n = Object.prototype.toString
                                     .call(t)
                                     .slice(8, -1)
@@ -30425,7 +28900,7 @@
                                         /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(
                                           n,
                                         )
-                                      ? Nt(t, 2)
+                                      ? vt(t, 2)
                                       : void 0
                                   )
                                 }
@@ -30435,72 +28910,65 @@
                                   'Invalid attempt to destructure non-iterable instance.\\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method.',
                                 )
                               })(),
-                            a = u[0],
-                            c = u[1]
+                            u = i[0],
+                            a = i[1]
                           return (
-                            (0, ne.useEffect)(function() {
-                              var t = (0, Or.getCurrentUser)({
+                            (0, Lt.useEffect)(function() {
+                              var t = (0, er.getCurrentUser)({
                                 includeAuthStatus: !1,
-                              }).subscribe(c)
+                              }).subscribe(a)
                               return function() {
                                 return t.unsubscribe()
                               }
                             }, []),
-                            a && (0, Or.userHasAccess)(n, a)
-                              ? ne.default.createElement(
-                                  ne.default.Fragment,
+                            u && (0, er.userHasAccess)(n, u)
+                              ? Lt.default.createElement(
+                                  Lt.default.Fragment,
                                   null,
-                                  i,
+                                  o,
                                 )
                               : r
-                              ? ne.default.createElement(
-                                  'div',
-                                  {
-                                    className:
-                                      'omrs-inline-notifications-container',
-                                  },
-                                  ne.default.createElement(Bt, {
-                                    title: 'Unauthorised',
-                                    subtitle: r,
-                                    kind: 'error',
-                                  }),
+                              ? Lt.default.createElement(
+                                  Lt.default.Fragment,
+                                  null,
+                                  r,
                                 )
-                              : (o && window.location.replace(o), null)
+                              : null
                           )
                         },
-                        ko = g(385),
-                        Ao = function(t) {
+                        fr = g(385),
+                        dr = function(t) {
                           return t
                         },
-                        Po = function() {},
-                        Io = void 0,
-                        To = Object,
-                        Ro = function(t) {
-                          return t === Io
+                        pr = function() {},
+                        hr = void 0,
+                        vr = Object,
+                        yr = function(t) {
+                          return t === hr
                         },
-                        Do = function(t) {
+                        gr = function(t) {
                           return 'function' == typeof t
                         },
-                        Mo = function(t, e) {
-                          return To.assign({}, t, e)
+                        mr = function(t, e) {
+                          return vr.assign({}, t, e)
                         },
-                        Lo = 'undefined',
-                        Bo = function() {
+                        br = 'undefined',
+                        wr = function() {
                           return (
                             ('undefined' == typeof window
                               ? 'undefined'
-                              : o(window)) != Lo
+                              : o(window)) != br
                           )
                         },
-                        No = new WeakMap(),
-                        Uo = 0,
-                        Ho = function(t) {
+                        _r = new WeakMap(),
+                        Sr = 0,
+                        xr = function(t) {
                           var e,
                             n,
                             r = void 0 === t ? 'undefined' : o(t),
                             i = t && t.constructor,
                             u = i == Date
-                          if (To(t) !== t || u || i == RegExp)
+                          if (vr(t) !== t || u || i == RegExp)
                             e = u
                               ? t.toJSON()
                               : 'symbol' == r
@@ -30509,90 +28977,90 @@
                               ? JSON.stringify(t)
                               : '' + t
                           else {
-                            if ((e = No.get(t))) return e
-                            if (((e = ++Uo + '~'), No.set(t, e), i == Array)) {
+                            if ((e = _r.get(t))) return e
+                            if (((e = ++Sr + '~'), _r.set(t, e), i == Array)) {
                               for (e = '@', n = 0; n < t.length; n++)
-                                e += Ho(t[n]) + ','
-                              No.set(t, e)
+                                e += xr(t[n]) + ','
+                              _r.set(t, e)
                             }
-                            if (i == To) {
+                            if (i == vr) {
                               e = '#'
                               for (
-                                var a = To.keys(t).sort();
-                                !Ro((n = a.pop()));
+                                var a = vr.keys(t).sort();
+                                !yr((n = a.pop()));
 
                               )
-                                Ro(t[n]) || (e += n + ':' + Ho(t[n]) + ',')
-                              No.set(t, e)
+                                yr(t[n]) || (e += n + ':' + xr(t[n]) + ',')
+                              _r.set(t, e)
                             }
                           }
                           return e
                         },
-                        Fo = !0,
-                        Vo = Bo(),
-                        $o =
+                        Or = !0,
+                        jr = wr(),
+                        Er =
                           ('undefined' == typeof document
                             ? 'undefined'
-                            : o(document)) != Lo,
-                        zo =
-                          Vo && window.addEventListener
+                            : o(document)) != br,
+                        Cr =
+                          jr && window.addEventListener
                             ? window.addEventListener.bind(window)
-                            : Po,
-                        Ko = $o ? document.addEventListener.bind(document) : Po,
-                        qo =
-                          Vo && window.removeEventListener
+                            : pr,
+                        kr = Er ? document.addEventListener.bind(document) : pr,
+                        Ar =
+                          jr && window.removeEventListener
                             ? window.removeEventListener.bind(window)
-                            : Po,
-                        Zo = $o
+                            : pr,
+                        Pr = Er
                           ? document.removeEventListener.bind(document)
-                          : Po,
-                        Wo = {
+                          : pr,
+                        Ir = {
                           isOnline: function() {
-                            return Fo
+                            return Or
                           },
                           isVisible: function() {
-                            var t = $o && document.visibilityState
-                            return Ro(t) || 'hidden' !== t
+                            var t = Er && document.visibilityState
+                            return yr(t) || 'hidden' !== t
                           },
                         },
-                        Go = {
+                        Tr = {
                           initFocus: function(t) {
                             return (
-                              Ko('visibilitychange', t),
-                              zo('focus', t),
+                              kr('visibilitychange', t),
+                              Cr('focus', t),
                               function() {
-                                Zo('visibilitychange', t), qo('focus', t)
+                                Pr('visibilitychange', t), Ar('focus', t)
                               }
                             )
                           },
                           initReconnect: function(t) {
                             var e = function() {
-                                ;(Fo = !0), t()
+                                ;(Or = !0), t()
                               },
                               n = function() {
-                                Fo = !1
+                                Or = !1
                               }
                             return (
-                              zo('online', e),
-                              zo('offline', n),
+                              Cr('online', e),
+                              Cr('offline', n),
                               function() {
-                                qo('online', e), qo('offline', n)
+                                Ar('online', e), Ar('offline', n)
                               }
                             )
                           },
                         },
-                        Jo = !Bo() || 'Deno' in window,
-                        Yo = Jo ? ne.useEffect : ne.useLayoutEffect,
-                        Qo =
+                        Lr = !wr() || 'Deno' in window,
+                        Rr = Lr ? Lt.useEffect : Lt.useLayoutEffect,
+                        Mr =
                           'undefined' != typeof navigator &&
                           navigator.connection,
-                        Xo =
-                          !Jo &&
-                          Qo &&
-                          (['slow-2g', '2g'].includes(Qo.effectiveType) ||
-                            Qo.saveData),
-                        ti = function(t) {
-                          if (Do(t))
+                        Dr =
+                          !Lr &&
+                          Mr &&
+                          (['slow-2g', '2g'].includes(Mr.effectiveType) ||
+                            Mr.saveData),
+                        Br = function(t) {
+                          if (gr(t))
                             try {
                               t = t()
                             } catch (e) {
@@ -30606,16 +29074,16 @@
                                 : (Array.isArray(t)
                                   ? t.length
                                   : t)
-                                ? Ho(t)
+                                ? xr(t)
                                 : ''),
                             e,
                             t ? '$swr$' + t : '',
                           ]
                         },
-                        ei = new WeakMap(),
-                        ni = function(t, e, n, r, o, i, u) {
+                        Nr = new WeakMap(),
+                        Ur = function(t, e, n, r, o, i, u) {
                           void 0 === u && (u = !0)
-                          var a = ei.get(t),
+                          var a = Nr.get(t),
                             c = a[0],
                             s = a[1],
                             l = a[3],
@@ -30629,14 +29097,14 @@
                               })
                             : t.get(e)
                         },
-                        ri = 0,
-                        oi = function() {
-                          return ++ri
+                        Hr = 0,
+                        Fr = function() {
+                          return ++Hr
                         },
-                        ii = function() {
+                        Vr = function() {
                           for (var t = [], e = 0; e < arguments.length; e++)
                             t[e] = arguments[e]
-                          return Wt(void 0, void 0, void 0, function() {
+                          return jt(void 0, void 0, void 0, function() {
                             var e,
                               n,
                               r,
@@ -30657,7 +29125,7 @@
                               m,
                               b,
                               w
-                            return Gt(this, function(_) {
+                            return Et(this, function(_) {
                               switch (_.label) {
                                 case 0:
                                   if (
@@ -30666,7 +29134,7 @@
                                     (r = t[2]),
                                     (o = t[3]),
                                     (u =
-                                      !!Ro(
+                                      !!yr(
                                         (i =
                                           'boolean' == typeof o
                                             ? {revalidate: o}
@@ -30675,34 +29143,34 @@
                                     (a = !1 !== i.revalidate),
                                     (c = !1 !== i.rollbackOnError),
                                     (s = i.optimisticData),
-                                    (l = ti(n)),
+                                    (l = Br(n)),
                                     (f = l[0]),
                                     (d = l[2]),
                                     !f)
                                   )
                                     return [2]
                                   if (
-                                    ((p = ei.get(e)), (h = p[2]), t.length < 3)
+                                    ((p = Nr.get(e)), (h = p[2]), t.length < 3)
                                   )
                                     return [
                                       2,
-                                      ni(e, f, e.get(f), Io, Io, a, !0),
+                                      Ur(e, f, e.get(f), hr, hr, a, !0),
                                     ]
                                   if (
                                     ((v = r),
-                                    (g = oi()),
+                                    (g = Fr()),
                                     (h[f] = [g, 0]),
-                                    (m = !Ro(s)),
+                                    (m = !yr(s)),
                                     (b = e.get(f)),
-                                    m && (e.set(f, s), ni(e, f, s)),
-                                    Do(v))
+                                    m && (e.set(f, s), Ur(e, f, s)),
+                                    gr(v))
                                   )
                                     try {
                                       v = v(e.get(f))
                                     } catch (t) {
                                       y = t
                                     }
-                                  return v && Do(v.then)
+                                  return v && gr(v.then)
                                     ? [
                                         4,
                                         v.catch(function(t) {
@@ -30724,10 +29192,10 @@
                                   return (
                                     u &&
                                       (y ||
-                                        (Do(u) && (v = u(v, b)), e.set(f, v)),
-                                      e.set(d, Mo(e.get(d), {error: y}))),
-                                    (h[f][1] = oi()),
-                                    [4, ni(e, f, v, y, Io, a, !!u)]
+                                        (gr(u) && (v = u(v, b)), e.set(f, v)),
+                                      e.set(d, mr(e.get(d), {error: y}))),
+                                    (h[f][1] = Fr()),
+                                    [4, Ur(e, f, v, y, hr, a, !!u)]
                                   )
                                 case 3:
                                   if (((w = _.sent()), y)) throw y
@@ -30736,38 +29204,38 @@
                             })
                           })
                         },
-                        ui = function(t, e) {
+                        $r = function(t, e) {
                           for (var n in t) t[n][0] && t[n][0](e)
                         },
-                        ai = function(t, e) {
-                          if (!ei.has(t)) {
-                            var n = Mo(Go, e),
+                        zr = function(t, e) {
+                          if (!Nr.has(t)) {
+                            var n = mr(Tr, e),
                               r = {},
-                              o = ii.bind(Io, t),
-                              i = Po
-                            if ((ei.set(t, [r, {}, {}, {}, o]), !Jo)) {
+                              o = Vr.bind(hr, t),
+                              i = pr
+                            if ((Nr.set(t, [r, {}, {}, {}, o]), !Lr)) {
                               var u = n.initFocus(
-                                  setTimeout.bind(Io, ui.bind(Io, r, 0)),
+                                  setTimeout.bind(hr, $r.bind(hr, r, 0)),
                                 ),
                                 a = n.initReconnect(
-                                  setTimeout.bind(Io, ui.bind(Io, r, 1)),
+                                  setTimeout.bind(hr, $r.bind(hr, r, 1)),
                                 )
                               i = function() {
-                                u && u(), a && a(), ei.delete(t)
+                                u && u(), a && a(), Nr.delete(t)
                               }
                             }
                             return [t, o, i]
                           }
-                          return [t, ei.get(t)[4]]
+                          return [t, Nr.get(t)[4]]
                         },
-                        ci = ai(new Map()),
-                        si = ci[0],
-                        li = ci[1],
-                        fi = Mo(
+                        Kr = zr(new Map()),
+                        qr = Kr[0],
+                        Wr = Kr[1],
+                        Zr = mr(
                           {
-                            onLoadingSlow: Po,
-                            onSuccess: Po,
-                            onError: Po,
+                            onLoadingSlow: pr,
+                            onSuccess: pr,
+                            onError: pr,
                             onErrorRetry: function(t, e, n, r, o) {
                               var i = n.errorRetryCount,
                                 u = o.retryCount,
@@ -30776,51 +29244,51 @@
                                     (Math.random() + 0.5) *
                                     (1 << (u < 8 ? u : 8))
                                   ) * n.errorRetryInterval
-                              ;(!Ro(i) && u > i) || setTimeout(r, a, o)
+                              ;(!yr(i) && u > i) || setTimeout(r, a, o)
                             },
-                            onDiscarded: Po,
+                            onDiscarded: pr,
                             revalidateOnFocus: !0,
                             revalidateOnReconnect: !0,
                             revalidateIfStale: !0,
                             shouldRetryOnError: !0,
-                            errorRetryInterval: Xo ? 1e4 : 5e3,
+                            errorRetryInterval: Dr ? 1e4 : 5e3,
                             focusThrottleInterval: 5e3,
                             dedupingInterval: 2e3,
-                            loadingTimeout: Xo ? 5e3 : 3e3,
+                            loadingTimeout: Dr ? 5e3 : 3e3,
                             compare: function(t, e) {
-                              return Ho(t) == Ho(e)
+                              return xr(t) == xr(e)
                             },
                             isPaused: function() {
                               return !1
                             },
-                            cache: si,
-                            mutate: li,
+                            cache: qr,
+                            mutate: Wr,
                             fallback: {},
                           },
-                          Wo,
+                          Ir,
                         ),
-                        di = function(t, e) {
-                          var n = Mo(t, e)
+                        Gr = function(t, e) {
+                          var n = mr(t, e)
                           if (e) {
                             var r = t.use,
                               o = t.fallback,
                               i = e.use,
                               u = e.fallback
                             r && i && (n.use = r.concat(i)),
-                              o && u && (n.fallback = Mo(o, u))
+                              o && u && (n.fallback = mr(o, u))
                           }
                           return n
                         },
-                        pi = (0, ne.createContext)({}),
-                        hi = function(t) {
-                          return Do(t[1])
+                        Jr = (0, Lt.createContext)({}),
+                        Yr = function(t) {
+                          return gr(t[1])
                             ? [t[0], t[1], t[2] || {}]
                             : [t[0], null, (null === t[1] ? t[2] : t[1]) || {}]
                         },
-                        vi = function() {
-                          return Mo(fi, (0, ne.useContext)(pi))
+                        Qr = function() {
+                          return mr(Zr, (0, Lt.useContext)(Jr))
                         },
-                        yi = function(t, e, n) {
+                        Xr = function(t, e, n) {
                           var r = e[t] || (e[t] = [])
                           return (
                             r.push(n),
@@ -30830,31 +29298,31 @@
                             }
                           )
                         },
-                        gi = {dedupe: !0},
-                        mi =
-                          (To.defineProperty(
+                        to = {dedupe: !0},
+                        eo =
+                          (vr.defineProperty(
                             function(t) {
                               var e = t.value,
-                                n = di((0, ne.useContext)(pi), e),
+                                n = Gr((0, Lt.useContext)(Jr), e),
                                 r = e && e.provider,
-                                o = (0, ne.useState)(function() {
-                                  return r ? ai(r(n.cache || si), e) : Io
+                                o = (0, Lt.useState)(function() {
+                                  return r ? zr(r(n.cache || qr), e) : hr
                                 })[0]
                               return (
                                 o && ((n.cache = o[0]), (n.mutate = o[1])),
-                                Yo(function() {
-                                  return o ? o[2] : Io
+                                Rr(function() {
+                                  return o ? o[2] : hr
                                 }, []),
-                                (0, ne.createElement)(
-                                  pi.Provider,
-                                  Mo(t, {value: n}),
+                                (0, Lt.createElement)(
+                                  Jr.Provider,
+                                  mr(t, {value: n}),
                                 )
                               )
                             },
                             'default',
-                            {value: fi},
+                            {value: Zr},
                           ),
-                          (Eo = function(t, e, n) {
+                          (ur = function(t, e, n) {
                             var r = n.cache,
                               i = n.compare,
                               u = n.fallbackData,
@@ -30863,20 +29331,20 @@
                               s = n.refreshInterval,
                               l = n.refreshWhenHidden,
                               f = n.refreshWhenOffline,
-                              d = ei.get(r),
+                              d = Nr.get(r),
                               p = d[0],
                               h = d[1],
                               v = d[2],
                               y = d[3],
-                              g = ti(t),
+                              g = Br(t),
                               m = g[0],
                               b = g[1],
                               w = g[2],
-                              _ = (0, ne.useRef)(!1),
-                              S = (0, ne.useRef)(!1),
-                              x = (0, ne.useRef)(m),
-                              O = (0, ne.useRef)(e),
-                              j = (0, ne.useRef)(n),
+                              _ = (0, Lt.useRef)(!1),
+                              S = (0, Lt.useRef)(!1),
+                              x = (0, Lt.useRef)(m),
+                              O = (0, Lt.useRef)(e),
+                              j = (0, Lt.useRef)(n),
                               E = function() {
                                 return j.current
                               },
@@ -30884,33 +29352,33 @@
                                 return E().isVisible() && E().isOnline()
                               },
                               k = function(t) {
-                                return r.set(w, Mo(r.get(w), t))
+                                return r.set(w, mr(r.get(w), t))
                               },
                               A = r.get(m),
-                              P = Ro(u) ? n.fallback[m] : u,
-                              I = Ro(A) ? P : A,
+                              P = yr(u) ? n.fallback[m] : u,
+                              I = yr(A) ? P : A,
                               T = r.get(w) || {},
-                              R = T.error,
-                              D = !_.current,
+                              L = T.error,
+                              R = !_.current,
                               M = function() {
-                                return D && !Ro(c)
+                                return R && !yr(c)
                                   ? c
                                   : !E().isPaused() &&
                                       (a
-                                        ? !Ro(I)
-                                        : Ro(I) || n.revalidateIfStale)
+                                        ? !yr(I)
+                                        : yr(I) || n.revalidateIfStale)
                               },
-                              L =
-                                !(!m || !e) && (!!T.isValidating || (D && M())),
+                              D =
+                                !(!m || !e) && (!!T.isValidating || (R && M())),
                               B = (function(t, e) {
-                                var n = (0, ne.useState)({})[1],
-                                  r = (0, ne.useRef)(t),
-                                  o = (0, ne.useRef)({
+                                var n = (0, Lt.useState)({})[1],
+                                  r = (0, Lt.useRef)(t),
+                                  o = (0, Lt.useRef)({
                                     data: !1,
                                     error: !1,
                                     isValidating: !1,
                                   }),
-                                  i = (0, ne.useCallback)(function(t) {
+                                  i = (0, Lt.useCallback)(function(t) {
                                     var i = !1,
                                       u = r.current
                                     for (var a in t) {
@@ -30922,20 +29390,20 @@
                                     i && !e.current && n({})
                                   }, [])
                                 return (
-                                  Yo(function() {
+                                  Rr(function() {
                                     r.current = t
                                   }),
                                   [r, o.current, i]
                                 )
-                              })({data: I, error: R, isValidating: L}, S),
+                              })({data: I, error: L, isValidating: D}, S),
                               N = B[0],
                               U = B[1],
                               H = B[2],
-                              F = (0, ne.useCallback)(
+                              F = (0, Lt.useCallback)(
                                 function(t) {
-                                  return Wt(void 0, void 0, void 0, function() {
+                                  return jt(void 0, void 0, void 0, function() {
                                     var e, o, u, a, c, s, l, f, d, p, h, g, w
-                                    return Gt(this, function(j) {
+                                    return Et(this, function(j) {
                                       switch (j.label) {
                                         case 0:
                                           if (
@@ -30971,7 +29439,7 @@
                                           return (
                                             j.trys.push([1, 3, , 4]),
                                             s &&
-                                              (ni(
+                                              (Ur(
                                                 r,
                                                 m,
                                                 N.current.data,
@@ -30987,7 +29455,7 @@
                                                 }, n.loadingTimeout),
                                               (y[m] = [
                                                 e.apply(void 0, b),
-                                                oi(),
+                                                Fr(),
                                               ])),
                                             (w = y[m]),
                                             (o = w[0]),
@@ -31000,10 +29468,10 @@
                                             s &&
                                               setTimeout(f, n.dedupingInterval),
                                             y[m] && y[m][1] === u
-                                              ? (k({error: Io}),
-                                                (d.error = Io),
+                                              ? (k({error: hr}),
+                                                (d.error = hr),
                                                 (h = v[m]),
-                                                !Ro(h) &&
+                                                !yr(h) &&
                                                 (u <= h[0] ||
                                                   u <= h[1] ||
                                                   0 === h[1])
@@ -31038,7 +29506,7 @@
                                                 (('boolean' ==
                                                   typeof n.shouldRetryOnError &&
                                                   n.shouldRetryOnError) ||
-                                                  (Do(n.shouldRetryOnError) &&
+                                                  (gr(n.shouldRetryOnError) &&
                                                     n.shouldRetryOnError(g))) &&
                                                   C() &&
                                                   E().onErrorRetry(g, m, n, F, {
@@ -31054,7 +29522,7 @@
                                             p(),
                                             l() &&
                                               s &&
-                                              ni(r, m, d.data, d.error, !1),
+                                              Ur(r, m, d.data, d.error, !1),
                                             [2, !0]
                                           )
                                       }
@@ -31063,33 +29531,33 @@
                                 },
                                 [m],
                               ),
-                              V = (0, ne.useCallback)(
-                                ii.bind(Io, r, function() {
+                              V = (0, Lt.useCallback)(
+                                Vr.bind(hr, r, function() {
                                   return x.current
                                 }),
                                 [],
                               )
                             if (
-                              (Yo(function() {
+                              (Rr(function() {
                                 ;(O.current = e), (j.current = n)
                               }),
-                              Yo(
+                              Rr(
                                 function() {
                                   if (m) {
                                     var t = m !== x.current,
-                                      e = F.bind(Io, gi),
+                                      e = F.bind(hr, to),
                                       n = 0,
-                                      r = yi(m, h, function(t, e, n) {
+                                      r = Xr(m, h, function(t, e, n) {
                                         H(
-                                          Mo(
+                                          mr(
                                             {error: e, isValidating: n},
                                             i(N.current.data, t)
-                                              ? Io
+                                              ? hr
                                               : {data: t},
                                           ),
                                         )
                                       }),
-                                      u = yi(m, p, function(t) {
+                                      u = Xr(m, p, function(t) {
                                         if (0 == t) {
                                           var r = Date.now()
                                           E().revalidateOnFocus &&
@@ -31109,14 +29577,14 @@
                                       (x.current = m),
                                       (_.current = !0),
                                       t &&
-                                        H({data: I, error: R, isValidating: L}),
+                                        H({data: I, error: L, isValidating: D}),
                                       M() &&
-                                        (Ro(I) || Jo
+                                        (yr(I) || Lr
                                           ? e()
                                           : ((a = e),
-                                            Bo() &&
+                                            wr() &&
                                             o(window.requestAnimationFrame) !=
-                                              Lo
+                                              br
                                               ? window.requestAnimationFrame(a)
                                               : setTimeout(a, 1))),
                                       function() {
@@ -31128,11 +29596,11 @@
                                 },
                                 [m, F],
                               ),
-                              Yo(
+                              Rr(
                                 function() {
                                   var t,
                                     e = function() {
-                                      var e = Do(s) ? s(I) : s
+                                      var e = gr(s) ? s(I) : s
                                       e && -1 !== t && (t = setTimeout(n, e))
                                     },
                                     n = function() {
@@ -31140,7 +29608,7 @@
                                       (!l && !E().isVisible()) ||
                                       (!f && !E().isOnline())
                                         ? e()
-                                        : F(gi).then(e)
+                                        : F(to).then(e)
                                     }
                                   return (
                                     e(),
@@ -31151,44 +29619,44 @@
                                 },
                                 [s, l, f, F],
                               ),
-                              (0, ne.useDebugValue)(I),
-                              a && Ro(I) && m)
+                              (0, Lt.useDebugValue)(I),
+                              a && yr(I) && m)
                             )
                               throw ((O.current = e),
                               (j.current = n),
                               (S.current = !1),
-                              Ro(R) ? F(gi) : R)
+                              yr(L) ? F(to) : L)
                             return {
                               mutate: V,
                               get data() {
                                 return (U.data = !0), I
                               },
                               get error() {
-                                return (U.error = !0), R
+                                return (U.error = !0), L
                               },
                               get isValidating() {
-                                return (U.isValidating = !0), L
+                                return (U.isValidating = !0), D
                               },
                             }
                           }),
                           function() {
                             for (var t = [], e = 0; e < arguments.length; e++)
                               t[e] = arguments[e]
-                            var n = vi(),
-                              r = hi(t),
+                            var n = Qr(),
+                              r = Yr(t),
                               o = r[0],
                               i = r[1],
                               u = r[2],
-                              a = di(n, u),
-                              c = Eo,
+                              a = Gr(n, u),
+                              c = ur,
                               s = a.use
                             if (s) for (var l = s.length; l-- > 0; ) c = s[l](c)
                             return c(o, i || a.fetcher, a)
                           }),
-                        bi = g(688),
-                        wi = g(332),
-                        _i = g.n(wi)
-                      bi.default.extend(_i())
+                        no = g(688),
+                        ro = g(332),
+                        oo = g.n(ro)
+                      no.default.extend(oo())
                     })(),
                     m
                   )
@@ -32144,7 +30612,7 @@
                                               }
                                               return n
                                             })(t, e)
-                                            Lt.setState({config: n})
+                                            Dt.setState({config: n})
                                           },
                                           T = function(t, e, n) {
                                             var r = {},
@@ -32191,7 +30659,7 @@
                                             }
                                             w().setState({configs: r})
                                           },
-                                          R = function(t, e) {
+                                          L = function(t, e) {
                                             Ut(t, e)
                                             var n = Tt.getState()
                                             Tt.setState({
@@ -32202,7 +30670,7 @@
                                               ),
                                             })
                                           },
-                                          D = function(t, e) {
+                                          R = function(t, e) {
                                             Ut(t, e)
                                             var n = Tt.getState()
                                             n.schemas[t] &&
@@ -32235,7 +30703,7 @@
                                               ]),
                                             })
                                           },
-                                          L = function(t) {
+                                          D = function(t) {
                                             return new Promise(function(e) {
                                               var n = function(t) {
                                                   t.loaded &&
@@ -32342,7 +30810,7 @@
                                                       ".order' is invalid. Must be an array of strings (extension IDs)",
                                                   )),
                                               t.configure &&
-                                                (W(t.configure) ||
+                                                (Z(t.configure) ||
                                                   console.error(
                                                     r +
                                                       ".configure' is invalid. Must be an object with extension IDs for keys",
@@ -32505,7 +30973,7 @@
                                                 )
                                               }
                                           },
-                                          Z = function(t) {
+                                          W = function(t) {
                                             return (
                                               !!t &&
                                               Object.keys(t).filter(function(
@@ -32518,7 +30986,7 @@
                                               }).length > 0
                                             )
                                           },
-                                          W = function(t) {
+                                          Z = function(t) {
                                             return (
                                               'object' == typeof t &&
                                               !Array.isArray(t) &&
@@ -32566,13 +31034,13 @@
                                               return Tt
                                             },
                                             defineConfigSchema: function() {
-                                              return R
+                                              return L
                                             },
                                             defineExtensionConfigSchema: function() {
-                                              return D
+                                              return R
                                             },
                                             getConfig: function() {
-                                              return L
+                                              return D
                                             },
                                             getConfigStore: function() {
                                               return y
@@ -32596,7 +31064,7 @@
                                               return w
                                             },
                                             implementerToolsConfigStore: function() {
-                                              return Lt
+                                              return Dt
                                             },
                                             inRange: function() {
                                               return zt
@@ -32617,7 +31085,7 @@
                                               return Y
                                             },
                                             oneOf: function() {
-                                              return Zt
+                                              return Wt
                                             },
                                             processConfig: function() {
                                               return B
@@ -32626,13 +31094,13 @@
                                               return M
                                             },
                                             temporaryConfigStore: function() {
-                                              return Dt
+                                              return Rt
                                             },
                                             validator: function() {
                                               return h
                                             },
                                             validators: function() {
-                                              return Wt
+                                              return Zt
                                             },
                                           })
                                         var Q =
@@ -33260,18 +31728,18 @@
                                             'config-internal',
                                             It,
                                           ),
-                                          Rt = v()
+                                          Lt = v()
                                         Tt.subscribe(function(t) {
                                           var e
-                                          t.devDefaultsAreOn != Rt &&
+                                          t.devDefaultsAreOn != Lt &&
                                             ((e = t.devDefaultsAreOn),
                                             localStorage.setItem(
                                               'openmrs:configAreDevDefaultsOn',
                                               JSON.stringify(e),
                                             ),
-                                            (Rt = t.devDefaultsAreOn))
+                                            (Lt = t.devDefaultsAreOn))
                                         })
-                                        var Dt = (0, Pt.createGlobalStore)(
+                                        var Rt = (0, Pt.createGlobalStore)(
                                           'temporary-config',
                                           {
                                             config: (function() {
@@ -33287,7 +31755,7 @@
                                             })(),
                                           },
                                         )
-                                        Dt.subscribe(function(t) {
+                                        Rt.subscribe(function(t) {
                                           var e
                                           ;(e = t.config),
                                             localStorage.setItem(
@@ -33300,7 +31768,7 @@
                                             'config-store-of-extension-state',
                                             {mountedExtensions: []},
                                           ),
-                                          Lt = (0,
+                                          Dt = (0,
                                           Pt.createGlobalStore)(
                                             'config-implementer-tools',
                                             {config: {}},
@@ -33311,7 +31779,7 @@
                                                 _value: t._default,
                                                 _source: 'default',
                                               })
-                                            : W(t)
+                                            : Z(t)
                                             ? Object.keys(t).reduce(function(
                                                 e,
                                                 n,
@@ -33322,7 +31790,7 @@
                                             : {}
                                         }
                                         function Nt(t, e) {
-                                          return W(t)
+                                          return Z(t)
                                             ? Object.keys(t).reduce(function(
                                                 n,
                                                 r,
@@ -33350,7 +31818,7 @@
                                                   var u = i.value,
                                                     a = n + (n && '.') + u,
                                                     c = e[u]
-                                                  if (!W(c))
+                                                  if (!Z(c))
                                                     return (
                                                       console.error(
                                                         ''
@@ -33368,7 +31836,7 @@
                                                   ) || Ut(t, c, a)
                                                   var s = c._elements
                                                   if (
-                                                    (Z(s) &&
+                                                    (W(s) &&
                                                       Ut(
                                                         t,
                                                         s,
@@ -33512,7 +31980,7 @@
                                         }
                                         function Ht(t, e, n) {
                                           K(n, t._type, e),
-                                            W(e)
+                                            Z(e)
                                               ? t._type === ft.Object
                                                 ? (function(t, e, n) {
                                                     if (t._elements) {
@@ -33557,7 +32025,7 @@
                                                   ) || z(t, e, n)
                                               : t._type === ft.Array &&
                                                 (function(t, e, n) {
-                                                  if (Z(t._elements))
+                                                  if (W(t._elements))
                                                     for (
                                                       var r = 0;
                                                       r < e.length;
@@ -33600,7 +32068,7 @@
                                             if (
                                               (e !== t._default &&
                                                 q(n, t._validators, e),
-                                              W(e))
+                                              Z(e))
                                             ) {
                                               var r = !0,
                                                 o = !1,
@@ -33647,39 +32115,39 @@
                                                     .concat(d, ']'),
                                                 )
                                         }
-                                        A(Tt.getState(), Dt.getState()),
+                                        A(Tt.getState(), Rt.getState()),
                                           Tt.subscribe(function(t) {
-                                            return A(t, Dt.getState())
+                                            return A(t, Rt.getState())
                                           }),
-                                          Dt.subscribe(function(t) {
+                                          Rt.subscribe(function(t) {
                                             return A(Tt.getState(), t)
                                           }),
-                                          I(Tt.getState(), Dt.getState()),
+                                          I(Tt.getState(), Rt.getState()),
                                           Tt.subscribe(function(t) {
-                                            return I(t, Dt.getState())
+                                            return I(t, Rt.getState())
                                           }),
-                                          Dt.subscribe(function(t) {
+                                          Rt.subscribe(function(t) {
                                             return I(Tt.getState(), t)
                                           }),
-                                          P(Tt.getState(), Dt.getState()),
+                                          P(Tt.getState(), Rt.getState()),
                                           Tt.subscribe(function(t) {
-                                            return P(t, Dt.getState())
+                                            return P(t, Rt.getState())
                                           }),
-                                          Dt.subscribe(function(t) {
+                                          Rt.subscribe(function(t) {
                                             return P(Tt.getState(), t)
                                           }),
                                           T(
                                             Tt.getState(),
                                             Mt.getState(),
-                                            Dt.getState(),
+                                            Rt.getState(),
                                           ),
                                           Tt.subscribe(function(t) {
-                                            T(t, Mt.getState(), Dt.getState())
+                                            T(t, Mt.getState(), Rt.getState())
                                           }),
                                           Mt.subscribe(function(t) {
-                                            T(Tt.getState(), t, Dt.getState())
+                                            T(Tt.getState(), t, Rt.getState())
                                           }),
-                                          Dt.subscribe(function(t) {
+                                          Rt.subscribe(function(t) {
                                             T(Tt.getState(), Mt.getState(), t)
                                           })
                                         var Vt = function(t, e, n) {
@@ -33712,7 +32180,7 @@
                                                           : a._default
                                                       }
                                                       var s = a._elements
-                                                      if (u && Z(s))
+                                                      if (u && W(s))
                                                         if (
                                                           a._type ===
                                                             ft.Array &&
@@ -33763,13 +32231,13 @@
                                                             }
                                                           }
                                                         }
-                                                    } else if (W(a)) {
+                                                    } else if (Z(a)) {
                                                       var g = r.hasOwnProperty(
                                                         i,
                                                       )
                                                         ? u
                                                         : {}
-                                                      W(g) &&
+                                                      Z(g) &&
                                                         (r[i] = Vt(a, g, n))
                                                     }
                                                   },
@@ -33831,7 +32299,7 @@
                                             )
                                           },
                                           qt = Kt([]),
-                                          Zt = function(t) {
+                                          Wt = function(t) {
                                             return h(function(e) {
                                               return t.includes(e)
                                             }, "Must be one of the following: '".concat(
@@ -33839,11 +32307,11 @@
                                               "'.",
                                             ))
                                           },
-                                          Wt = {
+                                          Zt = {
                                             inRange: zt,
                                             isUrl: qt,
                                             isUrlWithTemplateParameters: Kt,
-                                            oneOf: Zt,
+                                            oneOf: Wt,
                                           }
                                       })(),
                                       u
@@ -34112,19 +32580,19 @@
                       s(954), s(493)
                       var T = s(792)
                       new T.Subject(), new T.Subject(), s(45)
-                      var R,
-                        D = s(685)
-                      ;(0, D.createGlobalStore)('globalModalState', {
+                      var L,
+                        R = s(685)
+                      ;(0, R.createGlobalStore)('globalModalState', {
                         modalContainer: null,
                         modalStack: [],
                       }),
                         window.getComputedStyle(document.body).overflow,
                         s(740),
-                        (0, D.createGlobalStore)('left-nav', {
+                        (0, R.createGlobalStore)('left-nav', {
                           slotName: null,
                           basePath: window.spaBase,
                         }),
-                        (R = function(t, e) {
+                        (L = function(t, e) {
                           document.documentElement.style.setProperty(t, e)
                         }),
                         (0, I.defineConfigSchema)('@openmrs/esm-styleguide', {
@@ -34146,9 +32614,9 @@
                         ).subscribe(function(t) {
                           t.loaded &&
                             t.config &&
-                            (R('--brand-01', t.config['Brand color #1']),
-                            R('--brand-02', t.config['Brand color #2']),
-                            R('--brand-03', t.config['Brand color #3']))
+                            (L('--brand-01', t.config['Brand color #1']),
+                            L('--brand-02', t.config['Brand color #2']),
+                            L('--brand-03', t.config['Brand color #3']))
                         }),
                         t('omrs-logo-full-color', e),
                         t('omrs-logo-full-mono', e),
