@@ -62,17 +62,23 @@ const UploadReport: React.FC<UploadReportProps> = ({
         const url = uploadFileResponse.data.url
 
         if (url) {
-          const diagnosticReportResponse = await saveDiagnosticReport(
-            patientUuid,
-            reportDate,
-            selectedTests[0],
-            url,
-            selectedFile.name,
-            reportConclusion,
-            ac,
-            selectedPendingOrder,
-          )
-          if (diagnosticReportResponse.ok) {
+          let allSuccess: boolean = true
+          for (let index = 0; index < selectedTests.length; index++) {
+            const diagnosticReportResponse = await saveDiagnosticReport(
+              patientUuid,
+              reportDate,
+              selectedTests[index],
+              url,
+              selectedFile.name,
+              reportConclusion,
+              ac,
+              selectedPendingOrder,
+            )
+            if (allSuccess && !diagnosticReportResponse.ok) {
+              allSuccess = false
+            }
+          }
+          if (allSuccess) {
             close(true)
           }
         }

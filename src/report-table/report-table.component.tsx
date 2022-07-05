@@ -2,25 +2,26 @@ import {usePagination} from '@openmrs/esm-framework'
 import {PatientChartPagination} from '@openmrs/esm-patient-common-lib'
 import {
   DataTable,
-  TableContainer,
-  Table,
-  TableHead,
-  TableRow,
-  TableExpandHeader,
-  TableHeader,
-  TableBody,
-  TableExpandRow,
-  TableExpandedRow,
-  TableCell,
   Link,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableExpandedRow,
+  TableExpandHeader,
+  TableExpandRow,
+  TableHead,
+  TableHeader,
+  TableRow,
 } from 'carbon-components-react'
-import React, {useEffect, useMemo, useState} from 'react'
-import useSWR, {mutate, SWRResponse} from 'swr'
-import {reportHeaders, defaultPageSize} from '../constants'
-import {ReportTableFetchResponse} from '../types'
+import React, {useEffect, useMemo} from 'react'
+import useSWR, {mutate} from 'swr'
+import {defaultPageSize, reportHeaders} from '../constants'
+import ImagePreviewComponent from '../image-preview-component/image-preview-component'
+import {ReportEntry, ReportTableFetchResponse} from '../types'
+import {mergeMultipleTests} from '../utils/api-utils'
 import {fetcher, getReportTableDataURL} from '../utils/lab-orders'
 import classes from './report-table.component.scss'
-import ImagePreviewComponent from '../image-preview-component/image-preview-component'
 
 function getUrl(rows, row) {
   return rows?.find(intialRow => intialRow.id === row.id)?.url
@@ -40,7 +41,10 @@ const ReportTable = props => {
   >(getReportTableDataURL(patientUuid), fetcher)
 
   const rows = useMemo(() => {
-    return reports?.data?.entry
+    const uniqueReports: Array<ReportEntry> = mergeMultipleTests(
+      reports?.data?.entry,
+    )
+    return uniqueReports
       ?.sort((reportEntry1, reportEntry2) => {
         return (
           new Date(reportEntry2.resource.issued).getTime() -
