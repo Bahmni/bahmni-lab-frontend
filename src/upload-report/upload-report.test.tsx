@@ -3,6 +3,7 @@ import {render, screen, waitFor} from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import React from 'react'
 import {SWRConfig} from 'swr'
+import PendingLabOrdersProvider from '../context/pending-orders-context'
 import {UploadReportProvider} from '../context/upload-report-context'
 import {localStorageMock} from '../utils/test-utils'
 import {uploadFiles} from '../utils/test-utils/upload-report-helper'
@@ -278,10 +279,14 @@ function getFormatedDate(addDays: number): string {
   return date.toLocaleDateString('en', {
     year: 'numeric',
     month: 'long',
-    day: '2-digit',
+    day: 'numeric',
   })
 }
 
 function renderWithContextProvider(children) {
-  return render(<UploadReportProvider>{children}</UploadReportProvider>)
+  return render(
+    <PendingLabOrdersProvider>
+      <UploadReportProvider>{children}</UploadReportProvider>
+    </PendingLabOrdersProvider>,
+  )
 }

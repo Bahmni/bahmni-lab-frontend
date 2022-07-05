@@ -15,6 +15,9 @@
     height: fit-content;
     max-height: 500px;
     overflow-y: scroll;
+    :global(.bx--accordion__content){
+        padding:0px ;
+    }
 }
 
 .searchValue {

@@ -7,14 +7,18 @@ import {
   Row,
   ToastNotification,
 } from 'carbon-components-react'
-import React, {useState} from 'react'
+import React, {useCallback, useEffect, useState} from 'react'
 import {RouteComponentProps} from 'react-router-dom'
 import {UploadReportProvider} from '../context/upload-report-context'
 import Loader from '../loader/loader.component'
 import PaginatedTable from '../table/paginated-table'
 import ReportTable from '../report-table/report-table.component'
 import UploadReport from '../upload-report/upload-report'
+import PendingLabOrdersProvider from '../context/pending-orders-context'
 import styles from './patient-lab-details.scss'
+import {fetcher, getReportTableDataURL} from '../utils/lab-orders'
+import {ReportTableFetchResponse} from '../types'
+import useSWR, {SWRResponse} from 'swr'
 
 interface PatientParamsType {
   patientUuid: string
@@ -27,14 +31,16 @@ const PatientLabDetails: React.FC<RouteComponentProps<PatientParamsType>> = ({
   const {isLoading, patient, error} = usePatient(patientUuid)
   const [onButtonClick, setOnButtonClick] = useState<boolean>(false)
   const [onSaveSuccess, setOnSaveSuccess] = useState<boolean>(false)
+  const [reloadReportTable, setReloadReportTable] = useState<boolean>(false)
 
   const handleClick = () => {
-    setOnButtonClick(true), setOnSaveSuccess(false)
+    setOnButtonClick(true), setOnSaveSuccess(false), setReloadReportTable(false)
   }
 
   const handleClose = (isSaveSuccess: boolean) => {
     setOnButtonClick(false)
     setOnSaveSuccess(isSaveSuccess)
+    setReloadReportTable(true)
   }
 
   const renderSuccessMessage = () => (
@@ -43,6 +49,10 @@ const PatientLabDetails: React.FC<RouteComponentProps<PatientParamsType>> = ({
       lowContrast={true}
       title={'Report successfully uploaded'}
       timeout={1000}
+      onClose={() => {
+        setOnSaveSuccess(false)
+        return true
+      }}
     />
   )
 
@@ -81,24 +91,32 @@ const PatientLabDetails: React.FC<RouteComponentProps<PatientParamsType>> = ({
           </div>
           <br></br>
           <br></br>
-          <PaginatedTable patientUuid={patientUuid} />
-          <br></br>
-          <br></br>
-          <Button renderIcon={AddFilled16} onClick={handleClick}>
-            Upload Report
-          </Button>
-          {onButtonClick && (
-            <UploadReportProvider>
-              <UploadReport
-                close={(isSaveSuccess = false) => handleClose(isSaveSuccess)}
-                header="Upload Report"
-                patientUuid={patientUuid}
-              />
-            </UploadReportProvider>
-          )}
-          <br></br>
-          <br></br>
-          <ReportTable patientUuid={patientUuid} />
+          <PendingLabOrdersProvider>
+            <PaginatedTable
+              patientUuid={patientUuid}
+              onButtonClick={onButtonClick}
+            />
+            <br></br>
+            <br></br>
+            <Button renderIcon={AddFilled16} onClick={handleClick}>
+              Upload Report
+            </Button>
+            {onButtonClick && (
+              <UploadReportProvider>
+                <UploadReport
+                  close={(isSaveSuccess = false) => handleClose(isSaveSuccess)}
+                  header="Upload Report"
+                  patientUuid={patientUuid}
+                />
+              </UploadReportProvider>
+            )}
+            <br></br>
+            <br></br>
+          </PendingLabOrdersProvider>
+          <ReportTable
+            patientUuid={patientUuid}
+            reloadTableData={reloadReportTable}
+          />
           <br></br>
           <br></br>
         </div>

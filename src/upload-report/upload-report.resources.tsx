@@ -1,4 +1,5 @@
 import {FetchResponse, PatientUuid} from '@openmrs/esm-framework'
+import {PendingLabOrders} from '../types'
 import {LabTest} from '../types/selectTest'
 import {
   postApiCall,
@@ -22,6 +23,11 @@ interface ReferenceRequestType {
   reference: string
 }
 
+export interface BasedOnType {
+  reference: string
+  display: string
+}
+
 interface DiagnosticReportRequestType {
   resourceType: string
   status: string
@@ -40,6 +46,7 @@ interface DiagnosticReportRequestType {
     url: string
     title: string
   }
+  basedOn: Array<BasedOnType>
 }
 
 export function uploadFile(
@@ -57,7 +64,7 @@ const uploadFileRequestBody = (fileContent, fileType, patientUuid) => {
   return {
     content: removeBase64(fileContent),
     encounterTypeName: 'Patient Document',
-    fileType: extension,
+    fileType: fileType.split('/')[0],
     format: extension,
     patientUuid: patientUuid,
   }
@@ -71,7 +78,20 @@ export function saveDiagnosticReport(
   uploadedFileName: string,
   reportConclusion: string,
   ac: AbortController,
+  selectedPendingOrder: PendingLabOrders[],
 ) {
+  const isPendingOrderInPayload =
+    selectedPendingOrder.filter(
+      pendingOrder => pendingOrder.conceptUuid === selectedTest.uuid,
+    ).length == 1
+  let basedOn: Array<BasedOnType> = null
+  if (isPendingOrderInPayload)
+    basedOn = [
+      {
+        reference: 'ServiceRequest',
+        display: selectedTest.name.display,
+      },
+    ]
   const requestBody: DiagnosticReportRequestType = {
     resourceType: 'DiagnosticReport',
     status: 'final',
@@ -92,6 +112,7 @@ export function saveDiagnosticReport(
       url: uploadFileUrl,
       title: uploadedFileName,
     },
+    basedOn,
   }
   return postApiCall(saveDiagnosticReportURL, requestBody, ac)
 }

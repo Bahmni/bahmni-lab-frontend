@@ -15,6 +15,7 @@ import SelectTest from '../select-test/select-test'
 import UploadFile from '../upload-file/upload-file'
 import {saveDiagnosticReport, uploadFile} from './upload-report.resources'
 import styles from './upload-report.scss'
+import {usePendingLabOrderContext} from '../context/pending-orders-context'
 
 interface UploadReportProps {
   close: Function
@@ -37,6 +38,7 @@ const UploadReport: React.FC<UploadReportProps> = ({
   const {selectedTests, setSelectedTests} = useSelectedTests()
   const maxCount: number = 500
   const {selectedFile, setSelectedFile} = useSelectedFile()
+  const {selectedPendingOrder} = usePendingLabOrderContext()
 
   const handleDiscard = () => {
     setIsDiscardButtonClicked(true)
@@ -58,6 +60,7 @@ const UploadReport: React.FC<UploadReportProps> = ({
       )
       if (uploadFileResponse.ok) {
         const url = uploadFileResponse.data.url
+
         if (url) {
           const diagnosticReportResponse = await saveDiagnosticReport(
             patientUuid,
@@ -67,6 +70,7 @@ const UploadReport: React.FC<UploadReportProps> = ({
             selectedFile.name,
             reportConclusion,
             ac,
+            selectedPendingOrder,
           )
           if (diagnosticReportResponse.ok) {
             close(true)
@@ -117,16 +121,20 @@ const UploadReport: React.FC<UploadReportProps> = ({
       </DatePicker>
 
       <div style={{paddingTop: '1rem'}}>
+        <div
+          className={'bx--label'}
+          style={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            padding: '2px 0px 2px 0px',
+            width: '100%',
+          }}
+        >
+          Report Conclusion{' '}
+          <span id="counter">{`${reportConclusion?.length}/${maxCount}`}</span>
+        </div>
         <TextArea
-          labelText={
-            <>
-              Report Conclusion{' '}
-              <span
-                className={styles.counter}
-                id="counter"
-              >{`${reportConclusion?.length}/${maxCount}`}</span>
-            </>
-          }
+          labelText=""
           maxLength={maxCount}
           required={true}
           value={reportConclusion}

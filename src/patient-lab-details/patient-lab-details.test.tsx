@@ -1,9 +1,10 @@
 import {
   ExtensionSlot,
   openmrsFetch,
-  useLayoutType,
   usePatient,
+  usePagination,
 } from '@openmrs/esm-framework'
+import {useLayoutType} from '@openmrs/esm-framework/mock'
 import {fireEvent, render, screen, waitFor} from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import {when} from 'jest-when'
@@ -11,7 +12,12 @@ import React from 'react'
 import {BrowserRouter} from 'react-router-dom'
 import {SWRConfig} from 'swr'
 import {localStorageMock} from '../utils/test-utils'
+import {mockPendingLabOrder} from '../__mocks__/patientLabDetails.mock'
 import {mockPendingLabOrdersResponse} from '../__mocks__/pendingLabOrders.mock'
+import {
+  mockEmptyReportTableResponse,
+  mockReportTableResponse,
+} from '../__mocks__/reportTable.mock'
 import {
   mockLabTestsResponse,
   mockUploadFileResponse,
@@ -26,8 +32,31 @@ const matchParams = {
   path: '',
   url: '',
 }
+const file = new File(['content'], 'test.pdf', {type: 'application/pdf'})
+const currentDay: string = getFormatedDate(0)
 
 describe('Patient lab details', () => {
+  beforeEach(() => {
+    Object.defineProperty(window, 'localStorage', {value: localStorageMock})
+    when(usePatient)
+      .calledWith(mockPatientUuid)
+      .mockReturnValue({
+        patient: {id: mockPatientUuid},
+      })
+    localStorage.setItem('i18nextLng', 'en')
+    when(ExtensionSlot).mockImplementation((props: any) => {
+      return (
+        <>
+          <div>Extension slot name : {props.extensionSlotName} </div>
+          <div>State : {JSON.stringify(props.state)}</div>
+        </>
+      )
+    })
+    when(usePagination)
+      .calledWith(expect.anything(), 5)
+      .mockReturnValue(mockPendingLabOrder)
+  })
+
   afterEach(() => {
     jest.clearAllMocks()
   })
@@ -72,20 +101,6 @@ describe('Patient lab details', () => {
   })
 
   it('should show patient information in the patient header slot when usePatient call succeeds', () => {
-    when(usePatient)
-      .calledWith(mockPatientUuid)
-      .mockReturnValue({
-        patient: {id: mockPatientUuid},
-      })
-    when(ExtensionSlot).mockImplementation((props: any) => {
-      return (
-        <>
-          <div>Extension slot name : {props.extensionSlotName} </div>
-          <div>State : {JSON.stringify(props.state)}</div>
-        </>
-      )
-    })
-
     render(
       <BrowserRouter>
         <PatientLabDetails
@@ -113,20 +128,6 @@ describe('Patient lab details', () => {
   })
 
   it('should render Paginated Table components', () => {
-    when(usePatient)
-      .calledWith(mockPatientUuid)
-      .mockReturnValue({
-        patient: {id: mockPatientUuid},
-      })
-    when(ExtensionSlot).mockImplementation((props: any) => {
-      return (
-        <>
-          <div>Extension slot name : {props.extensionSlotName} </div>
-          <div>State : {JSON.stringify(props.state)}</div>
-        </>
-      )
-    })
-
     render(
       <BrowserRouter>
         <PatientLabDetails
@@ -141,22 +142,6 @@ describe('Patient lab details', () => {
   })
 
   it('should display Overlay on click of upload report button', () => {
-    Object.defineProperty(window, 'localStorage', {value: localStorageMock})
-    when(usePatient)
-      .calledWith(mockPatientUuid)
-      .mockReturnValue({
-        patient: {id: mockPatientUuid},
-      })
-    when(ExtensionSlot).mockImplementation((props: any) => {
-      return (
-        <>
-          <div>Extension slot name : {props.extensionSlotName} </div>
-          <div>State : {JSON.stringify(props.state)}</div>
-        </>
-      )
-    })
-    localStorage.setItem('i18nextLng', 'en')
-
     render(
       <BrowserRouter>
         <PatientLabDetails
@@ -172,33 +157,78 @@ describe('Patient lab details', () => {
     expect(screen.getByLabelText(/overlay/i)).toBeInTheDocument()
   })
 
-  it('should show success notification on report upload', async () => {
-    Object.defineProperty(window, 'localStorage', {value: localStorageMock})
-    when(usePatient)
-      .calledWith(mockPatientUuid)
-      .mockReturnValue({
-        patient: {id: mockPatientUuid},
-      })
-    when(ExtensionSlot).mockImplementation((props: any) => {
-      return (
-        <>
-          <div>Extension slot name : {props.extensionSlotName} </div>
-          <div>State : {JSON.stringify(props.state)}</div>
-        </>
-      )
-    })
-    localStorage.setItem('i18nextLng', 'en')
-
-    const file = new File(['content'], 'test.pdf', {type: 'application/pdf'})
+  it('should pre-populate the selected tests in upload report and makes pending lab order table read only', async () => {
     const mockedOpenmrsFetch = openmrsFetch as jest.Mock
     mockedOpenmrsFetch
       .mockReturnValueOnce(mockPendingLabOrdersResponse)
+      .mockReturnValue(mockLabTestsResponse)
+
+    render(
+      <SWRConfig value={{provider: () => new Map()}}>
+        <BrowserRouter>
+          <PatientLabDetails
+            match={matchParams}
+            history={undefined}
+            location={undefined}
+          />
+        </BrowserRouter>
+      </SWRConfig>,
+    )
+
+    await waitFor(() => {
+      expect(screen.getByText(/Pending lab orders/i)).toBeInTheDocument()
+    })
+
+    expect(
+      screen.getByRole('cell', {name: 'Routine Blood'}),
+    ).toBeInTheDocument()
+    expect(
+      screen.getByRole('cell', {name: 'Anaemia Panel'}),
+    ).toBeInTheDocument()
+
+    userEvent.click(screen.getAllByRole('checkbox', {name: /Select row/i})[0])
+    userEvent.click(screen.getAllByRole('checkbox', {name: /Select row/i})[1])
+
+    userEvent.click(screen.getByRole('button', {name: /upload report/i}))
+
+    expect(
+      screen.getByRole('button', {name: /save and upload/i}),
+    ).toBeDisabled()
+
+    await waitFor(() => {
+      expect(screen.getByTestId(/selected-tests/i)).toHaveTextContent(
+        'Selected Tests ( 2 )',
+      )
+    })
+
+    expect(
+      screen.getAllByRole('checkbox', {name: /Select Row/i})[0],
+    ).toBeDisabled()
+
+    userEvent.click(screen.getByRole('button', {name: /close-icon/i}))
+    expect(
+      screen.getAllByRole('checkbox', {name: /Select Row/i})[0],
+    ).toBeEnabled()
+
+    userEvent.click(screen.getAllByRole('checkbox', {name: /Select row/i})[0])
+
+    userEvent.click(screen.getByRole('button', {name: /upload report/i}))
+
+    await waitFor(() => {
+      expect(screen.getByTestId(/selected-tests/i)).toHaveTextContent(
+        'Selected Tests ( 1 )',
+      )
+    })
+  })
+
+  it('should show success notification on report upload', async () => {
+    const mockedOpenmrsFetch = openmrsFetch as jest.Mock
+    mockedOpenmrsFetch
+      .mockReturnValueOnce(mockPendingLabOrdersResponse)
+      .mockReturnValueOnce(mockEmptyReportTableResponse)
       .mockReturnValueOnce(mockLabTestsResponse)
       .mockReturnValueOnce(mockUploadFileResponse)
       .mockReturnValue(mockDiagnosticReportResponse)
-
-    const mockedLayout = useLayoutType as jest.Mock
-    mockedLayout.mockReturnValue('desktop')
 
     render(
       <SWRConfig value={{provider: () => new Map()}}>
@@ -223,8 +253,6 @@ describe('Patient lab details', () => {
         name: /report date/i,
       }),
     )
-
-    const currentDay: string = getFormatedDate(0)
 
     userEvent.click(screen.getByLabelText(currentDay))
 
@@ -260,6 +288,57 @@ describe('Patient lab details', () => {
       ).toBeInTheDocument(),
     )
   })
+
+  it('should populate based on property if a pending order is selected', async () => {
+    const mockedOpenmrsFetch = openmrsFetch as jest.Mock
+    mockedOpenmrsFetch
+      .mockReturnValueOnce(mockPendingLabOrdersResponse)
+      .mockReturnValueOnce(mockEmptyReportTableResponse) 
+      .mockReturnValueOnce(mockLabTestsResponse)
+      .mockReturnValueOnce(mockUploadFileResponse)
+      .mockReturnValue(mockDiagnosticReportResponse)
+
+    render(
+      <SWRConfig value={{provider: () => new Map()}}>
+        <BrowserRouter>
+          <PatientLabDetails
+            match={matchParams}
+            history={undefined}
+            location={undefined}
+          />
+        </BrowserRouter>
+      </SWRConfig>,
+    )
+
+    await waitFor(() => {
+      userEvent.click(screen.getAllByRole('checkbox', {name: /Select row/i})[0])
+    })
+
+    userEvent.click(screen.getByRole('button', {name: /upload report/i}))
+
+    expect(
+      screen.getByRole('button', {name: /save and upload/i}),
+    ).toBeDisabled()
+
+    await waitFor(() => {
+      expect(screen.getByTestId(/selected-tests/i)).toHaveTextContent(
+        'Selected Tests ( 1 )',
+      )
+    })
+
+    const fileInput = screen.getByLabelText(
+      'Drag and drop files here or click to upload',
+    ) as HTMLInputElement
+
+    uploadFiles(fileInput, [file])
+    await verifyFileName(fileInput)
+    await saveReport()
+    expect(mockedOpenmrsFetch).toBeCalledTimes(5)
+    expect(mockedOpenmrsFetch.mock.calls[4][1].method).toBe('POST')
+    expect(
+      JSON.parse(mockedOpenmrsFetch.mock.calls[4][1].body).basedOn.length,
+    ).toBe(1)
+  })
 })
 
 function getFormatedDate(addDays: number): string {
@@ -269,7 +348,7 @@ function getFormatedDate(addDays: number): string {
   return date.toLocaleDateString('en', {
     year: 'numeric',
     month: 'long',
-    day: '2-digit',
+    day: 'numeric',
   })
 }
 
@@ -292,4 +371,23 @@ function uploadFiles(input, files: File[]) {
       files,
     },
   })
+}
+
+async function verifyFileName(fileInput: HTMLInputElement) {
+  expect(fileInput.files.length).toBe(1)
+  const fileName = await screen.findByText('test.pdf')
+  expect(fileName).toBeInTheDocument()
+}
+
+async function saveReport() {
+  const saveButton = screen.getByRole('button', {name: /save and upload/i})
+  userEvent.click(screen.getByLabelText(currentDay))
+  expect(saveButton).not.toBeDisabled()
+  userEvent.click(saveButton)
+
+  await waitFor(() =>
+    expect(
+      screen.getByText(/Report successfully uploaded/i),
+    ).toBeInTheDocument(),
+  )
 }

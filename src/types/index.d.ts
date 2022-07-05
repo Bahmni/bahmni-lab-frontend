@@ -85,5 +85,14 @@ export interface ReportTableFetchResponse {
     resourceType: string
     id: string
     entry: Array<ReportEntry>
+    total: number
   }
+}
+
+export interface PendingLabOrders {
+  id: string
+  testName: string
+  date: string
+  orderedBy: string
+  conceptUuid: string
 }
