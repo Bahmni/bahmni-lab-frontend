@@ -38,6 +38,16 @@ describe('Paginated Reports Table', () => {
             file: 'Blood Test.jpg',
             conclusion: 'sample conclusion',
           },
+          {
+            id: '1178aaed-e352-48f8-8685-4ae8b17d732e',
+            tests: 'D-Dimer',
+            url:
+              'https://c2.staticflickr.com/9/8817/28973449265_07e3aa5d2e_b.jpg',
+            date: 'May 04, 2022',
+            requester: 'Superman',
+            file: 'D-Dimer.jpg',
+            conclusion: 'sample conclusion',
+          },
         ],
         goTo: jest.fn(),
         currentPage: 1,
@@ -45,7 +55,8 @@ describe('Paginated Reports Table', () => {
   })
 
   afterEach(() => {
-    localStorage.removeItem('i18nextLng'), jest.clearAllMocks()
+    localStorage.removeItem('i18nextLng')
+    jest.clearAllMocks()
   })
 
   it('should display uploaded reports table when call for reports data is successful', async () => {
@@ -68,8 +79,8 @@ describe('Paginated Reports Table', () => {
     })
     expect(screen.getByRole('cell', {name: 'May 03, 2022'})).toBeInTheDocument()
     expect(screen.getByRole('cell', {name: 'Blood Test'})).toBeInTheDocument()
-    expect(screen.getAllByRole('button').length).toEqual(5)
-    expect(screen.getByText(/5 \/ 8 items/i)).toBeInTheDocument()
+    expect(screen.getAllByRole('button').length).toEqual(8)
+    expect(screen.getByText(/2 \/ 2 items/i)).toBeInTheDocument()
 
     expect(
       screen.queryByText(
@@ -131,7 +142,7 @@ describe('Paginated Reports Table', () => {
     })
     expect(screen.getByTitle(/report-table/i)).toBeInTheDocument()
     expect(screen.getByRole('cell', {name: 'Blood Test'})).toBeInTheDocument()
-    expect(screen.getByRole('presentation')).toHaveClass('bx--modal')
+    expect(screen.getAllByRole('presentation')[0]).toHaveClass('bx--modal')
 
     userEvent.click(
       screen.getByRole('button', {
@@ -140,19 +151,19 @@ describe('Paginated Reports Table', () => {
     )
 
     await waitFor(() => {
-      expect(screen.getByRole('presentation')).toHaveClass(
+      expect(screen.getAllByRole('presentation')[0]).toHaveClass(
         'bx--modal is-visible',
       )
     })
 
     userEvent.click(
-      screen.getByRole('button', {
+      screen.getAllByRole('button', {
         name: /close/i,
-      }),
+      })[0],
     )
 
     await waitFor(() => {
-      expect(screen.getByRole('presentation')).toHaveClass('bx--modal')
+      expect(screen.getAllByRole('presentation')[0]).toHaveClass('bx--modal')
     })
   })
 })
