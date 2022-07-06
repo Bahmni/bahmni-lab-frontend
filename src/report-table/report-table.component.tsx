@@ -16,14 +16,17 @@ import {
 } from 'carbon-components-react'
 import React, {useEffect, useMemo, useState} from 'react'
 import useSWR, {mutate, SWRResponse} from 'swr'
-import {reportHeaders, defaultPageSize} from '../constants'
+import {reportHeaders, defaultPageSize, documentPath} from '../constants'
 import {ReportTableFetchResponse} from '../types'
 import {fetcher, getReportTableDataURL} from '../utils/lab-orders'
 import classes from './report-table.component.scss'
 import ImagePreviewComponent from '../image-preview-component/image-preview-component'
 
 function getUrl(rows, row) {
-  return rows?.find(intialRow => intialRow.id === row.id)?.url
+  console.log(rows, row)
+  const url = rows?.find(intialRow => intialRow.id === row.id)?.url
+
+  return `${documentPath}${url}`
 }
 
 const ReportTable = props => {
