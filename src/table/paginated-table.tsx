@@ -3,20 +3,21 @@ import {PatientChartPagination} from '@openmrs/esm-patient-common-lib'
 import {
   DataTable,
   Table,
+  TableBody,
+  TableCell,
   TableHead,
+  TableHeader,
   TableRow,
   TableSelectAll,
-  TableHeader,
-  TableBody,
   TableSelectRow,
-  TableCell,
+  TableSelectRowProps,
 } from 'carbon-components-react'
-import React, {useMemo, useState} from 'react'
+import React, {useMemo} from 'react'
 import useSWR from 'swr'
-import {headers, defaultPageSize} from '../constants'
+import {defaultPageSize, headers} from '../constants'
+import {usePendingLabOrderContext} from '../context/pending-orders-context'
 import {LabOrdersFetchResponse} from '../types'
 import {fetcher, getPendingLabOrdersURL} from '../utils/api-utils'
-import {usePendingLabOrderContext} from '../context/pending-orders-context'
 
 const PaginatedTable = ({patientUuid, onButtonClick}) => {
   const {data: pendingLabOrders, error: pendingLabOrderDataError} = useSWR<
@@ -105,11 +106,7 @@ const PaginatedTable = ({patientUuid, onButtonClick}) => {
                             }
                           }}
                           disabled={onButtonClick}
-                          checked={
-                            selectedPendingOrder.filter(
-                              tempRow => tempRow.id === row.id,
-                            ).length == 1
-                          }
+                          checked={isChecked(row)}
                         />
                         {row.cells.map(cell => (
                           <TableCell key={cell.id}>{cell.value}</TableCell>
@@ -134,6 +131,14 @@ const PaginatedTable = ({patientUuid, onButtonClick}) => {
       )}
     </div>
   )
+
+  function isChecked(row: TableSelectRowProps): boolean {
+    return (
+      selectedPendingOrder.filter(
+        pendingOrderRow => pendingOrderRow.id === row.id,
+      ).length == 1
+    )
+  }
 }
 
 export default PaginatedTable
