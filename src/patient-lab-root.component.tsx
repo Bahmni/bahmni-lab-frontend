@@ -25,7 +25,7 @@ const Root: React.FC = () => {
   return (
     <UserHasAccess
       privilege={privilegeLabLite}
-      unauthorisedChildren={unauthorisedResponse}
+      unauthorisedResponse={unauthorisedResponse}
     >
       <main>
         <SWRConfig value={swrConfiguration}>
