@@ -16,6 +16,8 @@ import UploadFile from '../upload-file/upload-file'
 import {saveDiagnosticReport, uploadFile} from './upload-report.resources'
 import styles from './upload-report.scss'
 import {usePendingLabOrderContext} from '../context/pending-orders-context'
+import {LabTest} from '../types/selectTest'
+import {PendingLabOrders} from '../types'
 
 interface UploadReportProps {
   close: Function
@@ -62,25 +64,17 @@ const UploadReport: React.FC<UploadReportProps> = ({
         const url = uploadFileResponse.data.url
 
         if (url) {
-          let allSuccess: boolean = true
-          for (let index = 0; index < selectedTests.length; index++) {
-            const diagnosticReportResponse = await saveDiagnosticReport(
-              patientUuid,
-              reportDate,
-              selectedTests[index],
-              url,
-              selectedFile.name,
-              reportConclusion,
-              ac,
-              selectedPendingOrder,
-            )
-            if (allSuccess && !diagnosticReportResponse.ok) {
-              allSuccess = false
-            }
-          }
-          if (allSuccess) {
-            close(true)
-          }
+          await uploadSelectedTests(
+            selectedTests,
+            patientUuid,
+            reportDate,
+            url,
+            selectedFile,
+            reportConclusion,
+            ac,
+            selectedPendingOrder,
+            close,
+          )
         }
       }
     }
@@ -152,3 +146,35 @@ const UploadReport: React.FC<UploadReportProps> = ({
 }
 
 export default UploadReport
+
+async function uploadSelectedTests(
+  selectedTests: LabTest[],
+  patientUuid: string,
+  reportDate: Date,
+  url: string,
+  selectedFile: File,
+  reportConclusion: string,
+  ac: AbortController,
+  selectedPendingOrder: PendingLabOrders[],
+  close: Function,
+) {
+  let allSuccess: boolean = true
+  for (let index = 0; index < selectedTests.length; index++) {
+    const diagnosticReportResponse = await saveDiagnosticReport(
+      patientUuid,
+      reportDate,
+      selectedTests[index],
+      url,
+      selectedFile.name,
+      reportConclusion,
+      ac,
+      selectedPendingOrder,
+    )
+    if (allSuccess && !diagnosticReportResponse.ok) {
+      allSuccess = false
+    }
+  }
+  if (allSuccess) {
+    close(true)
+  }
+}

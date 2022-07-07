@@ -1,5 +1,4 @@
 import {openmrsFetch} from '@openmrs/esm-framework'
-import {ReportEntry} from '../types'
 const s = 'byFullySpecifiedName'
 const name = 'Lab+Samples'
 const v =
@@ -31,25 +30,4 @@ export const postApiCall = (url, data, abortController) => {
     body: JSON.stringify(data),
     signal: abortController.signal,
   })
-}
-
-export const mergeMultipleTests = (diagnosticReports: Array<ReportEntry>) => {
-  const documentUrls: Array<string> = []
-  const uniqueDiagnosticReports: Array<ReportEntry> = []
-  for (let index = 0; index < diagnosticReports?.length; index++) {
-    const diagnosticReport: ReportEntry = diagnosticReports[index]
-    const documentUrl: string = diagnosticReport.resource.presentedForm[0].url
-    if (documentUrls.includes(documentUrl)) {
-      const existingReports: Array<ReportEntry> = uniqueDiagnosticReports.filter(
-        report => report.resource.presentedForm[0].url === documentUrl,
-      )
-      if (existingReports.length === 1) {
-        existingReports[0].resource.code.coding[0].display = `${existingReports[0].resource.code.coding[0].display}, ${diagnosticReport.resource.code.coding[0].display}`
-      }
-    } else {
-      documentUrls.push(documentUrl)
-      uniqueDiagnosticReports.push(diagnosticReport)
-    }
-  }
-  return uniqueDiagnosticReports
 }

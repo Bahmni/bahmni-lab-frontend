@@ -19,7 +19,6 @@ import useSWR, {mutate} from 'swr'
 import {defaultPageSize, reportHeaders} from '../constants'
 import ImagePreviewComponent from '../image-preview-component/image-preview-component'
 import {ReportEntry, ReportTableFetchResponse} from '../types'
-import {mergeMultipleTests} from '../utils/api-utils'
 import {fetcher, getReportTableDataURL} from '../utils/lab-orders'
 import classes from './report-table.component.scss'
 
@@ -41,10 +40,10 @@ const ReportTable = props => {
   >(getReportTableDataURL(patientUuid), fetcher)
 
   const rows = useMemo(() => {
-    const uniqueReports: Array<ReportEntry> = mergeMultipleTests(
+    const uniqueUploadedReports: Array<ReportEntry> = mergeMultipleTestsBasedOnUploadedFile(
       reports?.data?.entry,
     )
-    return uniqueReports
+    return uniqueUploadedReports
       ?.sort((reportEntry1, reportEntry2) => {
         return (
           new Date(reportEntry2.resource.issued).getTime() -
@@ -174,6 +173,29 @@ const ReportTable = props => {
       )}
     </div>
   )
+}
+
+const mergeMultipleTestsBasedOnUploadedFile = (
+  diagnosticReports: Array<ReportEntry>,
+): Array<ReportEntry> => {
+  const documentUrls: Array<string> = []
+  const uniqueDiagnosticReports: Array<ReportEntry> = []
+  for (let index = 0; index < diagnosticReports?.length; index++) {
+    const diagnosticReport: ReportEntry = diagnosticReports[index]
+    const documentUrl: string = diagnosticReport.resource.presentedForm[0].url
+    if (documentUrls.includes(documentUrl)) {
+      const existingReports: Array<ReportEntry> = uniqueDiagnosticReports.filter(
+        report => report.resource.presentedForm[0].url === documentUrl,
+      )
+      if (existingReports.length === 1) {
+        existingReports[0].resource.code.coding[0].display = `${existingReports[0].resource.code.coding[0].display}, ${diagnosticReport.resource.code.coding[0].display}`
+      }
+    } else {
+      documentUrls.push(documentUrl)
+      uniqueDiagnosticReports.push(diagnosticReport)
+    }
+  }
+  return uniqueDiagnosticReports
 }
 
 export default ReportTable
