@@ -16,17 +16,18 @@ import {
 } from 'carbon-components-react'
 import React, {useEffect, useMemo, useState} from 'react'
 import useSWR, {mutate, SWRResponse} from 'swr'
-import {reportHeaders, defaultPageSize, documentPath} from '../constants'
-import {ReportTableFetchResponse} from '../types'
+import {reportHeaders, defaultPageSize} from '../constants'
+import {ReportTableFetchResponse, ReportTableRow} from '../types'
 import {fetcher, getReportTableDataURL} from '../utils/lab-orders'
 import classes from './report-table.component.scss'
 import ImagePreviewComponent from '../image-preview-component/image-preview-component'
 
-function getUrl(rows, row) {
-  console.log(rows, row)
-  const url = rows?.find(intialRow => intialRow.id === row.id)?.url
+const documentPath = '/document_images/'
 
-  return `${documentPath}${url}`
+function getReportUrl(reportsData: Array<ReportTableRow>, reportId: string) {
+  const url = reportsData?.find(intialRow => intialRow.id === reportId)?.url
+
+  return url ? `${documentPath}${url}` : ''
 }
 
 const ReportTable = props => {
@@ -118,14 +119,14 @@ const ReportTable = props => {
                                 <TableCell key={cell.id}>
                                   {cell.value?.endsWith('pdf') ? (
                                     <Link
-                                      href={getUrl(rows, row)}
+                                      href={getReportUrl(rows, row.id)}
                                       target={'_blank'}
                                     >
                                       {cell.value}
                                     </Link>
                                   ) : (
                                     <ImagePreviewComponent
-                                      url={getUrl(rows, row)}
+                                      url={getReportUrl(rows, row.id)}
                                       fileName={cell.value}
                                     />
                                   )}
