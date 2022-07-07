@@ -13,6 +13,7 @@ import {
 } from '../__mocks__/pendingLabOrders.mock'
 import PaginatedTable from './paginated-table'
 import PendingLabOrdersProvider from '../context/pending-orders-context'
+import userEvent from '@testing-library/user-event'
 
 const mockPatientUuid = '1'
 
@@ -86,6 +87,20 @@ describe('Paginated Table', () => {
       }).length,
     ).toEqual(1)
     expect(screen.getByText(/2 \/ 2 items/i)).toBeInTheDocument()
+
+    userEvent.click(
+      screen.getByRole('checkbox', {
+        name: /select row/i,
+      }),
+    )
+
+    await waitFor(() => {
+      expect(
+        screen.getByRole('checkbox', {
+          name: /select row/i,
+        }),
+      ).toBeChecked()
+    })
 
     expect(
       screen.queryByText(
