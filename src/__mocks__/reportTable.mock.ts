@@ -54,7 +54,7 @@ export const mockReportTableResponse: ReportTableFetchResponse = {
             {
               contentType: 'application/pdf',
               language: 'en',
-              url: '/files/uploaded-doc-uuid',
+              url: '/files/uploaded-doc-uuid-1',
               hash: '571ef9c5655840f324e679072ed62b1b95eef8a0',
               title: 'MP Report',
               creation: '2022-05-20T20:00:00+11:00',
@@ -135,7 +135,7 @@ export const mockReportTableResponse: ReportTableFetchResponse = {
             {
               contentType: 'application/pdf',
               language: 'en',
-              url: '/files/uploaded-doc-uuid',
+              url: '/files/uploaded-doc-uuid-2',
               hash: '571ef9c5655840f324e679072ed62b1b95eef8a0',
               title: 'Report2',
               creation: '2022-05-19T20:00:00+11:00',
@@ -190,7 +190,7 @@ export const mockReportTableResponse: ReportTableFetchResponse = {
             {
               contentType: 'application/pdf',
               language: 'en',
-              url: '/files/uploaded-doc-uuid',
+              url: '/files/uploaded-doc-uuid-3',
               hash: '571ef9c5655840f324e679072ed62b1b95eef8a0',
               title: 'Report3',
               creation: '2022-05-23T20:00:00+11:00',
@@ -245,7 +245,7 @@ export const mockReportTableResponse: ReportTableFetchResponse = {
             {
               contentType: 'application/pdf',
               language: 'en',
-              url: '/files/uploaded-doc-uuid',
+              url: '/files/uploaded-doc-uuid-4',
               hash: '571ef9c5655840f324e679072ed62b1b95eef8a0',
               title: 'Report 4',
               creation: '2022-05-14T20:00:00+11:00',
@@ -301,7 +301,7 @@ export const mockReportTableResponse: ReportTableFetchResponse = {
             {
               contentType: 'application/pdf',
               language: 'en',
-              url: '/files/uploaded-doc-uuid',
+              url: '/files/uploaded-doc-uuid-5',
               hash: '571ef9c5655840f324e679072ed62b1b95eef8a0',
               title: 'Pharmacogenetics Report',
               creation: '2022-05-22T20:00:00+11:00',
@@ -356,7 +356,7 @@ export const mockReportTableResponse: ReportTableFetchResponse = {
             {
               contentType: 'application/pdf',
               language: 'en',
-              url: '/files/uploaded-doc-uuid',
+              url: '/files/uploaded-doc-uuid-6',
               hash: '571ef9c5655840f324e679072ed62b1b95eef8a0',
               title: 'Pharmacogenetics Report 4',
               creation: '2022-05-16T20:00:00+11:00',
@@ -411,7 +411,7 @@ export const mockReportTableResponse: ReportTableFetchResponse = {
             {
               contentType: 'image/jpeg',
               language: 'en',
-              url: '/files/uploaded-doc-uuid',
+              url: '/files/uploaded-doc-uuid-7',
               hash: '571ef9c5655840f324e679072ed62b1b95eef8a0',
               title: 'Pharmacogenetics Report 5',
               creation: '2022-05-10T20:00:00+11:00',
@@ -466,7 +466,7 @@ export const mockReportTableResponse: ReportTableFetchResponse = {
             {
               contentType: 'image/jpg',
               language: 'en',
-              url: '/files/uploaded-doc-uuid',
+              url: '/files/uploaded-doc-uuid-1',
               hash: '571ef9c5655840f324e679072ed62b1b95eef8a0',
               title: 'Report',
               creation: '2022-05-23T20:00:00+11:00',
