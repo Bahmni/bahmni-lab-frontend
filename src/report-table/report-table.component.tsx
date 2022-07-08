@@ -18,7 +18,7 @@ import React, {useEffect, useMemo} from 'react'
 import useSWR, {mutate} from 'swr'
 import {defaultPageSize, reportHeaders} from '../constants'
 import ImagePreviewComponent from '../image-preview-component/image-preview-component'
-import {ReportEntry, ReportTableFetchResponse} from '../types'
+import {ReportEntry, ReportResource, ReportTableFetchResponse} from '../types'
 import {fetcher, getReportTableDataURL} from '../utils/lab-orders'
 import classes from './report-table.component.scss'
 
@@ -40,7 +40,7 @@ const ReportTable = props => {
   >(getReportTableDataURL(patientUuid), fetcher)
 
   const rows = useMemo(() => {
-    const uniqueUploadedReports: Array<ReportEntry> = mergeMultipleTestsBasedOnUploadedFile(
+    const uniqueUploadedReports: Array<ReportEntry> = dedupe(
       reports?.data?.entry,
     )
     return uniqueUploadedReports
@@ -175,27 +175,30 @@ const ReportTable = props => {
   )
 }
 
-const mergeMultipleTestsBasedOnUploadedFile = (
-  diagnosticReports: Array<ReportEntry>,
-): Array<ReportEntry> => {
-  const documentUrls: Array<string> = []
-  const uniqueDiagnosticReports: Array<ReportEntry> = []
-  for (let index = 0; index < diagnosticReports?.length; index++) {
-    const diagnosticReport: ReportEntry = diagnosticReports[index]
-    const documentUrl: string = diagnosticReport.resource.presentedForm[0].url
-    if (documentUrls.includes(documentUrl)) {
-      const existingReports: Array<ReportEntry> = uniqueDiagnosticReports.filter(
-        report => report.resource.presentedForm[0].url === documentUrl,
-      )
-      if (existingReports.length === 1) {
-        existingReports[0].resource.code.coding[0].display = `${existingReports[0].resource.code.coding[0].display}, ${diagnosticReport.resource.code.coding[0].display}`
+function url(resource: ReportResource) {
+  return resource.presentedForm[0].url
+}
+function code(resource: ReportResource) {
+  return resource.code.coding[0].display
+}
+
+function getUniqueReportUrls(diagnosticReport: ReportEntry[]) {
+  return new Set<string>(diagnosticReport?.map(report => url(report.resource)))
+}
+
+function dedupe(diagnosticReport: Array<ReportEntry>) {
+  return Array.from(getUniqueReportUrls(diagnosticReport)).map(reportUrl =>
+    diagnosticReport.reduce<ReportEntry | undefined>((acc, curr) => {
+      if (url(curr.resource) === reportUrl) {
+        if (acc)
+          acc.resource.code.coding[0].display = `${code(acc.resource)}, ${code(
+            curr.resource,
+          )}`
+        else return curr
       }
-    } else {
-      documentUrls.push(documentUrl)
-      uniqueDiagnosticReports.push(diagnosticReport)
-    }
-  }
-  return uniqueDiagnosticReports
+      return acc
+    }, undefined),
+  )
 }
 
 export default ReportTable
