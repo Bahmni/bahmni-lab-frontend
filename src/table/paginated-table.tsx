@@ -30,12 +30,12 @@ const PaginatedTable = ({patientUuid, onButtonClick}) => {
     setSelectedPendingOrder,
   } = usePendingLabOrderContext()
 
-  const rows = useMemo(() => {
-    return pendingLabOrders?.data?.results?.reverse().map(row => {
+  const pendingLabOrderRows = useMemo(() => {
+    return pendingLabOrders?.data?.map(pendingLabOrderRow => {
       return {
-        id: row.uuid,
-        testName: row.display,
-        date: new Date(row.dateActivated).toLocaleDateString(
+        id: pendingLabOrderRow.orderUuid,
+        testName: pendingLabOrderRow.concept.name,
+        date: new Date(pendingLabOrderRow.orderDate).toLocaleDateString(
           localStorage.getItem('i18nextLng'),
           {
             year: 'numeric',
@@ -43,14 +43,14 @@ const PaginatedTable = ({patientUuid, onButtonClick}) => {
             day: '2-digit',
           },
         ),
-        orderedBy: row.orderer.display,
-        conceptUuid: row.concept.uuid,
+        orderedBy: pendingLabOrderRow.provider,
+        conceptUuid: pendingLabOrderRow.concept.uuid,
       }
     })
   }, [pendingLabOrders])
 
   const {results: paginatedPendingLabOrders, goTo, currentPage} = usePagination(
-    rows,
+    pendingLabOrderRows,
     defaultPageSize,
   )
 
@@ -59,7 +59,7 @@ const PaginatedTable = ({patientUuid, onButtonClick}) => {
       {pendingLabOrderDataError ? (
         <div>Something went wrong in fetching pending lab orders...</div>
       ) : (
-        rows?.length > 0 && (
+        pendingLabOrderRows?.length > 0 && (
           <>
             <h4>Pending Lab Orders</h4>
             <DataTable rows={paginatedPendingLabOrders} headers={headers}>
@@ -89,7 +89,7 @@ const PaginatedTable = ({patientUuid, onButtonClick}) => {
                         <TableSelectRow
                           {...getSelectionProps({row})}
                           onChange={selected => {
-                            const currentRow = rows.filter(
+                            const currentRow = pendingLabOrderRows.filter(
                               intialRow => intialRow.id === row.id,
                             )[0]
                             if (selected) {
@@ -121,7 +121,7 @@ const PaginatedTable = ({patientUuid, onButtonClick}) => {
               pageNumber={currentPage}
               pageSize={defaultPageSize}
               currentItems={paginatedPendingLabOrders?.length}
-              totalItems={rows?.length}
+              totalItems={pendingLabOrderRows?.length}
               onPageNumberChange={({page}) => {
                 goTo(page)
               }}

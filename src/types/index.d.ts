@@ -1,31 +1,16 @@
 export interface LabOrders {
+  concept: Concept
+  orderDate: number
+  orderUuid: string
+  provider: string
+}
+
+interface Concept {
+  name: string
   uuid: string
-  orderNumber: string
-  accessionNumber: any
-  patient: GeneralInfo
-  concept: GeneralInfo
-  action: string
-  careSetting: GeneralInfo
-  previousOrder: any
-  dateActivated: string
-  scheduledDate: string
-  dateStopped: any
-  autoExpireDate: string
-  encounter: GeneralInfo
-  orderer: GeneralInfo
-  orderReason: any
-  orderReasonNonCoded: any
-  orderType: OrderType
-  urgency: string
-  instructions: string
-  commentToFulfiller: any
-  display: string
-  links: Array<Links>
-  type: string
-  resourceVersion: string
 }
 export interface LabOrdersFetchResponse {
-  data: {results: Array<LabOrders>}
+  data: Array<LabOrders>
 }
 interface GeneralInfo {
   uuid: string
