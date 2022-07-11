@@ -171,6 +171,7 @@ export default UploadReport
 async function uploadSelectedTests(
   selectedTests: LabTest[],
   patientUuid: string,
+  doctorUuid: string,
   reportDate: Date,
   url: string,
   selectedFile: File,
@@ -183,6 +184,7 @@ async function uploadSelectedTests(
   for (let index = 0; index < selectedTests.length; index++) {
     const diagnosticReportResponse = await saveDiagnosticReport(
       patientUuid,
+      doctorUuid,
       reportDate,
       selectedTests[index],
       url,
