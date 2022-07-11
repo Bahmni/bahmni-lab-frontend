@@ -45,7 +45,8 @@ describe('Paginated Reports Table', () => {
   })
 
   afterEach(() => {
-    localStorage.removeItem('i18nextLng'), jest.clearAllMocks()
+    localStorage.removeItem('i18nextLng')
+    jest.clearAllMocks()
   })
 
   it('should display uploaded reports table when call for reports data is successful', async () => {
@@ -69,7 +70,7 @@ describe('Paginated Reports Table', () => {
     expect(screen.getByRole('cell', {name: 'May 03, 2022'})).toBeInTheDocument()
     expect(screen.getByRole('cell', {name: 'Blood Test'})).toBeInTheDocument()
     expect(screen.getAllByRole('button').length).toEqual(5)
-    expect(screen.getByText(/5 \/ 8 items/i)).toBeInTheDocument()
+    expect(screen.getByText(/5 \/ 7 items/i)).toBeInTheDocument()
 
     expect(
       screen.queryByText(

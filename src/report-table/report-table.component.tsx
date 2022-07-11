@@ -2,25 +2,25 @@ import {usePagination} from '@openmrs/esm-framework'
 import {PatientChartPagination} from '@openmrs/esm-patient-common-lib'
 import {
   DataTable,
-  TableContainer,
-  Table,
-  TableHead,
-  TableRow,
-  TableExpandHeader,
-  TableHeader,
-  TableBody,
-  TableExpandRow,
-  TableExpandedRow,
-  TableCell,
   Link,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableExpandedRow,
+  TableExpandHeader,
+  TableExpandRow,
+  TableHead,
+  TableHeader,
+  TableRow,
 } from 'carbon-components-react'
-import React, {useEffect, useMemo, useState} from 'react'
-import useSWR, {mutate, SWRResponse} from 'swr'
-import {reportHeaders, defaultPageSize} from '../constants'
-import {ReportTableFetchResponse, ReportTableRow} from '../types'
+import React, {useEffect, useMemo} from 'react'
+import useSWR, {mutate} from 'swr'
+import {defaultPageSize, reportHeaders} from '../constants'
+import ImagePreviewComponent from '../image-preview-component/image-preview-component'
+import {ReportEntry, ReportResource, ReportTableFetchResponse, ReportTableRow} from '../types'
 import {fetcher, getReportTableDataURL} from '../utils/lab-orders'
 import classes from './report-table.component.scss'
-import ImagePreviewComponent from '../image-preview-component/image-preview-component'
 
 const documentPath = '/document_images/'
 
@@ -44,7 +44,10 @@ const ReportTable = props => {
   >(getReportTableDataURL(patientUuid), fetcher)
 
   const rows = useMemo(() => {
-    return reports?.data?.entry
+    const uniqueUploadedReports: Array<ReportEntry> = dedupe(
+      reports?.data?.entry,
+    )
+    return uniqueUploadedReports
       ?.sort((reportEntry1, reportEntry2) => {
         return (
           new Date(reportEntry2.resource.issued).getTime() -
@@ -173,6 +176,32 @@ const ReportTable = props => {
         </>
       )}
     </div>
+  )
+}
+
+function url(resource: ReportResource) {
+  return resource.presentedForm[0].url
+}
+function code(resource: ReportResource) {
+  return resource.code.coding[0].display
+}
+
+function getUniqueReportUrls(diagnosticReport: ReportEntry[]) {
+  return new Set<string>(diagnosticReport?.map(report => url(report.resource)))
+}
+
+function dedupe(diagnosticReport: Array<ReportEntry>) {
+  return Array.from(getUniqueReportUrls(diagnosticReport)).map(reportUrl =>
+    diagnosticReport.reduce<ReportEntry | undefined>((acc, curr) => {
+      if (url(curr.resource) === reportUrl) {
+        if (acc)
+          acc.resource.code.coding[0].display = `${code(acc.resource)}, ${code(
+            curr.resource,
+          )}`
+        else return curr
+      }
+      return acc
+    }, undefined),
   )
 }
 

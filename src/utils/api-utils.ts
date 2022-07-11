@@ -1,4 +1,5 @@
 import {openmrsFetch} from '@openmrs/esm-framework'
+import {labOrderUuid} from '../constants'
 const s = 'byFullySpecifiedName'
 const name = 'Lab+Samples'
 const v =
@@ -6,7 +7,7 @@ const v =
 const locale = localStorage.getItem('i18nextLng')
 
 export const getPendingLabOrdersURL = (patientUuid: string) =>
-  `/ws/rest/v1/order?patient=${patientUuid}&orderType=Lab Order&v=default`
+  `/ws/rest/v1/bahmnicore/orders?orderTypeUuid=${labOrderUuid}&patientUuid=${patientUuid}`
 
 export const getLabTests = () =>
   `/ws/rest/v1/concept?s=${s}&locale=${locale}&name=${name}&v=${v}`

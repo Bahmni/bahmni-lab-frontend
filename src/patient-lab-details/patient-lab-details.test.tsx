@@ -4,7 +4,6 @@ import {
   usePatient,
   usePagination,
 } from '@openmrs/esm-framework'
-import {useLayoutType} from '@openmrs/esm-framework/mock'
 import {fireEvent, render, screen, waitFor} from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import {when} from 'jest-when'
@@ -293,7 +292,7 @@ describe('Patient lab details', () => {
     const mockedOpenmrsFetch = openmrsFetch as jest.Mock
     mockedOpenmrsFetch
       .mockReturnValueOnce(mockPendingLabOrdersResponse)
-      .mockReturnValueOnce(mockEmptyReportTableResponse) 
+      .mockReturnValueOnce(mockEmptyReportTableResponse)
       .mockReturnValueOnce(mockLabTestsResponse)
       .mockReturnValueOnce(mockUploadFileResponse)
       .mockReturnValue(mockDiagnosticReportResponse)
@@ -338,6 +337,69 @@ describe('Patient lab details', () => {
     expect(
       JSON.parse(mockedOpenmrsFetch.mock.calls[4][1].body).basedOn.length,
     ).toBe(1)
+  })
+
+  it('should make multiple POST calls when multiple tests are selected', async () => {
+    const mockedOpenmrsFetch = openmrsFetch as jest.Mock
+    mockedOpenmrsFetch
+      .mockReturnValueOnce(mockPendingLabOrdersResponse)
+      .mockReturnValueOnce(mockReportTableResponse)
+      .mockReturnValueOnce(mockLabTestsResponse)
+      .mockReturnValueOnce(mockUploadFileResponse)
+      .mockReturnValueOnce(mockDiagnosticReportResponse)
+
+    render(
+      <SWRConfig value={{provider: () => new Map()}}>
+        <BrowserRouter>
+          <PatientLabDetails
+            match={matchParams}
+            history={undefined}
+            location={undefined}
+          />
+        </BrowserRouter>
+      </SWRConfig>,
+    )
+
+    userEvent.click(screen.getByRole('button', {name: /upload report/i}))
+
+    expect(
+      screen.getByRole('button', {name: /save and upload/i}),
+    ).toBeDisabled()
+
+    userEvent.click(
+      screen.getByRole('textbox', {
+        name: /report date/i,
+      }),
+    )
+
+    userEvent.click(screen.getByLabelText(currentDay))
+
+    await waitFor(() => {
+      expect(
+        screen.getByRole('checkbox', {name: /Absolute Eosinphil Count/i}),
+      ).toBeInTheDocument(),
+        expect(
+          screen.getByRole('checkbox', {name: /Haemoglobin/i}),
+        ).toBeInTheDocument()
+    })
+    expect(screen.getByText(/select tests/i)).toBeInTheDocument()
+
+    userEvent.click(
+      screen.getByRole('checkbox', {name: /Absolute Eosinphil Count/i}),
+    )
+    userEvent.click(screen.getByRole('checkbox', {name: /Haemoglobin/i}))
+
+    const fileInput = screen.getByLabelText(
+      'Drag and drop files here or click to upload',
+    ) as HTMLInputElement
+
+    uploadFiles(fileInput, [file])
+    await verifyFileName(fileInput)
+    await saveReport()
+
+    expect(mockedOpenmrsFetch).toBeCalledTimes(6)
+    expect(mockedOpenmrsFetch.mock.calls[4][1].method).toBe('POST')
+    expect(mockedOpenmrsFetch.mock.calls[5][1].method).toBe('POST')
   })
 })
 
