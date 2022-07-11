@@ -152,7 +152,7 @@ describe('Upload Report', () => {
     const mockedOpenmrsFetch = openmrsFetch as jest.Mock
     mockedOpenmrsFetch
       .mockReturnValueOnce(mockLabTestsResponse)
-      .mockReturnValueOnce(mockDoctorNames)
+      .mockReturnValue(mockDoctorNames)
 
     const mockedLayout = useLayoutType as jest.Mock
     mockedLayout.mockReturnValue('desktop')

@@ -124,7 +124,6 @@ const PaginatedTable = ({patientUuid, onButtonClick}) => {
               totalItems={pendingLabOrderRows?.length}
               onPageNumberChange={({page}) => {
                 goTo(page)
-                setSelectedPendingOrder([])
               }}
             />
           </>
