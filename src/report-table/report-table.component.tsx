@@ -18,7 +18,12 @@ import React, {useEffect, useMemo} from 'react'
 import useSWR, {mutate} from 'swr'
 import {defaultPageSize, reportHeaders} from '../constants'
 import ImagePreviewComponent from '../image-preview-component/image-preview-component'
-import {ReportEntry, ReportResource, ReportTableFetchResponse, ReportTableRow} from '../types'
+import {
+  ReportEntry,
+  ReportResource,
+  ReportTableFetchResponse,
+  ReportTableRow,
+} from '../types'
 import {fetcher, getReportTableDataURL} from '../utils/lab-orders'
 import classes from './report-table.component.scss'
 
