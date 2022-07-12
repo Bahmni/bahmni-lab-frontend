@@ -18,12 +18,21 @@ import React, {useEffect, useMemo} from 'react'
 import useSWR, {mutate} from 'swr'
 import {defaultPageSize, reportHeaders} from '../constants'
 import ImagePreviewComponent from '../image-preview-component/image-preview-component'
-import {ReportEntry, ReportResource, ReportTableFetchResponse} from '../types'
+import {
+  ReportEntry,
+  ReportResource,
+  ReportTableFetchResponse,
+  ReportTableRow,
+} from '../types'
 import {fetcher, getReportTableDataURL} from '../utils/lab-orders'
 import classes from './report-table.component.scss'
 
-function getUrl(rows, row) {
-  return rows?.find(intialRow => intialRow.id === row.id)?.url
+const documentPath = '/document_images/'
+
+function getReportUrl(reportsData: Array<ReportTableRow>, reportId: string) {
+  const url = reportsData?.find(intialRow => intialRow.id === reportId)?.url
+
+  return url ? `${documentPath}${url}` : ''
 }
 
 const ReportTable = props => {
@@ -118,14 +127,14 @@ const ReportTable = props => {
                                 <TableCell key={cell.id}>
                                   {cell.value?.endsWith('pdf') ? (
                                     <Link
-                                      href={getUrl(rows, row)}
+                                      href={getReportUrl(rows, row.id)}
                                       target={'_blank'}
                                     >
                                       {cell.value}
                                     </Link>
                                   ) : (
                                     <ImagePreviewComponent
-                                      url={getUrl(rows, row)}
+                                      url={getReportUrl(rows, row.id)}
                                       fileName={cell.value}
                                     />
                                   )}

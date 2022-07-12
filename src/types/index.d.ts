@@ -81,3 +81,13 @@ export interface PendingLabOrders {
   orderedBy: string
   conceptUuid: string
 }
+
+export interface ReportTableRow {
+  id: string
+  tests: string
+  url: string
+  date: string
+  requester: string
+  file: string
+  conclusion: string
+}

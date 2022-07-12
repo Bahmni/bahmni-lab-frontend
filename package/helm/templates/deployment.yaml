@@ -25,4 +25,11 @@ spec:
         - name: {{ .Chart.Name }}
           image: "{{ .Values.image.repository }}/{{ .Values.image.name }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           resources: {}
+          volumeMounts:
+            - mountPath: /usr/share/nginx/html/document_images
+              name: openmrs-document-images
       restartPolicy: Always
+      volumes:
+        - name: openmrs-document-images
+          persistentVolumeClaim:
+            claimName: {{ .Values.volumes.patientDocuments.claimName }}
