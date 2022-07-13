@@ -24,8 +24,6 @@ export const useOrderTypeUuidConfig = (): OrderTypeUuidConfigProps => {
     fetcher,
   )
   useEffect(() => {
-    console.log(orderTypes)
-    console.log(orderTypes?.data?.results)
     if (orderTypes) {
       const LabOrderType: OrderType = orderTypes?.data?.results?.find(
         orderType => orderType?.display === labOrderType,

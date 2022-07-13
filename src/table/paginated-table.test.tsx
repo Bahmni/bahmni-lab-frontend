@@ -1,12 +1,10 @@
 import {openmrsFetch, usePagination} from '@openmrs/esm-framework'
 import {render, screen, waitFor} from '@testing-library/react'
-import userEvent from '@testing-library/user-event'
 import {when} from 'jest-when'
 import React from 'react'
 import {BrowserRouter} from 'react-router-dom'
 import {SWRConfig} from 'swr'
 import {headers} from '../constants'
-import PendingLabOrdersProvider from '../context/pending-orders-context'
 import {localStorageMock} from '../utils/test-utils'
 import {
   mockEmptyPendingLabOrderResponse,
@@ -14,18 +12,23 @@ import {
   mockPendingLabOrdersResponse,
 } from '../__mocks__/pendingLabOrders.mock'
 import PaginatedTable from './paginated-table'
+import PendingLabOrdersProvider from '../context/pending-orders-context'
+import userEvent from '@testing-library/user-event'
 
 const mockPatientUuid = '1'
 const mockOrderTypeUuid = '8189b409-3f10-11e4-adec-0800271c1b75'
+
+jest.mock('../hooks/useOrderTypeUuidConfig', () => ({
+  useOrderTypeUuidConfig: jest.fn().mockImplementation(() => ({
+    orderTypeUuidConfig: mockOrderTypeUuid,
+  })),
+}))
 
 describe('Paginated Table', () => {
   beforeEach(() => {
     Object.defineProperty(window, 'localStorage', {value: localStorageMock})
     localStorage.setItem('i18nextLng', 'en-us')
-    localStorage.setItem(
-      'orderTypeUuid',
-      '8189b409-3f10-11e4-adec-0800271c1b75',
-    )
+    localStorage.setItem('orderTypeUuid', mockOrderTypeUuid)
   })
   afterEach(() => {
     localStorage.clear()

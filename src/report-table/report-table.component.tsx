@@ -31,6 +31,7 @@ const documentPath = '/document_images/'
 
 function getReportUrl(reportsData: Array<ReportTableRow>, reportId: string) {
   const url = reportsData?.find(intialRow => intialRow.id === reportId)?.url
+
   return url ? `${documentPath}${url}` : ''
 }
 

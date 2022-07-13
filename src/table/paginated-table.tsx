@@ -21,10 +21,7 @@ import {LabOrdersFetchResponse} from '../types'
 import {fetcher, getPendingLabOrdersURL} from '../utils/api-utils'
 
 const PaginatedTable = ({patientUuid, onButtonClick}) => {
-  const {
-    orderTypeUuidConfig,
-    orderTypeUuidConfigError,
-  } = useOrderTypeUuidConfig()
+  const {orderTypeUuidConfig} = useOrderTypeUuidConfig()
 
   const {data: pendingLabOrders, error: pendingLabOrderDataError} = useSWR<
     LabOrdersFetchResponse,
