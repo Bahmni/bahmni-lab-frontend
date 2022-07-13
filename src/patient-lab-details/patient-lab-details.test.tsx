@@ -11,6 +11,7 @@ import React from 'react'
 import {BrowserRouter} from 'react-router-dom'
 import {SWRConfig} from 'swr'
 import {localStorageMock} from '../utils/test-utils'
+import {mockOrderTypes} from '../__mocks__/orderTypes.mock'
 import {mockPendingLabOrder} from '../__mocks__/patientLabDetails.mock'
 import {mockDoctorNames} from '../__mocks__/doctorNames.mock'
 import {mockPendingLabOrdersResponse} from '../__mocks__/pendingLabOrders.mock'
@@ -160,6 +161,7 @@ describe('Patient lab details', () => {
   it('should pre-populate the selected tests in upload report and makes pending lab order table read only', async () => {
     const mockedOpenmrsFetch = openmrsFetch as jest.Mock
     mockedOpenmrsFetch
+      .mockReturnValueOnce(mockOrderTypes)
       .mockReturnValueOnce(mockPendingLabOrdersResponse)
       .mockReturnValue(mockLabTestsResponse)
     render(
@@ -223,6 +225,7 @@ describe('Patient lab details', () => {
   it('should show success notification on report upload', async () => {
     const mockedOpenmrsFetch = openmrsFetch as jest.Mock
     mockedOpenmrsFetch
+      .mockReturnValueOnce(mockOrderTypes)
       .mockReturnValueOnce(mockPendingLabOrdersResponse)
       .mockReturnValueOnce(mockEmptyReportTableResponse)
       .mockReturnValueOnce(mockLabTestsResponse)
@@ -338,6 +341,7 @@ describe('Patient lab details', () => {
   it('should populate based on property if a pending order is selected', async () => {
     const mockedOpenmrsFetch = openmrsFetch as jest.Mock
     mockedOpenmrsFetch
+      .mockReturnValueOnce(mockOrderTypes)
       .mockReturnValueOnce(mockPendingLabOrdersResponse)
       .mockReturnValueOnce(mockEmptyReportTableResponse)
       .mockReturnValueOnce(mockLabTestsResponse)
@@ -395,12 +399,13 @@ describe('Patient lab details', () => {
   it('should make multiple POST calls when multiple tests are selected', async () => {
     const mockedOpenmrsFetch = openmrsFetch as jest.Mock
     mockedOpenmrsFetch
+      .mockReturnValueOnce(mockOrderTypes)
       .mockReturnValueOnce(mockPendingLabOrdersResponse)
       .mockReturnValueOnce(mockReportTableResponse)
       .mockReturnValueOnce(mockLabTestsResponse)
       .mockReturnValueOnce(mockDoctorNames)
       .mockReturnValueOnce(mockUploadFileResponse)
-      .mockReturnValueOnce(mockDiagnosticReportResponse)
+      .mockReturnValue(mockDiagnosticReportResponse)
 
     render(
       <SWRConfig value={{provider: () => new Map()}}>
