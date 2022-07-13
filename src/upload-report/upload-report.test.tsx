@@ -117,6 +117,11 @@ describe('Upload Report', () => {
     expect(screen.getByTestId(/available-tests/i)).toHaveTextContent(
       /haemoglobin/i,
     )
+    expect(
+      screen.getByRole('button', {
+        name: /Click to record clinical conclusion/i,
+      }),
+    )
   })
   it('should not allow user to select future dates', async () => {
     localStorage.setItem('i18nextLng', 'en')
@@ -269,6 +274,11 @@ describe('Upload Report', () => {
     userEvent.click(await screen.findByText('admin - Super User'))
     expect(await screen.findByText(/admin - Super user/i)).toBeInTheDocument()
 
+    userEvent.click(
+      screen.getByRole('button', {
+        name: /Click to record clinical conclusion/i,
+      }),
+    )
     const fileInput = screen.getByLabelText(
       'Drag and drop files here or click to upload',
     ) as HTMLInputElement

@@ -45,6 +45,9 @@ const UploadReport: React.FC<UploadReportProps> = ({
   const maxCount: number = 500
   const {selectedFile, setSelectedFile} = useSelectedFile()
   const {selectedPendingOrder} = usePendingLabOrderContext()
+  const [showReportConclusionLabel, setShowReportConclusionLabel] = useState<
+    boolean
+  >(true)
 
   const handleDiscard = () => {
     setIsDiscardButtonClicked(true)
@@ -53,6 +56,7 @@ const UploadReport: React.FC<UploadReportProps> = ({
     setSelectedFile(null)
     setSelectedTests([])
     setDoctor(null)
+    setShowReportConclusionLabel(true)
   }
 
   const saveReport = () => {
@@ -140,28 +144,39 @@ const UploadReport: React.FC<UploadReportProps> = ({
         Requested by
       </div>
       <DoctorListDropdown />
-
-      <div style={{paddingTop: '1rem'}}>
-        <div
-          className={'bx--label'}
-          style={{
-            display: 'flex',
-            justifyContent: 'space-between',
-            padding: '2px 0px 2px 0px',
-            width: '100%',
+      {showReportConclusionLabel ? (
+        <Button
+          role="button"
+          kind="ghost"
+          onClick={() => {
+            setShowReportConclusionLabel(false)
           }}
         >
-          Report Conclusion{' '}
-          <span id="counter">{`${reportConclusion?.length}/${maxCount}`}</span>
+          Click to record clinical conclusion
+        </Button>
+      ) : (
+        <div style={{paddingTop: '1rem'}}>
+          <div
+            className={'bx--label'}
+            style={{
+              display: 'flex',
+              justifyContent: 'space-between',
+              padding: '2px 0px 2px 0px',
+              width: '100%',
+            }}
+          >
+            Report Conclusion{' '}
+            <span id="counter">{`${reportConclusion?.length}/${maxCount}`}</span>
+          </div>
+          <TextArea
+            labelText=""
+            maxLength={maxCount}
+            required={true}
+            value={reportConclusion}
+            onChange={e => setReportConclusion(e.target.value)}
+          />
         </div>
-        <TextArea
-          labelText=""
-          maxLength={maxCount}
-          required={true}
-          value={reportConclusion}
-          onChange={e => setReportConclusion(e.target.value)}
-        />
-      </div>
+      )}
     </Overlay>
   )
 }
