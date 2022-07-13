@@ -105,3 +105,12 @@ export interface Attribute {
       voided: boolean,
       links: Array<Links>
 }
+export interface ReportTableRow {
+  id: string
+  tests: string
+  url: string
+  date: string
+  requester: string
+  file: string
+  conclusion: string
+}
