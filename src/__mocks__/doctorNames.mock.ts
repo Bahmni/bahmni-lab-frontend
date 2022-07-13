@@ -7,6 +7,9 @@ export const mockDoctorNames = {
       {
         uuid: '1',
         display: 'admin - Super User',
+        attributes: [
+          {display: 'Is Doctor: true', attributeType: [{retired: false}]},
+        ],
       },
       {
         uuid: '2',
@@ -15,6 +18,9 @@ export const mockDoctorNames = {
       {
         uuid: '3',
         display: '8-3 - user',
+        attributes: [
+          {display: 'Is Doctor: true', attributeType: [{retired: false}]},
+        ],
       },
     ],
   },

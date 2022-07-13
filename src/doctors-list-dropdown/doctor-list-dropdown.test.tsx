@@ -1,13 +1,12 @@
-import {render, screen} from '@testing-library/react'
+import { openmrsFetch } from '@openmrs/esm-framework'
+import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import React from 'react'
-import {localStorageMock} from '../utils/test-utils'
-import DoctorListDropdown from './doctor-list-dropdown'
-import {openmrsFetch} from '@openmrs/esm-framework'
-import {mockDoctorNames} from '../__mocks__/doctorNames.mock'
-import {DoctorDetailsData} from '../types'
 import PendingLabOrdersProvider from '../context/pending-orders-context'
-import {UploadReportProvider} from '../context/upload-report-context'
+import { UploadReportProvider } from '../context/upload-report-context'
+import { localStorageMock } from '../utils/test-utils'
+import { mockDoctorNames } from '../__mocks__/doctorNames.mock'
+import DoctorListDropdown from './doctor-list-dropdown'
 
 describe('upload file', () => {
   beforeEach(() => {

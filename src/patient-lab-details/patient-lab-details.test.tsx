@@ -297,7 +297,7 @@ describe('Patient lab details', () => {
     )
   })
 
-  it('should be able to change the docter name when we have pre-populated doctor name', async () => {
+  it('should be able to change the doctor name when we have pre-populated doctor name', async () => {
     const mockedOpenmrsFetch = openmrsFetch as jest.Mock
     mockedOpenmrsFetch
       .mockReturnValueOnce(mockPendingLabOrdersResponse)

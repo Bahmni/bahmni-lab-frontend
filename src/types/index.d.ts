@@ -15,6 +15,7 @@ export interface LabOrdersFetchResponse {
 export interface DoctorDetailsData {
   uuid: string
   display: string
+  attributes: Array<Attribute>
 }
 
 export interface DoctorsResponse {
@@ -89,4 +90,18 @@ export interface PendingLabOrders {
   orderedBy: string
   ordererUuid: string
   conceptUuid: string
+}
+
+export interface Attribute {
+      display: string,
+      uuid: string,
+      attributeType: {
+          uuid: string,
+          display: string,
+          retired: undefined | boolean
+          links: Array<Links>
+        },
+      value: boolean,
+      voided: boolean,
+      links: Array<Links>
 }

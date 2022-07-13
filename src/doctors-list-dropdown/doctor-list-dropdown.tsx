@@ -1,16 +1,16 @@
 import React, {useEffect, useState} from 'react'
 import useSWR from 'swr'
-import {DoctorsResponse} from '../types'
-import {fetcher, getDoctorsURL} from '../utils/lab-orders'
+import {DoctorDetailsData, DoctorsResponse} from '../types'
+import {fetcher, getProvidersURL} from '../utils/lab-orders'
 import {Dropdown} from 'carbon-components-react'
 import {useDoctorDetails} from '../context/upload-report-context'
 import {usePendingLabOrderContext} from '../context/pending-orders-context'
 
 const DoctorListDropdown = () => {
-  const {data: doctorList, error: DoctorListError} = useSWR<
+  const {data: providersList, error: providersListError} = useSWR<
     DoctorsResponse,
     Error
-  >(getDoctorsURL, fetcher)
+  >(getProvidersURL, fetcher)
 
   const {selectedPendingOrder} = usePendingLabOrderContext()
   const [items, setItems] = useState([])
@@ -27,32 +27,51 @@ const DoctorListDropdown = () => {
   }, [selectedPendingOrder])
 
   useEffect(() => {
-    let arr = []
-    arr.push({display: 'self (patient)'})
-    doctorList?.data?.results?.map(doctorDetails => {
-      arr.push(doctorDetails)
-    })
-    setItems(arr)
-  }, [doctorList])
+    const doctorsList = []
+    doctorsList.push({display: 'self (patient)'})
+    providersList?.data?.results?.map(
+      providerDetails =>
+        isDoctor(providerDetails) && doctorsList.push(providerDetails),
+    )
+    setItems(doctorsList)
+  }, [providersList])
 
-  const updateDoctorDetails = selectedItem => {
-    setDoctor(selectedItem)
+  const isDoctor = (provider: DoctorDetailsData) => {
+    if (provider.attributes?.length === 0) return false
+
+    for (
+      let providerAttributeIndex = 0;
+      providerAttributeIndex < provider.attributes?.length;
+      providerAttributeIndex++
+    )
+      if (
+        provider.attributes[providerAttributeIndex].display.includes(
+          'Is Doctor: true',
+        ) &&
+        !provider.attributes[providerAttributeIndex].attributeType.retired
+      )
+        return true
+
+    return false
   }
+
+  const isProvidersListError = () =>
+    providersListError && (
+      <div>Something went wrong in fetching Doctor Names...</div>
+    )
 
   return (
     <div>
-      {DoctorListError ? (
-        <div>Something went wrong in fetching Doctor Names...</div>
-      ) : (
+      {isProvidersListError() ?? (
         <Dropdown
           id="doctor-list-dropdown"
           title="doctor list"
           items={items}
           itemToString={data => data.display}
           label="Select a Doctor"
-          onChange={({selectedItem}) => updateDoctorDetails(selectedItem)}
+          onChange={({selectedItem}) => setDoctor(selectedItem)}
           selectedItem={doctor}
-        ></Dropdown>
+        />
       )}
     </div>
   )
