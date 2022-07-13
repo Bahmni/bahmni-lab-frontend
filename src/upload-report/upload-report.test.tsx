@@ -279,6 +279,12 @@ describe('Upload Report', () => {
         name: /Click to record clinical conclusion/i,
       }),
     )
+
+    await waitFor(() =>
+      userEvent.type(screen.getAllByRole('textbox')[1], 'Normal Report', {
+        delay: 1,
+      }),
+    )
     const fileInput = screen.getByLabelText(
       'Drag and drop files here or click to upload',
     ) as HTMLInputElement
