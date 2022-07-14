@@ -16,14 +16,23 @@ import PendingLabOrdersProvider from '../context/pending-orders-context'
 import userEvent from '@testing-library/user-event'
 
 const mockPatientUuid = '1'
+const mockOrderTypeUuid = '8189b409-3f10-11e4-adec-0800271c1b75'
+
+jest.mock('../hooks/useOrderTypeUuidConfig', () => ({
+  useOrderTypeUuidConfig: jest.fn().mockImplementation(() => ({
+    orderTypeUuidConfig: mockOrderTypeUuid,
+  })),
+}))
 
 describe('Paginated Table', () => {
   beforeEach(() => {
     Object.defineProperty(window, 'localStorage', {value: localStorageMock})
     localStorage.setItem('i18nextLng', 'en-us')
+    localStorage.setItem('orderTypeUuid', mockOrderTypeUuid)
   })
   afterEach(() => {
-    localStorage.removeItem('i18nextLng'), jest.clearAllMocks()
+    localStorage.clear()
+    jest.clearAllMocks()
   })
 
   it('should display pending lab orders table when call for orders data is successful', async () => {

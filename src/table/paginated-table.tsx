@@ -16,14 +16,17 @@ import React, {useMemo} from 'react'
 import useSWR from 'swr'
 import {defaultPageSize, headers} from '../constants'
 import {usePendingLabOrderContext} from '../context/pending-orders-context'
+import {useOrderTypeUuidConfig} from '../hooks/useOrderTypeUuidConfig'
 import {LabOrdersFetchResponse} from '../types'
 import {fetcher, getPendingLabOrdersURL} from '../utils/api-utils'
 
 const PaginatedTable = ({patientUuid, onButtonClick}) => {
+  const {orderTypeUuidConfig} = useOrderTypeUuidConfig()
+
   const {data: pendingLabOrders, error: pendingLabOrderDataError} = useSWR<
     LabOrdersFetchResponse,
     Error
-  >(getPendingLabOrdersURL(patientUuid), fetcher)
+  >(getPendingLabOrdersURL(patientUuid, orderTypeUuidConfig), fetcher)
 
   const {
     selectedPendingOrder,
