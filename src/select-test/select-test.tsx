@@ -89,7 +89,7 @@ const SelectTest = ({isDiscardButtonClicked}) => {
             tempPendingTest?.conceptUuid === pendingOrderTest.uuid,
         ) > -1,
     )
-    handleMultipleSelect(initialSelectedFromOrdersTable)
+    handleMultipleSelect(initialSelectedFromOrdersTable, allTests)
     if (selectedPendingOrder.length > 0) {
       const tempSearchResults = allTests.filter(
         pendingOrderTest =>
@@ -98,7 +98,6 @@ const SelectTest = ({isDiscardButtonClicked}) => {
               tempPendingTest?.conceptUuid === pendingOrderTest.uuid,
           ) === -1,
       )
-      setSearchResults(tempSearchResults)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedPendingOrder, labTestResults])
@@ -190,7 +189,10 @@ const SelectTest = ({isDiscardButtonClicked}) => {
     removeSelectedTest(selectedTest)
   }
 
-  const handleMultipleSelect = (selectedTests: Array<LabTest>) => {
+  const handleMultipleSelect = (
+    selectedTests: Array<LabTest>,
+    allTests: Array<LabTest>,
+  ) => {
     selectedTests.forEach(selectedTest => {
       if (!isLabTest(selectedTest)) {
         let listOfSelectedTests = selectedTests
@@ -205,6 +207,7 @@ const SelectTest = ({isDiscardButtonClicked}) => {
           if (isTestInPanel)
             listOfSelectedTests = filterTests(listOfSelectedTests, testInPanel)
         }
+        removeTestsInPanel(selectedTest, allTests)
       }
       setSelectedTests((prevSelectedTest: Array<LabTest>) => [
         ...prevSelectedTest,
