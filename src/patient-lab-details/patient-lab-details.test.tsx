@@ -201,6 +201,10 @@ describe('Patient lab details', () => {
     })
 
     expect(
+      screen.queryByText(/absolute eosinphil count/i),
+    ).not.toBeInTheDocument()
+
+    expect(
       screen.getAllByRole('checkbox', {name: /Select Row/i})[0],
     ).toBeDisabled()
 
