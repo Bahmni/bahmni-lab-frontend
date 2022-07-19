@@ -5,6 +5,7 @@ import {fetcher, getProvidersURL} from '../utils/lab-orders'
 import {Dropdown} from 'carbon-components-react'
 import {useDoctorDetails} from '../context/upload-report-context'
 import {usePendingLabOrderContext} from '../context/pending-orders-context'
+import { selfPatient } from '../constants'
 
 const DoctorListDropdown = () => {
   const {data: providersList, error: providersListError} = useSWR<
@@ -28,7 +29,7 @@ const DoctorListDropdown = () => {
 
   useEffect(() => {
     const doctorsList = []
-    doctorsList.push({display: 'self (patient)'})
+    doctorsList.push({display: selfPatient})
     providersList?.data?.results?.map(
       providerDetails =>
         isDoctor(providerDetails) && doctorsList.push(providerDetails),
@@ -67,7 +68,7 @@ const DoctorListDropdown = () => {
           id="doctor-list-dropdown"
           title="doctor list"
           items={items}
-          itemToString={data => data.display}
+          itemToString={data => data.display ?? data.person?.preferredName?.display}
           label="Select a Doctor"
           onChange={({selectedItem}) => setDoctor(selectedItem)}
           selectedItem={doctor}

@@ -16,7 +16,7 @@ import {
 } from 'carbon-components-react'
 import React, {useEffect, useMemo} from 'react'
 import useSWR, {mutate} from 'swr'
-import {defaultPageSize, reportHeaders} from '../constants'
+import {defaultPageSize, reportHeaders, selfPatient} from '../constants'
 import ImagePreviewComponent from '../image-preview-component/image-preview-component'
 import {
   ReportEntry,
@@ -48,6 +48,8 @@ const ReportTable = props => {
     Error
   >(getReportTableDataURL(patientUuid), fetcher)
 
+  const getRequester = (performer : undefined | {display: string, reference : string}) =>  (performer && performer[0]?.display) || selfPatient
+
   const rows = useMemo(() => {
     const uniqueUploadedReports: Array<ReportEntry> = dedupe(
       reports?.data?.entry,
@@ -74,7 +76,7 @@ const ReportTable = props => {
               day: '2-digit',
             },
           ),
-          requester: '-',
+          requester: getRequester(row.resource.performer),
           file: title,
           conclusion: row.resource.conclusion ? row.resource.conclusion : '',
         }
