@@ -114,3 +114,14 @@ export interface ReportTableRow {
   file: string
   conclusion: string
 }
+export interface OrderTypeFetchResponse {
+  data: {
+    results: Array<OrderType>
+  }
+}
+
+export interface OrderType {
+  uuid: string
+  display: string
+  links: Links
+}

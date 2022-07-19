@@ -35,7 +35,12 @@ function getReportUrl(reportsData: Array<ReportTableRow>, reportId: string) {
   return url ? `${documentPath}${url}` : ''
 }
 
-const ReportTable = props => {
+interface ReportTableProps {
+  patientUuid: string
+  reloadTableData?: boolean
+}
+
+const ReportTable = (props: ReportTableProps) => {
   const {patientUuid, reloadTableData} = props
   const reportTableDataUrl = getReportTableDataURL(patientUuid)
 

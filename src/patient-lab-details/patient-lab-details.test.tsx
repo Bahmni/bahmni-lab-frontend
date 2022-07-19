@@ -34,6 +34,13 @@ const matchParams = {
 }
 const file = new File(['content'], 'test.pdf', {type: 'application/pdf'})
 const currentDay: string = getFormatedDate(0)
+const mockOrderTypeUuid = '8189b409-3f10-11e4-adec-0800271c1b75'
+
+jest.mock('../hooks/useOrderTypeUuidConfig', () => ({
+  useOrderTypeUuidConfig: jest.fn().mockImplementation(() => ({
+    orderTypeUuidConfig: mockOrderTypeUuid,
+  })),
+}))
 
 describe('Patient lab details', () => {
   beforeEach(() => {
@@ -199,6 +206,10 @@ describe('Patient lab details', () => {
         'Selected Tests ( 2 )',
       )
     })
+
+    expect(
+      screen.queryByText(/absolute eosinphil count/i),
+    ).not.toBeInTheDocument()
 
     expect(
       screen.getAllByRole('checkbox', {name: /Select Row/i})[0],

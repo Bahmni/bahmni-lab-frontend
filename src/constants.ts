@@ -9,6 +9,8 @@ export const homePath = '/bahmni/home'
 export const privilegeLabLite = 'app:lab-lite'
 export const maxPageSizeForDiagnosticReport = 100
 export const selfPatient = 'self (patient)'
+export const orderTypeUuidKey = 'orderTypeUuid'
+export const labOrderType = 'Lab Order'
 
 export const headers = [
   {
