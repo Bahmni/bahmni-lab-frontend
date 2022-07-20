@@ -24,6 +24,7 @@ import {
   mockDiagnosticReportResponse,
 } from '../__mocks__/selectTests.mock'
 import PatientLabDetails from './patient-lab-details'
+import * as swr from 'swr'
 
 const mockPatientUuid = '1'
 const matchParams = {
@@ -404,6 +405,7 @@ describe('Patient lab details', () => {
   })
 
   it('should make multiple POST calls when multiple tests are selected', async () => {
+    const mutateMock = jest.spyOn(swr, 'mutate')
     const mockedOpenmrsFetch = openmrsFetch as jest.Mock
     mockedOpenmrsFetch
       .mockReturnValueOnce(mockPendingLabOrdersResponse)
@@ -475,6 +477,7 @@ describe('Patient lab details', () => {
     expect(mockedOpenmrsFetch).toBeCalledTimes(7)
     expect(mockedOpenmrsFetch.mock.calls[5][1].method).toBe('POST')
     expect(mockedOpenmrsFetch.mock.calls[6][1].method).toBe('POST')
+    expect(mutateMock).toHaveBeenCalledTimes(1)
   })
 })
 

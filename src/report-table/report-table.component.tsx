@@ -43,9 +43,10 @@ interface ReportTableProps {
 const ReportTable = (props: ReportTableProps) => {
   const {patientUuid, reloadTableData} = props
   const reportTableDataUrl = getReportTableDataURL(patientUuid)
-
   useEffect(() => {
-    if (reloadTableData) mutate(reportTableDataUrl)
+    if (reloadTableData) {
+      mutate(reportTableDataUrl)
+    }
   }, [reloadTableData, reportTableDataUrl])
 
   let {data: reports, error: reportsTableDataError} = useSWR<
@@ -53,7 +54,9 @@ const ReportTable = (props: ReportTableProps) => {
     Error
   >(getReportTableDataURL(patientUuid), fetcher)
 
-  const getRequester = (performer : undefined | {display: string, reference : string}) =>  (performer && performer[0]?.display) || selfPatient
+  const getRequester = (
+    performer: undefined | {display: string; reference: string},
+  ) => (performer && performer[0]?.display) || selfPatient
 
   const rows = useMemo(() => {
     const uniqueUploadedReports: Array<ReportEntry> = dedupe(
