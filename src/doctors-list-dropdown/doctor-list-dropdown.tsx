@@ -24,6 +24,7 @@ const DoctorListDropdown = () => {
       }
       setDoctor(requestedBy)
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedPendingOrder])
 
   useEffect(() => {
