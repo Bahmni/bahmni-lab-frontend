@@ -3,6 +3,7 @@ export interface LabOrders {
   orderDate: number
   orderUuid: string
   provider: string
+  providerUuid: string
 }
 
 interface Concept {
@@ -88,7 +89,7 @@ export interface PendingLabOrders {
   testName: string
   date: string
   orderedBy: string
-  ordererUuid: string
+  providerUuid: string
   conceptUuid: string
 }
 

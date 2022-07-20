@@ -47,6 +47,7 @@ const PaginatedTable = ({patientUuid, onButtonClick}) => {
           },
         ),
         orderedBy: pendingLabOrderRow.provider,
+        providerUuid: pendingLabOrderRow.providerUuid,
         conceptUuid: pendingLabOrderRow.concept.uuid,
       }
     })

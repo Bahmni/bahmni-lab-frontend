@@ -385,6 +385,8 @@ describe('Patient lab details', () => {
       expect(screen.getByTitle(/doctor list/i)).toHaveTextContent('Super Man')
     })
 
+     screen.debug()
+
     const fileInput = screen.getByLabelText(
       'Drag and drop files here or click to upload',
     ) as HTMLInputElement
@@ -397,10 +399,10 @@ describe('Patient lab details', () => {
     expect(
       JSON.parse(mockedOpenmrsFetch.mock.calls[5][1].body).basedOn.length,
     ).toBe(1)
-    // TODO
-    // expect(
-    //   JSON.parse(mockedOpenmrsFetch.mock.calls[5][1].body).performer,
-    // ).toStrictEqual({reference: 'Practitioner/dathb-76897'})
+
+    expect(
+      JSON.parse(mockedOpenmrsFetch.mock.calls[5][1].body).performer,
+    ).toStrictEqual({reference: 'Practitioner/1'})
   })
 
   it('should make multiple POST calls when multiple tests are selected', async () => {

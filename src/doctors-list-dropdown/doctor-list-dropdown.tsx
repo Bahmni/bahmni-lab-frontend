@@ -20,7 +20,7 @@ const DoctorListDropdown = () => {
   useEffect(() => {
     if (selectedPendingOrder.length > 0) {
       const requestedBy = {
-        uuid: selectedPendingOrder[0].ordererUuid,
+        uuid: selectedPendingOrder[0].providerUuid,
         display: selectedPendingOrder[0].orderedBy,
       }
       setDoctor(requestedBy)
@@ -68,7 +68,7 @@ const DoctorListDropdown = () => {
           id="doctor-list-dropdown"
           title="doctor list"
           items={items}
-          itemToString={data => data.display ?? data.person?.preferredName?.display}
+          itemToString={data => data.display ? data.display : data.person?.preferredName?.display}
           label="Select a Doctor"
           onChange={({selectedItem}) => setDoctor(selectedItem)}
           selectedItem={doctor}
