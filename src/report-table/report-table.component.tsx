@@ -112,7 +112,11 @@ const ReportTable = (props: ReportTableProps) => {
               getTableContainerProps,
             }) => (
               <TableContainer {...getTableContainerProps()}>
-                <Table {...getTableProps()} className={classes.reportTable}>
+                <Table
+                  {...getTableProps()}
+                  className={classes.reportTable}
+                  useZebraStyles={true}
+                >
                   <TableHead>
                     <TableRow>
                       <TableExpandHeader id="expand" />

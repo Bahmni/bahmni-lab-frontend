@@ -73,7 +73,7 @@ const PaginatedTable = ({patientUuid, onButtonClick}) => {
                 getSelectionProps,
                 getHeaderProps,
               }) => (
-                <Table title="lab-order-table">
+                <Table title="lab-order-table" useZebraStyles={true}>
                   <TableHead>
                     <TableRow>
                       <TableSelectAll
