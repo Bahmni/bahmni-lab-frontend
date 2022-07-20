@@ -385,8 +385,6 @@ describe('Patient lab details', () => {
       expect(screen.getByTitle(/doctor list/i)).toHaveTextContent('Super Man')
     })
 
-     screen.debug()
-
     const fileInput = screen.getByLabelText(
       'Drag and drop files here or click to upload',
     ) as HTMLInputElement
