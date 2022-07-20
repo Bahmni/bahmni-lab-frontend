@@ -90,15 +90,6 @@ const SelectTest = ({isDiscardButtonClicked}) => {
         ) > -1,
     )
     handleMultipleSelect(initialSelectedFromOrdersTable, allTests)
-    if (selectedPendingOrder.length > 0) {
-      const tempSearchResults = allTests.filter(
-        pendingOrderTest =>
-          selectedPendingOrder.findIndex(
-            tempPendingTest =>
-              tempPendingTest?.conceptUuid === pendingOrderTest.uuid,
-          ) === -1,
-      )
-    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedPendingOrder, labTestResults])
 
@@ -193,7 +184,9 @@ const SelectTest = ({isDiscardButtonClicked}) => {
     selectedTests: Array<LabTest>,
     allTests: Array<LabTest>,
   ) => {
+    let updatedTests: Array<LabTest> = allTests
     selectedTests.forEach(selectedTest => {
+      const remainingTests = filterTests(updatedTests, selectedTest)
       if (!isLabTest(selectedTest)) {
         let listOfSelectedTests = selectedTests
         for (let testInPanel of getTestsInLabOrder(selectedTest)) {
@@ -207,8 +200,11 @@ const SelectTest = ({isDiscardButtonClicked}) => {
           if (isTestInPanel)
             listOfSelectedTests = filterTests(listOfSelectedTests, testInPanel)
         }
-        removeTestsInPanel(selectedTest, allTests)
+        updatedTests = removeTestsInPanel(selectedTest, remainingTests)
+      } else {
+        updatedTests = remainingTests
       }
+      setSearchResults(updatedTests)
       setSelectedTests((prevSelectedTest: Array<LabTest>) => [
         ...prevSelectedTest,
         selectedTest,
@@ -234,6 +230,7 @@ const SelectTest = ({isDiscardButtonClicked}) => {
       }
     }
     setSearchResults(tests)
+    return tests
   }
 
   const handleUnselect = (unselectedTest: LabTest) => {
