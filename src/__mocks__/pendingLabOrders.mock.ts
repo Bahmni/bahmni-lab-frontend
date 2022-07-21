@@ -10,6 +10,7 @@ export const mockPendingLabOrdersResponse: LabOrdersFetchResponse = {
       orderDate: 1657188240000,
       orderUuid: 'abc-123',
       provider: 'Super Man',
+      providerUuid:'1'
     },
     {
       concept: {
@@ -19,6 +20,7 @@ export const mockPendingLabOrdersResponse: LabOrdersFetchResponse = {
       orderDate: 1657187934000,
       orderUuid: 'abd-123',
       provider: 'Super Man',
+      providerUuid:'2'
     },
   ],
 }

@@ -1,18 +1,22 @@
-import {render, screen} from '@testing-library/react'
+import {openmrsFetch} from '@openmrs/esm-framework'
+import {render, screen, waitFor} from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import React from 'react'
-import {localStorageMock} from '../utils/test-utils'
-import DoctorListDropdown from './doctor-list-dropdown'
-import {openmrsFetch} from '@openmrs/esm-framework'
-import {mockDoctorNames} from '../__mocks__/doctorNames.mock'
-import {DoctorDetailsData} from '../types'
+import {SWRConfig} from 'swr'
 import PendingLabOrdersProvider from '../context/pending-orders-context'
 import {UploadReportProvider} from '../context/upload-report-context'
+import {localStorageMock} from '../utils/test-utils'
+import {
+  mockDoctorNames,
+  mockDoctorsListErrorResponse,
+} from '../__mocks__/doctorNames.mock'
+import DoctorListDropdown from './doctor-list-dropdown'
 
+const mockedOpenmrsFetch = openmrsFetch as jest.Mock
 describe('upload file', () => {
   beforeEach(() => {
     Object.defineProperty(window, 'localStorage', {value: localStorageMock})
-    const mockedOpenmrsFetch = openmrsFetch as jest.Mock
+
     mockedOpenmrsFetch.mockResolvedValue(mockDoctorNames)
     renderWithContextProvider(<DoctorListDropdown />)
   })
@@ -26,14 +30,17 @@ describe('upload file', () => {
     expect(selectedButton).toBeInTheDocument()
   })
 
-  it('should be able to select dropdown item when clicked on the dropdown', async () => {
+  it('should be able to display only doctors from the providers list', async () => {
     userEvent.click(
       screen.getByRole('button', {
         name: /Select a Doctor/i,
       }),
     )
 
+    expect(screen.queryByText(/7-5 - Dennis Kigen/)).not.toBeInTheDocument()
+
     userEvent.click(await screen.findByText('admin - Super User'))
+
     expect(await screen.findByText(/admin - Super User/i)).toBeInTheDocument()
     expect(screen.getByTitle(/doctor list/i)).toHaveTextContent(
       'admin - Super User',
@@ -41,10 +48,23 @@ describe('upload file', () => {
   })
 })
 
+it('should display error message when call for doctors list is unsuccessful', async () => {
+  mockedOpenmrsFetch.mockRejectedValueOnce(mockDoctorsListErrorResponse)
+  renderWithContextProvider(<DoctorListDropdown />)
+
+  await waitFor(() =>
+    expect(
+      screen.getByText(/Something went wrong in fetching Doctor Names.../),
+    ).toBeInTheDocument(),
+  )
+})
+
 function renderWithContextProvider(children) {
   return render(
-    <PendingLabOrdersProvider>
-      <UploadReportProvider>{children}</UploadReportProvider>
-    </PendingLabOrdersProvider>,
+    <SWRConfig value={{provider: () => new Map()}}>
+      <PendingLabOrdersProvider>
+        <UploadReportProvider>{children}</UploadReportProvider>
+      </PendingLabOrdersProvider>
+    </SWRConfig>,
   )
 }

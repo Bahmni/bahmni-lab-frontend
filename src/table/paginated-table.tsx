@@ -47,6 +47,7 @@ const PaginatedTable = ({patientUuid, onButtonClick}) => {
           },
         ),
         orderedBy: pendingLabOrderRow.provider,
+        providerUuid: pendingLabOrderRow.providerUuid,
         conceptUuid: pendingLabOrderRow.concept.uuid,
       }
     })
@@ -72,7 +73,7 @@ const PaginatedTable = ({patientUuid, onButtonClick}) => {
                 getSelectionProps,
                 getHeaderProps,
               }) => (
-                <Table title="lab-order-table">
+                <Table title="lab-order-table" useZebraStyles={true}>
                   <TableHead>
                     <TableRow>
                       <TableSelectAll

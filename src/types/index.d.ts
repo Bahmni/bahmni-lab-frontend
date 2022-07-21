@@ -3,6 +3,7 @@ export interface LabOrders {
   orderDate: number
   orderUuid: string
   provider: string
+  providerUuid: string
 }
 
 interface Concept {
@@ -15,6 +16,7 @@ export interface LabOrdersFetchResponse {
 export interface DoctorDetailsData {
   uuid: string
   display: string
+  attributes: Array<Attribute>
 }
 
 export interface DoctorsResponse {
@@ -87,10 +89,23 @@ export interface PendingLabOrders {
   testName: string
   date: string
   orderedBy: string
-  ordererUuid: string
+  providerUuid: string
   conceptUuid: string
 }
 
+export interface Attribute {
+      display: string,
+      uuid: string,
+      attributeType: {
+          uuid: string,
+          display: string,
+          retired: undefined | boolean
+          links: Array<Links>
+        },
+      value: boolean,
+      voided: boolean,
+      links: Array<Links>
+}
 export interface ReportTableRow {
   id: string
   tests: string

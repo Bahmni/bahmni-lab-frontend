@@ -357,8 +357,8 @@ it('should save and upload report when user selects self in doctors dropdown and
       name: /Select a Doctor/i,
     }),
   )
-
-  userEvent.click(await screen.findByText('self'))
+  
+  userEvent.click(await screen.findByText(/self/i))
   expect(await screen.findByText(/self/i)).toBeInTheDocument()
 
   const fileInput = screen.getByLabelText(

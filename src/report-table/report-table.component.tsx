@@ -16,7 +16,7 @@ import {
 } from 'carbon-components-react'
 import React, {useEffect, useMemo} from 'react'
 import useSWR, {mutate} from 'swr'
-import {defaultPageSize, reportHeaders} from '../constants'
+import {defaultPageSize, reportHeaders, selfPatient} from '../constants'
 import ImagePreviewComponent from '../image-preview-component/image-preview-component'
 import {
   ReportEntry,
@@ -43,15 +43,20 @@ interface ReportTableProps {
 const ReportTable = (props: ReportTableProps) => {
   const {patientUuid, reloadTableData} = props
   const reportTableDataUrl = getReportTableDataURL(patientUuid)
-
   useEffect(() => {
-    if (reloadTableData) mutate(reportTableDataUrl)
+    if (reloadTableData) {
+      mutate(reportTableDataUrl)
+    }
   }, [reloadTableData, reportTableDataUrl])
 
   let {data: reports, error: reportsTableDataError} = useSWR<
     ReportTableFetchResponse,
     Error
   >(getReportTableDataURL(patientUuid), fetcher)
+
+  const getRequester = (
+    performer: undefined | {display: string; reference: string},
+  ) => (performer && performer[0]?.display) || selfPatient
 
   const rows = useMemo(() => {
     const uniqueUploadedReports: Array<ReportEntry> = dedupe(
@@ -79,7 +84,7 @@ const ReportTable = (props: ReportTableProps) => {
               day: '2-digit',
             },
           ),
-          requester: '-',
+          requester: getRequester(row.resource.performer),
           file: title,
           conclusion: row.resource.conclusion ? row.resource.conclusion : '',
         }
@@ -107,7 +112,11 @@ const ReportTable = (props: ReportTableProps) => {
               getTableContainerProps,
             }) => (
               <TableContainer {...getTableContainerProps()}>
-                <Table {...getTableProps()} className={classes.reportTable}>
+                <Table
+                  {...getTableProps()}
+                  className={classes.reportTable}
+                  useZebraStyles={true}
+                >
                   <TableHead>
                     <TableRow>
                       <TableExpandHeader id="expand" />
