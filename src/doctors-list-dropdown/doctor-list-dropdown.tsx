@@ -5,7 +5,7 @@ import {fetcher, getProvidersURL} from '../utils/lab-orders'
 import {Dropdown} from 'carbon-components-react'
 import {useDoctorDetails} from '../context/upload-report-context'
 import {usePendingLabOrderContext} from '../context/pending-orders-context'
-import {selfPatient} from '../constants'
+import {practitionerRoleDoctor, selfPatient} from '../constants'
 
 const DoctorListDropdown = () => {
   const {data: providersList, error: providersListError} = useSWR<
@@ -48,7 +48,7 @@ const DoctorListDropdown = () => {
     )
       if (
         provider.attributes[providerAttributeIndex].display.includes(
-          'Is Doctor: true',
+          practitionerRoleDoctor,
         ) &&
         !provider.attributes[providerAttributeIndex].attributeType.retired
       )
