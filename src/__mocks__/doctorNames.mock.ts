@@ -8,7 +8,7 @@ export const mockDoctorNames = {
         uuid: '1',
         display: 'admin - Super User',
         attributes: [
-          {display: 'Is Doctor: true', attributeType: [{retired: false}]},
+          {display: 'practioner_role: Doctor', attributeType: [{retired: false}]},
         ],
       },
       {
@@ -22,7 +22,7 @@ export const mockDoctorNames = {
           preferredName: {display: '8-3 - user'},
         },
         attributes: [
-          {display: 'Is Doctor: true', attributeType: [{retired: false}]},
+          {display: 'practioner_role: Doctor', attributeType: [{retired: false}]},
         ],
       },
       {
