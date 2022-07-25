@@ -58,6 +58,7 @@ describe('Paginated Table', () => {
         <BrowserRouter>
           <PendingLabOrdersProvider>
             <PaginatedTable
+              reloadTableData={false}
               patientUuid={mockPatientUuid}
               onButtonClick={false}
             />
@@ -126,6 +127,7 @@ describe('Paginated Table', () => {
         <BrowserRouter>
           <PendingLabOrdersProvider>
             <PaginatedTable
+              reloadTableData={false}
               patientUuid={mockPatientUuid}
               onButtonClick={false}
             />
@@ -154,6 +156,7 @@ describe('Paginated Table', () => {
         <BrowserRouter>
           <PendingLabOrdersProvider>
             <PaginatedTable
+              reloadTableData={false}
               patientUuid={mockPatientUuid}
               onButtonClick={false}
             />
@@ -183,6 +186,7 @@ describe('Paginated Table', () => {
         <SWRConfig value={{provider: () => new Map()}}>
           <BrowserRouter>
             <PaginatedTable
+              reloadTableData={false}
               patientUuid={mockPatientUuid}
               onButtonClick={false}
             />

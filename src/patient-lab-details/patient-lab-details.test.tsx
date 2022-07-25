@@ -477,7 +477,7 @@ describe('Patient lab details', () => {
     expect(mockedOpenmrsFetch).toBeCalledTimes(7)
     expect(mockedOpenmrsFetch.mock.calls[5][1].method).toBe('POST')
     expect(mockedOpenmrsFetch.mock.calls[6][1].method).toBe('POST')
-    expect(mutateMock).toHaveBeenCalledTimes(1)
+    expect(mutateMock).toHaveBeenCalledTimes(2)
   })
 })
 

@@ -26,6 +26,9 @@ interface ReferenceRequestType {
 export interface BasedOnType {
   reference: string
   display: string
+  identifier: {
+    value: string
+  }
 }
 
 interface DiagnosticReportRequestType {
@@ -42,11 +45,11 @@ interface DiagnosticReportRequestType {
   subject: ReferenceRequestType
   issued: Date
   conclusion: string
-  presentedForm: {
+  presentedForm: Array<{
     url: string
     title: string
-  }
-  basedOn: Array<BasedOnType>
+  }>
+  basedOn?: Array<BasedOnType>
   performer?: ReferenceRequestType
 }
 
@@ -82,14 +85,14 @@ export function saveDiagnosticReport(
   ac: AbortController,
   selectedPendingOrder: PendingLabOrders[],
 ) {
-  const isPendingOrderInPayload =
-    selectedPendingOrder.filter(
-      pendingOrder => pendingOrder.conceptUuid === selectedTest.uuid,
-    ).length == 1
+  const pendingOrderInPayload = selectedPendingOrder.filter(
+    pendingOrder => pendingOrder.conceptUuid === selectedTest.uuid,
+  )
   let basedOn: Array<BasedOnType> = null
-  if (isPendingOrderInPayload)
+  if (pendingOrderInPayload.length == 1)
     basedOn = [
       {
+        identifier: {value: pendingOrderInPayload[0].id},
         reference: 'ServiceRequest',
         display: selectedTest.name.display,
       },
@@ -110,11 +113,10 @@ export function saveDiagnosticReport(
     },
     issued: reportDate,
     conclusion: reportConclusion,
-    presentedForm: {
-      url: uploadFileUrl,
-      title: uploadedFileName,
-    },
-    basedOn,
+    presentedForm: [{url: uploadFileUrl, title: uploadedFileName}],
+  }
+  if (pendingOrderInPayload.length == 1) {
+    requestBody.basedOn = basedOn
   }
   if (performerUuid) {
     requestBody.performer = {
