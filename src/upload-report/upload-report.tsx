@@ -44,7 +44,10 @@ const UploadReport: React.FC<UploadReportProps> = ({
   const {selectedTests, setSelectedTests} = useSelectedTests()
   const maxCount: number = 500
   const {selectedFile, setSelectedFile} = useSelectedFile()
-  const {selectedPendingOrder} = usePendingLabOrderContext()
+  const {
+    selectedPendingOrder,
+    setSelectedPendingOrder,
+  } = usePendingLabOrderContext()
   const [showReportConclusionLabel, setShowReportConclusionLabel] = useState<
     boolean
   >(true)
@@ -145,8 +148,12 @@ const UploadReport: React.FC<UploadReportProps> = ({
         allSuccess = false
       }
     }
-
-    allSuccess ? close(true) : setIsSaveButtonClicked(false)
+    if (allSuccess) {
+      close(true)
+      setSelectedPendingOrder([])
+    } else {
+      setIsSaveButtonClicked(false)
+    }
   }
 
   return (
