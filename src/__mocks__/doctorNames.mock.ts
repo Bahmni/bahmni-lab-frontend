@@ -6,23 +6,32 @@ export const mockDoctorNames = {
       },
       {
         uuid: '1',
-        display: 'admin - Super User',
+        person: {
+          display: 'admin - Super User',
+        },
         attributes: [
-          {display: 'practioner_role: Doctor', attributeType: [{retired: false}]},
+          {
+            display: 'practioner_role: Doctor',
+            attributeType: [{retired: false}],
+          },
         ],
       },
       {
         uuid: '2',
-        display: '7-5 - Dennis Kigen',
+        person: {
+          display: '7-5 - Dennis Kigen',
+        },
       },
       {
         uuid: '3',
-        display: '',
         person: {
-          preferredName: {display: '8-3 - user'},
+          display: '8-3 - user',
         },
         attributes: [
-          {display: 'practioner_role: Doctor', attributeType: [{retired: false}]},
+          {
+            display: 'practioner_role: Doctor',
+            attributeType: [{retired: false}],
+          },
         ],
       },
       {
@@ -39,5 +48,5 @@ export const mockDoctorsListErrorResponse = {
   response: {
     status: 404,
     statusText: 'Not Found',
-  }
+  },
 }

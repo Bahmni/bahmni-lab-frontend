@@ -1,14 +1,14 @@
+import {Dropdown} from 'carbon-components-react'
 import React, {useEffect, useState} from 'react'
 import useSWR from 'swr'
-import {DoctorDetailsData, DoctorsResponse} from '../types'
-import {fetcher, getProvidersURL} from '../utils/lab-orders'
-import {Dropdown} from 'carbon-components-react'
-import {useDoctorDetails} from '../context/upload-report-context'
+import {selfPatient} from '../constants'
 import {usePendingLabOrderContext} from '../context/pending-orders-context'
-import {practitionerRoleDoctor, selfPatient} from '../constants'
+import {useDoctorDetails} from '../context/upload-report-context'
+import {DoctorsResponse} from '../types'
+import {fetcher, getProvidersURL} from '../utils/lab-orders'
 
 const DoctorListDropdown = () => {
-  const {data: providersList, error: providersListError} = useSWR<
+  const {data: doctorsList, error: doctorsListError} = useSWR<
     DoctorsResponse,
     Error
   >(getProvidersURL, fetcher)
@@ -21,7 +21,7 @@ const DoctorListDropdown = () => {
     if (selectedPendingOrder.length > 0) {
       const requestedBy = {
         uuid: selectedPendingOrder[0].providerUuid,
-        display: selectedPendingOrder[0].orderedBy,
+        person: {display: selectedPendingOrder[0].orderedBy},
       }
       setDoctor(requestedBy)
     }
@@ -29,36 +29,14 @@ const DoctorListDropdown = () => {
   }, [selectedPendingOrder])
 
   useEffect(() => {
-    const doctorsList = []
-    doctorsList.push({display: selfPatient})
-    providersList?.data?.results?.map(
-      providerDetails =>
-        isDoctor(providerDetails) && doctorsList.push(providerDetails),
-    )
-    setItems(doctorsList)
-  }, [providersList])
-
-  const isDoctor = (provider: DoctorDetailsData) => {
-    if (provider.attributes?.length === 0) return false
-
-    for (
-      let providerAttributeIndex = 0;
-      providerAttributeIndex < provider.attributes?.length;
-      providerAttributeIndex++
-    )
-      if (
-        provider.attributes[providerAttributeIndex].display.includes(
-          practitionerRoleDoctor,
-        ) &&
-        !provider.attributes[providerAttributeIndex].attributeType.retired
-      )
-        return true
-
-    return false
-  }
+    const doctors = []
+    doctors.push({person: {display: selfPatient}})
+    doctorsList?.data?.results && doctors.push(...doctorsList.data.results)
+    setItems(doctors)
+  }, [doctorsList])
 
   const isProvidersListError = () =>
-    providersListError && (
+    doctorsListError && (
       <div>Something went wrong in fetching Doctor Names...</div>
     )
 
@@ -69,9 +47,7 @@ const DoctorListDropdown = () => {
           id="doctor-list-dropdown"
           title="doctor list"
           items={items}
-          itemToString={data =>
-            data.display ? data.display : data.person?.preferredName?.display
-          }
+          itemToString={data => data.person?.display}
           label="Select a Doctor"
           onChange={({selectedItem}) => setDoctor(selectedItem)}
           selectedItem={doctor}
