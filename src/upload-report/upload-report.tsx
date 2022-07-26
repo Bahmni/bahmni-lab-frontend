@@ -48,6 +48,7 @@ const UploadReport: React.FC<UploadReportProps> = ({
   const [showReportConclusionLabel, setShowReportConclusionLabel] = useState<
     boolean
   >(true)
+  const [isSaveButtonClicked, setIsSaveButtonClicked] = useState(false)
 
   const handleDiscard = () => {
     setIsDiscardButtonClicked(true)
@@ -69,7 +70,7 @@ const UploadReport: React.FC<UploadReportProps> = ({
         selectedFile.type,
         ac,
       )
-      if (uploadFileResponse.ok) {
+      if (uploadFileResponse?.ok) {
         const url = uploadFileResponse.data.url
 
         if (url) {
@@ -91,22 +92,62 @@ const UploadReport: React.FC<UploadReportProps> = ({
     reader.readAsDataURL(selectedFile)
   }
 
+  const isDisabled = () =>
+    !reportDate ||
+    !selectedFile ||
+    !doctor ||
+    selectedTests.length === 0 ||
+    isSaveButtonClicked
+
   const renderButtonGroup = () => (
     <div className={styles.overlayButtons}>
       <Button onClick={handleDiscard} kind="secondary" size="lg">
         Discard
       </Button>
       <Button
-        onClick={saveReport}
+        onClick={() => {
+          setIsSaveButtonClicked(true), saveReport()
+        }}
         size="lg"
-        disabled={
-          !reportDate || !selectedFile || !doctor || selectedTests.length === 0
-        }
+        disabled={isDisabled()}
       >
         Save and Upload
       </Button>
     </div>
   )
+
+  async function uploadSelectedTests(
+    selectedTests: LabTest[],
+    patientUuid: string,
+    doctorUuid: string,
+    reportDate: Date,
+    url: string,
+    selectedFile: File,
+    reportConclusion: string,
+    ac: AbortController,
+    selectedPendingOrder: PendingLabOrders[],
+    close: Function,
+  ) {
+    let allSuccess: boolean = true
+    for (let index = 0; index < selectedTests.length; index++) {
+      const diagnosticReportResponse = await saveDiagnosticReport(
+        patientUuid,
+        doctorUuid,
+        reportDate,
+        selectedTests[index],
+        url,
+        selectedFile.name,
+        reportConclusion,
+        ac,
+        selectedPendingOrder,
+      )
+      if (allSuccess && !diagnosticReportResponse.ok) {
+        allSuccess = false
+      }
+    }
+
+    allSuccess ? close(true) : setIsSaveButtonClicked(false)
+  }
 
   return (
     <Overlay close={close} header={header} buttonsGroup={renderButtonGroup()}>
@@ -182,37 +223,3 @@ const UploadReport: React.FC<UploadReportProps> = ({
 }
 
 export default UploadReport
-
-async function uploadSelectedTests(
-  selectedTests: LabTest[],
-  patientUuid: string,
-  doctorUuid: string,
-  reportDate: Date,
-  url: string,
-  selectedFile: File,
-  reportConclusion: string,
-  ac: AbortController,
-  selectedPendingOrder: PendingLabOrders[],
-  close: Function,
-) {
-  let allSuccess: boolean = true
-  for (let index = 0; index < selectedTests.length; index++) {
-    const diagnosticReportResponse = await saveDiagnosticReport(
-      patientUuid,
-      doctorUuid,
-      reportDate,
-      selectedTests[index],
-      url,
-      selectedFile.name,
-      reportConclusion,
-      ac,
-      selectedPendingOrder,
-    )
-    if (allSuccess && !diagnosticReportResponse.ok) {
-      allSuccess = false
-    }
-  }
-  if (allSuccess) {
-    close(true)
-  }
-}

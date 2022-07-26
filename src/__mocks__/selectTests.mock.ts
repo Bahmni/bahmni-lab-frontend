@@ -292,7 +292,13 @@ export const mockDiagnosticReportResponse = {
   ok: 'true',
   status: 200,
 }
-
+export const mockDiagnosticReportErrorResponse = {
+  message: 'Data not found',
+  response: {
+    status: 404,
+    statusText: 'Not Found',
+  },
+}
 export const uploadFileRequestBody =
   '{"content":",Y29udGVudA==","encounterTypeName":"Patient Document","fileType":"application","format":"pdf","patientUuid":"123"}'
 
