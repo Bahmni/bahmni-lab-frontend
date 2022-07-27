@@ -303,7 +303,7 @@ export const uploadFileRequestBody =
   '{"content":",Y29udGVudA==","encounterTypeName":"Patient Document","fileType":"application","format":"pdf","patientUuid":"123"}'
 
 export const diagnosticReportRequestBody = reportDate =>
-  `{"resourceType":"DiagnosticReport","status":"final","code":{"coding":[{"code":"07a128f7-f596-45d5-a2a9-c447bc9e5112","display":"Absolute Eosinphil Count"}]},"subject":{"reference":"Patient/123"},"issued":"${reportDate}","conclusion":"Normal Report","presentedForm":[{"url":"100/76-Patient Document-7baff463-fdaa-43d0-a402-aa948c296958.pdf","title":"test.pdf"}],"performer":{"reference":"Practitioner/1"}}`
+  `{"resourceType":"DiagnosticReport","status":"final","code":{"coding":[{"code":"07a128f7-f596-45d5-a2a9-c447bc9e5112","display":"Absolute Eosinphil Count"}]},"subject":{"reference":"Patient/123"},"issued":"${reportDate}","presentedForm":[{"url":"100/76-Patient Document-7baff463-fdaa-43d0-a402-aa948c296958.pdf","title":"test.pdf"}],"conclusion":"Normal Report","performer":[{"reference":"Practitioner/1"}]}`
 
 export const selfDiagnosticRequestBody = reportDate =>
-  `{"resourceType":"DiagnosticReport","status":"final","code":{"coding":[{"code":"07a128f7-f596-45d5-a2a9-c447bc9e5112","display":"Absolute Eosinphil Count"}]},"subject":{"reference":"Patient/123"},"issued":"${reportDate}","conclusion":"","presentedForm":[{"url":"100/76-Patient Document-7baff463-fdaa-43d0-a402-aa948c296958.pdf","title":"test.pdf"}]}`
+  `{"resourceType":"DiagnosticReport","status":"final","code":{"coding":[{"code":"07a128f7-f596-45d5-a2a9-c447bc9e5112","display":"Absolute Eosinphil Count"}]},"subject":{"reference":"Patient/123"},"issued":"${reportDate}","presentedForm":[{"url":"100/76-Patient Document-7baff463-fdaa-43d0-a402-aa948c296958.pdf","title":"test.pdf"}]}`
