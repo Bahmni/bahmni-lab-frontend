@@ -44,13 +44,13 @@ interface DiagnosticReportRequestType {
   }
   subject: ReferenceRequestType
   issued: Date
-  conclusion: string
+  conclusion?: string
   presentedForm: Array<{
     url: string
     title: string
   }>
   basedOn?: Array<BasedOnType>
-  performer?: ReferenceRequestType
+  performer?: Array<ReferenceRequestType>
 }
 
 export function uploadFile(
@@ -112,16 +112,20 @@ export function saveDiagnosticReport(
       reference: 'Patient/' + patientUuid,
     },
     issued: reportDate,
-    conclusion: reportConclusion,
     presentedForm: [{url: uploadFileUrl, title: uploadedFileName}],
+  }
+  if (reportConclusion) {
+    requestBody.conclusion = reportConclusion
   }
   if (pendingOrderInPayload.length == 1) {
     requestBody.basedOn = basedOn
   }
   if (performerUuid) {
-    requestBody.performer = {
-      reference: 'Practitioner/' + performerUuid,
-    }
+    requestBody.performer = [
+      {
+        reference: 'Practitioner/' + performerUuid,
+      },
+    ]
   }
 
   return postApiCall(saveDiagnosticReportURL, requestBody, ac)
