@@ -44,7 +44,10 @@ const UploadReport: React.FC<UploadReportProps> = ({
   const {selectedTests, setSelectedTests} = useSelectedTests()
   const maxCount: number = 500
   const {selectedFile, setSelectedFile} = useSelectedFile()
-  const {selectedPendingOrder} = usePendingLabOrderContext()
+  const {
+    selectedPendingOrder,
+    setSelectedPendingOrder,
+  } = usePendingLabOrderContext()
   const [showReportConclusionLabel, setShowReportConclusionLabel] = useState<
     boolean
   >(true)
@@ -107,6 +110,41 @@ const UploadReport: React.FC<UploadReportProps> = ({
       </Button>
     </div>
   )
+
+  async function uploadSelectedTests(
+    selectedTests: LabTest[],
+    patientUuid: string,
+    doctorUuid: string,
+    reportDate: Date,
+    url: string,
+    selectedFile: File,
+    reportConclusion: string,
+    ac: AbortController,
+    selectedPendingOrder: PendingLabOrders[],
+    close: Function,
+  ) {
+    let allSuccess: boolean = true
+    for (let index = 0; index < selectedTests.length; index++) {
+      const diagnosticReportResponse = await saveDiagnosticReport(
+        patientUuid,
+        doctorUuid,
+        reportDate,
+        selectedTests[index],
+        url,
+        selectedFile.name,
+        reportConclusion,
+        ac,
+        selectedPendingOrder,
+      )
+      if (allSuccess && !diagnosticReportResponse.ok) {
+        allSuccess = false
+      }
+    }
+    if (allSuccess) {
+      close(true)
+      setSelectedPendingOrder([])
+    }
+  }
 
   return (
     <Overlay close={close} header={header} buttonsGroup={renderButtonGroup()}>
@@ -182,37 +220,3 @@ const UploadReport: React.FC<UploadReportProps> = ({
 }
 
 export default UploadReport
-
-async function uploadSelectedTests(
-  selectedTests: LabTest[],
-  patientUuid: string,
-  doctorUuid: string,
-  reportDate: Date,
-  url: string,
-  selectedFile: File,
-  reportConclusion: string,
-  ac: AbortController,
-  selectedPendingOrder: PendingLabOrders[],
-  close: Function,
-) {
-  let allSuccess: boolean = true
-  for (let index = 0; index < selectedTests.length; index++) {
-    const diagnosticReportResponse = await saveDiagnosticReport(
-      patientUuid,
-      doctorUuid,
-      reportDate,
-      selectedTests[index],
-      url,
-      selectedFile.name,
-      reportConclusion,
-      ac,
-      selectedPendingOrder,
-    )
-    if (allSuccess && !diagnosticReportResponse.ok) {
-      allSuccess = false
-    }
-  }
-  if (allSuccess) {
-    close(true)
-  }
-}

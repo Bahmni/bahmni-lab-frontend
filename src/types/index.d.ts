@@ -4,6 +4,7 @@ export interface LabOrders {
   orderUuid: string
   provider: string
   providerUuid: string
+  fulfillerStatus: string
 }
 
 interface Concept {
@@ -94,17 +95,17 @@ export interface PendingLabOrders {
 }
 
 export interface Attribute {
-      display: string,
-      uuid: string,
-      attributeType: {
-          uuid: string,
-          display: string,
-          retired: undefined | boolean
-          links: Array<Links>
-        },
-      value: boolean,
-      voided: boolean,
-      links: Array<Links>
+  display: string
+  uuid: string
+  attributeType: {
+    uuid: string
+    display: string
+    retired: undefined | boolean
+    links: Array<Links>
+  }
+  value: boolean
+  voided: boolean
+  links: Array<Links>
 }
 export interface ReportTableRow {
   id: string

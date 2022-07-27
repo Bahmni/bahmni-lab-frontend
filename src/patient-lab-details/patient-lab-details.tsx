@@ -95,6 +95,7 @@ const PatientLabDetails: React.FC<RouteComponentProps<PatientParamsType>> = ({
             <PaginatedTable
               patientUuid={patientUuid}
               onButtonClick={onButtonClick}
+              reloadTableData={reloadReportTable}
             />
             <br></br>
             <br></br>

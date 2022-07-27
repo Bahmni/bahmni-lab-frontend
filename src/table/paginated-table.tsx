@@ -12,16 +12,20 @@ import {
   TableSelectRow,
   TableSelectRowProps,
 } from 'carbon-components-react'
-import React, {useMemo} from 'react'
-import useSWR from 'swr'
-import {defaultPageSize, headers} from '../constants'
+import React, {useEffect, useMemo} from 'react'
+import useSWR, {mutate} from 'swr'
+import {defaultPageSize, headers, orderStatusCompleted} from '../constants'
 import {usePendingLabOrderContext} from '../context/pending-orders-context'
 import {useOrderTypeUuidConfig} from '../hooks/useOrderTypeUuidConfig'
-import {LabOrdersFetchResponse} from '../types'
+import {LabOrdersFetchResponse, PendingLabOrders} from '../types'
 import {fetcher, getPendingLabOrdersURL} from '../utils/api-utils'
 
-const PaginatedTable = ({patientUuid, onButtonClick}) => {
+const PaginatedTable = ({patientUuid, onButtonClick, reloadTableData}) => {
   const {orderTypeUuidConfig} = useOrderTypeUuidConfig()
+  const pendingOrderUrl = getPendingLabOrdersURL(
+    patientUuid,
+    orderTypeUuidConfig,
+  )
 
   const {data: pendingLabOrders, error: pendingLabOrderDataError} = useSWR<
     LabOrdersFetchResponse,
@@ -33,25 +37,43 @@ const PaginatedTable = ({patientUuid, onButtonClick}) => {
     setSelectedPendingOrder,
   } = usePendingLabOrderContext()
 
-  const pendingLabOrderRows = useMemo(() => {
-    return pendingLabOrders?.data?.map(pendingLabOrderRow => {
-      return {
-        id: pendingLabOrderRow.orderUuid,
-        testName: pendingLabOrderRow.concept.name,
-        date: new Date(pendingLabOrderRow.orderDate).toLocaleDateString(
-          localStorage.getItem('i18nextLng'),
-          {
-            year: 'numeric',
-            month: 'long',
-            day: '2-digit',
-          },
-        ),
-        orderedBy: pendingLabOrderRow.provider,
-        providerUuid: pendingLabOrderRow.providerUuid,
-        conceptUuid: pendingLabOrderRow.concept.uuid,
-      }
-    })
-  }, [pendingLabOrders])
+  function filterPendingLabOrders(
+    pendingLabOrders: LabOrdersFetchResponse,
+  ): Array<PendingLabOrders> {
+    return pendingLabOrders?.data
+      ?.filter(
+        pendingLabOrderRow =>
+          pendingLabOrderRow.fulfillerStatus != orderStatusCompleted,
+      )
+      .map(pendingLabOrderRow => {
+        return {
+          id: pendingLabOrderRow.orderUuid,
+          testName: pendingLabOrderRow.concept.name,
+          date: new Date(pendingLabOrderRow.orderDate).toLocaleDateString(
+            localStorage.getItem('i18nextLng'),
+            {
+              year: 'numeric',
+              month: 'long',
+              day: '2-digit',
+            },
+          ),
+          orderedBy: pendingLabOrderRow.provider,
+          providerUuid: pendingLabOrderRow.providerUuid,
+          conceptUuid: pendingLabOrderRow.concept.uuid,
+        }
+      })
+  }
+
+  const pendingLabOrderRows = useMemo(
+    () => filterPendingLabOrders(pendingLabOrders),
+    [pendingLabOrders],
+  )
+
+  useEffect(() => {
+    if (reloadTableData) {
+      mutate(pendingOrderUrl)
+    }
+  }, [reloadTableData, pendingOrderUrl])
 
   const {results: paginatedPendingLabOrders, goTo, currentPage} = usePagination(
     pendingLabOrderRows,

@@ -26,6 +26,9 @@ interface ReferenceRequestType {
 export interface BasedOnType {
   reference: string
   display: string
+  identifier: {
+    value: string
+  }
 }
 
 interface DiagnosticReportRequestType {
@@ -41,13 +44,13 @@ interface DiagnosticReportRequestType {
   }
   subject: ReferenceRequestType
   issued: Date
-  conclusion: string
-  presentedForm: {
+  conclusion?: string
+  presentedForm: Array<{
     url: string
     title: string
-  }
-  basedOn: Array<BasedOnType>
-  performer?: ReferenceRequestType
+  }>
+  basedOn?: Array<BasedOnType>
+  performer?: Array<ReferenceRequestType>
 }
 
 export function uploadFile(
@@ -82,14 +85,14 @@ export function saveDiagnosticReport(
   ac: AbortController,
   selectedPendingOrder: PendingLabOrders[],
 ) {
-  const isPendingOrderInPayload =
-    selectedPendingOrder.filter(
-      pendingOrder => pendingOrder.conceptUuid === selectedTest.uuid,
-    ).length == 1
+  const pendingOrderInPayload = selectedPendingOrder.filter(
+    pendingOrder => pendingOrder.conceptUuid === selectedTest.uuid,
+  )
   let basedOn: Array<BasedOnType> = null
-  if (isPendingOrderInPayload)
+  if (pendingOrderInPayload.length == 1)
     basedOn = [
       {
+        identifier: {value: pendingOrderInPayload[0].id},
         reference: 'ServiceRequest',
         display: selectedTest.name.display,
       },
@@ -109,17 +112,20 @@ export function saveDiagnosticReport(
       reference: 'Patient/' + patientUuid,
     },
     issued: reportDate,
-    conclusion: reportConclusion,
-    presentedForm: {
-      url: uploadFileUrl,
-      title: uploadedFileName,
-    },
-    basedOn,
+    presentedForm: [{url: uploadFileUrl, title: uploadedFileName}],
+  }
+  if (reportConclusion) {
+    requestBody.conclusion = reportConclusion
+  }
+  if (pendingOrderInPayload.length == 1) {
+    requestBody.basedOn = basedOn
   }
   if (performerUuid) {
-    requestBody.performer = {
-      reference: 'Practitioner/' + performerUuid,
-    }
+    requestBody.performer = [
+      {
+        reference: 'Practitioner/' + performerUuid,
+      },
+    ]
   }
 
   return postApiCall(saveDiagnosticReportURL, requestBody, ac)
