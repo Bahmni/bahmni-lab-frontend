@@ -303,7 +303,7 @@ describe('Upload Report', () => {
     expect(saveButton).not.toBeDisabled()
     userEvent.click(saveButton)
     await waitFor(() => {
-      expect(mockedOpenmrsFetch).toBeCalledTimes(5)
+      expect(mockedOpenmrsFetch).toBeCalledTimes(4)
     })
     expect(mockedOpenmrsFetch.mock.calls[2][1].method).toBe('POST')
     expect(mockedOpenmrsFetch.mock.calls[2][1].body).toBe(uploadFileRequestBody)
@@ -380,6 +380,7 @@ describe('Upload Report', () => {
 
     const saveButton = screen.getByRole('button', {name: /save and upload/i})
 
+<<<<<<< HEAD
     expect(saveButton).not.toBeDisabled()
     userEvent.click(saveButton)
     await waitFor(() => {
@@ -553,6 +554,14 @@ describe('Upload Report', () => {
     await waitFor(() => {
       expect(mockedOpenmrsFetch).toBeCalledTimes(5)
     })
+=======
+  const saveButton = screen.getByRole('button', {name: /save and upload/i})
+
+  expect(saveButton).not.toBeDisabled()
+  userEvent.click(saveButton)
+  await waitFor(() => {
+    expect(mockedOpenmrsFetch).toBeCalledTimes(4)
+>>>>>>> e4bce65 (BAH-2049 | disabling audit logs based on audit logs global property)
   })
 })
 

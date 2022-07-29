@@ -26,7 +26,7 @@ import {
   getPayloadForPatientReportUpload,
   postApiCall,
 } from '../utils/api-utils'
-import {loggedInUserKey} from '../constants'
+import {isAuditLogEnabledKey, loggedInUserKey} from '../constants'
 
 interface UploadReportProps {
   close: Function

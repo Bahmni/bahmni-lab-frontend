@@ -21,6 +21,7 @@ import {
   postApiCall,
 } from '../utils/api-utils'
 import styles from './patient-lab-details.scss'
+import {isAuditLogEnabledKey, loggedInUserKey} from '../constants'
 interface PatientParamsType {
   patientUuid: string
 }
@@ -58,9 +59,10 @@ const PatientLabDetails: React.FC<RouteComponentProps<PatientParamsType>> = ({
   )
 
   useEffect(() => {
-    const loggedInUser = localStorage.getItem('loggedInUser')
+    const loggedInUser = localStorage.getItem(loggedInUserKey)
+    const isAuditLogEnabled = localStorage.getItem(isAuditLogEnabledKey)
 
-    if (loggedInUser && patient) {
+    if (isAuditLogEnabled && loggedInUser && patient) {
       const patientIdentifier = patient.identifier.filter(
         identifier => identifier.type.text == 'Patient Identifier',
       )[0]

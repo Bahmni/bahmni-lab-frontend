@@ -24,6 +24,9 @@ export const saveDiagnosticReportURL = '/ws/fhir2/R4/DiagnosticReport'
 
 export const auditLogURL = '/ws/rest/v1/auditlog'
 
+export const auditLogGlobalPropertyURL =
+  '/ws/rest/v1/bahmnicore/sql/globalproperty?property=bahmni.enableAuditLog'
+
 export const getPayloadForUserLogin = (username: string): AuditMessage => ({
   eventType: 'Accessed lab entry',
   message: `User ${username} accessed lab entry module`,
