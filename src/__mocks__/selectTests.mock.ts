@@ -288,6 +288,9 @@ export const mockUploadFileResponse = {
 export const mockDiagnosticReportResponse = {
   data: {
     id: 'e950a76d-30b8-4005-b3a6-e8fa2d5888ef',
+    subject: {
+      display: 'GAN001100',
+    },
   },
   ok: 'true',
   status: 200,
