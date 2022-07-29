@@ -60,6 +60,7 @@ export const mockReportTableResponse: ReportTableFetchResponse = {
               creation: '2022-05-20T20:00:00+11:00',
             },
           ],
+          performer: [{display: 'Super Man (Identifier: superman)'}],
         },
       },
       {
@@ -141,6 +142,7 @@ export const mockReportTableResponse: ReportTableFetchResponse = {
               creation: '2022-05-19T20:00:00+11:00',
             },
           ],
+          performer: [{display: 'Test1'}],
         },
       },
       {

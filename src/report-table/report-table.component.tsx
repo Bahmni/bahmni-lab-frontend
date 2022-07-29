@@ -56,7 +56,16 @@ const ReportTable = (props: ReportTableProps) => {
 
   const getRequester = (
     performer: undefined | {display: string; reference: string},
-  ) => (performer && performer[0]?.display) || selfPatient
+  ) => {
+    if (performer) {
+      const lastIndex = performer[0]?.display?.lastIndexOf(' (')
+      if (lastIndex > -1) {
+        return performer[0]?.display.substring(0, lastIndex)
+      }
+      return performer[0]?.display
+    }
+    return selfPatient
+  }
 
   const rows = useMemo(() => {
     const uniqueUploadedReports: Array<ReportEntry> = dedupe(

@@ -30,20 +30,28 @@ describe('upload file', () => {
     expect(selectedButton).toBeInTheDocument()
   })
 
-  it('should be able to display only doctors from the providers list', async () => {
+  it('should be able change the doctor from the dropdown', async () => {
     userEvent.click(
       screen.getByRole('button', {
         name: /Select a Doctor/i,
       }),
     )
-
-    expect(screen.queryByText(/7-5 - Dennis Kigen/)).not.toBeInTheDocument()
-
     userEvent.click(await screen.findByText('admin - Super User'))
 
-    expect(await screen.findByText(/admin - Super User/i)).toBeInTheDocument()
     expect(screen.getByTitle(/doctor list/i)).toHaveTextContent(
       'admin - Super User',
+    )
+
+    userEvent.click(
+      screen.getByRole('button', {
+        name: /admin - Super User/i,
+      }),
+    )
+
+    userEvent.click(await screen.findByText('7-5 - Dennis Kigen'))
+
+    expect(screen.getByTitle(/doctor list/i)).toHaveTextContent(
+      '7-5 - Dennis Kigen',
     )
   })
 })
