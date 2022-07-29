@@ -127,3 +127,10 @@ export interface OrderType {
   display: string
   links: Links
 }
+
+export interface AuditMessage {
+  patientUuid?: string
+  eventType: string
+  message: string
+  module: string
+}

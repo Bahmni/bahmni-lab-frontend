@@ -21,6 +21,12 @@ import {LabTest} from '../types/selectTest'
 import {PendingLabOrders} from '../types'
 
 import DoctorListDropdown from '../doctors-list-dropdown/doctor-list-dropdown'
+import {
+  auditLogURL,
+  getPayloadForPatientReportUpload,
+  postApiCall,
+} from '../utils/api-utils'
+import {loggedInUserKey} from '../constants'
 
 interface UploadReportProps {
   close: Function
@@ -119,6 +125,13 @@ const UploadReport: React.FC<UploadReportProps> = ({
     </div>
   )
 
+  const getPatientIdentifier = (displayName: string) => {
+    if (displayName) {
+      const words = displayName.match(/\w+/g)
+      return words[words.length - 1]
+    }
+  }
+
   async function uploadSelectedTests(
     selectedTests: LabTest[],
     patientUuid: string,
@@ -144,6 +157,18 @@ const UploadReport: React.FC<UploadReportProps> = ({
         ac,
         selectedPendingOrder,
       )
+      if (diagnosticReportResponse.ok) {
+        const loggedInUser = localStorage.getItem(loggedInUserKey)
+        const auditMessage = getPayloadForPatientReportUpload(
+          loggedInUser,
+          patientUuid,
+          getPatientIdentifier(
+            diagnosticReportResponse?.data?.subject?.display,
+          ),
+          selectedFile.name,
+        )
+        postApiCall(auditLogURL, auditMessage, ac)
+      }
       if (allSuccess && !diagnosticReportResponse.ok) {
         allSuccess = false
       }
