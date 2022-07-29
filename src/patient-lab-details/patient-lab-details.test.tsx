@@ -25,6 +25,8 @@ import {
 } from '../__mocks__/selectTests.mock'
 import PatientLabDetails from './patient-lab-details'
 import * as swr from 'swr'
+import {isAuditLogEnabledKey, loggedInUserKey} from '../constants'
+import {getPayloadForPatientAccess} from '../utils/api-utils'
 
 const mockPatientUuid = '1'
 const matchParams = {
@@ -49,7 +51,15 @@ describe('Patient lab details', () => {
     when(usePatient)
       .calledWith(mockPatientUuid)
       .mockReturnValue({
-        patient: {id: mockPatientUuid},
+        patient: {
+          id: mockPatientUuid,
+          identifier: [
+            {
+              type: {text: 'Patient Identifier'},
+              value: 'GAN000001',
+            },
+          ],
+        },
       })
     localStorage.setItem('i18nextLng', 'en')
     when(ExtensionSlot).mockImplementation((props: any) => {
@@ -67,6 +77,7 @@ describe('Patient lab details', () => {
 
   afterEach(() => {
     jest.clearAllMocks()
+    localStorage.clear()
   })
 
   it('should show loader if call for patient data is in progress', async () => {
@@ -122,9 +133,10 @@ describe('Patient lab details', () => {
     expect(
       screen.getByText(/Extension slot name : patient\-header\-slot/i),
     ).toBeInTheDocument()
+
     expect(
       screen.getByText(
-        /State : \{"patient":\{"id":"1"\},"patientuuid":"1","hideActionsOverflow":true\}/i,
+        /State : \{"patient":\{"id":"1","identifier":\[\{"type":\{"text":"Patient Identifier"\},"value":"GAN000001"\}\]\},"patientuuid":"1","hideActionsOverflow":true\}/i,
       ),
     ).toBeInTheDocument()
 
@@ -135,7 +147,10 @@ describe('Patient lab details', () => {
     ).toBeInTheDocument()
   })
 
-  it('should render Paginated Table components', () => {
+  it('should render Paginated Table components and post audit log message', () => {
+    localStorage.setItem(loggedInUserKey, 'superman')
+    localStorage.setItem(isAuditLogEnabledKey, 'true')
+    const mockedOpenmrsFetch = openmrsFetch as jest.Mock
     render(
       <BrowserRouter>
         <PatientLabDetails
@@ -147,6 +162,12 @@ describe('Patient lab details', () => {
     )
     expect(screen.getByTitle(/paginated-table/i)).toBeInTheDocument()
     expect(screen.getByTitle(/report-table/i)).toBeInTheDocument()
+
+    expect(mockedOpenmrsFetch).toBeCalledTimes(1)
+    expect(mockedOpenmrsFetch.mock.calls[0][1].method).toBe('POST')
+    expect(mockedOpenmrsFetch.mock.calls[0][1].body).toBe(
+      JSON.stringify(getPayloadForPatientAccess('superman', '1', 'GAN000001')),
+    )
   })
 
   it('should display Overlay on click of upload report button', () => {

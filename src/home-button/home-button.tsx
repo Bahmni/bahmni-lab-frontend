@@ -25,7 +25,7 @@ interface AuditLogResponse {
 const HomeButton = () => {
   const [loggedInUser, setLoggedInUser] = useState<LoggedInUser | null>(null)
 
-  let {data: auditLogEnabledResponse, error: isAuditLogEnabledError} = useSWR<
+  let {data: auditLogEnabledResponse, error: auditLogResponseError} = useSWR<
     AuditLogResponse,
     Error
   >(auditLogGlobalPropertyURL, fetcher)
