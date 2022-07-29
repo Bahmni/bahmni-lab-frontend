@@ -13,6 +13,8 @@ export const orderTypeUuidKey = 'orderTypeUuid'
 export const labOrderType = 'Lab Order'
 export const practitionerRoleDoctor = 'practioner_role: Doctor'
 export const loggedInUserKey = 'loggedInUser'
+export const isAuditLogPostedKey = 'isAuditLogPosted'
+export const isAuditLogEnabledKey = 'isAuditLogEnabled'
 
 export const headers = [
   {
