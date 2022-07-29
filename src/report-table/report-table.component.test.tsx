@@ -22,7 +22,6 @@ describe('Paginated Reports Table', () => {
     Object.defineProperty(window, 'localStorage', {value: localStorageMock})
     when(openmrsFetch).mockImplementation(() => jest.fn())
     localStorage.setItem('i18nextLng', 'en-us')
-    mockedOpenmrsFetch = openmrsFetch as jest.Mock
     mockedOpenmrsFetch.mockReturnValue(mockReportTableResponse)
     when(usePagination)
       .calledWith(expect.anything(), 5)
