@@ -94,17 +94,17 @@ export interface PendingLabOrders {
 }
 
 export interface Attribute {
-      display: string,
-      uuid: string,
-      attributeType: {
-          uuid: string,
-          display: string,
-          retired: undefined | boolean
-          links: Array<Links>
-        },
-      value: boolean,
-      voided: boolean,
-      links: Array<Links>
+  display: string
+  uuid: string
+  attributeType: {
+    uuid: string
+    display: string
+    retired: undefined | boolean
+    links: Array<Links>
+  }
+  value: boolean
+  voided: boolean
+  links: Array<Links>
 }
 export interface ReportTableRow {
   id: string
@@ -125,4 +125,11 @@ export interface OrderType {
   uuid: string
   display: string
   links: Links
+}
+
+export interface AuditMessage {
+  patientUuid?: string
+  eventType: string
+  message: string
+  module: string
 }

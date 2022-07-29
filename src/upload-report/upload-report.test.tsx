@@ -300,7 +300,7 @@ describe('Upload Report', () => {
     expect(saveButton).not.toBeDisabled()
     userEvent.click(saveButton)
     await waitFor(() => {
-      expect(mockedOpenmrsFetch).toBeCalledTimes(4)
+      expect(mockedOpenmrsFetch).toBeCalledTimes(5)
     })
     expect(mockedOpenmrsFetch.mock.calls[2][1].method).toBe('POST')
     expect(mockedOpenmrsFetch.mock.calls[2][1].body).toBe(uploadFileRequestBody)
@@ -357,7 +357,7 @@ it('should save and upload report when user selects self in doctors dropdown and
       name: /Select a Doctor/i,
     }),
   )
-  
+
   userEvent.click(await screen.findByText(/self/i))
   expect(await screen.findByText(/self/i)).toBeInTheDocument()
 
@@ -376,7 +376,7 @@ it('should save and upload report when user selects self in doctors dropdown and
   expect(saveButton).not.toBeDisabled()
   userEvent.click(saveButton)
   await waitFor(() => {
-    expect(mockedOpenmrsFetch).toBeCalledTimes(4)
+    expect(mockedOpenmrsFetch).toBeCalledTimes(5)
   })
   expect(mockedOpenmrsFetch.mock.calls[2][1].method).toBe('POST')
   expect(mockedOpenmrsFetch.mock.calls[2][1].body).toBe(uploadFileRequestBody)

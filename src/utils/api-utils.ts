@@ -1,4 +1,5 @@
 import {openmrsFetch} from '@openmrs/esm-framework'
+import {AuditMessage} from '../types'
 const s = 'byFullySpecifiedName'
 const name = 'Lab+Samples'
 const v =
@@ -20,6 +21,37 @@ export const uploadDocumentURL =
   '/ws/rest/v1/bahmnicore/visitDocument/uploadDocument'
 
 export const saveDiagnosticReportURL = '/ws/fhir2/R4/DiagnosticReport'
+
+export const auditLogURL = '/ws/rest/v1/auditlog'
+
+export const getPayloadForUserLogin = (username: string): AuditMessage => ({
+  eventType: 'Accessed lab entry',
+  message: `User ${username} accessed lab entry module`,
+  module: 'Lab Entry',
+})
+
+export const getPayloadForPatientAccess = (
+  username: string,
+  patientUuid: string,
+  patientIdentifier: string,
+): AuditMessage => ({
+  eventType: 'Viewed patient Lab reports',
+  message: `User ${username} viewed Lab reports of patient ${patientIdentifier}`,
+  module: 'Lab Entry',
+  patientUuid,
+})
+
+export const getPayloadForPatientReportUpload = (
+  username: string,
+  patientUuid: string,
+  patientIdentifier: string,
+  documentName: string,
+): AuditMessage => ({
+  eventType: 'Edit encounter',
+  message: `User ${username} uploaded lab report ${documentName} for patient ${patientIdentifier}`,
+  module: 'Lab Entry',
+  patientUuid,
+})
 
 export const fetcher = (url: string) =>
   openmrsFetch(url, {

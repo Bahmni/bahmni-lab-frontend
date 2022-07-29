@@ -393,7 +393,7 @@ describe('Patient lab details', () => {
     uploadFiles(fileInput, [file])
     await verifyFileName(fileInput)
     await saveReport()
-    expect(mockedOpenmrsFetch).toBeCalledTimes(6)
+    expect(mockedOpenmrsFetch).toBeCalledTimes(7)
     expect(mockedOpenmrsFetch.mock.calls[5][1].method).toBe('POST')
     expect(
       JSON.parse(mockedOpenmrsFetch.mock.calls[5][1].body).basedOn.length,
@@ -474,7 +474,7 @@ describe('Patient lab details', () => {
 
     await saveReport()
 
-    expect(mockedOpenmrsFetch).toBeCalledTimes(7)
+    expect(mockedOpenmrsFetch).toBeCalledTimes(9)
     expect(mockedOpenmrsFetch.mock.calls[5][1].method).toBe('POST')
     expect(mockedOpenmrsFetch.mock.calls[6][1].method).toBe('POST')
     expect(mutateMock).toHaveBeenCalledTimes(1)
