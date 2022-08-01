@@ -159,15 +159,18 @@ const UploadReport: React.FC<UploadReportProps> = ({
       )
       if (diagnosticReportResponse.ok) {
         const loggedInUser = localStorage.getItem(loggedInUserKey)
-        const auditMessage = getPayloadForPatientReportUpload(
-          loggedInUser,
-          patientUuid,
-          getPatientIdentifier(
-            diagnosticReportResponse?.data?.subject?.display,
-          ),
-          selectedFile.name,
-        )
-        postApiCall(auditLogURL, auditMessage, ac)
+        const isAuditLogEnabled = localStorage.getItem(isAuditLogEnabledKey)
+        if (isAuditLogEnabled && loggedInUser) {
+          const auditMessage = getPayloadForPatientReportUpload(
+            loggedInUser,
+            patientUuid,
+            getPatientIdentifier(
+              diagnosticReportResponse?.data?.subject?.display,
+            ),
+            selectedFile.name,
+          )
+          postApiCall(auditLogURL, auditMessage, ac)
+        }
       }
       if (allSuccess && !diagnosticReportResponse.ok) {
         allSuccess = false
