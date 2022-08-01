@@ -383,7 +383,7 @@ describe('Upload Report', () => {
     expect(saveButton).not.toBeDisabled()
     userEvent.click(saveButton)
     await waitFor(() => {
-      expect(mockedOpenmrsFetch).toBeCalledTimes(5)
+      expect(mockedOpenmrsFetch).toBeCalledTimes(4)
     })
     expect(mockedOpenmrsFetch.mock.calls[2][1].method).toBe('POST')
     expect(mockedOpenmrsFetch.mock.calls[2][1].body).toBe(uploadFileRequestBody)
@@ -391,7 +391,6 @@ describe('Upload Report', () => {
     expect(mockedOpenmrsFetch.mock.calls[3][1].body).toBe(
       selfDiagnosticRequestBody(new Date(currentDay).toISOString()),
     )
-    console.log(mockedOpenmrsFetch.mock.calls[4])
   })
 
   it('should enable save and upload button if post API call fails', async () => {
@@ -551,7 +550,7 @@ describe('Upload Report', () => {
     userEvent.click(saveButton)
     expect(saveButton).toBeDisabled()
     await waitFor(() => {
-      expect(mockedOpenmrsFetch).toBeCalledTimes(5)
+      expect(mockedOpenmrsFetch).toBeCalledTimes(4)
     })
   })
 })
