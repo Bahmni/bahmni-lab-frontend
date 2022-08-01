@@ -363,7 +363,7 @@ describe('Patient lab details', () => {
 
     expect(
       JSON.parse(mockedOpenmrsFetch.mock.calls[5][1].body).performer,
-    ).toStrictEqual({reference: 'Practitioner/1'})
+    ).toStrictEqual([{reference: 'Practitioner/1'}])
   })
 
   it('should make multiple POST calls when multiple tests are selected', async () => {
@@ -439,7 +439,7 @@ describe('Patient lab details', () => {
     expect(mockedOpenmrsFetch).toBeCalledTimes(7)
     expect(mockedOpenmrsFetch.mock.calls[5][1].method).toBe('POST')
     expect(mockedOpenmrsFetch.mock.calls[6][1].method).toBe('POST')
-    expect(mutateMock).toHaveBeenCalledTimes(1)
+    expect(mutateMock).toHaveBeenCalledTimes(2)
   })
 })
 

@@ -10,6 +10,7 @@ import {uploadFiles} from '../utils/test-utils/upload-report-helper'
 import {mockDoctorNames} from '../__mocks__/doctorNames.mock'
 import {
   diagnosticReportRequestBody,
+  mockDiagnosticReportErrorResponse,
   mockDiagnosticReportResponse,
   mockLabTestsResponse,
   mockUploadFileResponse,
@@ -76,7 +77,7 @@ describe('Upload Report', () => {
       new Date(currentDay).toLocaleDateString('en', {
         year: 'numeric',
         month: '2-digit',
-        day: 'numeric',
+        day: '2-digit',
       }),
     )
     await waitFor(() =>
@@ -309,81 +310,244 @@ describe('Upload Report', () => {
       diagnosticReportRequestBody(new Date(currentDay).toISOString()),
     )
   })
-})
+  it('should save and upload report when user selects self in doctors dropdown and click save and upload button', async () => {
+    const file = new File(['content'], 'test.pdf', {type: 'application/pdf'})
+    localStorage.setItem('i18nextLng', 'en')
+    const close = jest.fn()
+    const mockedOpenmrsFetch = openmrsFetch as jest.Mock
+    mockedOpenmrsFetch
+      .mockReturnValueOnce(mockLabTestsResponse)
+      .mockReturnValueOnce(mockDoctorNames)
+      .mockReturnValueOnce(mockUploadFileResponse)
+      .mockReturnValue(mockDiagnosticReportResponse)
 
-it('should save and upload report when user selects self in doctors dropdown and click save and upload button', async () => {
-  const file = new File(['content'], 'test.pdf', {type: 'application/pdf'})
-  localStorage.setItem('i18nextLng', 'en')
-  const close = jest.fn()
-  const mockedOpenmrsFetch = openmrsFetch as jest.Mock
-  mockedOpenmrsFetch
-    .mockReturnValueOnce(mockLabTestsResponse)
-    .mockReturnValueOnce(mockDoctorNames)
-    .mockReturnValueOnce(mockUploadFileResponse)
-    .mockReturnValue(mockDiagnosticReportResponse)
+    const mockedLayout = useLayoutType as jest.Mock
+    mockedLayout.mockReturnValue('desktop')
 
-  const mockedLayout = useLayoutType as jest.Mock
-  mockedLayout.mockReturnValue('desktop')
+    renderWithContextProvider(
+      <SWRConfig value={{provider: () => new Map()}}>
+        <UploadReport
+          close={close}
+          header={'Test Header'}
+          patientUuid={'123'}
+        />
+      </SWRConfig>,
+    )
 
-  renderWithContextProvider(
-    <SWRConfig value={{provider: () => new Map()}}>
-      <UploadReport close={close} header={'Test Header'} patientUuid={'123'} />
-    </SWRConfig>,
-  )
+    expect(
+      screen.getByRole('button', {name: /save and upload/i}),
+    ).toBeDisabled()
 
-  expect(screen.getByRole('button', {name: /save and upload/i})).toBeDisabled()
+    userEvent.click(
+      screen.getByRole('textbox', {
+        name: /report date/i,
+      }),
+    )
 
-  userEvent.click(
-    screen.getByRole('textbox', {
-      name: /report date/i,
-    }),
-  )
+    const currentDay: string = getFormatedDate(0)
 
-  const currentDay: string = getFormatedDate(0)
+    userEvent.click(screen.getByLabelText(currentDay))
 
-  userEvent.click(screen.getByLabelText(currentDay))
+    await waitFor(() =>
+      expect(screen.queryByText(/loading \.\.\./i)).not.toBeInTheDocument(),
+    )
+    expect(screen.getByText(/select tests/i)).toBeInTheDocument()
 
-  await waitFor(() =>
-    expect(screen.queryByText(/loading \.\.\./i)).not.toBeInTheDocument(),
-  )
-  expect(screen.getByText(/select tests/i)).toBeInTheDocument()
+    userEvent.click(
+      screen.getByRole('checkbox', {name: /Absolute Eosinphil Count/i}),
+    )
 
-  userEvent.click(
-    screen.getByRole('checkbox', {name: /Absolute Eosinphil Count/i}),
-  )
+    userEvent.click(
+      screen.getByRole('button', {
+        name: /Select a Doctor/i,
+      }),
+    )
 
-  userEvent.click(
-    screen.getByRole('button', {
-      name: /Select a Doctor/i,
-    }),
-  )
-  
-  userEvent.click(await screen.findByText(/self/i))
-  expect(await screen.findByText(/self/i)).toBeInTheDocument()
+    userEvent.click(await screen.findByText(/self/i))
+    expect(await screen.findByText(/self/i)).toBeInTheDocument()
 
-  const fileInput = screen.getByLabelText(
-    'Drag and drop files here or click to upload',
-  ) as HTMLInputElement
+    const fileInput = screen.getByLabelText(
+      'Drag and drop files here or click to upload',
+    ) as HTMLInputElement
 
-  uploadFiles(fileInput, [file])
+    uploadFiles(fileInput, [file])
 
-  expect(fileInput.files.length).toBe(1)
-  const fileName = await screen.findByText('test.pdf')
-  expect(fileName).toBeInTheDocument()
+    expect(fileInput.files.length).toBe(1)
+    const fileName = await screen.findByText('test.pdf')
+    expect(fileName).toBeInTheDocument()
 
-  const saveButton = screen.getByRole('button', {name: /save and upload/i})
+    const saveButton = screen.getByRole('button', {name: /save and upload/i})
 
-  expect(saveButton).not.toBeDisabled()
-  userEvent.click(saveButton)
-  await waitFor(() => {
-    expect(mockedOpenmrsFetch).toBeCalledTimes(4)
+    expect(saveButton).not.toBeDisabled()
+    userEvent.click(saveButton)
+    await waitFor(() => {
+      expect(mockedOpenmrsFetch).toBeCalledTimes(4)
+    })
+    expect(mockedOpenmrsFetch.mock.calls[2][1].method).toBe('POST')
+    expect(mockedOpenmrsFetch.mock.calls[2][1].body).toBe(uploadFileRequestBody)
+    expect(mockedOpenmrsFetch.mock.calls[3][1].method).toBe('POST')
+    expect(mockedOpenmrsFetch.mock.calls[3][1].body).toBe(
+      selfDiagnosticRequestBody(new Date(currentDay).toISOString()),
+    )
   })
-  expect(mockedOpenmrsFetch.mock.calls[2][1].method).toBe('POST')
-  expect(mockedOpenmrsFetch.mock.calls[2][1].body).toBe(uploadFileRequestBody)
-  expect(mockedOpenmrsFetch.mock.calls[3][1].method).toBe('POST')
-  expect(mockedOpenmrsFetch.mock.calls[3][1].body).toBe(
-    selfDiagnosticRequestBody(new Date(currentDay).toISOString()),
-  )
+
+  it('should enable save and upload button if post API call fails', async () => {
+    const file = new File(['content'], 'test.pdf', {type: 'application/pdf'})
+    localStorage.setItem('i18nextLng', 'en')
+    const close = jest.fn()
+    const mockedOpenmrsFetch = openmrsFetch as jest.Mock
+    mockedOpenmrsFetch
+      .mockReturnValueOnce(mockLabTestsResponse)
+      .mockReturnValueOnce(mockDoctorNames)
+      .mockReturnValueOnce(mockUploadFileResponse)
+      .mockReturnValueOnce(mockDiagnosticReportErrorResponse)
+
+    const mockedLayout = useLayoutType as jest.Mock
+    mockedLayout.mockReturnValue('desktop')
+
+    renderWithContextProvider(
+      <SWRConfig value={{provider: () => new Map()}}>
+        <UploadReport
+          close={close}
+          header={'Test Header'}
+          patientUuid={'123'}
+        />
+      </SWRConfig>,
+    )
+    expect(
+      screen.getByRole('button', {name: /save and upload/i}),
+    ).toBeDisabled()
+
+    userEvent.click(
+      screen.getByRole('textbox', {
+        name: /report date/i,
+      }),
+    )
+
+    const currentDay: string = getFormatedDate(0)
+
+    userEvent.click(screen.getByLabelText(currentDay))
+
+    await waitFor(() =>
+      expect(screen.queryByText(/loading \.\.\./i)).not.toBeInTheDocument(),
+    )
+
+    userEvent.click(
+      screen.getByRole('checkbox', {name: /Absolute Eosinphil Count/i}),
+    )
+    userEvent.click(
+      screen.getByRole('button', {
+        name: /Select a Doctor/i,
+      }),
+    )
+    userEvent.click(await screen.findByText('admin - Super User'))
+
+    userEvent.click(
+      screen.getByRole('button', {
+        name: /Click to record clinical conclusion/i,
+      }),
+    )
+    await waitFor(() =>
+      userEvent.type(screen.getAllByRole('textbox')[1], 'Normal Report', {
+        delay: 1,
+      }),
+    )
+    const fileInput = screen.getByLabelText(
+      'Drag and drop files here or click to upload',
+    ) as HTMLInputElement
+
+    uploadFiles(fileInput, [file])
+
+    const saveButton = screen.getByRole('button', {name: /save and upload/i})
+
+    expect(saveButton).not.toBeDisabled()
+    userEvent.click(saveButton)
+    expect(saveButton).toBeDisabled()
+    await waitFor(() => {
+      expect(mockedOpenmrsFetch).toBeCalledTimes(4)
+      expect(mockedOpenmrsFetch.mock.calls[2][1].method).toBe('POST')
+      expect(mockedOpenmrsFetch.mock.calls[2][1].body).toBe(
+        uploadFileRequestBody,
+      )
+      expect(mockedOpenmrsFetch.mock.calls[3][1].method).toBe('POST')
+      expect(saveButton).not.toBeDisabled()
+    })
+  })
+
+  it('should disable save and upload button after first click', async () => {
+    const file = new File(['content'], 'test.pdf', {type: 'application/pdf'})
+    localStorage.setItem('i18nextLng', 'en')
+    const close = jest.fn()
+    const mockedOpenmrsFetch = openmrsFetch as jest.Mock
+    mockedOpenmrsFetch
+      .mockReturnValueOnce(mockLabTestsResponse)
+      .mockReturnValueOnce(mockDoctorNames)
+      .mockReturnValueOnce(mockUploadFileResponse)
+      .mockReturnValue(mockDiagnosticReportResponse)
+
+    const mockedLayout = useLayoutType as jest.Mock
+    mockedLayout.mockReturnValue('desktop')
+
+    renderWithContextProvider(
+      <SWRConfig value={{provider: () => new Map()}}>
+        <UploadReport
+          close={close}
+          header={'Test Header'}
+          patientUuid={'123'}
+        />
+      </SWRConfig>,
+    )
+
+    expect(
+      screen.getByRole('button', {name: /save and upload/i}),
+    ).toBeDisabled()
+
+    userEvent.click(
+      screen.getByRole('textbox', {
+        name: /report date/i,
+      }),
+    )
+
+    const currentDay: string = getFormatedDate(0)
+
+    userEvent.click(screen.getByLabelText(currentDay))
+
+    await waitFor(() =>
+      expect(screen.queryByText(/loading \.\.\./i)).not.toBeInTheDocument(),
+    )
+
+    userEvent.click(
+      screen.getByRole('checkbox', {name: /Absolute Eosinphil Count/i}),
+    )
+    userEvent.click(
+      screen.getByRole('button', {
+        name: /Select a Doctor/i,
+      }),
+    )
+    userEvent.click(await screen.findByText('admin - Super User'))
+
+    userEvent.click(
+      screen.getByRole('button', {
+        name: /Click to record clinical conclusion/i,
+      }),
+    )
+    await waitFor(() =>
+      userEvent.type(screen.getAllByRole('textbox')[1], 'Normal Report', {
+        delay: 1,
+      }),
+    )
+    const fileInput = screen.getByLabelText(
+      'Drag and drop files here or click to upload',
+    ) as HTMLInputElement
+
+    uploadFiles(fileInput, [file])
+
+    const saveButton = screen.getByRole('button', {name: /save and upload/i})
+
+    expect(saveButton).not.toBeDisabled()
+    userEvent.click(saveButton)
+    expect(saveButton).toBeDisabled()
+  })
 })
 
 function getFormatedDate(addDays: number): string {
