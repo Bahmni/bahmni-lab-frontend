@@ -77,7 +77,7 @@ describe('Upload Report', () => {
       new Date(currentDay).toLocaleDateString('en', {
         year: 'numeric',
         month: '2-digit',
-        day: 'numeric',
+        day: '2-digit',
       }),
     )
     await waitFor(() =>
@@ -473,7 +473,7 @@ describe('Upload Report', () => {
       expect(saveButton).not.toBeDisabled()
     })
   })
-  
+
   it('should disable save and upload button after first click', async () => {
     const file = new File(['content'], 'test.pdf', {type: 'application/pdf'})
     localStorage.setItem('i18nextLng', 'en')
