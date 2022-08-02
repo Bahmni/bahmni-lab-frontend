@@ -58,11 +58,7 @@ const ReportTable = (props: ReportTableProps) => {
     performer: undefined | {display: string; reference: string},
   ) => {
     if (performer) {
-      const lastIndex = performer[0]?.display?.lastIndexOf(' (')
-      if (lastIndex > -1) {
-        return performer[0]?.display.substring(0, lastIndex)
-      }
-      return performer[0]?.display
+      return performer[0]?.display.replace(/\s\(.+\)/g, '')
     }
     return selfPatient
   }
@@ -104,6 +100,7 @@ const ReportTable = (props: ReportTableProps) => {
     rows,
     defaultPageSize,
   )
+
   return (
     <div title="report-table">
       {reportsTableDataError ? (

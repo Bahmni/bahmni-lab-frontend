@@ -71,13 +71,38 @@ describe('Paginated Reports Table', () => {
     expect(screen.getByRole('cell', {name: 'Blood Test'})).toBeInTheDocument()
     expect(screen.getByText(/superman/i)).toBeInTheDocument()
     expect(screen.getAllByRole('button').length).toEqual(5)
-    expect(screen.getByText(/5 \/ 7 items/i)).toBeInTheDocument()
+    expect(screen.getByText(/3 \/ 3 items/i)).toBeInTheDocument()
 
     expect(
       screen.queryByText(
         /Something went wrong in fetching Report tables\.\.\./i,
       ),
     ).not.toBeInTheDocument()
+  })
+
+  it('should able to display only the provider name in the requester field', async () => {
+    const mockUsePagination = usePagination as jest.Mock
+
+    render(
+      <SWRConfig value={{provider: () => new Map()}}>
+        <BrowserRouter>
+          <ReportTable patientUuid={mockPatientUuid} />
+        </BrowserRouter>
+      </SWRConfig>,
+    )
+    await waitFor(() => {
+      expect(screen.getByText(/Reports table/i)).toBeInTheDocument()
+    })
+   
+    expect(mockUsePagination.mock.calls[1][0][0]).toEqual({
+      id: '7102ba1d-34e2-486f-b156-8c39f8596724',
+      tests: 'Systolic blood pressure',
+      url: '/files/uploaded-doc-uuid-1',
+      date: 'May 24, 2022',
+      requester: 'Super Man',
+      file: 'MP Report',
+      conclusion: 'Correlate with other findings. inconclusive.',
+    })
   })
 
   it('should display error message when call for reports data is unsuccessful', async () => {
