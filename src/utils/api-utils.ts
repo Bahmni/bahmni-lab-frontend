@@ -28,9 +28,23 @@ export const auditLogGlobalPropertyURL =
   '/ws/rest/v1/bahmnicore/sql/globalproperty?property=bahmni.enableAuditLog'
 
 export const getPayloadForUserLogin = (username: string): AuditMessage => ({
-  eventType: 'Accessed lab entry',
+  eventType: 'ACCESSED_LAB_ENTRY',
   message: `User ${username} accessed lab entry module`,
   module: 'Lab Entry',
+})
+
+export const getPayloadForViewingPatientReport = (
+  username: string,
+  patientUuid: string,
+  patientIdentifier: string,
+  fileName: string,
+  reportDate: string,
+  labTest: string,
+): AuditMessage => ({
+  eventType: 'VIEWED_LAB_REPORT',
+  message: `User ${username} viewed lab report [${fileName}] dated ${reportDate} for lab tests [${labTest}] for patient ${patientIdentifier}`,
+  module: 'Lab Entry',
+  patientUuid,
 })
 
 export const getPayloadForPatientAccess = (
@@ -38,8 +52,8 @@ export const getPayloadForPatientAccess = (
   patientUuid: string,
   patientIdentifier: string,
 ): AuditMessage => ({
-  eventType: 'Viewed patient Lab reports',
-  message: `User ${username} viewed Lab reports of patient ${patientIdentifier}`,
+  eventType: 'ACCESSED_LAB_DASHBOARD',
+  message: `User ${username} accessed lab dashboard for patient ${patientIdentifier}`,
   module: 'Lab Entry',
   patientUuid,
 })
@@ -48,10 +62,11 @@ export const getPayloadForPatientReportUpload = (
   username: string,
   patientUuid: string,
   patientIdentifier: string,
-  documentName: string,
+  fileName: string,
+  labTest: string,
 ): AuditMessage => ({
-  eventType: 'Edit encounter',
-  message: `User ${username} uploaded lab report ${documentName} for patient ${patientIdentifier}`,
+  eventType: 'EDIT_ENCOUNTER',
+  message: `User ${username} uploaded lab report [${fileName}] for lab tests [${labTest}] for patient ${patientIdentifier}`,
   module: 'Lab Entry',
   patientUuid,
 })

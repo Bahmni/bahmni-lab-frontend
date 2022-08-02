@@ -16,14 +16,26 @@ import {
 } from 'carbon-components-react'
 import React, {useEffect, useMemo} from 'react'
 import useSWR, {mutate} from 'swr'
-import {defaultPageSize, reportHeaders, selfPatient} from '../constants'
+import {
+  defaultPageSize,
+  isAuditLogEnabledKey,
+  loggedInUserKey,
+  reportHeaders,
+  selfPatient,
+} from '../constants'
 import ImagePreviewComponent from '../image-preview-component/image-preview-component'
 import {
+  AuditMessage,
   ReportEntry,
   ReportResource,
   ReportTableFetchResponse,
   ReportTableRow,
 } from '../types'
+import {
+  auditLogURL,
+  getPayloadForViewingPatientReport,
+  postApiCall,
+} from '../utils/api-utils'
 import {fetcher, getReportTableDataURL} from '../utils/lab-orders'
 import classes from './report-table.component.scss'
 
@@ -92,6 +104,7 @@ const ReportTable = (props: ReportTableProps) => {
           requester: getRequester(row.resource.performer),
           file: title,
           conclusion: row.resource.conclusion ? row.resource.conclusion : '',
+          patientId: row.resource.subject.display,
         }
       })
   }, [reports])
@@ -139,7 +152,7 @@ const ReportTable = (props: ReportTableProps) => {
                   </TableHead>
                   <TableBody>
                     {rows?.length > 0 ? (
-                      dataTableRows.map(row => (
+                      dataTableRows.map((row, index) => (
                         <React.Fragment key={row.id}>
                           <TableExpandRow {...getRowProps({row})}>
                             {row.cells.map(cell => {
@@ -149,6 +162,18 @@ const ReportTable = (props: ReportTableProps) => {
                                     <Link
                                       href={getReportUrl(rows, row.id)}
                                       target={'_blank'}
+                                      onClick={() => {
+                                        const auditMessage = getAuditMessageBody(
+                                          patientUuid,
+                                          row.cells[2].value,
+                                          row.cells[0].value,
+                                          getPatientIdentifier(
+                                            rows[index].patientId,
+                                          ),
+                                          row.cells[1].value,
+                                        )
+                                        postAuditMessage(auditMessage)
+                                      }}
                                     >
                                       {cell.value}
                                     </Link>
@@ -156,6 +181,16 @@ const ReportTable = (props: ReportTableProps) => {
                                     <ImagePreviewComponent
                                       url={getReportUrl(rows, row.id)}
                                       fileName={cell.value}
+                                      auditMessage={getAuditMessageBody(
+                                        patientUuid,
+                                        row.cells[2].value,
+                                        row.cells[0].value,
+                                        getPatientIdentifier(
+                                          rows[index].patientId,
+                                        ),
+                                        row.cells[1].value,
+                                      )}
+                                      postAuditMessage={postAuditMessage}
                                     />
                                   )}
                                 </TableCell>
@@ -228,6 +263,41 @@ function dedupe(diagnosticReport: Array<ReportEntry>) {
       return acc
     }, undefined),
   )
+}
+
+const getPatientIdentifier = (displayName: string) => {
+  if (displayName) {
+    const words = displayName.match(/\w+/g)
+    return words[words.length - 1]
+  }
+}
+
+function getAuditMessageBody(
+  patientUuid: string,
+  fileName: string,
+  reportDate: string,
+  patientIdentifier: string,
+  testName: string,
+) {
+  const loggedInUser = localStorage.getItem(loggedInUserKey)
+  const auditMessage = getPayloadForViewingPatientReport(
+    loggedInUser,
+    patientUuid,
+    getPatientIdentifier(patientIdentifier),
+    fileName,
+    reportDate,
+    testName,
+  )
+  return auditMessage
+}
+
+function postAuditMessage(auditMessage: AuditMessage) {
+  const loggedInUser = localStorage.getItem(loggedInUserKey)
+  const isAuditLogEnabled = localStorage.getItem(isAuditLogEnabledKey)
+  if (loggedInUser && isAuditLogEnabled) {
+    const ac = new AbortController()
+    postApiCall(auditLogURL, auditMessage, ac)
+  }
 }
 
 export default ReportTable
