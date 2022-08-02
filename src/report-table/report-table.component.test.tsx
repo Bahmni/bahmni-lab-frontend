@@ -5,7 +5,11 @@ import userEvent from '@testing-library/user-event'
 import React from 'react'
 import {BrowserRouter} from 'react-router-dom'
 import {SWRConfig} from 'swr'
-import {reportHeaders} from '../constants'
+import {
+  isAuditLogEnabledKey,
+  loggedInUserKey,
+  reportHeaders,
+} from '../constants'
 import {localStorageMock} from '../utils/test-utils'
 import ReportTable from './report-table.component'
 import {
@@ -13,6 +17,7 @@ import {
   mockReportTableErrorResponse,
   mockEmptyReportTableResponse,
 } from '../__mocks__/reportTable.mock'
+import {getPayloadForViewingPatientReport} from '../utils/api-utils'
 
 const mockPatientUuid = 'uuid-1'
 let mockedOpenmrsFetch = openmrsFetch as jest.Mock
@@ -44,7 +49,7 @@ describe('Paginated Reports Table', () => {
   })
 
   afterEach(() => {
-    localStorage.removeItem('i18nextLng')
+    localStorage.clear()
     jest.clearAllMocks()
   })
 
@@ -143,7 +148,9 @@ describe('Paginated Reports Table', () => {
     ).toBeInTheDocument()
   })
 
-  it('should display uploaded jpg file as pop up in the screen when clicked', async () => {
+  it('should display uploaded jpg file as pop up in the screen when clicked and post audit log message', async () => {
+    localStorage.setItem(loggedInUserKey, 'superman')
+    localStorage.setItem(isAuditLogEnabledKey, 'true')
     render(
       <SWRConfig value={{provider: () => new Map()}}>
         <BrowserRouter>
@@ -172,6 +179,21 @@ describe('Paginated Reports Table', () => {
     })
     expect(screen.getByAltText('Blood Test.jpg')).toHaveClass('image')
 
+    expect(mockedOpenmrsFetch).toBeCalledTimes(2)
+    expect(mockedOpenmrsFetch.mock.calls[1][1].method).toBe('POST')
+    expect(mockedOpenmrsFetch.mock.calls[1][1].body).toBe(
+      JSON.stringify(
+        getPayloadForViewingPatientReport(
+          'superman',
+          'uuid-1',
+          '10005V1',
+          'Blood Test.jpg',
+          'May 03, 2022',
+          'Blood Test',
+        ),
+      ),
+    )
+
     userEvent.click(
       screen.getByRole('button', {
         name: /close/i,
@@ -181,5 +203,62 @@ describe('Paginated Reports Table', () => {
     await waitFor(() => {
       expect(screen.getByRole('presentation')).toHaveClass('bx--modal')
     })
+  })
+
+  it('should display uploaded pdf file and post audit log message', async () => {
+    localStorage.setItem(loggedInUserKey, 'superman')
+    localStorage.setItem(isAuditLogEnabledKey, 'true')
+    when(usePagination)
+      .calledWith(expect.anything(), 5)
+      .mockReturnValue({
+        results: [
+          {
+            id: '1178aaed-e352-48f8-8685-4ae8d17d732e',
+            tests: 'Blood Test',
+            url:
+              'https://bahmni.atlassian.net/wiki/pages/viewpageattachments.action?pageId=2870280206&preview=%2F2870280206%2F2959572999%2FPDFReportServlet%20-%20139900.pdf',
+            date: 'May 03, 2022',
+            requester: 'Superman',
+            file: 'Blood Test.pdf',
+            conclusion: 'sample conclusion',
+          },
+        ],
+        goTo: jest.fn(),
+        currentPage: 1,
+      })
+    render(
+      <SWRConfig value={{provider: () => new Map()}}>
+        <BrowserRouter>
+          <ReportTable patientUuid={mockPatientUuid} />
+        </BrowserRouter>
+      </SWRConfig>,
+    )
+
+    await waitFor(() => {
+      expect(screen.getByText(/Reports table/i)).toBeInTheDocument()
+    })
+    expect(screen.getByTitle(/report-table/i)).toBeInTheDocument()
+    expect(screen.getByRole('cell', {name: 'Blood Test'})).toBeInTheDocument()
+    userEvent.click(
+      screen.getByRole('link', {
+        name: /blood test\.pdf/i,
+      }),
+    )
+
+    await waitFor(() => expect(mockedOpenmrsFetch).toBeCalledTimes(2))
+
+    expect(mockedOpenmrsFetch.mock.calls[1][1].method).toBe('POST')
+    expect(mockedOpenmrsFetch.mock.calls[1][1].body).toBe(
+      JSON.stringify(
+        getPayloadForViewingPatientReport(
+          'superman',
+          'uuid-1',
+          '10005V1',
+          'Blood Test.pdf',
+          'May 03, 2022',
+          'Blood Test',
+        ),
+      ),
+    )
   })
 })

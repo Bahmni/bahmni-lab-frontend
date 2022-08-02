@@ -3,8 +3,10 @@ import {render, screen, waitFor} from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import React from 'react'
 import {SWRConfig} from 'swr'
+import {isAuditLogEnabledKey, loggedInUserKey} from '../constants'
 import PendingLabOrdersProvider from '../context/pending-orders-context'
 import {UploadReportProvider} from '../context/upload-report-context'
+import {getPayloadForPatientReportUpload} from '../utils/api-utils'
 import {localStorageMock} from '../utils/test-utils'
 import {uploadFiles} from '../utils/test-utils/upload-report-helper'
 import {mockDoctorNames} from '../__mocks__/doctorNames.mock'
@@ -224,6 +226,8 @@ describe('Upload Report', () => {
   it('should make a file upload api call and fhir diagnostic api call on click of save and upload button', async () => {
     const file = new File(['content'], 'test.pdf', {type: 'application/pdf'})
     localStorage.setItem('i18nextLng', 'en')
+    localStorage.setItem(loggedInUserKey, 'superman')
+    localStorage.setItem(isAuditLogEnabledKey, 'true')
     const close = jest.fn()
     const mockedOpenmrsFetch = openmrsFetch as jest.Mock
     mockedOpenmrsFetch
@@ -303,13 +307,25 @@ describe('Upload Report', () => {
     expect(saveButton).not.toBeDisabled()
     userEvent.click(saveButton)
     await waitFor(() => {
-      expect(mockedOpenmrsFetch).toBeCalledTimes(4)
+      expect(mockedOpenmrsFetch).toBeCalledTimes(5)
     })
     expect(mockedOpenmrsFetch.mock.calls[2][1].method).toBe('POST')
     expect(mockedOpenmrsFetch.mock.calls[2][1].body).toBe(uploadFileRequestBody)
     expect(mockedOpenmrsFetch.mock.calls[3][1].method).toBe('POST')
     expect(mockedOpenmrsFetch.mock.calls[3][1].body).toBe(
       diagnosticReportRequestBody(new Date(currentDay).toISOString()),
+    )
+    expect(mockedOpenmrsFetch.mock.calls[4][1].method).toBe('POST')
+    expect(mockedOpenmrsFetch.mock.calls[4][1].body).toBe(
+      JSON.stringify(
+        getPayloadForPatientReportUpload(
+          'superman',
+          '123',
+          'GAN001100',
+          'test.pdf',
+          'Absolute Eosinphil Count',
+        ),
+      ),
     )
   })
   it('should save and upload report when user selects self in doctors dropdown and click save and upload button', async () => {

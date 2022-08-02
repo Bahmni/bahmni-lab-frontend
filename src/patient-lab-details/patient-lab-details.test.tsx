@@ -147,7 +147,7 @@ describe('Patient lab details', () => {
     ).toBeInTheDocument()
   })
 
-  it('should render Paginated Table components and post audit log message', () => {
+  it('should render Patient Dashboard and post audit log message', () => {
     localStorage.setItem(loggedInUserKey, 'superman')
     localStorage.setItem(isAuditLogEnabledKey, 'true')
     const mockedOpenmrsFetch = openmrsFetch as jest.Mock

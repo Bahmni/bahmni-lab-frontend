@@ -168,6 +168,7 @@ const UploadReport: React.FC<UploadReportProps> = ({
               diagnosticReportResponse?.data?.subject?.display,
             ),
             selectedFile.name,
+            selectedTests[index].name.display,
           )
           postApiCall(auditLogURL, auditMessage, ac)
         }

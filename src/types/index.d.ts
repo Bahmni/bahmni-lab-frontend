@@ -134,3 +134,10 @@ export interface AuditMessage {
   message: string
   module: string
 }
+
+export interface ImagePreviewComponentProps {
+  url: string
+  fileName: string
+  auditMessage: AuditMessage
+  postAuditMessage: Function
+}

@@ -1,8 +1,14 @@
 import React, {useState} from 'react'
 import {Modal, Button} from 'carbon-components-react'
 import classes from './image-preview-component.scss'
+import {ImagePreviewComponentProps} from '../types'
 
-const ImagePreviewComponent = ({url, fileName}) => {
+const ImagePreviewComponent = ({
+  url,
+  fileName,
+  auditMessage,
+  postAuditMessage,
+}: ImagePreviewComponentProps) => {
   const [showModal, setShowModal] = useState(false)
   return (
     <>
@@ -12,6 +18,7 @@ const ImagePreviewComponent = ({url, fileName}) => {
         kind="ghost"
         onClick={() => {
           setShowModal(true)
+          postAuditMessage(auditMessage)
         }}
       >
         {fileName}
