@@ -18,13 +18,16 @@ const ImagePreviewComponent = ({url, fileName}) => {
       </Button>
       <div>
         <Modal
+          className={classes.modal}
           modalHeading={fileName}
           modalAriaLabel={fileName}
           passiveModal={true}
           open={showModal}
           onRequestClose={() => setShowModal(false)}
         >
-          <img src={url}></img>
+          <div className={classes.imageContainer}>
+            <img className={classes.image} src={url} alt={fileName}></img>
+          </div>
         </Modal>
       </div>
     </>

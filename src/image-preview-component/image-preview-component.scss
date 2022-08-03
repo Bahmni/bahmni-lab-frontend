@@ -1,3 +1,33 @@
+@import "~@openmrs/esm-styleguide/src/vars";
+@import "~carbon-components/src/globals/scss/vars";
+@import "~carbon-components/src/globals/scss/mixins";
+@import '~carbon-components/scss/globals/scss/typography.scss';
+
 .imageLabel {
   padding-left: 0%;
 }
+
+[id^="bx--modal-body--modal"] {
+  padding-right: 1rem !important;
+}
+
+.modal {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+
+  .imageContainer{
+    display: flex;
+    justify-content: center;
+    height: -webkit-fill-available;
+    width: -webkit-fill-available;
+  }
+  .image {
+    height: inherit;
+    width: inherit;
+  }
+}
+
+
+
