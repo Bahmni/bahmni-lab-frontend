@@ -146,6 +146,7 @@ describe('Paginated Reports Table', () => {
         'bx--modal is-visible',
       )
     })
+    expect(screen.getByAltText('Blood Test.jpg')).toHaveClass('image')
 
     userEvent.click(
       screen.getByRole('button', {
