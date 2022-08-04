@@ -23,6 +23,7 @@ import {
   mockUploadFileResponse,
   mockDiagnosticReportResponse,
   diagnosticReportRequestBodyWithBasedOn,
+  mockDiagnosticReportErrorResponse,
 } from '../__mocks__/selectTests.mock'
 import PatientLabDetails from './patient-lab-details'
 import * as swr from 'swr'
@@ -334,6 +335,7 @@ describe('Patient lab details', () => {
         screen.getByText(/Report successfully uploaded/i),
       ).toBeInTheDocument(),
     )
+    userEvent.click(screen.getByTitle(/closes notification/i))
   })
 
   it('should populate based on property if a pending order is selected', async () => {
@@ -465,6 +467,85 @@ describe('Patient lab details', () => {
     expect(mockedOpenmrsFetch).toBeCalledTimes(7)
     verifyApiCall(saveDiagnosticReportURL, 'POST')
     expect(mutateMock).toHaveBeenCalledTimes(2)
+  })
+
+  it('should show failure notification on report upload', async () => {
+    const mockedOpenmrsFetch = openmrsFetch as jest.Mock
+    mockedOpenmrsFetch
+      .mockReturnValueOnce(mockPendingLabOrdersResponse)
+      .mockReturnValueOnce(mockEmptyReportTableResponse)
+      .mockReturnValueOnce(mockLabTestsResponse)
+      .mockReturnValueOnce(mockDoctorNames)
+      .mockReturnValueOnce(mockUploadFileResponse)
+      .mockRejectedValue(mockDiagnosticReportErrorResponse)
+
+    render(
+      <SWRConfig value={{provider: () => new Map()}}>
+        <BrowserRouter>
+          <PatientLabDetails
+            match={matchParams}
+            history={undefined}
+            location={undefined}
+          />
+        </BrowserRouter>
+      </SWRConfig>,
+    )
+
+    userEvent.click(screen.getByRole('button', {name: /upload report/i}))
+
+    expect(
+      screen.getByRole('button', {name: /save and upload/i}),
+    ).toBeDisabled()
+
+    userEvent.click(
+      screen.getByRole('textbox', {
+        name: /report date/i,
+      }),
+    )
+
+    userEvent.click(screen.getByLabelText(currentDay))
+
+    await waitFor(() =>
+      expect(
+        screen.getByRole('checkbox', {name: /Absolute Eosinphil Count/i}),
+      ).toBeInTheDocument(),
+    )
+    expect(screen.getByText(/select tests/i)).toBeInTheDocument()
+
+    userEvent.click(
+      screen.getByRole('checkbox', {name: /Absolute Eosinphil Count/i}),
+    )
+
+    const fileInput = screen.getByLabelText(
+      'Drag and drop files here or click to upload',
+    ) as HTMLInputElement
+
+    uploadFiles(fileInput, [file])
+
+    expect(fileInput.files.length).toBe(1)
+    const fileName = await screen.findByText('test.pdf')
+    expect(fileName).toBeInTheDocument()
+
+    userEvent.click(
+      screen.getByRole('button', {
+        name: /Select a Doctor/i,
+      }),
+    )
+
+    userEvent.click(await screen.findByText('admin - Super User'))
+    expect(await screen.findByText(/admin - Super user/i)).toBeInTheDocument()
+    const saveButton = screen.getByRole('button', {name: /save and upload/i})
+
+    expect(saveButton).not.toBeDisabled()
+    userEvent.click(saveButton)
+
+    await waitFor(() => {
+      expect(screen.getByText(/Failed to upload report/i)).toBeInTheDocument()
+      expect(
+        screen.queryByRole('button', {name: /save and upload/i}),
+      ).not.toBeInTheDocument()
+    })
+    userEvent.click(screen.getByTitle(/closes notification/i))
   })
 })
 

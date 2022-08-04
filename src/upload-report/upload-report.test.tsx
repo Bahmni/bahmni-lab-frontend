@@ -17,8 +17,6 @@ import {uploadFiles} from '../utils/test-utils/upload-report-helper'
 import {mockDoctorNames} from '../__mocks__/doctorNames.mock'
 import {
   diagnosticReportRequestBody,
-  diagnosticReportRequestBodyWithBasedOn,
-  mockDiagnosticReportErrorResponse,
   mockDiagnosticReportResponse,
   mockLabTestsResponse,
   mockUploadFileResponse,
@@ -28,31 +26,36 @@ import {
 import UploadReport from './upload-report'
 
 describe('Upload Report', () => {
-  beforeEach(() =>
-    Object.defineProperty(window, 'localStorage', {value: localStorageMock}),
-  )
+  const saveHandler = jest.fn()
+  const closeHandler = jest.fn()
+  beforeEach(() => {
+    Object.defineProperty(window, 'localStorage', {value: localStorageMock})
+  })
   afterEach(() => {
     jest.clearAllMocks(), localStorage.clear()
   })
   it('should close the side panel on click of close button', () => {
     localStorage.setItem('i18nextLng', 'en')
-    const close = jest.fn()
 
     const mockedLayout = useLayoutType as jest.Mock
     mockedLayout.mockReturnValue('desktop')
 
     renderWithContextProvider(
-      <UploadReport close={close} header={'Test Header'} patientUuid={'123'} />,
+      <UploadReport
+        closeHandler={closeHandler}
+        saveHandler={saveHandler}
+        header={'Test Header'}
+        patientUuid={'123'}
+      />,
     )
 
     userEvent.click(screen.getByLabelText('close-icon'))
 
-    expect(close).toBeCalled()
+    expect(closeHandler).toBeCalled()
   })
   it('should reset the value on click of discard button', async () => {
     const file = new File(['content'], 'test.jpg', {type: 'image/jpg'})
     localStorage.setItem('i18nextLng', 'en')
-    const close = jest.fn()
 
     const mockedLayout = useLayoutType as jest.Mock
     mockedLayout.mockReturnValue('desktop')
@@ -63,7 +66,8 @@ describe('Upload Report', () => {
     renderWithContextProvider(
       <SWRConfig value={{provider: () => new Map()}}>
         <UploadReport
-          close={close}
+          saveHandler={saveHandler}
+          closeHandler={closeHandler}
           header={'Test Header'}
           patientUuid={'123'}
         />
@@ -136,13 +140,17 @@ describe('Upload Report', () => {
   })
   it('should not allow user to select future dates', async () => {
     localStorage.setItem('i18nextLng', 'en')
-    const close = jest.fn()
 
     const mockedLayout = useLayoutType as jest.Mock
     mockedLayout.mockReturnValue('desktop')
 
     renderWithContextProvider(
-      <UploadReport close={close} header={'Test Header'} patientUuid={'123'} />,
+      <UploadReport
+        closeHandler={closeHandler}
+        saveHandler={saveHandler}
+        header={'Test Header'}
+        patientUuid={'123'}
+      />,
     )
 
     expect(
@@ -164,7 +172,6 @@ describe('Upload Report', () => {
   it('should disable save and upload button until report date, selected test,doctor name and test report file have value', async () => {
     const file = new File(['content'], 'test.jpg', {type: 'image/jpg'})
     localStorage.setItem('i18nextLng', 'en')
-    const close = jest.fn()
     const mockedOpenmrsFetch = openmrsFetch as jest.Mock
     mockedOpenmrsFetch
       .mockReturnValueOnce(mockLabTestsResponse)
@@ -176,7 +183,8 @@ describe('Upload Report', () => {
     renderWithContextProvider(
       <SWRConfig value={{provider: () => new Map()}}>
         <UploadReport
-          close={close}
+          closeHandler={closeHandler}
+          saveHandler={saveHandler}
           header={'Test Header'}
           patientUuid={'123'}
         />
@@ -234,7 +242,6 @@ describe('Upload Report', () => {
     localStorage.setItem('i18nextLng', 'en')
     localStorage.setItem(loggedInUserKey, 'superman')
     localStorage.setItem(isAuditLogEnabledKey, 'true')
-    const close = jest.fn()
     const mockedOpenmrsFetch = openmrsFetch as jest.Mock
     mockedOpenmrsFetch
       .mockReturnValueOnce(mockLabTestsResponse)
@@ -248,7 +255,8 @@ describe('Upload Report', () => {
     renderWithContextProvider(
       <SWRConfig value={{provider: () => new Map()}}>
         <UploadReport
-          close={close}
+          saveHandler={saveHandler}
+          closeHandler={closeHandler}
           header={'Test Header'}
           patientUuid={'123'}
         />
@@ -338,7 +346,6 @@ describe('Upload Report', () => {
   it('should save and upload report when user selects self in doctors dropdown and click save and upload button', async () => {
     const file = new File(['content'], 'test.pdf', {type: 'application/pdf'})
     localStorage.setItem('i18nextLng', 'en')
-    const close = jest.fn()
     const mockedOpenmrsFetch = openmrsFetch as jest.Mock
     mockedOpenmrsFetch
       .mockReturnValueOnce(mockLabTestsResponse)
@@ -352,7 +359,8 @@ describe('Upload Report', () => {
     renderWithContextProvider(
       <SWRConfig value={{provider: () => new Map()}}>
         <UploadReport
-          close={close}
+          closeHandler={closeHandler}
+          saveHandler={saveHandler}
           header={'Test Header'}
           patientUuid={'123'}
         />
@@ -416,90 +424,9 @@ describe('Upload Report', () => {
     )
   })
 
-  it('should enable save and upload button if post API call fails', async () => {
-    const file = new File(['content'], 'test.pdf', {type: 'application/pdf'})
-    localStorage.setItem('i18nextLng', 'en')
-    const close = jest.fn()
-    const mockedOpenmrsFetch = openmrsFetch as jest.Mock
-    mockedOpenmrsFetch
-      .mockReturnValueOnce(mockLabTestsResponse)
-      .mockReturnValueOnce(mockDoctorNames)
-      .mockReturnValueOnce(mockUploadFileResponse)
-      .mockReturnValueOnce(mockDiagnosticReportErrorResponse)
-
-    const mockedLayout = useLayoutType as jest.Mock
-    mockedLayout.mockReturnValue('desktop')
-
-    renderWithContextProvider(
-      <SWRConfig value={{provider: () => new Map()}}>
-        <UploadReport
-          close={close}
-          header={'Test Header'}
-          patientUuid={'123'}
-        />
-      </SWRConfig>,
-    )
-    expect(
-      screen.getByRole('button', {name: /save and upload/i}),
-    ).toBeDisabled()
-
-    userEvent.click(
-      screen.getByRole('textbox', {
-        name: /report date/i,
-      }),
-    )
-
-    const currentDay: string = getFormatedDate(0)
-
-    userEvent.click(screen.getByLabelText(currentDay))
-
-    await waitFor(() =>
-      expect(screen.queryByText(/loading \.\.\./i)).not.toBeInTheDocument(),
-    )
-
-    userEvent.click(
-      screen.getByRole('checkbox', {name: /Absolute Eosinphil Count/i}),
-    )
-    userEvent.click(
-      screen.getByRole('button', {
-        name: /Select a Doctor/i,
-      }),
-    )
-    userEvent.click(await screen.findByText('admin - Super User'))
-
-    userEvent.click(
-      screen.getByRole('button', {
-        name: /Click to record clinical conclusion/i,
-      }),
-    )
-    await waitFor(() =>
-      userEvent.type(screen.getAllByRole('textbox')[1], 'Normal Report', {
-        delay: 1,
-      }),
-    )
-    const fileInput = screen.getByLabelText(
-      'Drag and drop files here or click to upload',
-    ) as HTMLInputElement
-
-    uploadFiles(fileInput, [file])
-
-    const saveButton = screen.getByRole('button', {name: /save and upload/i})
-
-    expect(saveButton).not.toBeDisabled()
-    userEvent.click(saveButton)
-    expect(saveButton).toBeDisabled()
-    await waitFor(() => {
-      expect(mockedOpenmrsFetch).toBeCalledTimes(4)
-    })
-    verifyApiCall(uploadDocumentURL, 'POST', uploadFileRequestBody)
-    verifyApiCall(saveDiagnosticReportURL, 'POST')
-    expect(saveButton).not.toBeDisabled()
-  })
-
   it('should disable save and upload button after first click', async () => {
     const file = new File(['content'], 'test.pdf', {type: 'application/pdf'})
     localStorage.setItem('i18nextLng', 'en')
-    const close = jest.fn()
     const mockedOpenmrsFetch = openmrsFetch as jest.Mock
     mockedOpenmrsFetch
       .mockReturnValueOnce(mockLabTestsResponse)
@@ -513,7 +440,8 @@ describe('Upload Report', () => {
     renderWithContextProvider(
       <SWRConfig value={{provider: () => new Map()}}>
         <UploadReport
-          close={close}
+          closeHandler={closeHandler}
+          saveHandler={saveHandler}
           header={'Test Header'}
           patientUuid={'123'}
         />

@@ -29,13 +29,15 @@ import {
 import {isAuditLogEnabledKey, loggedInUserKey} from '../constants'
 
 interface UploadReportProps {
-  close: Function
+  saveHandler: Function
+  closeHandler: Function
   header: string
   patientUuid: string
 }
 
 const UploadReport: React.FC<UploadReportProps> = ({
-  close,
+  saveHandler,
+  closeHandler,
   header,
   patientUuid,
 }) => {
@@ -93,7 +95,7 @@ const UploadReport: React.FC<UploadReportProps> = ({
             reportConclusion,
             ac,
             selectedPendingOrder,
-            close,
+            saveHandler,
           )
         }
       }
@@ -142,51 +144,59 @@ const UploadReport: React.FC<UploadReportProps> = ({
     reportConclusion: string,
     ac: AbortController,
     selectedPendingOrder: PendingLabOrders[],
-    close: Function,
+    saveHandler: Function,
   ) {
     let allSuccess: boolean = true
-    for (let index = 0; index < selectedTests.length; index++) {
-      const diagnosticReportResponse = await saveDiagnosticReport(
-        patientUuid,
-        doctorUuid,
-        reportDate,
-        selectedTests[index],
-        url,
-        selectedFile.name,
-        reportConclusion,
-        ac,
-        selectedPendingOrder,
-      )
-      if (diagnosticReportResponse.ok) {
-        const loggedInUser = localStorage.getItem(loggedInUserKey)
-        const isAuditLogEnabled = localStorage.getItem(isAuditLogEnabledKey)
-        if (isAuditLogEnabled && loggedInUser) {
-          const auditMessage = getPayloadForPatientReportUpload(
-            loggedInUser,
-            patientUuid,
-            getPatientIdentifier(
-              diagnosticReportResponse?.data?.subject?.display,
-            ),
-            selectedFile.name,
-            selectedTests[index].name.display,
-          )
-          postApiCall(auditLogURL, auditMessage, ac)
+    try {
+      for (let index = 0; index < selectedTests.length; index++) {
+        const diagnosticReportResponse = await saveDiagnosticReport(
+          patientUuid,
+          doctorUuid,
+          reportDate,
+          selectedTests[index],
+          url,
+          selectedFile.name,
+          reportConclusion,
+          ac,
+          selectedPendingOrder,
+        )
+        if (diagnosticReportResponse.ok) {
+          const loggedInUser = localStorage.getItem(loggedInUserKey)
+          const isAuditLogEnabled = localStorage.getItem(isAuditLogEnabledKey)
+          if (isAuditLogEnabled && loggedInUser) {
+            const auditMessage = getPayloadForPatientReportUpload(
+              loggedInUser,
+              patientUuid,
+              getPatientIdentifier(
+                diagnosticReportResponse?.data?.subject?.display,
+              ),
+              selectedFile.name,
+              selectedTests[index].name.display,
+            )
+            postApiCall(auditLogURL, auditMessage, ac)
+          }
+        }
+        if (allSuccess && !diagnosticReportResponse.ok) {
+          allSuccess = false
         }
       }
-      if (allSuccess && !diagnosticReportResponse.ok) {
-        allSuccess = false
-      }
+    } catch (e) {
+      allSuccess = false
     }
     if (allSuccess) {
-      close(true)
+      saveHandler(true)
       setSelectedPendingOrder([])
     } else {
-      setIsSaveButtonClicked(false)
+      saveHandler(false)
     }
   }
 
   return (
-    <Overlay close={close} header={header} buttonsGroup={renderButtonGroup()}>
+    <Overlay
+      close={closeHandler}
+      header={header}
+      buttonsGroup={renderButtonGroup()}
+    >
       <SelectTest isDiscardButtonClicked={isDiscardButtonClicked} />
       <br />
       <UploadFile />
