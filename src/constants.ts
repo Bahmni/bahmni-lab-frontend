@@ -11,7 +11,8 @@ export const maxPageSizeForDiagnosticReport = 100
 export const selfPatient = 'self (patient)'
 export const orderTypeUuidKey = 'orderTypeUuid'
 export const labOrderType = 'Lab Order'
-export const practitionerRoleDoctor = 'practioner_role: Doctor'
+export const attrName = 'practitioner_type'
+export const attrValue = 'Doctor'
 export const orderStatusCompleted = 'COMPLETED'
 
 export const headers = [

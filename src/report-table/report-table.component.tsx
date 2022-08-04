@@ -56,7 +56,12 @@ const ReportTable = (props: ReportTableProps) => {
 
   const getRequester = (
     performer: undefined | {display: string; reference: string},
-  ) => (performer && performer[0]?.display) || selfPatient
+  ) => {
+    if (performer) {
+      return performer[0]?.display.replace(/\s\(.+\)/g, '')
+    }
+    return selfPatient
+  }
 
   const rows = useMemo(() => {
     const uniqueUploadedReports: Array<ReportEntry> = dedupe(
@@ -95,6 +100,7 @@ const ReportTable = (props: ReportTableProps) => {
     rows,
     defaultPageSize,
   )
+
   return (
     <div title="report-table">
       {reportsTableDataError ? (
