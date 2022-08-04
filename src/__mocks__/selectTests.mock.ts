@@ -295,13 +295,15 @@ export const mockDiagnosticReportResponse = {
   ok: 'true',
   status: 200,
 }
+
 export const mockDiagnosticReportErrorResponse = {
-  message: 'Data not found',
+  message: 'Internal Server Error',
   response: {
-    status: 404,
-    statusText: 'Not Found',
+    status: 500,
+    statusText: 'Internal Server Error',
   },
 }
+
 export const uploadFileRequestBody =
   '{"content":",Y29udGVudA==","encounterTypeName":"Patient Document","fileType":"application","format":"pdf","patientUuid":"123"}'
 

@@ -17,6 +17,8 @@ export const orderStatusCompleted = 'COMPLETED'
 export const loggedInUserKey = 'loggedInUser'
 export const isAuditLogPostedKey = 'isAuditLogPosted'
 export const isAuditLogEnabledKey = 'isAuditLogEnabled'
+export const successMessage = 'Report successfully uploaded'
+export const failureMessage = 'Failed to upload report'
 
 export const headers = [
   {

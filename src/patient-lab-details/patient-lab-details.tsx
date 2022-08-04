@@ -4,16 +4,23 @@ import {
   Button,
   Column,
   Grid,
+  NotificationKind,
   Row,
   ToastNotification,
 } from 'carbon-components-react'
 import React, {useEffect, useState} from 'react'
 import {RouteComponentProps} from 'react-router-dom'
+import {
+  isAuditLogEnabledKey,
+  loggedInUserKey,
+  failureMessage,
+  successMessage,
+} from '../constants'
 import PendingLabOrdersProvider from '../context/pending-orders-context'
 import {UploadReportProvider} from '../context/upload-report-context'
 import Loader from '../loader/loader.component'
-import PaginatedTable from '../table/paginated-table'
 import ReportTable from '../report-table/report-table.component'
+import PaginatedTable from '../table/paginated-table'
 import UploadReport from '../upload-report/upload-report'
 import {
   auditLogURL,
@@ -21,7 +28,6 @@ import {
   postApiCall,
 } from '../utils/api-utils'
 import styles from './patient-lab-details.scss'
-import {isAuditLogEnabledKey, loggedInUserKey} from '../constants'
 interface PatientParamsType {
   patientUuid: string
 }
@@ -33,26 +39,39 @@ const PatientLabDetails: React.FC<RouteComponentProps<PatientParamsType>> = ({
   const {isLoading, patient, error} = usePatient(patientUuid)
   const [onButtonClick, setOnButtonClick] = useState<boolean>(false)
   const [onSaveSuccess, setOnSaveSuccess] = useState<boolean>(false)
+  const [onSaveFailure, setOnSaveFailure] = useState<boolean>(false)
   const [reloadReportTable, setReloadReportTable] = useState<boolean>(false)
 
   const handleClick = () => {
-    setOnButtonClick(true), setOnSaveSuccess(false), setReloadReportTable(false)
+    setOnButtonClick(true)
+    setOnSaveSuccess(false)
+    setReloadReportTable(false)
+    setOnSaveFailure(false)
   }
 
-  const handleClose = (isSaveSuccess: boolean) => {
+  const handleClose = () => {
+    setOnButtonClick(false)
+  }
+
+  const handleUploadAndSave = (isSaveSuccess: boolean) => {
     setOnButtonClick(false)
     setOnSaveSuccess(isSaveSuccess)
+    setOnSaveFailure(!isSaveSuccess)
     setReloadReportTable(true)
   }
 
-  const renderSuccessMessage = () => (
+  const renderNotificationMessage = (
+    kind: NotificationKind,
+    title: string,
+    saveHandler: Function,
+  ) => (
     <ToastNotification
-      kind={'success'}
+      kind={kind}
       lowContrast={true}
-      title={'Report successfully uploaded'}
-      timeout={1000}
+      title={title}
+      timeout={5000}
       onClose={() => {
-        setOnSaveSuccess(false)
+        saveHandler(false)
         return true
       }}
     />
@@ -104,7 +123,18 @@ const PatientLabDetails: React.FC<RouteComponentProps<PatientParamsType>> = ({
                   />
                 </Column>
                 <Column lg={3}>
-                  {onSaveSuccess && renderSuccessMessage()}
+                  {onSaveSuccess &&
+                    renderNotificationMessage(
+                      'success',
+                      successMessage,
+                      setOnSaveSuccess,
+                    )}
+                  {onSaveFailure &&
+                    renderNotificationMessage(
+                      'error',
+                      failureMessage,
+                      setOnSaveFailure,
+                    )}
                 </Column>
               </Row>
             </Grid>
@@ -125,7 +155,10 @@ const PatientLabDetails: React.FC<RouteComponentProps<PatientParamsType>> = ({
             {onButtonClick && (
               <UploadReportProvider>
                 <UploadReport
-                  close={(isSaveSuccess = false) => handleClose(isSaveSuccess)}
+                  saveHandler={(isSaveSuccess = false) =>
+                    handleUploadAndSave(isSaveSuccess)
+                  }
+                  closeHandler={() => handleClose()}
                   header="Upload Report"
                   patientUuid={patientUuid}
                 />
