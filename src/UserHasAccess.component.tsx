@@ -7,12 +7,12 @@ import React, {useEffect, useState} from 'react'
 
 interface UserHasAccessProps {
   privilege: string
-  unauthorisedResponse?: React.ReactNode | undefined
+  fallback?: React.ReactNode | undefined
 }
 
 export const UserHasAccess: React.FC<UserHasAccessProps> = ({
   privilege,
-  unauthorisedResponse,
+  fallback,
   children,
 }) => {
   const [user, setUser] = useState<LoggedInUser | null>(null)
@@ -26,7 +26,9 @@ export const UserHasAccess: React.FC<UserHasAccessProps> = ({
 
   if (user && userHasAccess(privilege, user)) {
     return <>{children}</>
+  } else if (user != null) {
+    return fallback ? <>{fallback}</> : null
   } else {
-    return unauthorisedResponse ? <>{unauthorisedResponse}</> : null
+    return null
   }
 }

@@ -1,0 +1,30 @@
+
+.image {
+    margin-top: 5%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.welcomeText{
+    font-size: 3.625rem;
+    font-weight: 600;
+    line-height: 1.199;
+    letter-spacing: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 5%;
+}
+
+.helpText {
+    font-size: 2.3rem;
+    margin-top: 3%;
+    font-weight: 400;
+    line-height: 1.199;
+    letter-spacing: 0;
+    font-style: oblique;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
