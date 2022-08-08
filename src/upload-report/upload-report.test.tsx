@@ -6,12 +6,18 @@ import {SWRConfig} from 'swr'
 import {isAuditLogEnabledKey, loggedInUserKey} from '../constants'
 import PendingLabOrdersProvider from '../context/pending-orders-context'
 import {UploadReportProvider} from '../context/upload-report-context'
-import {getPayloadForPatientReportUpload} from '../utils/api-utils'
-import {localStorageMock} from '../utils/test-utils'
+import {
+  auditLogURL,
+  getPayloadForPatientReportUpload,
+  saveDiagnosticReportURL,
+  uploadDocumentURL,
+} from '../utils/api-utils'
+import {localStorageMock, verifyApiCall} from '../utils/test-utils'
 import {uploadFiles} from '../utils/test-utils/upload-report-helper'
 import {mockDoctorNames} from '../__mocks__/doctorNames.mock'
 import {
   diagnosticReportRequestBody,
+  diagnosticReportRequestBodyWithBasedOn,
   mockDiagnosticReportErrorResponse,
   mockDiagnosticReportResponse,
   mockLabTestsResponse,
@@ -309,14 +315,15 @@ describe('Upload Report', () => {
     await waitFor(() => {
       expect(mockedOpenmrsFetch).toBeCalledTimes(5)
     })
-    expect(mockedOpenmrsFetch.mock.calls[2][1].method).toBe('POST')
-    expect(mockedOpenmrsFetch.mock.calls[2][1].body).toBe(uploadFileRequestBody)
-    expect(mockedOpenmrsFetch.mock.calls[3][1].method).toBe('POST')
-    expect(mockedOpenmrsFetch.mock.calls[3][1].body).toBe(
+    verifyApiCall(uploadDocumentURL, 'POST', uploadFileRequestBody)
+    verifyApiCall(
+      saveDiagnosticReportURL,
+      'POST',
       diagnosticReportRequestBody(new Date(currentDay).toISOString()),
     )
-    expect(mockedOpenmrsFetch.mock.calls[4][1].method).toBe('POST')
-    expect(mockedOpenmrsFetch.mock.calls[4][1].body).toBe(
+    verifyApiCall(
+      auditLogURL,
+      'POST',
       JSON.stringify(
         getPayloadForPatientReportUpload(
           'superman',
@@ -401,10 +408,10 @@ describe('Upload Report', () => {
     await waitFor(() => {
       expect(mockedOpenmrsFetch).toBeCalledTimes(4)
     })
-    expect(mockedOpenmrsFetch.mock.calls[2][1].method).toBe('POST')
-    expect(mockedOpenmrsFetch.mock.calls[2][1].body).toBe(uploadFileRequestBody)
-    expect(mockedOpenmrsFetch.mock.calls[3][1].method).toBe('POST')
-    expect(mockedOpenmrsFetch.mock.calls[3][1].body).toBe(
+    verifyApiCall(uploadDocumentURL, 'POST', uploadFileRequestBody)
+    verifyApiCall(
+      saveDiagnosticReportURL,
+      'POST',
       selfDiagnosticRequestBody(new Date(currentDay).toISOString()),
     )
   })
@@ -483,13 +490,10 @@ describe('Upload Report', () => {
     expect(saveButton).toBeDisabled()
     await waitFor(() => {
       expect(mockedOpenmrsFetch).toBeCalledTimes(4)
-      expect(mockedOpenmrsFetch.mock.calls[2][1].method).toBe('POST')
-      expect(mockedOpenmrsFetch.mock.calls[2][1].body).toBe(
-        uploadFileRequestBody,
-      )
-      expect(mockedOpenmrsFetch.mock.calls[3][1].method).toBe('POST')
-      expect(saveButton).not.toBeDisabled()
     })
+    verifyApiCall(uploadDocumentURL, 'POST', uploadFileRequestBody)
+    verifyApiCall(saveDiagnosticReportURL, 'POST')
+    expect(saveButton).not.toBeDisabled()
   })
 
   it('should disable save and upload button after first click', async () => {
