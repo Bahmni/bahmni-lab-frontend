@@ -1,10 +1,10 @@
 import React from 'react'
-import { BrowserRouter, Route } from 'react-router-dom'
-import { SWRConfig } from 'swr'
-import { patientLabDetailsRoute, privilegeLabLite, spaRoot } from './constants'
+import {BrowserRouter, Route} from 'react-router-dom'
+import {SWRConfig} from 'swr'
+import {patientLabDetailsRoute, privilegeLabLite, spaRoot} from './constants'
 import PatientLabDetails from './patient-lab-details/patient-lab-details'
-import { UserHasAccess } from './UserHasAccess.component'
-import { unauthorisedResponse } from './utils'
+import {UserHasAccess} from './UserHasAccess.component'
+import {unauthorisedResponse} from './utils'
 
 const swrConfiguration = {
   // Maximum number of retries when the backend returns an error
