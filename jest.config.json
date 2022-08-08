@@ -4,7 +4,7 @@
   },
   "transformIgnorePatterns": ["/node_modules/(?!@openmrs)"],
   "moduleNameMapper": {
-    ".+\\.(jpg|jpeg|png|gif|eot|otf|webp|svg|ttf|woff|woff2|mp4|webm|wav|mp3|m4a|aac|oga)$": "identity-obj-proxy",
+    ".+\\.(jpg|jpeg|png|svg)$": "<rootDir>/src/__mocks__/fileMock.js",
     "\\.(s?css)$": "identity-obj-proxy",
     "^@carbon/icons-react/es/(.*)$": "@carbon/icons-react/lib/$1",
     "^@carbon/charts": "identity-obj-proxy",

@@ -1,8 +1,10 @@
 import React from 'react'
 import { BrowserRouter, Route } from 'react-router-dom'
 import { SWRConfig } from 'swr'
-import { patientLabDetailsRoute, spaRoot } from './constants'
+import { patientLabDetailsRoute, privilegeLabLite, spaRoot } from './constants'
 import PatientLabDetails from './patient-lab-details/patient-lab-details'
+import { UserHasAccess } from './UserHasAccess.component'
+import { unauthorisedResponse } from './utils'
 
 const swrConfiguration = {
   // Maximum number of retries when the backend returns an error
@@ -12,6 +14,7 @@ const swrConfiguration = {
 
 const Root: React.FC = () => {
   return (
+    <UserHasAccess privilege={privilegeLabLite} fallback={unauthorisedResponse}>
       <main>
         <SWRConfig value={swrConfiguration}>
           <BrowserRouter basename={spaRoot}>
@@ -23,6 +26,7 @@ const Root: React.FC = () => {
           </BrowserRouter>
         </SWRConfig>
       </main>
+    </UserHasAccess>
   )
 }
 
