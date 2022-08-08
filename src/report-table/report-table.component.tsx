@@ -152,66 +152,74 @@ const ReportTable = (props: ReportTableProps) => {
                   </TableHead>
                   <TableBody>
                     {rows?.length > 0 ? (
-                      dataTableRows.map((row, index) => (
-                        <React.Fragment key={row.id}>
-                          <TableExpandRow {...getRowProps({row})}>
-                            {row.cells.map(cell => {
-                              return cell.id.endsWith('file') ? (
-                                <TableCell key={cell.id}>
-                                  {cell.value?.endsWith('pdf') ? (
-                                    <Link
-                                      href={getReportUrl(rows, row.id)}
-                                      target={'_blank'}
-                                      onClick={() => {
-                                        const auditMessage = getAuditMessageBody(
+                      dataTableRows.map((row, index) => {
+                        const rowIndex = getReportTableRowIndex(
+                          currentPage,
+                          index,
+                        )
+                        return (
+                          <React.Fragment key={row.id}>
+                            <TableExpandRow {...getRowProps({row})}>
+                              {row.cells.map(cell => {
+                                return cell.id.endsWith('file') ? (
+                                  <TableCell key={cell.id}>
+                                    {cell.value?.endsWith('pdf') ? (
+                                      <Link
+                                        href={getReportUrl(rows, row.id)}
+                                        target={'_blank'}
+                                        onClick={() => {
+                                          const auditMessage = getAuditMessageBody(
+                                            patientUuid,
+                                            rows[rowIndex].file,
+                                            rows[rowIndex].date,
+                                            getPatientIdentifier(
+                                              rows[rowIndex].patientId,
+                                            ),
+                                            rows[rowIndex].tests,
+                                          )
+                                          postAuditMessage(auditMessage)
+                                        }}
+                                      >
+                                        {cell.value}
+                                      </Link>
+                                    ) : (
+                                      <ImagePreviewComponent
+                                        url={getReportUrl(rows, row.id)}
+                                        fileName={cell.value}
+                                        auditMessage={getAuditMessageBody(
                                           patientUuid,
-                                          row.cells[2].value,
-                                          row.cells[0].value,
+                                          rows[rowIndex].file,
+                                          rows[rowIndex].date,
                                           getPatientIdentifier(
-                                            rows[index].patientId,
+                                            rows[rowIndex].patientId,
                                           ),
-                                          row.cells[1].value,
-                                        )
-                                        postAuditMessage(auditMessage)
-                                      }}
-                                    >
-                                      {cell.value}
-                                    </Link>
-                                  ) : (
-                                    <ImagePreviewComponent
-                                      url={getReportUrl(rows, row.id)}
-                                      fileName={cell.value}
-                                      auditMessage={getAuditMessageBody(
-                                        patientUuid,
-                                        row.cells[2].value,
-                                        row.cells[0].value,
-                                        getPatientIdentifier(
-                                          rows[index].patientId,
-                                        ),
-                                        row.cells[1].value,
-                                      )}
-                                      postAuditMessage={postAuditMessage}
-                                    />
-                                  )}
-                                </TableCell>
-                              ) : (
-                                <TableCell key={cell.id}>
-                                  {cell.value}
-                                </TableCell>
-                              )
-                            })}
-                          </TableExpandRow>
-                          <TableExpandedRow colSpan={reportHeaders.length + 1}>
-                            <div
-                              style={{overflowWrap: 'anywhere'}}
-                            >{`Report conclusion : ${
-                              rows?.filter(
-                                intialRow => intialRow.id === row.id,
-                              )[0]?.conclusion
-                            }`}</div>
-                          </TableExpandedRow>
-                        </React.Fragment>
-                      ))
+                                          rows[rowIndex].tests,
+                                        )}
+                                        postAuditMessage={postAuditMessage}
+                                      />
+                                    )}
+                                  </TableCell>
+                                ) : (
+                                  <TableCell key={cell.id}>
+                                    {cell.value}
+                                  </TableCell>
+                                )
+                              })}
+                            </TableExpandRow>
+                            <TableExpandedRow
+                              colSpan={reportHeaders.length + 1}
+                            >
+                              <div
+                                style={{overflowWrap: 'anywhere'}}
+                              >{`Report conclusion : ${
+                                rows?.filter(
+                                  intialRow => intialRow.id === row.id,
+                                )[0]?.conclusion
+                              }`}</div>
+                            </TableExpandedRow>
+                          </React.Fragment>
+                        )
+                      })
                     ) : (
                       <TableExpandedRow colSpan={reportHeaders.length + 1}>
                         No previous reports found for this patient
@@ -298,6 +306,10 @@ function postAuditMessage(auditMessage: AuditMessage) {
     const ac = new AbortController()
     postApiCall(auditLogURL, auditMessage, ac)
   }
+}
+
+function getReportTableRowIndex(currentPage: number, index: number) {
+  return defaultPageSize * (currentPage - 1) + index
 }
 
 export default ReportTable

@@ -4,7 +4,12 @@ import userEvent from '@testing-library/user-event'
 import React from 'react'
 import {of} from 'rxjs'
 import {SWRConfig} from 'swr'
-import {getPayloadForUserLogin} from '../utils/api-utils'
+import {
+  auditLogGlobalPropertyURL,
+  auditLogURL,
+  getPayloadForUserLogin,
+} from '../utils/api-utils'
+import {verifyApiCall} from '../utils/test-utils'
 import HomeButton from './home-button'
 
 jest.mock('@openmrs/esm-framework', () => ({
@@ -59,11 +64,9 @@ describe('home button', () => {
     await waitFor(() => expect(mockedOpenmrsFetch).toBeCalledTimes(2))
 
     const auditMessagePayload = getPayloadForUserLogin(mockUser.username)
-    expect(mockedOpenmrsFetch.mock.calls[0][1].method).toBe('GET')
-    expect(mockedOpenmrsFetch.mock.calls[1][1].method).toBe('POST')
-    expect(mockedOpenmrsFetch.mock.calls[1][1].body).toBe(
-      JSON.stringify(auditMessagePayload),
-    )
+
+    verifyApiCall(auditLogGlobalPropertyURL, 'GET')
+    verifyApiCall(auditLogURL, 'POST', JSON.stringify(auditMessagePayload))
   })
 
   it('should not update audit logs when audit log property is disabled', async () => {
@@ -77,6 +80,6 @@ describe('home button', () => {
 
     await waitFor(() => expect(mockedOpenmrsFetch).toBeCalledTimes(1))
 
-    expect(mockedOpenmrsFetch.mock.calls[0][1].method).toBe('GET')
+    verifyApiCall(auditLogGlobalPropertyURL, 'GET')
   })
 })

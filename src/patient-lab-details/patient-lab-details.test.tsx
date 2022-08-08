@@ -10,7 +10,7 @@ import {when} from 'jest-when'
 import React from 'react'
 import {BrowserRouter} from 'react-router-dom'
 import {SWRConfig} from 'swr'
-import {localStorageMock} from '../utils/test-utils'
+import {localStorageMock, verifyApiCall} from '../utils/test-utils'
 import {mockPendingLabOrder} from '../__mocks__/patientLabDetails.mock'
 import {mockDoctorNames} from '../__mocks__/doctorNames.mock'
 import {mockPendingLabOrdersResponse} from '../__mocks__/pendingLabOrders.mock'
@@ -22,13 +22,18 @@ import {
   mockLabTestsResponse,
   mockUploadFileResponse,
   mockDiagnosticReportResponse,
+  diagnosticReportRequestBodyWithBasedOn,
 } from '../__mocks__/selectTests.mock'
 import PatientLabDetails from './patient-lab-details'
 import * as swr from 'swr'
 import {isAuditLogEnabledKey, loggedInUserKey} from '../constants'
-import {getPayloadForPatientAccess} from '../utils/api-utils'
+import {
+  auditLogURL,
+  getPayloadForPatientAccess,
+  saveDiagnosticReportURL,
+} from '../utils/api-utils'
 
-const mockPatientUuid = '1'
+const mockPatientUuid = '123'
 const matchParams = {
   isExact: true,
   params: {patientUuid: `${mockPatientUuid}`},
@@ -136,7 +141,7 @@ describe('Patient lab details', () => {
 
     expect(
       screen.getByText(
-        /State : \{"patient":\{"id":"1","identifier":\[\{"type":\{"text":"Patient Identifier"\},"value":"GAN000001"\}\]\},"patientuuid":"1","hideActionsOverflow":true\}/i,
+        /State : \{"patient":\{"id":"123","identifier":\[\{"type":\{"text":"Patient Identifier"\},"value":"GAN000001"\}\]\},"patientuuid":"123","hideActionsOverflow":true\}/i,
       ),
     ).toBeInTheDocument()
 
@@ -164,9 +169,12 @@ describe('Patient lab details', () => {
     expect(screen.getByTitle(/report-table/i)).toBeInTheDocument()
 
     expect(mockedOpenmrsFetch).toBeCalledTimes(1)
-    expect(mockedOpenmrsFetch.mock.calls[0][1].method).toBe('POST')
-    expect(mockedOpenmrsFetch.mock.calls[0][1].body).toBe(
-      JSON.stringify(getPayloadForPatientAccess('superman', '1', 'GAN000001')),
+    verifyApiCall(
+      auditLogURL,
+      'POST',
+      JSON.stringify(
+        getPayloadForPatientAccess('superman', '123', 'GAN000001'),
+      ),
     )
   })
 
@@ -229,9 +237,7 @@ describe('Patient lab details', () => {
       )
     })
 
-    expect(
-      screen.queryByText(/absolute eosinphil count/i),
-    ).not.toBeInTheDocument()
+    expect(screen.queryByText(/absolute eosinphil count/i)).toBeInTheDocument()
 
     expect(
       screen.getAllByRole('checkbox', {name: /Select Row/i})[0],
@@ -377,14 +383,13 @@ describe('Patient lab details', () => {
     await verifyFileName(fileInput)
     await saveReport()
     expect(mockedOpenmrsFetch).toBeCalledTimes(6)
-    expect(mockedOpenmrsFetch.mock.calls[5][1].method).toBe('POST')
-    expect(
-      JSON.parse(mockedOpenmrsFetch.mock.calls[5][1].body).basedOn.length,
-    ).toBe(1)
-
-    expect(
-      JSON.parse(mockedOpenmrsFetch.mock.calls[5][1].body).performer,
-    ).toStrictEqual([{reference: 'Practitioner/1'}])
+    verifyApiCall(
+      saveDiagnosticReportURL,
+      'POST',
+      diagnosticReportRequestBodyWithBasedOn(
+        new Date(currentDay).toISOString(),
+      ),
+    )
   })
 
   it('should make multiple POST calls when multiple tests are selected', async () => {
@@ -458,8 +463,7 @@ describe('Patient lab details', () => {
     await saveReport()
 
     expect(mockedOpenmrsFetch).toBeCalledTimes(7)
-    expect(mockedOpenmrsFetch.mock.calls[5][1].method).toBe('POST')
-    expect(mockedOpenmrsFetch.mock.calls[6][1].method).toBe('POST')
+    verifyApiCall(saveDiagnosticReportURL, 'POST')
     expect(mutateMock).toHaveBeenCalledTimes(2)
   })
 })
