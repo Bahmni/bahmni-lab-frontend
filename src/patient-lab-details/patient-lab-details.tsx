@@ -7,19 +7,21 @@ import {
   Row,
   ToastNotification,
 } from 'carbon-components-react'
-import React, {useCallback, useEffect, useState} from 'react'
+import React, {useEffect, useState} from 'react'
 import {RouteComponentProps} from 'react-router-dom'
+import PendingLabOrdersProvider from '../context/pending-orders-context'
 import {UploadReportProvider} from '../context/upload-report-context'
 import Loader from '../loader/loader.component'
 import PaginatedTable from '../table/paginated-table'
 import ReportTable from '../report-table/report-table.component'
 import UploadReport from '../upload-report/upload-report'
-import PendingLabOrdersProvider from '../context/pending-orders-context'
+import {
+  auditLogURL,
+  getPayloadForPatientAccess,
+  postApiCall,
+} from '../utils/api-utils'
 import styles from './patient-lab-details.scss'
-import {fetcher, getReportTableDataURL} from '../utils/lab-orders'
-import {ReportTableFetchResponse} from '../types'
-import useSWR, {SWRResponse} from 'swr'
-
+import {isAuditLogEnabledKey, loggedInUserKey} from '../constants'
 interface PatientParamsType {
   patientUuid: string
 }
@@ -55,6 +57,24 @@ const PatientLabDetails: React.FC<RouteComponentProps<PatientParamsType>> = ({
       }}
     />
   )
+
+  useEffect(() => {
+    const loggedInUser = localStorage.getItem(loggedInUserKey)
+    const isAuditLogEnabled = localStorage.getItem(isAuditLogEnabledKey)
+
+    if (isAuditLogEnabled && loggedInUser && patient) {
+      const patientIdentifier = patient.identifier.filter(
+        identifier => identifier.type.text == 'Patient Identifier',
+      )[0]
+      const ac = new AbortController()
+      const auditMessagePayload = getPayloadForPatientAccess(
+        loggedInUser,
+        patientUuid,
+        patientIdentifier.value,
+      )
+      postApiCall(auditLogURL, auditMessagePayload, ac)
+    }
+  }, [patient])
 
   return (
     <main

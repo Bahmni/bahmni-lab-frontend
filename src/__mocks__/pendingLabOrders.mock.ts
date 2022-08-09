@@ -1,4 +1,3 @@
-import {orderStatusCompleted} from '../constants'
 import {LabOrdersFetchResponse} from '../types'
 
 export const mockPendingLabOrdersResponse: LabOrdersFetchResponse = {
@@ -6,7 +5,7 @@ export const mockPendingLabOrdersResponse: LabOrdersFetchResponse = {
     {
       concept: {
         name: 'Routine Blood',
-        uuid: 'fe769568-16da-4d9e-9c99-fbed0a8a60f5',
+        uuid: '07a128f7-f596-45d5-a2a9-c447bc9e5112',
       },
       orderDate: 1657188240000,
       orderUuid: 'abc-123',

@@ -127,3 +127,17 @@ export interface OrderType {
   display: string
   links: Links
 }
+
+export interface AuditMessage {
+  patientUuid?: string
+  eventType: string
+  message: string
+  module: string
+}
+
+export interface ImagePreviewComponentProps {
+  url: string
+  fileName: string
+  auditMessage: AuditMessage
+  postAuditMessage: Function
+}

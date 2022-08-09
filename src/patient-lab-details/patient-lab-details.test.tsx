@@ -10,7 +10,7 @@ import {when} from 'jest-when'
 import React from 'react'
 import {BrowserRouter} from 'react-router-dom'
 import {SWRConfig} from 'swr'
-import {localStorageMock} from '../utils/test-utils'
+import {localStorageMock, verifyApiCall} from '../utils/test-utils'
 import {mockPendingLabOrder} from '../__mocks__/patientLabDetails.mock'
 import {mockDoctorNames} from '../__mocks__/doctorNames.mock'
 import {mockPendingLabOrdersResponse} from '../__mocks__/pendingLabOrders.mock'
@@ -22,11 +22,18 @@ import {
   mockLabTestsResponse,
   mockUploadFileResponse,
   mockDiagnosticReportResponse,
+  diagnosticReportRequestBodyWithBasedOn,
 } from '../__mocks__/selectTests.mock'
 import PatientLabDetails from './patient-lab-details'
 import * as swr from 'swr'
+import {isAuditLogEnabledKey, loggedInUserKey} from '../constants'
+import {
+  auditLogURL,
+  getPayloadForPatientAccess,
+  saveDiagnosticReportURL,
+} from '../utils/api-utils'
 
-const mockPatientUuid = '1'
+const mockPatientUuid = '123'
 const matchParams = {
   isExact: true,
   params: {patientUuid: `${mockPatientUuid}`},
@@ -49,7 +56,15 @@ describe('Patient lab details', () => {
     when(usePatient)
       .calledWith(mockPatientUuid)
       .mockReturnValue({
-        patient: {id: mockPatientUuid},
+        patient: {
+          id: mockPatientUuid,
+          identifier: [
+            {
+              type: {text: 'Patient Identifier'},
+              value: 'GAN000001',
+            },
+          ],
+        },
       })
     localStorage.setItem('i18nextLng', 'en')
     when(ExtensionSlot).mockImplementation((props: any) => {
@@ -67,6 +82,7 @@ describe('Patient lab details', () => {
 
   afterEach(() => {
     jest.clearAllMocks()
+    localStorage.clear()
   })
 
   it('should show loader if call for patient data is in progress', async () => {
@@ -122,9 +138,10 @@ describe('Patient lab details', () => {
     expect(
       screen.getByText(/Extension slot name : patient\-header\-slot/i),
     ).toBeInTheDocument()
+
     expect(
       screen.getByText(
-        /State : \{"patient":\{"id":"1"\},"patientuuid":"1","hideActionsOverflow":true\}/i,
+        /State : \{"patient":\{"id":"123","identifier":\[\{"type":\{"text":"Patient Identifier"\},"value":"GAN000001"\}\]\},"patientuuid":"123","hideActionsOverflow":true\}/i,
       ),
     ).toBeInTheDocument()
 
@@ -135,7 +152,10 @@ describe('Patient lab details', () => {
     ).toBeInTheDocument()
   })
 
-  it('should render Paginated Table components', () => {
+  it('should render Patient Dashboard and post audit log message', () => {
+    localStorage.setItem(loggedInUserKey, 'superman')
+    localStorage.setItem(isAuditLogEnabledKey, 'true')
+    const mockedOpenmrsFetch = openmrsFetch as jest.Mock
     render(
       <BrowserRouter>
         <PatientLabDetails
@@ -147,6 +167,15 @@ describe('Patient lab details', () => {
     )
     expect(screen.getByTitle(/paginated-table/i)).toBeInTheDocument()
     expect(screen.getByTitle(/report-table/i)).toBeInTheDocument()
+
+    expect(mockedOpenmrsFetch).toBeCalledTimes(1)
+    verifyApiCall(
+      auditLogURL,
+      'POST',
+      JSON.stringify(
+        getPayloadForPatientAccess('superman', '123', 'GAN000001'),
+      ),
+    )
   })
 
   it('should display Overlay on click of upload report button', () => {
@@ -208,9 +237,7 @@ describe('Patient lab details', () => {
       )
     })
 
-    expect(
-      screen.queryByText(/absolute eosinphil count/i),
-    ).not.toBeInTheDocument()
+    expect(screen.queryByText(/absolute eosinphil count/i)).toBeInTheDocument()
 
     expect(
       screen.getAllByRole('checkbox', {name: /Select Row/i})[0],
@@ -356,14 +383,13 @@ describe('Patient lab details', () => {
     await verifyFileName(fileInput)
     await saveReport()
     expect(mockedOpenmrsFetch).toBeCalledTimes(6)
-    expect(mockedOpenmrsFetch.mock.calls[5][1].method).toBe('POST')
-    expect(
-      JSON.parse(mockedOpenmrsFetch.mock.calls[5][1].body).basedOn.length,
-    ).toBe(1)
-
-    expect(
-      JSON.parse(mockedOpenmrsFetch.mock.calls[5][1].body).performer,
-    ).toStrictEqual([{reference: 'Practitioner/1'}])
+    verifyApiCall(
+      saveDiagnosticReportURL,
+      'POST',
+      diagnosticReportRequestBodyWithBasedOn(
+        new Date(currentDay).toISOString(),
+      ),
+    )
   })
 
   it('should make multiple POST calls when multiple tests are selected', async () => {
@@ -437,8 +463,7 @@ describe('Patient lab details', () => {
     await saveReport()
 
     expect(mockedOpenmrsFetch).toBeCalledTimes(7)
-    expect(mockedOpenmrsFetch.mock.calls[5][1].method).toBe('POST')
-    expect(mockedOpenmrsFetch.mock.calls[6][1].method).toBe('POST')
+    verifyApiCall(saveDiagnosticReportURL, 'POST')
     expect(mutateMock).toHaveBeenCalledTimes(2)
   })
 })

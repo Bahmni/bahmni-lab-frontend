@@ -3,13 +3,21 @@ import {render, screen, waitFor} from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import React from 'react'
 import {SWRConfig} from 'swr'
+import {isAuditLogEnabledKey, loggedInUserKey} from '../constants'
 import PendingLabOrdersProvider from '../context/pending-orders-context'
 import {UploadReportProvider} from '../context/upload-report-context'
-import {localStorageMock} from '../utils/test-utils'
+import {
+  auditLogURL,
+  getPayloadForPatientReportUpload,
+  saveDiagnosticReportURL,
+  uploadDocumentURL,
+} from '../utils/api-utils'
+import {localStorageMock, verifyApiCall} from '../utils/test-utils'
 import {uploadFiles} from '../utils/test-utils/upload-report-helper'
 import {mockDoctorNames} from '../__mocks__/doctorNames.mock'
 import {
   diagnosticReportRequestBody,
+  diagnosticReportRequestBodyWithBasedOn,
   mockDiagnosticReportErrorResponse,
   mockDiagnosticReportResponse,
   mockLabTestsResponse,
@@ -23,7 +31,9 @@ describe('Upload Report', () => {
   beforeEach(() =>
     Object.defineProperty(window, 'localStorage', {value: localStorageMock}),
   )
-  afterEach(() => jest.clearAllMocks())
+  afterEach(() => {
+    jest.clearAllMocks(), localStorage.clear()
+  })
   it('should close the side panel on click of close button', () => {
     localStorage.setItem('i18nextLng', 'en')
     const close = jest.fn()
@@ -222,6 +232,8 @@ describe('Upload Report', () => {
   it('should make a file upload api call and fhir diagnostic api call on click of save and upload button', async () => {
     const file = new File(['content'], 'test.pdf', {type: 'application/pdf'})
     localStorage.setItem('i18nextLng', 'en')
+    localStorage.setItem(loggedInUserKey, 'superman')
+    localStorage.setItem(isAuditLogEnabledKey, 'true')
     const close = jest.fn()
     const mockedOpenmrsFetch = openmrsFetch as jest.Mock
     mockedOpenmrsFetch
@@ -301,13 +313,26 @@ describe('Upload Report', () => {
     expect(saveButton).not.toBeDisabled()
     userEvent.click(saveButton)
     await waitFor(() => {
-      expect(mockedOpenmrsFetch).toBeCalledTimes(4)
+      expect(mockedOpenmrsFetch).toBeCalledTimes(5)
     })
-    expect(mockedOpenmrsFetch.mock.calls[2][1].method).toBe('POST')
-    expect(mockedOpenmrsFetch.mock.calls[2][1].body).toBe(uploadFileRequestBody)
-    expect(mockedOpenmrsFetch.mock.calls[3][1].method).toBe('POST')
-    expect(mockedOpenmrsFetch.mock.calls[3][1].body).toBe(
+    verifyApiCall(uploadDocumentURL, 'POST', uploadFileRequestBody)
+    verifyApiCall(
+      saveDiagnosticReportURL,
+      'POST',
       diagnosticReportRequestBody(new Date(currentDay).toISOString()),
+    )
+    verifyApiCall(
+      auditLogURL,
+      'POST',
+      JSON.stringify(
+        getPayloadForPatientReportUpload(
+          'superman',
+          '123',
+          'GAN001100',
+          'test.pdf',
+          'Absolute Eosinphil Count',
+        ),
+      ),
     )
   })
   it('should save and upload report when user selects self in doctors dropdown and click save and upload button', async () => {
@@ -383,10 +408,10 @@ describe('Upload Report', () => {
     await waitFor(() => {
       expect(mockedOpenmrsFetch).toBeCalledTimes(4)
     })
-    expect(mockedOpenmrsFetch.mock.calls[2][1].method).toBe('POST')
-    expect(mockedOpenmrsFetch.mock.calls[2][1].body).toBe(uploadFileRequestBody)
-    expect(mockedOpenmrsFetch.mock.calls[3][1].method).toBe('POST')
-    expect(mockedOpenmrsFetch.mock.calls[3][1].body).toBe(
+    verifyApiCall(uploadDocumentURL, 'POST', uploadFileRequestBody)
+    verifyApiCall(
+      saveDiagnosticReportURL,
+      'POST',
       selfDiagnosticRequestBody(new Date(currentDay).toISOString()),
     )
   })
@@ -465,13 +490,10 @@ describe('Upload Report', () => {
     expect(saveButton).toBeDisabled()
     await waitFor(() => {
       expect(mockedOpenmrsFetch).toBeCalledTimes(4)
-      expect(mockedOpenmrsFetch.mock.calls[2][1].method).toBe('POST')
-      expect(mockedOpenmrsFetch.mock.calls[2][1].body).toBe(
-        uploadFileRequestBody,
-      )
-      expect(mockedOpenmrsFetch.mock.calls[3][1].method).toBe('POST')
-      expect(saveButton).not.toBeDisabled()
     })
+    verifyApiCall(uploadDocumentURL, 'POST', uploadFileRequestBody)
+    verifyApiCall(saveDiagnosticReportURL, 'POST')
+    expect(saveButton).not.toBeDisabled()
   })
 
   it('should disable save and upload button after first click', async () => {
@@ -547,6 +569,9 @@ describe('Upload Report', () => {
     expect(saveButton).not.toBeDisabled()
     userEvent.click(saveButton)
     expect(saveButton).toBeDisabled()
+    await waitFor(() => {
+      expect(mockedOpenmrsFetch).toBeCalledTimes(4)
+    })
   })
 })
 

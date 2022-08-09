@@ -1,3 +1,4 @@
+import {InlineNotification} from 'carbon-components-react/lib/components/Notification'
 import React from 'react'
 import {BrowserRouter, Route} from 'react-router-dom'
 import {SWRConfig} from 'swr'

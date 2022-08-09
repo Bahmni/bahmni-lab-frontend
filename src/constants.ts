@@ -14,6 +14,9 @@ export const labOrderType = 'Lab Order'
 export const attrName = 'practitioner_type'
 export const attrValue = 'Doctor'
 export const orderStatusCompleted = 'COMPLETED'
+export const loggedInUserKey = 'loggedInUser'
+export const isAuditLogPostedKey = 'isAuditLogPosted'
+export const isAuditLogEnabledKey = 'isAuditLogEnabled'
 
 export const headers = [
   {
