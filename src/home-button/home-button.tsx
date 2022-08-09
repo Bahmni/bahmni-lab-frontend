@@ -37,11 +37,7 @@ const HomeButton = () => {
     return () => subscription.unsubscribe()
   }, [])
 
-  if (
-    auditLogEnabledResponse?.data &&
-    loggedInUser &&
-    !localStorage.getItem(isAuditLogPostedKey)
-  ) {
+  if (auditLogEnabledResponse?.data && loggedInUser) {
     const ac = new AbortController()
     const auditMessagePayload = getPayloadForUserLogin(loggedInUser.username)
     postApiCall(auditLogURL, auditMessagePayload, ac)
