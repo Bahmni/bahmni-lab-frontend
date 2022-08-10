@@ -2,7 +2,7 @@ import React from 'react'
 import BahmniLogo from '../assets/bahmniLogoFull.png'
 import {privilegeLabLite} from '../constants'
 import {UserHasAccess} from '../UserHasAccess.component'
-import {unauthorisedResponse} from '../utils'
+import {unauthorisedResponse} from '../unauthorised-response/unauthorised-response'
 import classes from './home.scss'
 const Home = () => {
   return (
