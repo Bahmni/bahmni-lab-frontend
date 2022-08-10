@@ -43,6 +43,10 @@ function setupOpenMRS() {
   return {
     pages: [
       {
+        load: getAsyncLifecycle(() => import('./home/home'), options),
+        route: 'home',
+      },
+      {
         route: /^patient\/[a-z0-9-]+/,
         load: getAsyncLifecycle(() => import('./patient-lab-root.component'), {
           featureName: 'patient-lab-root',

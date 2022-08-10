@@ -5,28 +5,17 @@ import {SWRConfig} from 'swr'
 import {patientLabDetailsRoute, privilegeLabLite, spaRoot} from './constants'
 import PatientLabDetails from './patient-lab-details/patient-lab-details'
 import {UserHasAccess} from './UserHasAccess.component'
+import {unauthorisedResponse} from './unauthorised-response/unauthorised-response'
 
 const swrConfiguration = {
   // Maximum number of retries when the backend returns an error
   errorRetryCount: 3,
   revalidateOnFocus: false,
 }
-const unauthorisedResponse = (
-  <div className="omrs-inline-notifications-container">
-    <InlineNotification
-      title="Unauthorised"
-      subtitle="You are unauthorised to view this page. Please contact your administrator"
-      kind="error"
-    />
-  </div>
-)
 
 const Root: React.FC = () => {
   return (
-    <UserHasAccess
-      privilege={privilegeLabLite}
-      unauthorisedResponse={unauthorisedResponse}
-    >
+    <UserHasAccess privilege={privilegeLabLite} fallback={unauthorisedResponse}>
       <main>
         <SWRConfig value={swrConfiguration}>
           <BrowserRouter basename={spaRoot}>
