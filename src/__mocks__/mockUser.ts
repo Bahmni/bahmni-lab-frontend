@@ -1,15 +1,13 @@
 export const mockUser = {
   authenticated: true,
-  user: {
-    uuid: 'uuid',
-    display: 'admin',
-    person: {uuid: 'uuid', display: 'Test User'},
-    privileges: [],
-    roles: [{uuid: 'uuid', display: 'System Developer'}],
-    username: 'testuser',
-    userProperties: {
-      defaultLocale: 'fr',
-    },
+  uuid: 'uuid',
+  display: 'admin',
+  person: {uuid: 'uuid', display: 'Test User'},
+  privileges: [],
+  roles: [{uuid: 'uuid', display: 'System Developer'}],
+  username: 'admin',
+  userProperties: {
+    defaultLocale: 'fr',
   },
 }
 

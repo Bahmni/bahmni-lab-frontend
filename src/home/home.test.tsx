@@ -1,10 +1,16 @@
+import {openmrsFetch} from '@openmrs/esm-framework'
+import {render, screen, waitFor} from '@testing-library/react'
 import React from 'react'
-import {render, screen} from '@testing-library/react'
-import Home from './home'
 import {of} from 'rxjs'
+import {SWRConfig} from 'swr'
+import {
+  auditLogGlobalPropertyURL,
+  auditLogURL,
+  getPayloadForUserLogin,
+} from '../utils/api-utils'
+import {verifyApiCall} from '../utils/test-utils'
 import {mockUser} from '../__mocks__/mockUser'
-import {Redirect} from 'react-router-dom'
-import {when} from 'jest-when'
+import Home from './home'
 
 const mockUserObservable = of(mockUser)
 jest.mock('@openmrs/esm-framework', () => ({
@@ -29,7 +35,11 @@ jest.mock('react-router-dom', () => {
 
 describe('home page', () => {
   it('should show home page', () => {
-    render(<Home />)
+    render(
+      <SWRConfig value={{provider: () => new Map()}}>
+        <Home />
+      </SWRConfig>,
+    )
 
     expect(screen.getByAltText(/Bahmni Logo/i)).toBeInTheDocument()
     expect(screen.getByText(/welcome to lab entry/i)).toBeInTheDocument()
@@ -38,8 +48,50 @@ describe('home page', () => {
     ).toBeInTheDocument()
   })
   it('should redirect user when user is unauthorized', () => {
-    render(<Home />)
+    render(
+      <SWRConfig value={{provider: () => new Map()}}>
+        <Home />
+      </SWRConfig>,
+    )
 
     expect(screen.getByText(/redirected to login/i)).toBeInTheDocument()
+  })
+})
+
+describe('home page - Auditing', () => {
+  let mockedOpenmrsFetch = openmrsFetch as jest.Mock
+  beforeEach(() => {
+    jest.resetModules()
+    jest.clearAllMocks()
+  })
+
+  it('should update audit logs when user enters lab lite', async () => {
+    mockedOpenmrsFetch.mockReturnValue({data: true})
+
+    render(
+      <SWRConfig value={{provider: () => new Map()}}>
+        <Home />
+      </SWRConfig>,
+    )
+    await waitFor(() => expect(mockedOpenmrsFetch).toBeCalledTimes(2))
+
+    const auditMessagePayload = getPayloadForUserLogin(mockUser.username)
+
+    verifyApiCall(auditLogGlobalPropertyURL, 'GET')
+    verifyApiCall(auditLogURL, 'POST', JSON.stringify(auditMessagePayload))
+  })
+
+  it('should not update audit logs when audit log property is disabled', async () => {
+    mockedOpenmrsFetch.mockReturnValueOnce({data: false})
+
+    render(
+      <SWRConfig value={{provider: () => new Map()}}>
+        <Home />
+      </SWRConfig>,
+    )
+
+    await waitFor(() => expect(mockedOpenmrsFetch).toBeCalledTimes(1))
+
+    verifyApiCall(auditLogGlobalPropertyURL, 'GET')
   })
 })
