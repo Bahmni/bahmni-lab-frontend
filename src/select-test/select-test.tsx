@@ -381,7 +381,7 @@ const SelectTest = ({isDiscardButtonClicked}) => {
 
       <Accordion>
         <AccordionItem
-          className={isAvailableTestsClicked && styles.accordionItem}
+          className={isAvailableTestsClicked ? styles.accordionItem : ''}
           data-testid="available-tests"
           title={`Available Tests ( ${getAvailableTestsCount()} )`}
           open={isAvailableTestsClicked}
