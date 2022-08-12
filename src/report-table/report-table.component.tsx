@@ -170,12 +170,12 @@ const ReportTable = (props: ReportTableProps) => {
                                         onClick={() => {
                                           const auditMessage = getAuditMessageBody(
                                             patientUuid,
-                                            rows[rowIndex].file,
-                                            rows[rowIndex].date,
+                                            rows[rowIndex]?.file,
+                                            rows[rowIndex]?.date,
                                             getPatientIdentifier(
-                                              rows[rowIndex].patientId,
+                                              rows[rowIndex]?.patientId,
                                             ),
-                                            rows[rowIndex].tests,
+                                            rows[rowIndex]?.tests,
                                           )
                                           postAuditMessage(auditMessage)
                                         }}
@@ -188,12 +188,12 @@ const ReportTable = (props: ReportTableProps) => {
                                         fileName={cell.value}
                                         auditMessage={getAuditMessageBody(
                                           patientUuid,
-                                          rows[rowIndex].file,
-                                          rows[rowIndex].date,
+                                          rows[rowIndex]?.file,
+                                          rows[rowIndex]?.date,
                                           getPatientIdentifier(
-                                            rows[rowIndex].patientId,
+                                            rows[rowIndex]?.patientId,
                                           ),
-                                          rows[rowIndex].tests,
+                                          rows[rowIndex]?.tests,
                                         )}
                                         postAuditMessage={postAuditMessage}
                                       />

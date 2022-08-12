@@ -1,11 +1,16 @@
-import {InlineNotification} from 'carbon-components-react/lib/components/Notification'
 import React from 'react'
 import {BrowserRouter, Route} from 'react-router-dom'
 import {SWRConfig} from 'swr'
-import {patientLabDetailsRoute, privilegeLabLite, spaRoot} from './constants'
+import {
+  labEntryHomePath,
+  patientLabDetailsRoute,
+  privilegeLabLite,
+  spaRoot,
+} from './constants'
+import Home from './home/home'
 import PatientLabDetails from './patient-lab-details/patient-lab-details'
-import {UserHasAccess} from './UserHasAccess.component'
 import {unauthorisedResponse} from './unauthorised-response/unauthorised-response'
+import {UserHasAccess} from './UserHasAccess.component'
 
 const swrConfiguration = {
   // Maximum number of retries when the backend returns an error
@@ -19,6 +24,7 @@ const Root: React.FC = () => {
       <main>
         <SWRConfig value={swrConfiguration}>
           <BrowserRouter basename={spaRoot}>
+            <Route exact path={labEntryHomePath} component={Home} />
             <Route
               exact
               path={patientLabDetailsRoute}

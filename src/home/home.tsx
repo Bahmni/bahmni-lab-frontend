@@ -1,22 +1,16 @@
+import {getCurrentUser, LoggedInUser} from '@openmrs/esm-framework'
 import React, {useEffect, useState} from 'react'
-import BahmniLogo from '../assets/bahmniLogoFull.png'
-import {
-  isAuditLogEnabledKey,
-  loggedInUserKey,
-  privilegeLabLite,
-} from '../constants'
-import {UserHasAccess} from '../UserHasAccess.component'
-import {unauthorisedResponse} from '../unauthorised-response/unauthorised-response'
-import classes from './home.scss'
-import {LoggedInUser, getCurrentUser} from '@openmrs/esm-framework'
 import useSWR from 'swr'
+import BahmniLogo from '../assets/bahmniLogoFull.png'
+import {isAuditLogEnabledKey, loggedInUserKey} from '../constants'
 import {
   auditLogGlobalPropertyURL,
+  auditLogURL,
   fetcher,
   getPayloadForUserLogin,
   postApiCall,
-  auditLogURL,
 } from '../utils/api-utils'
+import classes from './home.scss'
 interface AuditLogResponse {
   data: boolean
 }
@@ -50,17 +44,15 @@ const Home = () => {
   }, [auditLogEnabledResponse, loggedInUser])
 
   return (
-    <UserHasAccess privilege={privilegeLabLite} fallback={unauthorisedResponse}>
-      <div>
-        <div className={classes.image}>
-          <img src={BahmniLogo} alt="Bahmni Logo" />
-        </div>
-        <span className={classes.welcomeText}>WELCOME TO LAB ENTRY</span>
-        <span className={classes.helpText}>
-          Please click on the search icon above to get started
-        </span>
+    <div>
+      <div className={classes.image}>
+        <img src={BahmniLogo} alt="Bahmni Logo" />
       </div>
-    </UserHasAccess>
+      <span className={classes.welcomeText}>WELCOME TO LAB ENTRY</span>
+      <span className={classes.helpText}>
+        Please click on the search icon above to get started
+      </span>
+    </div>
   )
 }
 

@@ -82,14 +82,14 @@ const PatientLabDetails: React.FC<RouteComponentProps<PatientParamsType>> = ({
     const isAuditLogEnabled = localStorage.getItem(isAuditLogEnabledKey)
 
     if (isAuditLogEnabled && loggedInUser && patient) {
-      const patientIdentifier = patient.identifier.filter(
+      const patientIdentifier = patient?.identifier?.filter(
         identifier => identifier.type.text == 'Patient Identifier',
       )[0]
       const ac = new AbortController()
       const auditMessagePayload = getPayloadForPatientAccess(
         loggedInUser,
         patientUuid,
-        patientIdentifier.value,
+        patientIdentifier?.value,
       )
       postApiCall(auditLogURL, auditMessagePayload, ac)
     }
