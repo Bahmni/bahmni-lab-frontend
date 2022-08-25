@@ -3,18 +3,18 @@ import {render, screen, waitFor} from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import React from 'react'
 import {SWRConfig} from 'swr'
-import {isAuditLogEnabledKey, loggedInUserKey} from '../constants'
-import PendingLabOrdersProvider from '../context/pending-orders-context'
-import {UploadReportProvider} from '../context/upload-report-context'
+import {isAuditLogEnabledKey, loggedInUserKey} from '../../utils/constants'
+import PendingLabOrdersProvider from '../../context/pending-orders-context'
+import {UploadReportProvider} from '../../context/upload-report-context'
 import {
   auditLogURL,
   getPayloadForPatientReportUpload,
   saveDiagnosticReportURL,
   uploadDocumentURL,
-} from '../utils/api-utils'
-import {localStorageMock, verifyApiCall} from '../utils/test-utils'
-import {uploadFiles} from '../utils/test-utils/upload-report-helper'
-import {mockDoctorNames} from '../__mocks__/doctorNames.mock'
+} from '../../utils/api-utils'
+import {localStorageMock, verifyApiCall} from '../../utils/test-utils'
+import {uploadFiles} from '../../utils/test-utils/upload-report-helper'
+import {mockDoctorNames} from '../../__mocks__/doctorNames.mock'
 import {
   diagnosticReportRequestBody,
   mockDiagnosticReportResponse,
@@ -22,7 +22,7 @@ import {
   mockUploadFileResponse,
   selfDiagnosticRequestBody,
   uploadFileRequestBody,
-} from '../__mocks__/selectTests.mock'
+} from '../../__mocks__/selectTests.mock'
 import UploadReport from './upload-report'
 
 describe('Upload Report', () => {

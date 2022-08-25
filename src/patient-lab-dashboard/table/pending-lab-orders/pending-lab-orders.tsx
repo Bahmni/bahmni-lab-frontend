@@ -14,13 +14,13 @@ import {
 } from 'carbon-components-react'
 import React, {useEffect, useMemo} from 'react'
 import useSWR, {mutate} from 'swr'
-import {defaultPageSize, headers, orderStatusCompleted} from '../constants'
-import {usePendingLabOrderContext} from '../context/pending-orders-context'
-import {useOrderTypeUuidConfig} from '../hooks/useOrderTypeUuidConfig'
-import {LabOrdersFetchResponse, PendingLabOrders} from '../types'
-import {fetcher, getPendingLabOrdersURL} from '../utils/api-utils'
+import {defaultPageSize, headers, orderStatusCompleted} from '../../../utils/constants'
+import {usePendingLabOrderContext} from '../../../context/pending-orders-context'
+import {useOrderTypeUuidConfig} from '../../../hooks/useOrderTypeUuidConfig'
+import {LabOrdersFetchResponse, PendingLabOrders as PendingLabOrdersTable} from '../../../types'
+import {fetcher, getPendingLabOrdersURL} from '../../../utils/api-utils'
 
-const PaginatedTable = ({patientUuid, onButtonClick, reloadTableData}) => {
+const PendingLabOrdersTable = ({patientUuid, onButtonClick, reloadTableData}) => {
   const {orderTypeUuidConfig} = useOrderTypeUuidConfig()
   const pendingOrderUrl = getPendingLabOrdersURL(
     patientUuid,
@@ -39,7 +39,7 @@ const PaginatedTable = ({patientUuid, onButtonClick, reloadTableData}) => {
 
   function filterPendingLabOrders(
     pendingLabOrders: LabOrdersFetchResponse,
-  ): Array<PendingLabOrders> {
+  ): Array<PendingLabOrdersTable> {
     return pendingLabOrders?.data
       ?.filter(
         pendingLabOrderRow =>
@@ -167,4 +167,4 @@ const PaginatedTable = ({patientUuid, onButtonClick, reloadTableData}) => {
   }
 }
 
-export default PaginatedTable
+export default PendingLabOrdersTable

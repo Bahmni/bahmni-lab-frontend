@@ -10,23 +10,23 @@ import {
   useSelectedFile,
   useSelectedTests,
   useDoctorDetails,
-} from '../context/upload-report-context'
-import Overlay from '../overlay'
+} from '../../context/upload-report-context'
+import Overlay from '../../common/overlay'
 import SelectTest from '../select-test/select-test'
 import UploadFile from '../upload-file/upload-file'
 import {saveDiagnosticReport, uploadFile} from './upload-report.resources'
 import styles from './upload-report.scss'
-import {usePendingLabOrderContext} from '../context/pending-orders-context'
-import {LabTest} from '../types/selectTest'
-import {PendingLabOrders} from '../types'
+import {usePendingLabOrderContext} from '../../context/pending-orders-context'
+import {LabTest} from '../../types/selectTest'
+import {PendingLabOrders} from '../../types'
 
 import DoctorListDropdown from '../doctors-list-dropdown/doctor-list-dropdown'
 import {
   auditLogURL,
   getPayloadForPatientReportUpload,
   postApiCall,
-} from '../utils/api-utils'
-import {isAuditLogEnabledKey, loggedInUserKey} from '../constants'
+} from '../../utils/api-utils'
+import {isAuditLogEnabledKey, loggedInUserKey} from '../../utils/constants'
 
 interface UploadReportProps {
   saveHandler: Function

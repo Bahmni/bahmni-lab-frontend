@@ -1,11 +1,11 @@
 import {Dropdown} from 'carbon-components-react'
 import React, {useEffect, useState} from 'react'
 import useSWR from 'swr'
-import {selfPatient} from '../constants'
-import {usePendingLabOrderContext} from '../context/pending-orders-context'
-import {useDoctorDetails} from '../context/upload-report-context'
-import {DoctorsResponse} from '../types'
-import {fetcher, getProvidersURL} from '../utils/lab-orders'
+import {selfPatient} from '../../utils/constants'
+import {usePendingLabOrderContext} from '../../context/pending-orders-context'
+import {useDoctorDetails} from '../../context/upload-report-context'
+import {DoctorsResponse} from '../../types'
+import {fetcher, getProvidersURL} from '../../utils/lab-orders'
 
 const DoctorListDropdown = () => {
   const {data: doctorsList, error: doctorsListError} = useSWR<

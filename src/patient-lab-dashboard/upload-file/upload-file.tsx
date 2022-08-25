@@ -4,7 +4,7 @@ import {
   FileUploaderItem,
   Tag,
 } from 'carbon-components-react'
-import {useSelectedFile} from '../context/upload-report-context'
+import {useSelectedFile} from '../../context/upload-report-context'
 
 const UploadFile = () => {
   const maxFileSize: number = 5242880

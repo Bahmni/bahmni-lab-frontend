@@ -3,7 +3,7 @@ import {render, screen} from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import {Button} from 'carbon-components-react'
 import React from 'react'
-import {localStorageMock} from '../utils/test-utils'
+import {localStorageMock} from '../../utils/test-utils'
 import Overlay from './index'
 
 describe('Overlay', () => {

@@ -1,5 +1,5 @@
 import {Type, validators} from '@openmrs/esm-framework'
-import {spaRoot, patientLabDetailsPath} from './constants'
+import {spaRoot, patientLabDetailsPath} from './utils/constants'
 export const configSchema = {
   search: {
     patientResultUrl: {

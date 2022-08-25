@@ -6,11 +6,11 @@ import {
   patientLabDetailsRoute,
   privilegeLabLite,
   spaRoot,
-} from './constants'
-import Home from './home/home'
+} from '../utils/constants'
+import Home from '../home/home'
+import {unauthorisedResponse} from '../common/unauthorized-response/unauthorised-response'
+import {UserHasAccess} from '../common/userHasAccess/UserHasAccess.component'
 import PatientLabDetails from './patient-lab-details/patient-lab-details'
-import {unauthorisedResponse} from './unauthorised-response/unauthorised-response'
-import {UserHasAccess} from './UserHasAccess.component'
 
 const swrConfiguration = {
   // Maximum number of retries when the backend returns an error

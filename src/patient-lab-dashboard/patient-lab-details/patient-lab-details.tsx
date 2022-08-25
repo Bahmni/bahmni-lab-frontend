@@ -15,18 +15,18 @@ import {
   loggedInUserKey,
   failureMessage,
   successMessage,
-} from '../constants'
-import PendingLabOrdersProvider from '../context/pending-orders-context'
-import {UploadReportProvider} from '../context/upload-report-context'
-import Loader from '../loader/loader.component'
-import ReportTable from '../report-table/report-table.component'
-import PaginatedTable from '../table/paginated-table'
+} from '../../utils/constants'
+import PendingLabOrdersProvider from '../../context/pending-orders-context'
+import {UploadReportProvider} from '../../context/upload-report-context'
+import Loader from '../../common/loader/loader.component'
+import ReportTable from '../table/report-table/report-table.component'
+import PendingLabOrdersTable from '../table/pending-lab-orders/pending-lab-orders'
 import UploadReport from '../upload-report/upload-report'
 import {
   auditLogURL,
   getPayloadForPatientAccess,
   postApiCall,
-} from '../utils/api-utils'
+} from '../../utils/api-utils'
 import styles from './patient-lab-details.scss'
 interface PatientParamsType {
   patientUuid: string
@@ -142,7 +142,7 @@ const PatientLabDetails: React.FC<RouteComponentProps<PatientParamsType>> = ({
           <br></br>
           <br></br>
           <PendingLabOrdersProvider>
-            <PaginatedTable
+            <PendingLabOrdersTable
               patientUuid={patientUuid}
               onButtonClick={onButtonClick}
               reloadTableData={reloadReportTable}

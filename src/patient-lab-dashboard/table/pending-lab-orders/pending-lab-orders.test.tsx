@@ -4,21 +4,21 @@ import {when} from 'jest-when'
 import React from 'react'
 import {BrowserRouter} from 'react-router-dom'
 import {SWRConfig} from 'swr'
-import {headers} from '../constants'
-import {localStorageMock} from '../utils/test-utils'
+import {headers} from '../../../utils/constants'
+import {localStorageMock} from '../../../utils/test-utils'
 import {
   mockEmptyPendingLabOrderResponse,
   mockPendingLabOrdersErrorResponse,
   mockPendingLabOrdersResponse,
-} from '../__mocks__/pendingLabOrders.mock'
-import PaginatedTable from './paginated-table'
-import PendingLabOrdersProvider from '../context/pending-orders-context'
+} from '../../../__mocks__/pendingLabOrders.mock'
+import PendingLabOrdersTable from './pending-lab-orders'
+import PendingLabOrdersProvider from '../../../context/pending-orders-context'
 import userEvent from '@testing-library/user-event'
 
 const mockPatientUuid = '1'
 const mockOrderTypeUuid = '8189b409-3f10-11e4-adec-0800271c1b75'
 
-jest.mock('../hooks/useOrderTypeUuidConfig', () => ({
+jest.mock('../../../hooks/useOrderTypeUuidConfig', () => ({
   useOrderTypeUuidConfig: jest.fn().mockImplementation(() => ({
     orderTypeUuidConfig: mockOrderTypeUuid,
   })),
@@ -57,7 +57,7 @@ describe('Paginated Table', () => {
       <SWRConfig value={{provider: () => new Map()}}>
         <BrowserRouter>
           <PendingLabOrdersProvider>
-            <PaginatedTable
+            <PendingLabOrdersTable
               reloadTableData={false}
               patientUuid={mockPatientUuid}
               onButtonClick={false}
@@ -126,7 +126,7 @@ describe('Paginated Table', () => {
       <SWRConfig value={{provider: () => new Map()}}>
         <BrowserRouter>
           <PendingLabOrdersProvider>
-            <PaginatedTable
+            <PendingLabOrdersTable
               reloadTableData={false}
               patientUuid={mockPatientUuid}
               onButtonClick={false}
@@ -155,7 +155,7 @@ describe('Paginated Table', () => {
       <SWRConfig value={{provider: () => new Map()}}>
         <BrowserRouter>
           <PendingLabOrdersProvider>
-            <PaginatedTable
+            <PendingLabOrdersTable
               reloadTableData={false}
               patientUuid={mockPatientUuid}
               onButtonClick={false}
@@ -180,12 +180,15 @@ describe('Paginated Table', () => {
   it('should throw error message paginated table is not used with context', async () => {
     const mockedOpenmrsFetch = openmrsFetch as jest.Mock
     mockedOpenmrsFetch.mockRejectedValueOnce(mockPendingLabOrdersErrorResponse)
+    const consoleError = jest
+      .spyOn(console, 'error')
+      .mockImplementation(() => {})
 
     expect(() =>
       render(
         <SWRConfig value={{provider: () => new Map()}}>
           <BrowserRouter>
-            <PaginatedTable
+            <PendingLabOrdersTable
               reloadTableData={false}
               patientUuid={mockPatientUuid}
               onButtonClick={false}
@@ -196,5 +199,6 @@ describe('Paginated Table', () => {
     ).toThrow(
       'usePendingLabOrderContext must be used within Pending Lab Orders scope',
     )
+    consoleError.mockRestore()
   })
 })

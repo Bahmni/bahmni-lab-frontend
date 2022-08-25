@@ -1,7 +1,7 @@
 import React, {useState} from 'react'
 import {Modal, Button} from 'carbon-components-react'
 import classes from './image-preview-component.scss'
-import {ImagePreviewComponentProps} from '../types'
+import {ImagePreviewComponentProps} from '../../types'
 
 const ImagePreviewComponent = ({
   url,

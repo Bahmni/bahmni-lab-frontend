@@ -1,5 +1,5 @@
 import {openmrsFetch} from '@openmrs/esm-framework'
-import {attrName, attrValue, maxPageSizeForDiagnosticReport} from '../constants'
+import {attrName, attrValue, maxPageSizeForDiagnosticReport} from './constants'
 
 export const fetcher = url =>
   openmrsFetch(url, {

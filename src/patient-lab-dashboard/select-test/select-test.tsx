@@ -7,11 +7,11 @@ import {
 } from 'carbon-components-react'
 import React, {useEffect, useState} from 'react'
 import useSWR from 'swr'
-import {useSelectedTests} from '../context/upload-report-context'
-import {usePendingLabOrderContext} from '../context/pending-orders-context'
-import Loader from '../loader/loader.component'
-import {LabTest} from '../types/selectTest'
-import {fetcher, getLabTests} from '../utils/api-utils'
+import {useSelectedTests} from '../../context/upload-report-context'
+import {usePendingLabOrderContext} from '../../context/pending-orders-context'
+import Loader from '../../common/loader/loader.component'
+import {LabTest} from '../../types/selectTest'
+import {fetcher, getLabTests} from '../../utils/api-utils'
 import styles from './select-test.scss'
 
 const SelectTest = ({isDiscardButtonClicked}) => {

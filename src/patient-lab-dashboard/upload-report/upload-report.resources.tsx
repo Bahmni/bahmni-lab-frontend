@@ -1,11 +1,11 @@
 import {FetchResponse, PatientUuid} from '@openmrs/esm-framework'
-import {PendingLabOrders} from '../types'
-import {LabTest} from '../types/selectTest'
+import {PendingLabOrders} from '../../types'
+import {LabTest} from '../../types/selectTest'
 import {
   postApiCall,
   saveDiagnosticReportURL,
   uploadDocumentURL,
-} from '../utils/api-utils'
+} from '../../utils/api-utils'
 
 interface UploadFileRequestType {
   content: string

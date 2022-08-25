@@ -2,7 +2,7 @@ import {render, screen, waitFor} from '@testing-library/react'
 import React from 'react'
 import {of} from 'rxjs'
 import Root from './patient-lab-root.component'
-import {mockUser} from './__mocks__/mockUser'
+import {mockUser} from '../__mocks__/mockUser'
 
 const mockUserObservable = of(mockUser)
 jest.mock('@openmrs/esm-framework', () => ({

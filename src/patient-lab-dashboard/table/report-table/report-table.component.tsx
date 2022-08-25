@@ -22,21 +22,21 @@ import {
   loggedInUserKey,
   reportHeaders,
   selfPatient,
-} from '../constants'
-import ImagePreviewComponent from '../image-preview-component/image-preview-component'
+} from '../../../utils/constants'
+import ImagePreviewComponent from '../../image-preview-component/image-preview-component'
 import {
   AuditMessage,
   ReportEntry,
   ReportResource,
   ReportTableFetchResponse,
   ReportTableRow,
-} from '../types'
+} from '../../../types'
 import {
   auditLogURL,
   getPayloadForViewingPatientReport,
   postApiCall,
-} from '../utils/api-utils'
-import {fetcher, getReportTableDataURL} from '../utils/lab-orders'
+} from '../../../utils/api-utils'
+import {fetcher, getReportTableDataURL} from '../../../utils/lab-orders'
 import classes from './report-table.component.scss'
 
 const documentPath = '/document_images/'

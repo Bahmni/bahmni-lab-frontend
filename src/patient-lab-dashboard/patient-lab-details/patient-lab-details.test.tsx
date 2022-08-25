@@ -10,29 +10,29 @@ import {when} from 'jest-when'
 import React from 'react'
 import {BrowserRouter} from 'react-router-dom'
 import {SWRConfig} from 'swr'
-import {localStorageMock, verifyApiCall} from '../utils/test-utils'
-import {mockPendingLabOrder} from '../__mocks__/patientLabDetails.mock'
-import {mockDoctorNames} from '../__mocks__/doctorNames.mock'
-import {mockPendingLabOrdersResponse} from '../__mocks__/pendingLabOrders.mock'
+import {localStorageMock, verifyApiCall} from '../../utils/test-utils'
+import {mockPendingLabOrder} from '../../__mocks__/patientLabDetails.mock'
+import {mockDoctorNames} from '../../__mocks__/doctorNames.mock'
+import {mockPendingLabOrdersResponse} from '../../__mocks__/pendingLabOrders.mock'
 import {
   mockEmptyReportTableResponse,
   mockReportTableResponse,
-} from '../__mocks__/reportTable.mock'
+} from '../../__mocks__/reportTable.mock'
 import {
   mockLabTestsResponse,
   mockUploadFileResponse,
   mockDiagnosticReportResponse,
   diagnosticReportRequestBodyWithBasedOn,
   mockDiagnosticReportErrorResponse,
-} from '../__mocks__/selectTests.mock'
+} from '../../__mocks__/selectTests.mock'
 import PatientLabDetails from './patient-lab-details'
 import * as swr from 'swr'
-import {isAuditLogEnabledKey, loggedInUserKey} from '../constants'
+import {isAuditLogEnabledKey, loggedInUserKey} from '../../utils/constants'
 import {
   auditLogURL,
   getPayloadForPatientAccess,
   saveDiagnosticReportURL,
-} from '../utils/api-utils'
+} from '../../utils/api-utils'
 
 const mockPatientUuid = '123'
 const matchParams = {
@@ -45,7 +45,7 @@ const file = new File(['content'], 'test.pdf', {type: 'application/pdf'})
 const currentDay: string = getFormatedDate(0)
 const mockOrderTypeUuid = '8189b409-3f10-11e4-adec-0800271c1b75'
 
-jest.mock('../hooks/useOrderTypeUuidConfig', () => ({
+jest.mock('../../hooks/useOrderTypeUuidConfig', () => ({
   useOrderTypeUuidConfig: jest.fn().mockImplementation(() => ({
     orderTypeUuidConfig: mockOrderTypeUuid,
   })),

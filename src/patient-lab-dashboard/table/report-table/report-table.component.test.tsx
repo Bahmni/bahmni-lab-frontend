@@ -9,18 +9,18 @@ import {
   isAuditLogEnabledKey,
   loggedInUserKey,
   reportHeaders,
-} from '../constants'
-import {localStorageMock, verifyApiCall} from '../utils/test-utils'
+} from '../../../utils/constants'
+import {localStorageMock, verifyApiCall} from '../../../utils/test-utils'
 import ReportTable from './report-table.component'
 import {
   mockReportTableResponse,
   mockReportTableErrorResponse,
   mockEmptyReportTableResponse,
-} from '../__mocks__/reportTable.mock'
+} from '../../../__mocks__/reportTable.mock'
 import {
   auditLogURL,
   getPayloadForViewingPatientReport,
-} from '../utils/api-utils'
+} from '../../../utils/api-utils'
 
 const mockPatientUuid = 'uuid-1'
 const mockedOpenmrsFetch = openmrsFetch as jest.Mock

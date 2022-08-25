@@ -3,13 +3,13 @@ import {render, screen, waitFor} from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import React from 'react'
 import {SWRConfig} from 'swr'
-import PendingLabOrdersProvider from '../context/pending-orders-context'
-import {UploadReportProvider} from '../context/upload-report-context'
-import {localStorageMock} from '../utils/test-utils'
+import PendingLabOrdersProvider from '../../context/pending-orders-context'
+import {UploadReportProvider} from '../../context/upload-report-context'
+import {localStorageMock} from '../../utils/test-utils'
 import {
   mockDoctorNames,
   mockDoctorsListErrorResponse,
-} from '../__mocks__/doctorNames.mock'
+} from '../../__mocks__/doctorNames.mock'
 import DoctorListDropdown from './doctor-list-dropdown'
 
 const mockedOpenmrsFetch = openmrsFetch as jest.Mock

@@ -3,13 +3,13 @@ import {render, screen, waitFor} from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import React from 'react'
 import {SWRConfig} from 'swr'
-import PendingLabOrdersProvider from '../context/pending-orders-context'
-import {UploadReportProvider} from '../context/upload-report-context'
+import PendingLabOrdersProvider from '../../context/pending-orders-context'
+import {UploadReportProvider} from '../../context/upload-report-context'
 import {
   mockLabTestsErrorResponse,
   mockLabTestsPendingResponse,
   mockLabTestsResponse,
-} from '../__mocks__/selectTests.mock'
+} from '../../__mocks__/selectTests.mock'
 import SelectTest from './select-test'
 
 describe('Select Test', () => {
