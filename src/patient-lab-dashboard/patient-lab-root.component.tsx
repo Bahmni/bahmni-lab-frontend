@@ -10,7 +10,7 @@ import {
 import Home from '../home/home'
 import {UnauthorisedResponse} from '../common/unauthorized-response/unauthorised-response'
 import PatientLabDetails from './patient-lab-details/patient-lab-details'
-import { UserHasAccess } from '@openmrs/esm-framework'
+import {UserHasAccess} from '@openmrs/esm-framework'
 
 const swrConfiguration = {
   // Maximum number of retries when the backend returns an error
@@ -20,7 +20,10 @@ const swrConfiguration = {
 
 const Root: React.FC = () => {
   return (
-    <UserHasAccess privilege={privilegeLabLite} fallback={<UnauthorisedResponse/>}>
+    <UserHasAccess
+      privilege={privilegeLabLite}
+      fallback={<UnauthorisedResponse />}
+    >
       <main>
         <SWRConfig value={swrConfiguration}>
           <BrowserRouter basename={spaRoot}>

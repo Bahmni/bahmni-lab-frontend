@@ -2,7 +2,7 @@ import {render, screen, waitFor} from '@testing-library/react'
 import React from 'react'
 import {of} from 'rxjs'
 import Root from './patient-lab-root.component'
-import {mockUser} from '../__mocks__/mockUser'
+import {mockUnauthorizedUser, mockUser} from '../__mocks__/mockUser'
 
 const mockUserObservable = of(mockUser)
 jest.mock('@openmrs/esm-framework', () => ({
@@ -12,9 +12,17 @@ jest.mock('@openmrs/esm-framework', () => ({
   createUseStore: jest.fn(),
   userHasAccess: jest
     .fn()
-    .mockReturnValueOnce(true)
-    .mockReturnValueOnce(false),
+    .mockReturnValue(false),
   subscribeConnectivity: jest.fn(),
+  useSession: jest.fn(() => mockUnauthorizedUser),
+  UserHasAccess: jest
+    .fn()
+    .mockImplementationOnce(({children}) => {
+      return children
+    })
+    .mockImplementationOnce(({fallback}) => {
+      return fallback
+    }),
 }))
 
 jest.mock('react-router-dom', () => {

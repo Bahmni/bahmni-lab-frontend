@@ -14,13 +14,24 @@ import {
 } from 'carbon-components-react'
 import React, {useEffect, useMemo} from 'react'
 import useSWR, {mutate} from 'swr'
-import {defaultPageSize, headers, orderStatusCompleted} from '../../../utils/constants'
+import {
+  defaultPageSize,
+  headers,
+  orderStatusCompleted,
+} from '../../../utils/constants'
 import {usePendingLabOrderContext} from '../../../context/pending-orders-context'
 import {useOrderTypeUuidConfig} from '../../../hooks/useOrderTypeUuidConfig'
-import {LabOrdersFetchResponse, PendingLabOrders as PendingLabOrdersTable} from '../../../types'
+import {
+  LabOrdersFetchResponse,
+  PendingLabOrders as PendingLabOrdersTable,
+} from '../../../types'
 import {fetcher, getPendingLabOrdersURL} from '../../../utils/api-utils'
 
-const PendingLabOrdersTable = ({patientUuid, onButtonClick, reloadTableData}) => {
+const PendingLabOrdersTable = ({
+  patientUuid,
+  onButtonClick,
+  reloadTableData,
+}) => {
   const {orderTypeUuidConfig} = useOrderTypeUuidConfig()
   const pendingOrderUrl = getPendingLabOrdersURL(
     patientUuid,
