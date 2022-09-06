@@ -68,8 +68,9 @@
     "swr": "^1.1.2"
   },
   "devDependencies": {
-    "@openmrs/esm-framework": "^3.2.1-pre.1055",
-    "@openmrs/esm-patient-common-lib": "^3.1.1-pre.1346",
+    "@openmrs/esm-framework": "3.4.1-pre.189",
+    "@openmrs/esm-patient-common-lib": "3.2.1-pre.217",
+    "openmrs": "3.4.1-pre.189",
     "@swc/cli": "^0.1.57",
     "@swc/core": "^1.2.165",
     "@swc/jest": "^0.2.20",
@@ -113,7 +114,6 @@
     "jest-watch-typeahead": "^0.6.5",
     "jest-when": "^3.5.0",
     "node-sass": "^6.0.1",
-    "openmrs": "^3.2.1-pre.1163",
     "prettier": "^1.18.2",
     "pretty-quick": "^1.11.1",
     "react": "^16.9.0",

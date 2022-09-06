@@ -2,7 +2,7 @@ import {getCurrentUser, LoggedInUser} from '@openmrs/esm-framework'
 import React, {useEffect, useState} from 'react'
 import useSWR from 'swr'
 import BahmniLogo from '../assets/bahmniLogoFull.png'
-import {isAuditLogEnabledKey, loggedInUserKey} from '../constants'
+import {isAuditLogEnabledKey, loggedInUserKey} from '../utils/constants'
 import {
   auditLogGlobalPropertyURL,
   auditLogURL,

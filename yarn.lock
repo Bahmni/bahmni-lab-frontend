@@ -1722,20 +1722,20 @@
     "@nodelib/fs.scandir" "2.1.5"
     fastq "^1.6.0"
 
-"@openmrs/esm-api@^3.2.1-pre.1163":
-  version "3.2.1-pre.1163"
-  resolved "https://registry.yarnpkg.com/@openmrs/esm-api/-/esm-api-3.2.1-pre.1163.tgz#f7b5a829166fd9bd1e4cba317e9ca671f68d936f"
-  integrity sha512-gikGYPyLb94upcp+AzQd9ECd2rCWzFWf2BSK+TQn8yCTq+HLl0u62mYzW/bEj03dPZ45RUiwYK5m/i+Dbd5A7A==
+"@openmrs/esm-api@^3.4.1-pre.189":
+  version "3.4.1-pre.189"
+  resolved "https://registry.yarnpkg.com/@openmrs/esm-api/-/esm-api-3.4.1-pre.189.tgz#e782a9aed5f93f1c52daf2cceb13c92294f9cb87"
+  integrity sha512-OMLUkZzdu8xAnm8xif3qyqH9dChR9niksHFssI3zA3eW1hx9C8EOgphlenvgGduBQPjpCm8HF7NL0VcM/KyEUw==
   dependencies:
-    fhir.js "0.0.22"
+    "@types/fhir" "0.0.31"
     lodash-es "^4.17.21"
 
-"@openmrs/esm-app-shell@^3.2.1-pre.1163":
-  version "3.2.1-pre.1163"
-  resolved "https://registry.yarnpkg.com/@openmrs/esm-app-shell/-/esm-app-shell-3.2.1-pre.1163.tgz#dd1bba0c3c525f3a4e9639f03756cdaee8ac2018"
-  integrity sha512-8VqNh5zpWzHQuWN2RbHAkVjSg2QBUs9hBPDg4sy7sPnCgcUhnLSHOcixx0x+uR3s9gRGLkloUkMrH4Ge+qfzCQ==
+"@openmrs/esm-app-shell@3.4.1-pre.189":
+  version "3.4.1-pre.189"
+  resolved "https://registry.yarnpkg.com/@openmrs/esm-app-shell/-/esm-app-shell-3.4.1-pre.189.tgz#817bdc166622bc3f11eac7b4d410ad5a269e8997"
+  integrity sha512-6qzopzPItCltBz9/wHKu5SwBZy/erYqqZCy2evY+SGJawS8UYWPsOATscxx2BV1BfOvjpksAipjxMzmjPh3Z6w==
   dependencies:
-    "@openmrs/esm-framework" "^3.2.1-pre.1163"
+    "@openmrs/esm-framework" "3.4.1-pre.189"
     carbon-components "10.31.0"
     carbon-icons "7.0.7"
     dayjs "^1.10.4"
@@ -1758,109 +1758,109 @@
     workbox-strategies "^6.1.5"
     workbox-window "^6.1.5"
 
-"@openmrs/esm-breadcrumbs@^3.2.1-pre.1163":
-  version "3.2.1-pre.1163"
-  resolved "https://registry.yarnpkg.com/@openmrs/esm-breadcrumbs/-/esm-breadcrumbs-3.2.1-pre.1163.tgz#b2953c313556e494e2ca5557e7dc731123fbca35"
-  integrity sha512-feUvLLQQ06GDtjjgJfOapagwkIzq2eZTfwZGZptdPZkYbPxOdZKzfWWonEEK5oJtAphLN83wCL0dF6CgxYUbwA==
+"@openmrs/esm-breadcrumbs@^3.4.1-pre.189":
+  version "3.4.1-pre.189"
+  resolved "https://registry.yarnpkg.com/@openmrs/esm-breadcrumbs/-/esm-breadcrumbs-3.4.1-pre.189.tgz#176d0abf9ad8563d110476797eec819bc7ea5f48"
+  integrity sha512-NrzngRqthCEROSGVy1OMWH+wKSG+yqNXPIQhzrfgVzRjEQw/D6uCogOwftx9rY2VLjE4oQ/seENqyqAydaB9EQ==
   dependencies:
     path-to-regexp "6.1.0"
 
-"@openmrs/esm-config@^3.2.1-pre.1163":
-  version "3.2.1-pre.1163"
-  resolved "https://registry.yarnpkg.com/@openmrs/esm-config/-/esm-config-3.2.1-pre.1163.tgz#8d8c33e71170946fd3c893ef1992365efb137fa5"
-  integrity sha512-ivTgo2tpKJq/rN9ZRuF7/OObdAnIrHbdvaTCMdrhGBiIPuuvh0Ybi2riWlz5J5Ouv2H0oUL8EVtuX62h4tCmQw==
+"@openmrs/esm-config@^3.4.1-pre.189":
+  version "3.4.1-pre.189"
+  resolved "https://registry.yarnpkg.com/@openmrs/esm-config/-/esm-config-3.4.1-pre.189.tgz#f6661ad35544e13bb0f60ca4f2b61acbc933ead0"
+  integrity sha512-oNpWdwrW0NmGW06QwnLP0jR8VqIj1WvbkunS3Sgia/b9mRlzf2IdKU0/JfzD7SJODDY0gonWbxUKoeMBA2CxmA==
   dependencies:
     ramda "^0.26.1"
 
-"@openmrs/esm-error-handling@^3.2.1-pre.1163":
-  version "3.2.1-pre.1163"
-  resolved "https://registry.yarnpkg.com/@openmrs/esm-error-handling/-/esm-error-handling-3.2.1-pre.1163.tgz#2a0faf55a81c3e5a0a5153752f03c717246a68f6"
-  integrity sha512-3brwS4Wk6b/lkEce32l0h2izJC+Xv+AFO+/O8peRRS/mbvj342l3PVF7UPx8XLURBfo/wAjH+nuKcFRP6Nthpg==
+"@openmrs/esm-error-handling@^3.4.1-pre.189":
+  version "3.4.1-pre.189"
+  resolved "https://registry.yarnpkg.com/@openmrs/esm-error-handling/-/esm-error-handling-3.4.1-pre.189.tgz#0ad8824b8029b928048595ac5ee7c4c993a30725"
+  integrity sha512-vwQnOL3EcGYs7N7yMPUgfE2AlnxnRVnQCq75/8hTIvN5BVQugDArO4xndu2o7+dE1GW1QK4WM/r3XQEyJLKCXQ==
 
-"@openmrs/esm-extensions@^3.2.1-pre.1163":
-  version "3.2.1-pre.1163"
-  resolved "https://registry.yarnpkg.com/@openmrs/esm-extensions/-/esm-extensions-3.2.1-pre.1163.tgz#b38b97fb903f68a99a5ef22c691354e71937a48a"
-  integrity sha512-RGbHywvoZ0JLZddpkxtF2nrnE7BTQ3DGzbrBPA250x++H1cmFdJgx6VjaSO4IxbOBEukaC+F7jaDQEdF0IFkxw==
+"@openmrs/esm-extensions@^3.4.1-pre.189":
+  version "3.4.1-pre.189"
+  resolved "https://registry.yarnpkg.com/@openmrs/esm-extensions/-/esm-extensions-3.4.1-pre.189.tgz#88117782e9c70472dbe60997b2b5bd0d53971443"
+  integrity sha512-XBQ3cSf1k1z7z8rq/CuE883uUUhvOtfVAJNKUmYX7kz5wuvanxLQkahTlxWWeL/5W7BjvpnNyzLhMnara53MBA==
   dependencies:
     lodash-es "^4.17.21"
 
-"@openmrs/esm-framework@^3.2.1-pre.1055", "@openmrs/esm-framework@^3.2.1-pre.1163":
-  version "3.2.1-pre.1163"
-  resolved "https://registry.yarnpkg.com/@openmrs/esm-framework/-/esm-framework-3.2.1-pre.1163.tgz#e6318eda8e90ea49be95ba0d0ceb95bbb3f3b054"
-  integrity sha512-pnuJ1EocbaPoZLab2zsGgDXbRNzPs3hPMXFe/vVgHp+bd/UEQr84Qrz0RgcKy7uI1Regg/FeP1RjPyUP5cpc9A==
+"@openmrs/esm-framework@3.4.1-pre.189":
+  version "3.4.1-pre.189"
+  resolved "https://registry.yarnpkg.com/@openmrs/esm-framework/-/esm-framework-3.4.1-pre.189.tgz#03e89717c4e5f60b163fd1fd19b4d52e04dd5853"
+  integrity sha512-B6aN3Lgt1c31EeFztJcByMnJf4VXbHCYguPezh558lgyaGpGUlUG1KrFwMjcOZ2JMs6U0U3rA85TLUthjZKa4g==
   dependencies:
-    "@openmrs/esm-api" "^3.2.1-pre.1163"
-    "@openmrs/esm-breadcrumbs" "^3.2.1-pre.1163"
-    "@openmrs/esm-config" "^3.2.1-pre.1163"
-    "@openmrs/esm-error-handling" "^3.2.1-pre.1163"
-    "@openmrs/esm-extensions" "^3.2.1-pre.1163"
-    "@openmrs/esm-globals" "^3.2.1-pre.1163"
-    "@openmrs/esm-offline" "^3.2.1-pre.1163"
-    "@openmrs/esm-react-utils" "^3.2.1-pre.1163"
-    "@openmrs/esm-state" "^3.2.1-pre.1163"
-    "@openmrs/esm-styleguide" "^3.2.1-pre.1163"
-    "@openmrs/esm-utils" "^3.2.1-pre.1163"
+    "@openmrs/esm-api" "^3.4.1-pre.189"
+    "@openmrs/esm-breadcrumbs" "^3.4.1-pre.189"
+    "@openmrs/esm-config" "^3.4.1-pre.189"
+    "@openmrs/esm-error-handling" "^3.4.1-pre.189"
+    "@openmrs/esm-extensions" "^3.4.1-pre.189"
+    "@openmrs/esm-globals" "^3.4.1-pre.189"
+    "@openmrs/esm-offline" "^3.4.1-pre.189"
+    "@openmrs/esm-react-utils" "^3.4.1-pre.189"
+    "@openmrs/esm-state" "^3.4.1-pre.189"
+    "@openmrs/esm-styleguide" "^3.4.1-pre.189"
+    "@openmrs/esm-utils" "^3.4.1-pre.189"
     dayjs "^1.10.7"
 
-"@openmrs/esm-globals@^3.2.1-pre.1163":
-  version "3.2.1-pre.1163"
-  resolved "https://registry.yarnpkg.com/@openmrs/esm-globals/-/esm-globals-3.2.1-pre.1163.tgz#0acdf446943155e920bf0e9b17e78c83c26a5078"
-  integrity sha512-6QYw24ml82wJ6O6TfFBy7CBVrKHAepoxYRDQCUkGiSo5R5BAi3L/dFUHFDFQ7Y/sGhr8+LnXRmtFURA2eEZhxA==
+"@openmrs/esm-globals@^3.4.1-pre.189":
+  version "3.4.1-pre.189"
+  resolved "https://registry.yarnpkg.com/@openmrs/esm-globals/-/esm-globals-3.4.1-pre.189.tgz#77755f829c6406bfac9d445cbc3a235d5d30e622"
+  integrity sha512-Yug3/0J728sk9jcZbIzoVgC70YlxKV0ilmNQjAsIlqVOcS3854xlHDeL53/yc/w3M2zK07+Ql09Hi5FESkcbOQ==
 
-"@openmrs/esm-offline@^3.2.1-pre.1163":
-  version "3.2.1-pre.1163"
-  resolved "https://registry.yarnpkg.com/@openmrs/esm-offline/-/esm-offline-3.2.1-pre.1163.tgz#4914d136745772e3a5dc153abc53c0969e65d905"
-  integrity sha512-5tOBVK0CAssjn16sb2PribHgfKYpqGjdt9pbibnudpueT9/iammbwa7x9oCTK/22L9bYtYT8W+RczRRiiKF5Fw==
+"@openmrs/esm-offline@^3.4.1-pre.189":
+  version "3.4.1-pre.189"
+  resolved "https://registry.yarnpkg.com/@openmrs/esm-offline/-/esm-offline-3.4.1-pre.189.tgz#e1bbdf417daba9240d063ef8c9edb1c3ddc1430b"
+  integrity sha512-6rBHOyaBQohrMj96d38DEesIzD9s9Hka7yMY6VwlUjMkdH+7Ui3SpWeB8ZfbPXiLPtMi80C9hTflpXVMbGTgzg==
   dependencies:
     dexie "^3.0.3"
     lodash-es "4.17.21"
     uuid "^8.3.2"
     workbox-window "^6.1.5"
 
-"@openmrs/esm-patient-common-lib@^3.1.1-pre.1346":
-  version "3.1.1-pre.1554"
-  resolved "https://registry.yarnpkg.com/@openmrs/esm-patient-common-lib/-/esm-patient-common-lib-3.1.1-pre.1554.tgz#2fe71081830bf1a3939653eb650c8009685ba8c0"
-  integrity sha512-VrARC6oTkZKktmXa5xf2oLWK1KfQdB79gxm7dPWBts0dSi3uLWaVOzdbrwOanc4evXHJg5LVy8VRrqhPYLB7Nw==
+"@openmrs/esm-patient-common-lib@3.2.1-pre.217":
+  version "3.2.1-pre.217"
+  resolved "https://registry.yarnpkg.com/@openmrs/esm-patient-common-lib/-/esm-patient-common-lib-3.2.1-pre.217.tgz#40e6ff4805196189d2fc7d5ede5917821b394083"
+  integrity sha512-W1ZmhEXxMOhC3vsSLuGJfgnd6hoDiAS1FQyqbF2cXVuEeLs2s2/l4Ha1L8D+Y07T4Jipgox7nZEHoMBGkvzwbA==
   dependencies:
     lodash-es "^4.17.15"
     uuid "^8.3.2"
 
-"@openmrs/esm-react-utils@^3.2.1-pre.1163":
-  version "3.2.1-pre.1163"
-  resolved "https://registry.yarnpkg.com/@openmrs/esm-react-utils/-/esm-react-utils-3.2.1-pre.1163.tgz#0fd1c709c1fa2ed8dbab7ba23a29677591721e73"
-  integrity sha512-1eDKxFvg/DkZEqIUIecvFnx2JOuU/2XkcJ64EYeURAj3Xg8M6e9Uy1fVpsQd5iTYkPfjQ9tVc4ldeF43RmD2cQ==
+"@openmrs/esm-react-utils@^3.4.1-pre.189":
+  version "3.4.1-pre.189"
+  resolved "https://registry.yarnpkg.com/@openmrs/esm-react-utils/-/esm-react-utils-3.4.1-pre.189.tgz#dc2f35b472819fd388cb85320660fe6abe5ad989"
+  integrity sha512-+IJb2MqodjUVhqy1KqA3xl7qbkl+hQQbRb//tT1U8UQTccfX1AHaJYudqDCvxmOD9D3sqJwYx66MieJYFgGEhw==
   dependencies:
     lodash-es "^4.17.21"
     single-spa-react "^4.1.1"
     swr "^1.2.2"
 
-"@openmrs/esm-state@^3.2.1-pre.1163":
-  version "3.2.1-pre.1163"
-  resolved "https://registry.yarnpkg.com/@openmrs/esm-state/-/esm-state-3.2.1-pre.1163.tgz#6bf34f1bddad7ee4f9743860a44cb49fa66229db"
-  integrity sha512-31HmwNUXnCETkqw7TMhXrnl+VpC6kJNsw0WcYObSCYixYkG35LekuNZpLZNddyJF5u+0WQB26JPJzwF8O3/JOg==
+"@openmrs/esm-state@^3.4.1-pre.189":
+  version "3.4.1-pre.189"
+  resolved "https://registry.yarnpkg.com/@openmrs/esm-state/-/esm-state-3.4.1-pre.189.tgz#a28b9cbd13461a232a069bead87e9c912912d4b9"
+  integrity sha512-fJlonmwDuN0GurHr1gbFO/0kVqBBnLdu6xiiCeQTFgCLtGwXexRveiClbFLJDrNFV9MehIv1K9gOJO+Kx6lmpQ==
   dependencies:
     unistore "^3.5.2"
 
-"@openmrs/esm-styleguide@^3.2.1-pre.1163":
-  version "3.2.1-pre.1163"
-  resolved "https://registry.yarnpkg.com/@openmrs/esm-styleguide/-/esm-styleguide-3.2.1-pre.1163.tgz#9955d626f793722d2f4b3e145003060d5d2ae276"
-  integrity sha512-YcLBcMt+dn4cGF2ZmKFmZqu3CseGkDH4eAnw+HqmMsIFEmUB5h7TSt6Mx7IGF1Z/mHH7KUj0IOmURsmn7KsRWA==
+"@openmrs/esm-styleguide@^3.4.1-pre.189":
+  version "3.4.1-pre.189"
+  resolved "https://registry.yarnpkg.com/@openmrs/esm-styleguide/-/esm-styleguide-3.4.1-pre.189.tgz#8f65138e60a73d6d843dee25addebb0478f06cdc"
+  integrity sha512-6flum8QKQod54D4SldseZb3iVlgvBaYgkiwuq5LHq38tuajaaR3l1+87KHVxyv0uk/icBbd1pmleou4h2NlKwg==
   dependencies:
     "@carbon/charts" "^0.41.57"
     carbon-components-react "7.31.0"
     lodash-es "^4.17.21"
 
-"@openmrs/esm-utils@^3.2.1-pre.1163":
-  version "3.2.1-pre.1163"
-  resolved "https://registry.yarnpkg.com/@openmrs/esm-utils/-/esm-utils-3.2.1-pre.1163.tgz#f77297f2ce2eb9c97e2066e7425f957b9fa43241"
-  integrity sha512-bzXf5wosU+yg2wYxy14MPxSmlOAzLMYERg70ztv60ceVj+GBvx8OWKmZaWVORBz6Mm0NQBk4x0Rx+wLXg42L2w==
+"@openmrs/esm-utils@^3.4.1-pre.189":
+  version "3.4.1-pre.189"
+  resolved "https://registry.yarnpkg.com/@openmrs/esm-utils/-/esm-utils-3.4.1-pre.189.tgz#2007e45b063e3a524cb3526d0f50f79510fd61b5"
+  integrity sha512-6koBdYmR9KKYTc/GzvVuJX+/EyZKf20RFxQkSh0+BbuX+Ov9CbPkhEI4m8jk2narL3U5JcfD3Z2uBp6TBalBzg==
   dependencies:
     semver "^7.3.2"
 
-"@openmrs/webpack-config@^3.2.1-pre.1163":
-  version "3.2.1-pre.1163"
-  resolved "https://registry.yarnpkg.com/@openmrs/webpack-config/-/webpack-config-3.2.1-pre.1163.tgz#482c8d703b2329a6e4f857b006f07c1697e30942"
-  integrity sha512-1wAvA2fiP4vatmhQR074ebcIDVHCdqjcHsWg23yigSodT/LYZW5bGYjfEBQ3/557vmy4DyM75/fbqoOEtpbjSA==
+"@openmrs/webpack-config@3.4.1-pre.189":
+  version "3.4.1-pre.189"
+  resolved "https://registry.yarnpkg.com/@openmrs/webpack-config/-/webpack-config-3.4.1-pre.189.tgz#d5792f618b3b795c9b386bbde077caaffdadf4d1"
+  integrity sha512-6/ew4cWwzXIVgKw0kSx3mFK+KAdot234FHnc/sceq6bDQb/0sQRhU3mTH8F6y8en0PGh6Ou3I2bCeMxi14Ub3Q==
   dependencies:
     "@babel/core" "^7.17.9"
     "@babel/types" "^7.17.0"
@@ -2249,10 +2249,10 @@
     "@types/qs" "*"
     "@types/serve-static" "*"
 
-"@types/fhir@0.0.30":
-  version "0.0.30"
-  resolved "https://registry.yarnpkg.com/@types/fhir/-/fhir-0.0.30.tgz#a0aec3b2d7dd2a7584474dac446ede5f9a4d7a13"
-  integrity sha512-vDU62tUFeAYBVQThiWAfGd6D25TiLLDDS5pV19vim52FLpwWTBliLMvotbF4D/U+BmjxBKIuHGZgFnoh/HtV5g==
+"@types/fhir@0.0.31":
+  version "0.0.31"
+  resolved "https://registry.yarnpkg.com/@types/fhir/-/fhir-0.0.31.tgz#067392154124125dccc97e51a4297d448467c211"
+  integrity sha512-YF6+X+hMYLvNGB5r8LxGKPMrSqqFkyLefTQZ/8bAnr0XW8Xc2Mgf8OJ06+cj1b5ftJoeLblHpIYgKdhXdFAzrw==
 
 "@types/glob@^7.1.1":
   version "7.2.0"
@@ -2814,11 +2814,6 @@
   version "4.2.2"
   resolved "https://registry.yarnpkg.com/@xtuc/long/-/long-4.2.2.tgz#d291c6a4e97989b5c61d9acf396ae4fe133a718d"
   integrity sha512-NuHqBY1PB/D8xU6s/thBgOAiAP7HOYDQ32+BFZILJ8ivkUkAHQnWfn6WhL79Owj1qmUnoN/YPhktdIoucipkAQ==
-
-Base64@~0.3.0:
-  version "0.3.0"
-  resolved "https://registry.yarnpkg.com/Base64/-/Base64-0.3.0.tgz#6da261a4e80d4fa0f5c684254e5bccd16bbdce9f"
-  integrity sha1-baJhpOgNT6D1xoQlTlvM0Wu9zp8=
 
 abab@^2.0.3, abab@^2.0.5:
   version "2.0.6"
@@ -5597,17 +5592,6 @@ fecha@^4.2.0:
   resolved "https://registry.yarnpkg.com/fecha/-/fecha-4.2.1.tgz#0a83ad8f86ef62a091e22bb5a039cd03d23eecce"
   integrity sha512-MMMQ0ludy/nBs1/o0zVOiKTpG7qMbonKUzjJgQFEuvq6INZ1OraKPRAWkBq5vlKLOUMpmNYG1JoN3oDPUQ9m3Q==
 
-fhir.js@0.0.22:
-  version "0.0.22"
-  resolved "https://registry.yarnpkg.com/fhir.js/-/fhir.js-0.0.22.tgz#5aea18d86ece91c1f590c8ba2cff79692bd1f924"
-  integrity sha512-+DUoaVMhxiDC53VTl41cBoJnp3NGaGQhQCi7HtXnGlfci5pmr8hQTYfd0axCVmKCrN5I28+/nhC8ANv2hVLFUg==
-  dependencies:
-    "@types/fhir" "0.0.30"
-    Base64 "~0.3.0"
-    merge "^1.2.1"
-    q "^1.4.1"
-    request "^2.88.0"
-
 figures@^3.0.0:
   version "3.2.0"
   resolved "https://registry.yarnpkg.com/figures/-/figures-3.2.0.tgz#625c18bd293c604dc4a8ddb2febf0c88341746af"
@@ -8097,11 +8081,6 @@ merge2@^1.3.0, merge2@^1.4.1:
   resolved "https://registry.yarnpkg.com/merge2/-/merge2-1.4.1.tgz#4368892f885e907455a6fd7dc55c0c9d404990ae"
   integrity sha512-8q7VEgMJW4J8tcfVPy8g09NcQwZdbwFEqhe/WZkoIzjn/3TGDwtOCYtXGxA3O8tPzpczCCDgv+P2P5y00ZJOOg==
 
-merge@^1.2.1:
-  version "1.2.1"
-  resolved "https://registry.yarnpkg.com/merge/-/merge-1.2.1.tgz#38bebf80c3220a8a487b6fcfb3941bb11720c145"
-  integrity sha512-VjFo4P5Whtj4vsLzsYBu5ayHhoHJ0UqNm7ibvShmbmoz7tGi0vXaoJbGdB+GmDMLUdg8DpQXEIeVDAe8MaABvQ==
-
 methods@~1.1.2:
   version "1.1.2"
   resolved "https://registry.yarnpkg.com/methods/-/methods-1.1.2.tgz#5529a4d67654134edcc5266656835b0f851afcee"
@@ -8670,14 +8649,14 @@ opener@^1.5.2:
   resolved "https://registry.yarnpkg.com/opener/-/opener-1.5.2.tgz#5d37e1f35077b9dcac4301372271afdeb2a13598"
   integrity sha512-ur5UIdyw5Y7yEj9wLzhqXiy6GZ3Mwx0yGI+5sMn2r0N0v3cKJvUmFH5yPP+WXh9e0xfyzyJX95D8l088DNFj7A==
 
-openmrs@^3.2.1-pre.1163:
-  version "3.2.1-pre.1163"
-  resolved "https://registry.yarnpkg.com/openmrs/-/openmrs-3.2.1-pre.1163.tgz#d731d6d4a66a509e0a398e7371260a17fa04d984"
-  integrity sha512-s2vlaPam5p+FZA85QtX4cRKj/UlSW+sZtHKG5UgQNAeDkI1JuDcWZ+3tKPj/0NkAVzZw9r3o6HsVVAcZ/nqq7w==
+openmrs@3.4.1-pre.189:
+  version "3.4.1-pre.189"
+  resolved "https://registry.yarnpkg.com/openmrs/-/openmrs-3.4.1-pre.189.tgz#17a7c7dc51f38c0b811f3fd3fdda7b3b152f4a0c"
+  integrity sha512-XmIW2YQWx9NbjSzb2jxuJJRSMRLe2YuUmI6hCedyNHhV0pFKmJg337Av34h1NV6+pqPpBeOiQw9olZPvh3U02Q==
   dependencies:
     "@babel/preset-typescript" "^7.16.7"
-    "@openmrs/esm-app-shell" "^3.2.1-pre.1163"
-    "@openmrs/webpack-config" "^3.2.1-pre.1163"
+    "@openmrs/esm-app-shell" "3.4.1-pre.189"
+    "@openmrs/webpack-config" "3.4.1-pre.189"
     "@types/react" "^16.9.46"
     "@types/systemjs" "^6.1.0"
     autoprefixer "^10.4.2"
@@ -9479,11 +9458,6 @@ punycode@^2.1.0, punycode@^2.1.1:
   version "2.1.1"
   resolved "https://registry.yarnpkg.com/punycode/-/punycode-2.1.1.tgz#b58b010ac40c22c5657616c8d2c2c02c7bf479ec"
   integrity sha512-XRsRjdf+j5ml+y/6GKHPZbrF/8p2Yga0JPtdqTIY2Xe5ohJPD9saDJJLPvp9+NSBprVvevdXZybnj2cv8OEd0A==
-
-q@^1.4.1:
-  version "1.5.1"
-  resolved "https://registry.yarnpkg.com/q/-/q-1.5.1.tgz#7e32f75b41381291d04611f1bf14109ac00651d7"
-  integrity sha1-fjL3W0E4EpHQRhHxvxQQmsAGUdc=
 
 qs@6.9.7:
   version "6.9.7"
