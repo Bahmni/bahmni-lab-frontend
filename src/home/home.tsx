@@ -1,15 +1,15 @@
-import {getCurrentUser, LoggedInUser} from '@openmrs/esm-framework'
-import React, {useEffect, useState} from 'react'
+import { getCurrentUser, LoggedInUser } from '@openmrs/esm-framework'
+import React, { useEffect, useState } from 'react'
 import useSWR from 'swr'
 import BahmniLogo from '../assets/bahmniLogoFull.png'
-import {isAuditLogEnabledKey, loggedInUserKey} from '../utils/constants'
 import {
   auditLogGlobalPropertyURL,
-  auditLogURL,
+  auditLogURL, configUrl, encounterTypeUrl,
   fetcher,
   getPayloadForUserLogin,
-  postApiCall,
+  postApiCall
 } from '../utils/api-utils'
+import { isAuditLogEnabledKey, loggedInUserKey } from '../utils/constants'
 import classes from './home.scss'
 interface AuditLogResponse {
   data: boolean
@@ -25,6 +25,38 @@ const Home = () => {
     revalidateOnFocus: false,
     revalidateOnReconnect: false,
   })
+
+  const {data: configResponse} = useSWR(configUrl, fetcher, {
+    revalidateIfStale: false,
+    revalidateOnFocus: false,
+    revalidateOnReconnect: false,
+  })
+
+  const {data: encounterTypeResponse} = useSWR(encounterTypeUrl, fetcher, {
+    revalidateIfStale: false,
+    revalidateOnFocus: false,
+    revalidateOnReconnect: false,
+  })
+
+  useEffect(() => {
+    if (configResponse && !localStorage.getItem('defaultVisitType')) {
+      localStorage.setItem(
+        'defaultVisitType',
+        configResponse.data.config.defaultVisitType,
+      )
+    }
+    if (encounterTypeResponse && !localStorage.getItem('encounterTypeUuids')) {
+      let encounterUuid = []
+      encounterTypeResponse.data.results.map(res => {
+        if (res.display === 'LAB_RESULT')
+          encounterUuid.push({"LAB_RESULT": res.uuid})
+        if (res.display === 'Patient Document')
+          encounterUuid.push({"Patient Document": res.uuid})
+      })
+      if (encounterUuid.length > 0)
+        localStorage.setItem('encounterUuids', JSON.stringify(encounterUuid))
+    }
+  }, [configResponse, encounterTypeResponse])
 
   useEffect(() => {
     const subscription = getCurrentUser({

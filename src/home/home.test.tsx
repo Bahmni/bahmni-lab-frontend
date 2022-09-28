@@ -1,15 +1,17 @@
-import {openmrsFetch} from '@openmrs/esm-framework'
-import {render, screen, waitFor} from '@testing-library/react'
+import { openmrsFetch } from '@openmrs/esm-framework'
+import { render, screen, waitFor } from '@testing-library/react'
 import React from 'react'
-import {of} from 'rxjs'
-import {SWRConfig} from 'swr'
+import { of } from 'rxjs'
+import { SWRConfig } from 'swr'
 import {
   auditLogGlobalPropertyURL,
   auditLogURL,
-  getPayloadForUserLogin,
+  getPayloadForUserLogin
 } from '../utils/api-utils'
-import {verifyApiCall} from '../utils/test-utils'
-import {mockUser} from '../__mocks__/mockUser'
+import { verifyApiCall } from '../utils/test-utils'
+import { mockConfigResponse } from '../__mocks__/config.mock'
+import { mockEncounterTypeResponse } from '../__mocks__/encounter.mock'
+import { mockUser } from '../__mocks__/mockUser'
 import Home from './home'
 
 const mockUserObservable = of(mockUser)
@@ -19,6 +21,11 @@ jest.mock('@openmrs/esm-framework', () => ({
   subscribeConnectivity: jest.fn(),
 }))
 describe('home page', () => {
+  let mockedOpenmrsFetch = openmrsFetch as jest.Mock
+  mockedOpenmrsFetch
+    .mockReturnValueOnce({data: true})
+    .mockReturnValueOnce(mockConfigResponse)
+    .mockReturnValue(mockEncounterTypeResponse)
   it('should show home page', () => {
     render(
       <SWRConfig value={{provider: () => new Map()}}>
@@ -42,14 +49,17 @@ describe('home page - Auditing', () => {
   })
 
   it('should update audit logs when user enters lab lite', async () => {
-    mockedOpenmrsFetch.mockReturnValue({data: true})
+    mockedOpenmrsFetch
+      .mockReturnValueOnce({data: true})
+      .mockReturnValueOnce(mockConfigResponse)
+      .mockReturnValue(mockEncounterTypeResponse)
 
     render(
       <SWRConfig value={{provider: () => new Map()}}>
         <Home />
       </SWRConfig>,
     )
-    await waitFor(() => expect(mockedOpenmrsFetch).toBeCalledTimes(2))
+    await waitFor(() => expect(mockedOpenmrsFetch).toBeCalledTimes(4))
 
     const auditMessagePayload = getPayloadForUserLogin(mockUser.username)
 
@@ -58,7 +68,10 @@ describe('home page - Auditing', () => {
   })
 
   it('should not update audit logs when audit log property is disabled', async () => {
-    mockedOpenmrsFetch.mockReturnValueOnce({data: false})
+    mockedOpenmrsFetch
+      .mockReturnValueOnce({data: false})
+      .mockReturnValueOnce(mockConfigResponse)
+      .mockReturnValueOnce(mockEncounterTypeResponse)
 
     render(
       <SWRConfig value={{provider: () => new Map()}}>
@@ -66,7 +79,7 @@ describe('home page - Auditing', () => {
       </SWRConfig>,
     )
 
-    await waitFor(() => expect(mockedOpenmrsFetch).toBeCalledTimes(1))
+    await waitFor(() => expect(mockedOpenmrsFetch).toBeCalledTimes(3))
 
     verifyApiCall(auditLogGlobalPropertyURL, 'GET')
   })

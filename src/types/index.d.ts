@@ -16,7 +16,7 @@ export interface LabOrdersFetchResponse {
 }
 export interface DoctorDetailsData {
   uuid: string
-  display: string
+  person: {display: string}
   attributes: Array<Attribute>
 }
 
@@ -140,4 +140,32 @@ export interface ImagePreviewComponentProps {
   fileName: string
   auditMessage: AuditMessage
   postAuditMessage: Function
+}
+
+export interface BahmniEncounterResponseType {
+  bahmniDiagnoses: []
+  observations: []
+  accessionNotes: []
+  encounterType: string
+  visitType: string
+  patientId: string
+  reason: null
+  patientProgramUuid: null
+  visitUuid: string
+  patientUuid: string
+  associatedToPatientProgram: boolean
+  encounterTypeUuid: string
+  visitTypeUuid: string
+  drugOrders: []
+  locationUuid: string
+  encounterDateTime: Date
+  encounterUuid: string
+  disposition: null
+  locationName: string
+  orders: []
+  providers: []
+  context: {}
+  extensions: {
+    mdrtbSpecimen: []
+  }
 }

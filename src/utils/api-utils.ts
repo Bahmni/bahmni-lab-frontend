@@ -18,14 +18,20 @@ export const getLabTests = () =>
 export const getOrderTypeUuid = '/ws/rest/v1/ordertype'
 
 export const uploadDocumentURL =
-  '/ws/rest/v1/bahmnicore/visitDocument/uploadDocument'
+'/ws/rest/v1/bahmnicore/visitDocument/uploadDocument'
 
 export const saveDiagnosticReportURL = '/ws/fhir2/R4/DiagnosticReport'
 
 export const auditLogURL = '/ws/rest/v1/auditlog'
 
 export const auditLogGlobalPropertyURL =
-  '/ws/rest/v1/bahmnicore/sql/globalproperty?property=bahmni.enableAuditLog'
+'/ws/rest/v1/bahmnicore/sql/globalproperty?property=bahmni.enableAuditLog'
+
+export const configUrl = '/../bahmni_config/openmrs/apps/registration/app.json'
+
+export const encounterTypeUrl = '/ws/rest/v1/encountertype'
+
+export const bahmniEncounterUrl = '/ws/rest/v1/bahmnicore/bahmniencounter'
 
 export const getPayloadForUserLogin = (username: string): AuditMessage => ({
   eventType: 'ACCESSED_LAB_ENTRY',
