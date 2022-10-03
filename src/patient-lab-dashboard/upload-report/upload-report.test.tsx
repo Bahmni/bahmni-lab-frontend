@@ -33,7 +33,7 @@ describe('Upload Report', () => {
   beforeEach(() => {
     Object.defineProperty(window.document, 'cookie', {
       writable: true,
-      value: 'bahmni.user.location={uuid:locationuuid}',
+      value: 'bahmni.user.location={"uuid":"locationuuid123"}',
     })
     Object.defineProperty(window, 'localStorage', {value: localStorageMock})
     localStorage.setItem(
@@ -335,7 +335,6 @@ describe('Upload Report', () => {
       expect(mockedOpenmrsFetch).toBeCalledTimes(6)
     })
     verifyApiCall(uploadDocumentURL, 'POST', uploadFileRequestBody)
-    verifyApiCall(bahmniEncounterUrl,'POST')
     verifyApiCall(
       saveDiagnosticReportURL,
       'POST',
@@ -430,7 +429,7 @@ describe('Upload Report', () => {
       expect(mockedOpenmrsFetch).toBeCalledTimes(5)
     })
     verifyApiCall(uploadDocumentURL, 'POST', uploadFileRequestBody)
-    verifyApiCall(bahmniEncounterUrl,'POST')
+    verifyApiCall(bahmniEncounterUrl, 'POST')
     verifyApiCall(
       saveDiagnosticReportURL,
       'POST',

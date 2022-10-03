@@ -143,29 +143,31 @@ export interface ImagePreviewComponentProps {
 }
 
 export interface BahmniEncounterResponseType {
-  bahmniDiagnoses: []
-  observations: []
-  accessionNotes: []
-  encounterType: string
-  visitType: string
-  patientId: string
-  reason: null
-  patientProgramUuid: null
-  visitUuid: string
-  patientUuid: string
-  associatedToPatientProgram: boolean
-  encounterTypeUuid: string
-  visitTypeUuid: string
-  drugOrders: []
-  locationUuid: string
-  encounterDateTime: Date
-  encounterUuid: string
-  disposition: null
-  locationName: string
-  orders: []
-  providers: []
-  context: {}
-  extensions: {
-    mdrtbSpecimen: []
+  data: {
+    bahmniDiagnoses: []
+    observations: []
+    accessionNotes: []
+    encounterType: string
+    visitType: string
+    patientId: string
+    reason: null
+    patientProgramUuid: null
+    visitUuid: string
+    patientUuid: string
+    associatedToPatientProgram: boolean
+    encounterTypeUuid: string
+    visitTypeUuid: string
+    drugOrders: []
+    locationUuid: string
+    encounterDateTime: number
+    encounterUuid: string
+    disposition: null
+    locationName: string
+    orders: []
+    providers: []
+    context: {}
+    extensions: {
+      mdrtbSpecimen: []
+    }
   }
 }

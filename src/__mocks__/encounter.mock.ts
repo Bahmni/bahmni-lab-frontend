@@ -1,28 +1,32 @@
-export const mockBahmniEncounterResponse = {
-  bahmniDiagnoses: [],
-  observations: [],
-  accessionNotes: [],
-  encounterType: 'Patient Document',
-  visitType: null,
-  patientId: 'GAN5678',
-  reason: null,
-  patientProgramUuid: null,
-  visitUuid: 'visitUuid123',
-  patientUuid: '123',
-  associatedToPatientProgram: false,
-  encounterTypeUuid: 'PatientdocumentUuid',
-  visitTypeUuid: 'visitTypeUuidc1b75',
-  drugOrders: [],
-  locationUuid: 'locationuuid123',
-  encounterDateTime: 1664200113000,
-  encounterUuid: 'encounterUuid567',
-  disposition: null,
-  locationName: 'General Ward',
-  orders: [],
-  providers: [],
-  context: {},
-  extensions: {
-    mdrtbSpecimen: [],
+import {BahmniEncounterResponseType} from '../types'
+
+export const mockBahmniEncounterResponse: BahmniEncounterResponseType = {
+  data: {
+    bahmniDiagnoses: [],
+    observations: [],
+    accessionNotes: [],
+    encounterType: 'Patient Document',
+    visitType: null,
+    patientId: 'GAN5678',
+    reason: null,
+    patientProgramUuid: null,
+    visitUuid: 'visitUuid123',
+    patientUuid: '123',
+    associatedToPatientProgram: false,
+    encounterTypeUuid: 'PatientdocumentUuid',
+    visitTypeUuid: 'visitTypeUuidc1b75',
+    drugOrders: [],
+    locationUuid: 'locationuuid123',
+    encounterDateTime: 1664200113000,
+    encounterUuid: 'encounterUuid567',
+    disposition: null,
+    locationName: 'General Ward',
+    orders: [],
+    providers: [],
+    context: {},
+    extensions: {
+      mdrtbSpecimen: [],
+    },
   },
 }
 
@@ -34,7 +38,7 @@ export const mockBahmniEncounterRequest = {
     visitUuid: null,
     providers: [{uuid: '1'}],
     visitType: 'OPD',
-    encounterTypeUuid:'LabResultUuid',
+    encounterTypeUuid: 'LabResultUuid',
   },
   patientDocument: {
     locationUuid: 'locationuuid123',
@@ -42,7 +46,7 @@ export const mockBahmniEncounterRequest = {
     encounterUuid: null,
     visitUuid: null,
     visitType: 'OPD',
-    encounterTypeUuid:'PatientdocumentUuid',
+    encounterTypeUuid: 'PatientdocumentUuid',
   },
 }
 

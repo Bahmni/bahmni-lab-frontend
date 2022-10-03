@@ -71,9 +71,7 @@ const UploadReport: React.FC<UploadReportProps> = ({
   const [isSaveButtonClicked, setIsSaveButtonClicked] = useState(false)
   const [cookie] = useCookies()
 
-  let locationUuid = JSON.parse(
-    JSON.stringify(cookie['bahmni.user.location']).trim(),
-  ).uuid
+  const locationUuid = cookie['bahmni.user.location'].uuid
   const handleDiscard = () => {
     setIsDiscardButtonClicked(true)
     setReportDate(null)
