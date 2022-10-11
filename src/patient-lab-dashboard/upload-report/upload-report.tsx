@@ -33,6 +33,7 @@ import {
   isAuditLogEnabledKey,
   loggedInUserKey,
   selfPatient,
+  userLocationKey,
 } from '../../utils/constants'
 import DoctorListDropdown from '../doctors-list-dropdown/doctor-list-dropdown'
 import {useCookies} from 'react-cookie'
@@ -71,7 +72,7 @@ const UploadReport: React.FC<UploadReportProps> = ({
   const [isSaveButtonClicked, setIsSaveButtonClicked] = useState(false)
   const [cookie] = useCookies()
 
-  const locationUuid = cookie['bahmni.user.location'].uuid
+  const locationUuid = cookie[userLocationKey].uuid
   const handleDiscard = () => {
     setIsDiscardButtonClicked(true)
     setReportDate(null)
@@ -97,30 +98,45 @@ const UploadReport: React.FC<UploadReportProps> = ({
         if (url) {
           const providerUuid =
             doctor.person.display !== selfPatient ? doctor.uuid : null
-          for (let index = 0; index < selectedTests.length; index++) {
-            const bahmniEncounterResponse = await bahmniEncounter(
-              locationUuid,
-              patientUuid,
-              providerUuid,
-              selectedTests[index],
-              selectedPendingOrder,
-              ac,
-            )
-            if (bahmniEncounterResponse) {
-              await uploadSelectedTests(
-                bahmniEncounterResponse,
-                selectedTests[index],
+          let allSuccess: boolean = true
+          try {
+            for (let index = 0; index < selectedTests.length; index++) {
+              const bahmniEncounterResponse = await bahmniEncounter(
+                locationUuid,
                 patientUuid,
-                doctor.uuid,
-                reportDate,
-                url,
-                selectedFile,
-                reportConclusion,
-                ac,
+                providerUuid,
+                selectedTests[index],
                 selectedPendingOrder,
-                saveHandler,
+                ac,
               )
+              if (bahmniEncounterResponse) {
+                allSuccess = true
+                await uploadSelectedTests(
+                  bahmniEncounterResponse,
+                  selectedTests[index],
+                  patientUuid,
+                  doctor.uuid,
+                  reportDate,
+                  url,
+                  selectedFile,
+                  reportConclusion,
+                  ac,
+                  selectedPendingOrder,
+                  saveHandler,
+                  allSuccess,
+                )
+              } else {
+                allSuccess = false
+              }
             }
+          } catch (e) {
+            allSuccess = false
+          }
+          if (allSuccess) {
+            saveHandler(true)
+            setSelectedPendingOrder([])
+          } else {
+            saveHandler(false)
           }
         }
       }
@@ -171,48 +187,38 @@ const UploadReport: React.FC<UploadReportProps> = ({
     ac: AbortController,
     selectedPendingOrder: PendingLabOrders[],
     saveHandler: Function,
+    allSuccess: boolean,
   ) {
-    let allSuccess: boolean = true
-    try {
-      const diagnosticReportResponse = await saveDiagnosticReport(
-        bahmniEncounterResponse,
-        patientUuid,
-        doctorUuid,
-        reportDate,
-        selectedTest,
-        url,
-        selectedFile.name,
-        reportConclusion,
-        ac,
-        selectedPendingOrder,
-      )
-      if (diagnosticReportResponse.ok) {
-        const loggedInUser = localStorage.getItem(loggedInUserKey)
-        const isAuditLogEnabled = localStorage.getItem(isAuditLogEnabledKey)
-        if (isAuditLogEnabled && loggedInUser) {
-          const auditMessage = getPayloadForPatientReportUpload(
-            loggedInUser,
-            patientUuid,
-            getPatientIdentifier(
-              diagnosticReportResponse?.data?.subject?.display,
-            ),
-            selectedFile.name,
-            selectedTest.name.display,
-          )
-          postApiCall(auditLogURL, auditMessage, ac)
-        }
+    const diagnosticReportResponse = await saveDiagnosticReport(
+      bahmniEncounterResponse,
+      patientUuid,
+      doctorUuid,
+      reportDate,
+      selectedTest,
+      url,
+      selectedFile.name,
+      reportConclusion,
+      ac,
+      selectedPendingOrder,
+    )
+    if (diagnosticReportResponse.ok) {
+      const loggedInUser = localStorage.getItem(loggedInUserKey)
+      const isAuditLogEnabled = localStorage.getItem(isAuditLogEnabledKey)
+      if (isAuditLogEnabled && loggedInUser) {
+        const auditMessage = getPayloadForPatientReportUpload(
+          loggedInUser,
+          patientUuid,
+          getPatientIdentifier(
+            diagnosticReportResponse?.data?.subject?.display,
+          ),
+          selectedFile.name,
+          selectedTest.name.display,
+        )
+        postApiCall(auditLogURL, auditMessage, ac)
       }
-      if (allSuccess && !diagnosticReportResponse.ok) {
-        allSuccess = false
-      }
-    } catch (e) {
-      allSuccess = false
     }
-    if (allSuccess) {
-      saveHandler(true)
-      setSelectedPendingOrder([])
-    } else {
-      saveHandler(false)
+    if (allSuccess && !diagnosticReportResponse.ok) {
+      allSuccess = false
     }
   }
 

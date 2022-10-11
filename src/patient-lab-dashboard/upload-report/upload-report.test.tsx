@@ -12,7 +12,7 @@ import {
   saveDiagnosticReportURL,
   uploadDocumentURL,
 } from '../../utils/api-utils'
-import {isAuditLogEnabledKey, loggedInUserKey} from '../../utils/constants'
+import {defaultVisitTypeKey, encounterTypeUuidsKey, isAuditLogEnabledKey, loggedInUserKey} from '../../utils/constants'
 import {localStorageMock, verifyApiCall} from '../../utils/test-utils'
 import {uploadFiles} from '../../utils/test-utils/upload-report-helper'
 import {mockBahmniEncounterResponse} from '../../__mocks__/encounter.mock'
@@ -37,9 +37,11 @@ describe('Upload Report', () => {
     })
     Object.defineProperty(window, 'localStorage', {value: localStorageMock})
     localStorage.setItem(
-      'encounterUuids',
+      encounterTypeUuidsKey,
       '[{"LAB_RESULT":"LabResultUuid"},{"Patient Document":"PatientdocumentUuid"}]',
     )
+    localStorage.setItem(defaultVisitTypeKey,'OPD')
+
   })
   afterEach(() => {
     jest.clearAllMocks(), localStorage.clear()

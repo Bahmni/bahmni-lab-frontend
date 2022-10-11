@@ -50,6 +50,14 @@ export const mockBahmniEncounterRequest = {
   },
 }
 
+export const mockBahmniEncounterErrorResponse = {
+  message: 'Internal Server Error',
+  response: {
+    status: 500,
+    statusText: 'Internal Server Error',
+  },
+}
+
 export const mockEncounterTypeResponse = {
   data: {
     results: [

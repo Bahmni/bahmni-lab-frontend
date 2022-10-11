@@ -7,6 +7,11 @@ import {
   saveDiagnosticReportURL,
   uploadDocumentURL,
 } from '../../utils/api-utils'
+import {
+  defaultVisitTypeKey,
+  encounterTypes,
+  encounterTypeUuidsKey,
+} from '../../utils/constants'
 
 interface UploadFileResponseType {
   url: string
@@ -156,6 +161,7 @@ export const bahmniEncounter = (
   selectedPendingOrder: PendingLabOrders[],
   ac: AbortController,
 ) => {
+  const defaultVisitType = localStorage.getItem(defaultVisitTypeKey)
   let requestBody: BahmniEncounteRequestType
   if (providerUuid && providerUuid !== null) {
     requestBody = {
@@ -168,7 +174,7 @@ export const bahmniEncounter = (
           uuid: providerUuid,
         },
       ],
-      visitType: 'OPD',
+      visitType: defaultVisitType,
       encounterTypeUuid: getEncounterTypeUuid(
         selectedTest,
         selectedPendingOrder,
@@ -180,7 +186,7 @@ export const bahmniEncounter = (
       patientUuid,
       encounterUuid: null,
       visitUuid: null,
-      visitType: 'OPD',
+      visitType: defaultVisitType,
       encounterTypeUuid: getEncounterTypeUuid(
         selectedTest,
         selectedPendingOrder,
@@ -195,11 +201,11 @@ const getEncounterTypeUuid = (
   selectedPendingOrder: PendingLabOrders[],
 ): string => {
   const encounterTypeUuidlist = JSON.parse(
-    localStorage.getItem('encounterUuids'),
+    localStorage.getItem(encounterTypeUuidsKey),
   )
-  let encounterTypeUuid = encounterTypeUuidlist[1]['Patient Document']
+  let encounterTypeUuid = encounterTypeUuidlist[1][encounterTypes[1]]
   if (isSelectedTestPresentInPendingOrder(selectedTest, selectedPendingOrder))
-    encounterTypeUuid = encounterTypeUuidlist[0]['LAB_RESULT']
+    encounterTypeUuid = encounterTypeUuidlist[0][encounterTypes[0]]
   return encounterTypeUuid
 }
 

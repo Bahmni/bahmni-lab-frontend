@@ -18,14 +18,14 @@ export const getLabTests = () =>
 export const getOrderTypeUuid = '/ws/rest/v1/ordertype'
 
 export const uploadDocumentURL =
-'/ws/rest/v1/bahmnicore/visitDocument/uploadDocument'
+  '/ws/rest/v1/bahmnicore/visitDocument/uploadDocument'
 
 export const saveDiagnosticReportURL = '/ws/fhir2/R4/DiagnosticReport'
 
 export const auditLogURL = '/ws/rest/v1/auditlog'
 
 export const auditLogGlobalPropertyURL =
-'/ws/rest/v1/bahmnicore/sql/globalproperty?property=bahmni.enableAuditLog'
+  '/ws/rest/v1/bahmnicore/sql/globalproperty?property=bahmni.enableAuditLog'
 
 export const configUrl = '/../bahmni_config/openmrs/apps/registration/app.json'
 
@@ -91,4 +91,10 @@ export const postApiCall = (url, data, abortController) => {
     body: JSON.stringify(data),
     signal: abortController.signal,
   })
+}
+
+export const swrOptions = {
+  revalidateIfStale: false,
+  revalidateOnFocus: false,
+  revalidateOnReconnect: false,
 }

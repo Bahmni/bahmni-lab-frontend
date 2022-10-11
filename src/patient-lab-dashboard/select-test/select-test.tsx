@@ -11,7 +11,7 @@ import {useSelectedTests} from '../../context/upload-report-context'
 import {usePendingLabOrderContext} from '../../context/pending-orders-context'
 import Loader from '../../common/loader/loader.component'
 import {LabTest} from '../../types/selectTest'
-import {fetcher, getLabTests} from '../../utils/api-utils'
+import {swrOptions, fetcher, getLabTests} from '../../utils/api-utils'
 import styles from './select-test.scss'
 
 const SelectTest = ({isDiscardButtonClicked}) => {
@@ -28,11 +28,7 @@ const SelectTest = ({isDiscardButtonClicked}) => {
   const {data: labTestResults, error: labTestResultsError} = useSWR<any, Error>(
     getLabTests,
     fetcher,
-    {
-      revalidateIfStale: false,
-      revalidateOnFocus: false,
-      revalidateOnReconnect: false,
-    },
+    swrOptions,
   )
   useEffect(() => {
     isDiscardButtonClicked && setSearchValue('')

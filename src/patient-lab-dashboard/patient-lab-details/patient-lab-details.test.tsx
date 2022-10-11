@@ -17,9 +17,10 @@ import {
   getPayloadForPatientAccess,
   saveDiagnosticReportURL,
 } from '../../utils/api-utils'
-import {isAuditLogEnabledKey, loggedInUserKey} from '../../utils/constants'
+import {defaultVisitTypeKey, encounterTypeUuidsKey, isAuditLogEnabledKey, loggedInUserKey} from '../../utils/constants'
 import {localStorageMock, verifyApiCall} from '../../utils/test-utils'
 import {
+  mockBahmniEncounterErrorResponse,
   mockBahmniEncounterRequest,
   mockBahmniEncounterResponse,
 } from '../../__mocks__/encounter.mock'
@@ -77,9 +78,10 @@ describe('Patient lab details', () => {
       })
     localStorage.setItem('i18nextLng', 'en')
     localStorage.setItem(
-      'encounterUuids',
+      encounterTypeUuidsKey,
       '[{"LAB_RESULT":"LabResultUuid"},{"Patient Document":"PatientdocumentUuid"}]',
     )
+    localStorage.setItem(defaultVisitTypeKey,'OPD')
     when(ExtensionSlot).mockImplementation((props: any) => {
       return (
         <>
@@ -483,7 +485,84 @@ describe('Patient lab details', () => {
     verifyApiCall(saveDiagnosticReportURL, 'POST')
     expect(mutateMock).toHaveBeenCalledTimes(2)
   })
+  it('should show failure notification when encounter call fails', async () => {
+    const mockedOpenmrsFetch = openmrsFetch as jest.Mock
+    mockedOpenmrsFetch
+      .mockReturnValueOnce(mockPendingLabOrdersResponse)
+      .mockReturnValueOnce(mockEmptyReportTableResponse)
+      .mockReturnValueOnce(mockLabTestsResponse)
+      .mockReturnValueOnce(mockDoctorNames)
+      .mockReturnValueOnce(mockUploadFileResponse)
+      .mockReturnValueOnce(mockBahmniEncounterErrorResponse)
 
+      render(
+      <SWRConfig value={{provider: () => new Map()}}>
+        <BrowserRouter>
+          <PatientLabDetails
+            match={matchParams}
+            history={undefined}
+            location={undefined}
+          />
+        </BrowserRouter>
+      </SWRConfig>,
+    )
+
+    userEvent.click(screen.getByRole('button', {name: /upload report/i}))
+
+    expect(
+      screen.getByRole('button', {name: /save and upload/i}),
+    ).toBeDisabled()
+
+    userEvent.click(
+      screen.getByRole('textbox', {
+        name: /report date/i,
+      }),
+    )
+
+    userEvent.click(screen.getByLabelText(currentDay))
+
+    await waitFor(() =>
+      expect(
+        screen.getByRole('checkbox', {name: /Absolute Eosinphil Count/i}),
+      ).toBeInTheDocument(),
+    )
+    expect(screen.getByText(/select tests/i)).toBeInTheDocument()
+
+    userEvent.click(
+      screen.getByRole('checkbox', {name: /Absolute Eosinphil Count/i}),
+    )
+
+    const fileInput = screen.getByLabelText(
+      'Drag and drop files here or click to upload',
+    ) as HTMLInputElement
+
+    uploadFiles(fileInput, [file])
+
+    expect(fileInput.files.length).toBe(1)
+    const fileName = await screen.findByText('test.pdf')
+    expect(fileName).toBeInTheDocument()
+
+    userEvent.click(
+      screen.getByRole('button', {
+        name: /Select a Doctor/i,
+      }),
+    )
+
+    userEvent.click(await screen.findByText('admin - Super User'))
+    expect(await screen.findByText(/admin - Super user/i)).toBeInTheDocument()
+    const saveButton = screen.getByRole('button', {name: /save and upload/i})
+
+    expect(saveButton).not.toBeDisabled()
+    userEvent.click(saveButton)
+
+    await waitFor(() => {
+      expect(screen.getByText(/Failed to upload report/i)).toBeInTheDocument()
+      expect(
+        screen.queryByRole('button', {name: /save and upload/i}),
+      ).not.toBeInTheDocument()
+    })
+    userEvent.click(screen.getByTitle(/closes notification/i))
+  })
   it('should show failure notification on report upload', async () => {
     const mockedOpenmrsFetch = openmrsFetch as jest.Mock
     mockedOpenmrsFetch

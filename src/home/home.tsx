@@ -6,12 +6,18 @@ import {
   auditLogGlobalPropertyURL,
   auditLogURL,
   configUrl,
+  swrOptions,
   encounterTypeUrl,
   fetcher,
   getPayloadForUserLogin,
   postApiCall,
 } from '../utils/api-utils'
-import {isAuditLogEnabledKey, loggedInUserKey} from '../utils/constants'
+import {
+  defaultVisitTypeKey,
+  encounterTypeUuidsKey,
+  isAuditLogEnabledKey,
+  loggedInUserKey,
+} from '../utils/constants'
 import classes from './home.scss'
 interface AuditLogResponse {
   data: boolean
@@ -22,32 +28,24 @@ const Home = () => {
   let {data: auditLogEnabledResponse, error: auditLogResponseError} = useSWR<
     AuditLogResponse,
     Error
-  >(auditLogGlobalPropertyURL, fetcher, {
-    revalidateIfStale: false,
-    revalidateOnFocus: false,
-    revalidateOnReconnect: false,
-  })
+  >(auditLogGlobalPropertyURL, fetcher, swrOptions)
 
-  const {data: configResponse} = useSWR(configUrl, fetcher, {
-    revalidateIfStale: false,
-    revalidateOnFocus: false,
-    revalidateOnReconnect: false,
-  })
+  const {data: configResponse} = useSWR(configUrl, fetcher, swrOptions)
 
-  const {data: encounterTypeResponse} = useSWR(encounterTypeUrl, fetcher, {
-    revalidateIfStale: false,
-    revalidateOnFocus: false,
-    revalidateOnReconnect: false,
-  })
+  const {data: encounterTypeResponse} = useSWR(
+    encounterTypeUrl,
+    fetcher,
+    swrOptions,
+  )
 
   useEffect(() => {
-    if (configResponse && !localStorage.getItem('defaultVisitType')) {
+    if (configResponse && !localStorage.getItem(defaultVisitTypeKey)) {
       localStorage.setItem(
-        'defaultVisitType',
+        defaultVisitTypeKey,
         configResponse.data.config.defaultVisitType,
       )
     }
-    if (encounterTypeResponse && !localStorage.getItem('encounterTypeUuids')) {
+    if (encounterTypeResponse && !localStorage.getItem(encounterTypeUuidsKey)) {
       let encounterUuid = []
       encounterTypeResponse.data.results.map(res => {
         if (res.display === 'LAB_RESULT')
@@ -56,7 +54,10 @@ const Home = () => {
           encounterUuid.push({'Patient Document': res.uuid})
       })
       if (encounterUuid.length > 0)
-        localStorage.setItem('encounterUuids', JSON.stringify(encounterUuid))
+        localStorage.setItem(
+          encounterTypeUuidsKey,
+          JSON.stringify(encounterUuid),
+        )
     }
   }, [configResponse, encounterTypeResponse])
 
