@@ -1,19 +1,17 @@
-import {FetchResponse, PatientUuid} from '@openmrs/esm-framework'
+import {FetchResponse} from '@openmrs/esm-framework'
 import {PendingLabOrders} from '../../types'
 import {LabTest} from '../../types/selectTest'
 import {
+  bahmniEncounterUrl,
   postApiCall,
   saveDiagnosticReportURL,
   uploadDocumentURL,
 } from '../../utils/api-utils'
-
-interface UploadFileRequestType {
-  content: string
-  encounterTypeName: string
-  fileType: string
-  format: string
-  patientUuid: PatientUuid
-}
+import {
+  defaultVisitTypeKey,
+  encounterTypes,
+  encounterTypeUuidsKey,
+} from '../../utils/constants'
 
 interface UploadFileResponseType {
   url: string
@@ -31,6 +29,16 @@ export interface BasedOnType {
   }
 }
 
+interface BahmniEncounteRequestType {
+  locationUuid: string
+  patientUuid: string
+  providers?: Array<{uuid: string}>
+  encounterUuid: string
+  encounterTypeUuid: string
+  visitType: string
+  visitUuid: string
+}
+
 interface DiagnosticReportRequestType {
   resourceType: string
   status: string
@@ -43,6 +51,7 @@ interface DiagnosticReportRequestType {
     ]
   }
   subject: ReferenceRequestType
+  encounter: {reference: string}
   issued: Date
   conclusion?: string
   presentedForm: Array<{
@@ -75,6 +84,7 @@ const uploadFileRequestBody = (fileContent, fileType, patientUuid) => {
 }
 
 export function saveDiagnosticReport(
+  bahmniEncounterResponse,
   patientUuid: string,
   performerUuid: string,
   reportDate: Date,
@@ -85,14 +95,15 @@ export function saveDiagnosticReport(
   ac: AbortController,
   selectedPendingOrder: PendingLabOrders[],
 ) {
-  const pendingOrderInPayload = selectedPendingOrder.filter(
-    pendingOrder => pendingOrder.conceptUuid === selectedTest.uuid,
-  )
   let basedOn: Array<BasedOnType> = null
-  if (pendingOrderInPayload.length == 1)
+  const isSelectedPendingOrderContainsSelectedTest = isSelectedTestPresentInPendingOrder(
+    selectedTest,
+    selectedPendingOrder,
+  )
+  if (isSelectedPendingOrderContainsSelectedTest)
     basedOn = [
       {
-        identifier: {value: pendingOrderInPayload[0].id},
+        identifier: {value: selectedPendingOrder[0].id},
         reference: 'ServiceRequest',
         display: selectedTest.name.display,
       },
@@ -111,13 +122,16 @@ export function saveDiagnosticReport(
     subject: {
       reference: 'Patient/' + patientUuid,
     },
+    encounter: {
+      reference: `Encounter/${bahmniEncounterResponse.data.encounterUuid}`,
+    },
     issued: reportDate,
     presentedForm: [{url: uploadFileUrl, title: uploadedFileName}],
   }
   if (reportConclusion) {
     requestBody.conclusion = reportConclusion
   }
-  if (pendingOrderInPayload.length == 1) {
+  if (isSelectedPendingOrderContainsSelectedTest) {
     requestBody.basedOn = basedOn
   }
   if (performerUuid) {
@@ -136,5 +150,72 @@ const removeBase64 = fileData => {
   return fileData.substring(
     fileData.indexOf(searchStr) + searchStr.length,
     fileData.length,
+  )
+}
+
+export const bahmniEncounter = (
+  locationUuid: string,
+  patientUuid: string,
+  providerUuid: string,
+  selectedTest: LabTest,
+  selectedPendingOrder: PendingLabOrders[],
+  ac: AbortController,
+) => {
+  const defaultVisitType = localStorage.getItem(defaultVisitTypeKey)
+  let requestBody: BahmniEncounteRequestType
+  if (providerUuid && providerUuid !== null) {
+    requestBody = {
+      locationUuid,
+      patientUuid,
+      encounterUuid: null,
+      visitUuid: null,
+      providers: [
+        {
+          uuid: providerUuid,
+        },
+      ],
+      visitType: defaultVisitType,
+      encounterTypeUuid: getEncounterTypeUuid(
+        selectedTest,
+        selectedPendingOrder,
+      ),
+    }
+  } else {
+    requestBody = {
+      locationUuid,
+      patientUuid,
+      encounterUuid: null,
+      visitUuid: null,
+      visitType: defaultVisitType,
+      encounterTypeUuid: getEncounterTypeUuid(
+        selectedTest,
+        selectedPendingOrder,
+      ),
+    }
+  }
+  return postApiCall(bahmniEncounterUrl, requestBody, ac)
+}
+
+const getEncounterTypeUuid = (
+  selectedTest: LabTest,
+  selectedPendingOrder: PendingLabOrders[],
+): string => {
+  const encounterTypeUuidlist = JSON.parse(
+    localStorage.getItem(encounterTypeUuidsKey),
+  )
+  let encounterTypeUuid = encounterTypeUuidlist[1][encounterTypes[1]]
+  if (isSelectedTestPresentInPendingOrder(selectedTest, selectedPendingOrder))
+    encounterTypeUuid = encounterTypeUuidlist[0][encounterTypes[0]]
+  return encounterTypeUuid
+}
+
+const isSelectedTestPresentInPendingOrder = (
+  selectedTest: LabTest,
+  selectedPendingOrder: PendingLabOrders[],
+): boolean => {
+  return (
+    selectedPendingOrder.filter(
+      pendingOrder => pendingOrder.conceptUuid === selectedTest.uuid,
+    ).length === 1
   )
 }

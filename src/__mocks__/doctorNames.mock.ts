@@ -2,9 +2,6 @@ export const mockDoctorNames = {
   data: {
     results: [
       {
-        display: 'self',
-      },
-      {
         uuid: '1',
         person: {
           display: 'admin - Super User',

@@ -1,38 +1,44 @@
 import {
   ExtensionSlot,
   openmrsFetch,
-  usePatient,
   usePagination,
+  usePatient,
 } from '@openmrs/esm-framework'
 import {fireEvent, render, screen, waitFor} from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import {when} from 'jest-when'
 import React from 'react'
 import {BrowserRouter} from 'react-router-dom'
+import * as swr from 'swr'
 import {SWRConfig} from 'swr'
+import {
+  auditLogURL,
+  bahmniEncounterUrl,
+  getPayloadForPatientAccess,
+  saveDiagnosticReportURL,
+} from '../../utils/api-utils'
+import {defaultVisitTypeKey, encounterTypeUuidsKey, isAuditLogEnabledKey, loggedInUserKey} from '../../utils/constants'
 import {localStorageMock, verifyApiCall} from '../../utils/test-utils'
-import {mockPendingLabOrder} from '../../__mocks__/patientLabDetails.mock'
+import {
+  mockBahmniEncounterErrorResponse,
+  mockBahmniEncounterRequest,
+  mockBahmniEncounterResponse,
+} from '../../__mocks__/encounter.mock'
 import {mockDoctorNames} from '../../__mocks__/doctorNames.mock'
+import {mockPendingLabOrder} from '../../__mocks__/patientLabDetails.mock'
 import {mockPendingLabOrdersResponse} from '../../__mocks__/pendingLabOrders.mock'
 import {
   mockEmptyReportTableResponse,
   mockReportTableResponse,
 } from '../../__mocks__/reportTable.mock'
 import {
-  mockLabTestsResponse,
-  mockUploadFileResponse,
-  mockDiagnosticReportResponse,
   diagnosticReportRequestBodyWithBasedOn,
   mockDiagnosticReportErrorResponse,
+  mockDiagnosticReportResponse,
+  mockLabTestsResponse,
+  mockUploadFileResponse,
 } from '../../__mocks__/selectTests.mock'
 import PatientLabDetails from './patient-lab-details'
-import * as swr from 'swr'
-import {isAuditLogEnabledKey, loggedInUserKey} from '../../utils/constants'
-import {
-  auditLogURL,
-  getPayloadForPatientAccess,
-  saveDiagnosticReportURL,
-} from '../../utils/api-utils'
 
 const mockPatientUuid = '123'
 const matchParams = {
@@ -50,9 +56,12 @@ jest.mock('../../hooks/useOrderTypeUuidConfig', () => ({
     orderTypeUuidConfig: mockOrderTypeUuid,
   })),
 }))
-
 describe('Patient lab details', () => {
   beforeEach(() => {
+    Object.defineProperty(window.document, 'cookie', {
+      writable: true,
+      value: 'bahmni.user.location={"uuid":"locationuuid123"}',
+    })
     Object.defineProperty(window, 'localStorage', {value: localStorageMock})
     when(usePatient)
       .calledWith(mockPatientUuid)
@@ -68,6 +77,11 @@ describe('Patient lab details', () => {
         },
       })
     localStorage.setItem('i18nextLng', 'en')
+    localStorage.setItem(
+      encounterTypeUuidsKey,
+      '[{"LAB_RESULT":"LabResultUuid"},{"Patient Document":"PatientdocumentUuid"}]',
+    )
+    localStorage.setItem(defaultVisitTypeKey,'OPD')
     when(ExtensionSlot).mockImplementation((props: any) => {
       return (
         <>
@@ -346,6 +360,7 @@ describe('Patient lab details', () => {
       .mockReturnValueOnce(mockLabTestsResponse)
       .mockReturnValueOnce(mockDoctorNames)
       .mockReturnValueOnce(mockUploadFileResponse)
+      .mockReturnValueOnce(mockBahmniEncounterResponse)
       .mockReturnValue(mockDiagnosticReportResponse)
 
     render(
@@ -384,7 +399,8 @@ describe('Patient lab details', () => {
     uploadFiles(fileInput, [file])
     await verifyFileName(fileInput)
     await saveReport()
-    expect(mockedOpenmrsFetch).toBeCalledTimes(6)
+    expect(mockedOpenmrsFetch).toBeCalledTimes(7)
+    verifyApiCall(bahmniEncounterUrl, 'POST')
     verifyApiCall(
       saveDiagnosticReportURL,
       'POST',
@@ -403,6 +419,7 @@ describe('Patient lab details', () => {
       .mockReturnValueOnce(mockLabTestsResponse)
       .mockReturnValueOnce(mockDoctorNames)
       .mockReturnValueOnce(mockUploadFileResponse)
+      .mockReturnValueOnce(mockBahmniEncounterResponse)
       .mockReturnValueOnce(mockDiagnosticReportResponse)
 
     render(
@@ -464,11 +481,88 @@ describe('Patient lab details', () => {
 
     await saveReport()
 
-    expect(mockedOpenmrsFetch).toBeCalledTimes(7)
+    expect(mockedOpenmrsFetch).toBeCalledTimes(9)
     verifyApiCall(saveDiagnosticReportURL, 'POST')
     expect(mutateMock).toHaveBeenCalledTimes(2)
   })
+  it('should show failure notification when encounter call fails', async () => {
+    const mockedOpenmrsFetch = openmrsFetch as jest.Mock
+    mockedOpenmrsFetch
+      .mockReturnValueOnce(mockPendingLabOrdersResponse)
+      .mockReturnValueOnce(mockEmptyReportTableResponse)
+      .mockReturnValueOnce(mockLabTestsResponse)
+      .mockReturnValueOnce(mockDoctorNames)
+      .mockReturnValueOnce(mockUploadFileResponse)
+      .mockReturnValueOnce(mockBahmniEncounterErrorResponse)
 
+      render(
+      <SWRConfig value={{provider: () => new Map()}}>
+        <BrowserRouter>
+          <PatientLabDetails
+            match={matchParams}
+            history={undefined}
+            location={undefined}
+          />
+        </BrowserRouter>
+      </SWRConfig>,
+    )
+
+    userEvent.click(screen.getByRole('button', {name: /upload report/i}))
+
+    expect(
+      screen.getByRole('button', {name: /save and upload/i}),
+    ).toBeDisabled()
+
+    userEvent.click(
+      screen.getByRole('textbox', {
+        name: /report date/i,
+      }),
+    )
+
+    userEvent.click(screen.getByLabelText(currentDay))
+
+    await waitFor(() =>
+      expect(
+        screen.getByRole('checkbox', {name: /Absolute Eosinphil Count/i}),
+      ).toBeInTheDocument(),
+    )
+    expect(screen.getByText(/select tests/i)).toBeInTheDocument()
+
+    userEvent.click(
+      screen.getByRole('checkbox', {name: /Absolute Eosinphil Count/i}),
+    )
+
+    const fileInput = screen.getByLabelText(
+      'Drag and drop files here or click to upload',
+    ) as HTMLInputElement
+
+    uploadFiles(fileInput, [file])
+
+    expect(fileInput.files.length).toBe(1)
+    const fileName = await screen.findByText('test.pdf')
+    expect(fileName).toBeInTheDocument()
+
+    userEvent.click(
+      screen.getByRole('button', {
+        name: /Select a Doctor/i,
+      }),
+    )
+
+    userEvent.click(await screen.findByText('admin - Super User'))
+    expect(await screen.findByText(/admin - Super user/i)).toBeInTheDocument()
+    const saveButton = screen.getByRole('button', {name: /save and upload/i})
+
+    expect(saveButton).not.toBeDisabled()
+    userEvent.click(saveButton)
+
+    await waitFor(() => {
+      expect(screen.getByText(/Failed to upload report/i)).toBeInTheDocument()
+      expect(
+        screen.queryByRole('button', {name: /save and upload/i}),
+      ).not.toBeInTheDocument()
+    })
+    userEvent.click(screen.getByTitle(/closes notification/i))
+  })
   it('should show failure notification on report upload', async () => {
     const mockedOpenmrsFetch = openmrsFetch as jest.Mock
     mockedOpenmrsFetch
@@ -477,6 +571,7 @@ describe('Patient lab details', () => {
       .mockReturnValueOnce(mockLabTestsResponse)
       .mockReturnValueOnce(mockDoctorNames)
       .mockReturnValueOnce(mockUploadFileResponse)
+      .mockReturnValueOnce(mockBahmniEncounterResponse)
       .mockRejectedValue(mockDiagnosticReportErrorResponse)
 
     render(
@@ -546,6 +641,130 @@ describe('Patient lab details', () => {
       ).not.toBeInTheDocument()
     })
     userEvent.click(screen.getByTitle(/closes notification/i))
+  })
+  it('should make encounter post call with Lab result encounterTypeUuid when selected order is an open order', async () => {
+    const mockedOpenmrsFetch = openmrsFetch as jest.Mock
+    mockedOpenmrsFetch
+      .mockReturnValueOnce(mockPendingLabOrdersResponse)
+      .mockReturnValueOnce(mockEmptyReportTableResponse)
+      .mockReturnValueOnce(mockLabTestsResponse)
+      .mockReturnValueOnce(mockDoctorNames)
+      .mockReturnValueOnce(mockUploadFileResponse)
+      .mockReturnValueOnce(mockBahmniEncounterResponse)
+      .mockReturnValue(mockDiagnosticReportResponse)
+
+    render(
+      <SWRConfig value={{provider: () => new Map()}}>
+        <BrowserRouter>
+          <PatientLabDetails
+            match={matchParams}
+            history={undefined}
+            location={undefined}
+          />
+        </BrowserRouter>
+      </SWRConfig>,
+    )
+    await waitFor(() => {
+      userEvent.click(screen.getAllByRole('checkbox', {name: /Select row/i})[0])
+    })
+    userEvent.click(screen.getByRole('button', {name: /upload report/i}))
+
+    expect(
+      screen.getByRole('button', {name: /save and upload/i}),
+    ).toBeDisabled()
+
+    await waitFor(() => {
+      expect(screen.getByTestId(/selected-tests/i)).toHaveTextContent(
+        'Selected Tests ( 1 )',
+      )
+    })
+
+    userEvent.click(screen.getByText('Super Man'))
+
+    const fileInput = screen.getByLabelText(
+      'Drag and drop files here or click to upload',
+    ) as HTMLInputElement
+
+    uploadFiles(fileInput, [file])
+    await verifyFileName(fileInput)
+    await saveReport()
+    expect(mockedOpenmrsFetch).toBeCalledTimes(7)
+    verifyApiCall(
+      bahmniEncounterUrl,
+      'POST',
+      JSON.stringify(mockBahmniEncounterRequest.labResult),
+    )
+  })
+  it('should make encounter post call with Patinet document encounterTypeUuid when selected order is not an open order', async () => {
+    const mockedOpenmrsFetch = openmrsFetch as jest.Mock
+    mockedOpenmrsFetch
+      .mockReturnValueOnce(mockPendingLabOrdersResponse)
+      .mockReturnValueOnce(mockEmptyReportTableResponse)
+      .mockReturnValueOnce(mockLabTestsResponse)
+      .mockReturnValueOnce(mockDoctorNames)
+      .mockReturnValueOnce(mockUploadFileResponse)
+      .mockReturnValueOnce(mockBahmniEncounterResponse)
+      .mockReturnValue(mockDiagnosticReportResponse)
+
+    render(
+      <SWRConfig value={{provider: () => new Map()}}>
+        <BrowserRouter>
+          <PatientLabDetails
+            match={matchParams}
+            history={undefined}
+            location={undefined}
+          />
+        </BrowserRouter>
+      </SWRConfig>,
+    )
+
+    userEvent.click(screen.getByRole('button', {name: /upload report/i}))
+
+    expect(
+      screen.getByRole('button', {name: /save and upload/i}),
+    ).toBeDisabled()
+
+    userEvent.click(
+      screen.getByRole('textbox', {
+        name: /report date/i,
+      }),
+    )
+
+    userEvent.click(screen.getByLabelText(currentDay))
+
+    await waitFor(() =>
+      expect(
+        screen.getByRole('checkbox', {name: /Absolute Eosinphil Count/i}),
+      ).toBeInTheDocument(),
+    )
+    expect(screen.getByText(/select tests/i)).toBeInTheDocument()
+
+    userEvent.click(
+      screen.getByRole('checkbox', {name: /Absolute Eosinphil Count/i}),
+    )
+
+    const fileInput = screen.getByLabelText(
+      'Drag and drop files here or click to upload',
+    ) as HTMLInputElement
+
+    uploadFiles(fileInput, [file])
+
+    expect(fileInput.files.length).toBe(1)
+    const fileName = await screen.findByText('test.pdf')
+    expect(fileName).toBeInTheDocument()
+    userEvent.click(
+      screen.getByRole('button', {
+        name: /Select a Doctor/i,
+      }),
+    )
+    userEvent.click(await screen.findByText('self (patient)'))
+    expect(await screen.findByText('self (patient)')).toBeInTheDocument()
+    await saveReport()
+    verifyApiCall(
+      bahmniEncounterUrl,
+      'POST',
+      JSON.stringify(mockBahmniEncounterRequest.patientDocument),
+    )
   })
 })
 

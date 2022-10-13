@@ -2,14 +2,22 @@ import {getCurrentUser, LoggedInUser} from '@openmrs/esm-framework'
 import React, {useEffect, useState} from 'react'
 import useSWR from 'swr'
 import BahmniLogo from '../assets/bahmniLogoFull.png'
-import {isAuditLogEnabledKey, loggedInUserKey} from '../utils/constants'
 import {
   auditLogGlobalPropertyURL,
   auditLogURL,
+  configUrl,
+  swrOptions,
+  encounterTypeUrl,
   fetcher,
   getPayloadForUserLogin,
   postApiCall,
 } from '../utils/api-utils'
+import {
+  defaultVisitTypeKey,
+  encounterTypeUuidsKey,
+  isAuditLogEnabledKey,
+  loggedInUserKey,
+} from '../utils/constants'
 import classes from './home.scss'
 interface AuditLogResponse {
   data: boolean
@@ -20,11 +28,38 @@ const Home = () => {
   let {data: auditLogEnabledResponse, error: auditLogResponseError} = useSWR<
     AuditLogResponse,
     Error
-  >(auditLogGlobalPropertyURL, fetcher, {
-    revalidateIfStale: false,
-    revalidateOnFocus: false,
-    revalidateOnReconnect: false,
-  })
+  >(auditLogGlobalPropertyURL, fetcher, swrOptions)
+
+  const {data: configResponse} = useSWR(configUrl, fetcher, swrOptions)
+
+  const {data: encounterTypeResponse} = useSWR(
+    encounterTypeUrl,
+    fetcher,
+    swrOptions,
+  )
+
+  useEffect(() => {
+    if (configResponse && !localStorage.getItem(defaultVisitTypeKey)) {
+      localStorage.setItem(
+        defaultVisitTypeKey,
+        configResponse.data.config.defaultVisitType,
+      )
+    }
+    if (encounterTypeResponse && !localStorage.getItem(encounterTypeUuidsKey)) {
+      let encounterUuid = []
+      encounterTypeResponse.data.results.map(res => {
+        if (res.display === 'LAB_RESULT')
+          encounterUuid.push({LAB_RESULT: res.uuid})
+        if (res.display === 'Patient Document')
+          encounterUuid.push({'Patient Document': res.uuid})
+      })
+      if (encounterUuid.length > 0)
+        localStorage.setItem(
+          encounterTypeUuidsKey,
+          JSON.stringify(encounterUuid),
+        )
+    }
+  }, [configResponse, encounterTypeResponse])
 
   useEffect(() => {
     const subscription = getCurrentUser({

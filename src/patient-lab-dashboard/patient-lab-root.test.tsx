@@ -1,8 +1,11 @@
-import {render, screen, waitFor} from '@testing-library/react'
+import { openmrsFetch } from '@openmrs/esm-framework'
+import { render, screen, waitFor } from '@testing-library/react'
 import React from 'react'
-import {of} from 'rxjs'
+import { of } from 'rxjs'
+import { mockConfigResponse } from '../__mocks__/config.mock'
+import { mockEncounterTypeResponse } from '../__mocks__/encounter.mock'
+import { mockUnauthorizedUser, mockUser } from '../__mocks__/mockUser'
 import Root from './patient-lab-root.component'
-import {mockUnauthorizedUser, mockUser} from '../__mocks__/mockUser'
 
 const mockUserObservable = of(mockUser)
 jest.mock('@openmrs/esm-framework', () => ({
@@ -10,9 +13,7 @@ jest.mock('@openmrs/esm-framework', () => ({
   getCurrentUser: jest.fn(() => mockUserObservable),
   createGlobalStore: jest.fn(),
   createUseStore: jest.fn(),
-  userHasAccess: jest
-    .fn()
-    .mockReturnValue(false),
+  userHasAccess: jest.fn().mockReturnValue(false),
   subscribeConnectivity: jest.fn(),
   useSession: jest.fn(() => mockUnauthorizedUser),
   UserHasAccess: jest
@@ -37,6 +38,11 @@ jest.mock('react-router-dom', () => {
 
 describe('Root', () => {
   it('should render home when user hits home url', async () => {
+    let mockedOpenmrsFetch = openmrsFetch as jest.Mock
+    mockedOpenmrsFetch
+      .mockReturnValueOnce({data: true})
+      .mockReturnValueOnce(mockConfigResponse)
+      .mockReturnValue(mockEncounterTypeResponse)
     window.history.pushState({}, 'Lab Entry', '/lab/home')
     render(<Root />)
     await waitFor(() =>

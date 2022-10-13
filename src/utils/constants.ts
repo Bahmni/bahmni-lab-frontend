@@ -19,6 +19,10 @@ export const isAuditLogEnabledKey = 'isAuditLogEnabled'
 export const successMessage = 'Report successfully uploaded'
 export const failureMessage = 'Failed to upload report'
 export const labEntryHomePath = '/home'
+export const defaultVisitTypeKey = 'defaultVisitType'
+export const encounterTypeUuidsKey = 'encounterTypeUuids'
+export const userLocationKey = 'bahmni.user.location'
+export const encounterTypes = ['LAB_RESULT', 'Patient Document']
 
 export const headers = [
   {

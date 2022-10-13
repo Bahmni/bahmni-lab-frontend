@@ -6,27 +6,37 @@ import {
 } from 'carbon-components-react'
 import dayjs from 'dayjs'
 import React, {useState} from 'react'
+import Overlay from '../../common/overlay'
+import {usePendingLabOrderContext} from '../../context/pending-orders-context'
 import {
+  useDoctorDetails,
   useSelectedFile,
   useSelectedTests,
-  useDoctorDetails,
 } from '../../context/upload-report-context'
-import Overlay from '../../common/overlay'
+import {PendingLabOrders} from '../../types'
+import {LabTest} from '../../types/selectTest'
 import SelectTest from '../select-test/select-test'
 import UploadFile from '../upload-file/upload-file'
-import {saveDiagnosticReport, uploadFile} from './upload-report.resources'
+import {
+  bahmniEncounter,
+  saveDiagnosticReport,
+  uploadFile,
+} from './upload-report.resources'
 import styles from './upload-report.scss'
-import {usePendingLabOrderContext} from '../../context/pending-orders-context'
-import {LabTest} from '../../types/selectTest'
-import {PendingLabOrders} from '../../types'
 
-import DoctorListDropdown from '../doctors-list-dropdown/doctor-list-dropdown'
 import {
   auditLogURL,
   getPayloadForPatientReportUpload,
   postApiCall,
 } from '../../utils/api-utils'
-import {isAuditLogEnabledKey, loggedInUserKey} from '../../utils/constants'
+import {
+  isAuditLogEnabledKey,
+  loggedInUserKey,
+  selfPatient,
+  userLocationKey,
+} from '../../utils/constants'
+import DoctorListDropdown from '../doctors-list-dropdown/doctor-list-dropdown'
+import {useCookies} from 'react-cookie'
 
 interface UploadReportProps {
   saveHandler: Function
@@ -60,7 +70,9 @@ const UploadReport: React.FC<UploadReportProps> = ({
     boolean
   >(true)
   const [isSaveButtonClicked, setIsSaveButtonClicked] = useState(false)
+  const [cookie] = useCookies()
 
+  const locationUuid = cookie[userLocationKey].uuid
   const handleDiscard = () => {
     setIsDiscardButtonClicked(true)
     setReportDate(null)
@@ -83,20 +95,49 @@ const UploadReport: React.FC<UploadReportProps> = ({
       )
       if (uploadFileResponse?.ok) {
         const url = uploadFileResponse.data.url
-
         if (url) {
-          await uploadSelectedTests(
-            selectedTests,
-            patientUuid,
-            doctor.uuid,
-            reportDate,
-            url,
-            selectedFile,
-            reportConclusion,
-            ac,
-            selectedPendingOrder,
-            saveHandler,
-          )
+          const providerUuid =
+            doctor.person.display !== selfPatient ? doctor.uuid : null
+          let allSuccess: boolean = true
+          try {
+            for (let index = 0; index < selectedTests.length; index++) {
+              const bahmniEncounterResponse = await bahmniEncounter(
+                locationUuid,
+                patientUuid,
+                providerUuid,
+                selectedTests[index],
+                selectedPendingOrder,
+                ac,
+              )
+              if (bahmniEncounterResponse) {
+                allSuccess = true
+                await uploadSelectedTests(
+                  bahmniEncounterResponse,
+                  selectedTests[index],
+                  patientUuid,
+                  doctor.uuid,
+                  reportDate,
+                  url,
+                  selectedFile,
+                  reportConclusion,
+                  ac,
+                  selectedPendingOrder,
+                  saveHandler,
+                  allSuccess,
+                )
+              } else {
+                allSuccess = false
+              }
+            }
+          } catch (e) {
+            allSuccess = false
+          }
+          if (allSuccess) {
+            saveHandler(true)
+            setSelectedPendingOrder([])
+          } else {
+            saveHandler(false)
+          }
         }
       }
     }
@@ -135,7 +176,8 @@ const UploadReport: React.FC<UploadReportProps> = ({
   }
 
   async function uploadSelectedTests(
-    selectedTests: LabTest[],
+    bahmniEncounterResponse,
+    selectedTest: LabTest,
     patientUuid: string,
     doctorUuid: string,
     reportDate: Date,
@@ -145,49 +187,38 @@ const UploadReport: React.FC<UploadReportProps> = ({
     ac: AbortController,
     selectedPendingOrder: PendingLabOrders[],
     saveHandler: Function,
+    allSuccess: boolean,
   ) {
-    let allSuccess: boolean = true
-    try {
-      for (let index = 0; index < selectedTests.length; index++) {
-        const diagnosticReportResponse = await saveDiagnosticReport(
+    const diagnosticReportResponse = await saveDiagnosticReport(
+      bahmniEncounterResponse,
+      patientUuid,
+      doctorUuid,
+      reportDate,
+      selectedTest,
+      url,
+      selectedFile.name,
+      reportConclusion,
+      ac,
+      selectedPendingOrder,
+    )
+    if (diagnosticReportResponse.ok) {
+      const loggedInUser = localStorage.getItem(loggedInUserKey)
+      const isAuditLogEnabled = localStorage.getItem(isAuditLogEnabledKey)
+      if (isAuditLogEnabled && loggedInUser) {
+        const auditMessage = getPayloadForPatientReportUpload(
+          loggedInUser,
           patientUuid,
-          doctorUuid,
-          reportDate,
-          selectedTests[index],
-          url,
+          getPatientIdentifier(
+            diagnosticReportResponse?.data?.subject?.display,
+          ),
           selectedFile.name,
-          reportConclusion,
-          ac,
-          selectedPendingOrder,
+          selectedTest.name.display,
         )
-        if (diagnosticReportResponse.ok) {
-          const loggedInUser = localStorage.getItem(loggedInUserKey)
-          const isAuditLogEnabled = localStorage.getItem(isAuditLogEnabledKey)
-          if (isAuditLogEnabled && loggedInUser) {
-            const auditMessage = getPayloadForPatientReportUpload(
-              loggedInUser,
-              patientUuid,
-              getPatientIdentifier(
-                diagnosticReportResponse?.data?.subject?.display,
-              ),
-              selectedFile.name,
-              selectedTests[index].name.display,
-            )
-            postApiCall(auditLogURL, auditMessage, ac)
-          }
-        }
-        if (allSuccess && !diagnosticReportResponse.ok) {
-          allSuccess = false
-        }
+        postApiCall(auditLogURL, auditMessage, ac)
       }
-    } catch (e) {
-      allSuccess = false
     }
-    if (allSuccess) {
-      saveHandler(true)
-      setSelectedPendingOrder([])
-    } else {
-      saveHandler(false)
+    if (allSuccess && !diagnosticReportResponse.ok) {
+      allSuccess = false
     }
   }
 

@@ -27,6 +27,12 @@ export const auditLogURL = '/ws/rest/v1/auditlog'
 export const auditLogGlobalPropertyURL =
   '/ws/rest/v1/bahmnicore/sql/globalproperty?property=bahmni.enableAuditLog'
 
+export const configUrl = '/../bahmni_config/openmrs/apps/registration/app.json'
+
+export const encounterTypeUrl = '/ws/rest/v1/encountertype'
+
+export const bahmniEncounterUrl = '/ws/rest/v1/bahmnicore/bahmniencounter'
+
 export const getPayloadForUserLogin = (username: string): AuditMessage => ({
   eventType: 'ACCESSED_LAB_ENTRY',
   message: `User ${username} accessed lab entry module`,
@@ -85,4 +91,10 @@ export const postApiCall = (url, data, abortController) => {
     body: JSON.stringify(data),
     signal: abortController.signal,
   })
+}
+
+export const swrOptions = {
+  revalidateIfStale: false,
+  revalidateOnFocus: false,
+  revalidateOnReconnect: false,
 }
