@@ -96,14 +96,14 @@ export function saveDiagnosticReport(
   selectedPendingOrder: PendingLabOrders[],
 ) {
   let basedOn: Array<BasedOnType> = null
-  const isSelectedPendingOrderContainsSelectedTest = isSelectedTestPresentInPendingOrder(
+  const selectedPendingOrderTest = getSelectedPendingOrderTests(
     selectedTest,
     selectedPendingOrder,
   )
-  if (isSelectedPendingOrderContainsSelectedTest)
+  if (selectedPendingOrderTest.length === 1)
     basedOn = [
       {
-        identifier: {value: selectedPendingOrder[0].id},
+        identifier: {value: selectedPendingOrderTest[0].id},
         reference: 'ServiceRequest',
         display: selectedTest.name.display,
       },
@@ -131,7 +131,7 @@ export function saveDiagnosticReport(
   if (reportConclusion) {
     requestBody.conclusion = reportConclusion
   }
-  if (isSelectedPendingOrderContainsSelectedTest) {
+  if (selectedPendingOrderTest.length === 1) {
     requestBody.basedOn = basedOn
   }
   if (performerUuid) {
@@ -204,18 +204,20 @@ const getEncounterTypeUuid = (
     localStorage.getItem(encounterTypeUuidsKey),
   )
   let encounterTypeUuid = encounterTypeUuidlist[1][encounterTypes[1]]
-  if (isSelectedTestPresentInPendingOrder(selectedTest, selectedPendingOrder))
+  const selectedPendingOrderTest = getSelectedPendingOrderTests(
+    selectedTest,
+    selectedPendingOrder,
+  )
+  if (selectedPendingOrderTest.length === 1)
     encounterTypeUuid = encounterTypeUuidlist[0][encounterTypes[0]]
   return encounterTypeUuid
 }
 
-const isSelectedTestPresentInPendingOrder = (
+const getSelectedPendingOrderTests = (
   selectedTest: LabTest,
   selectedPendingOrder: PendingLabOrders[],
-): boolean => {
-  return (
-    selectedPendingOrder.filter(
-      pendingOrder => pendingOrder.conceptUuid === selectedTest.uuid,
-    ).length === 1
+): PendingLabOrders[] => {
+  return selectedPendingOrder.filter(
+    pendingOrder => pendingOrder.conceptUuid === selectedTest.uuid,
   )
 }
