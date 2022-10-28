@@ -12,13 +12,8 @@ import {
   TableSelectRow,
   TableSelectRowProps,
 } from 'carbon-components-react'
-import React, {useEffect, useMemo} from 'react'
+import React, {useEffect, useMemo, useState} from 'react'
 import useSWR, {mutate} from 'swr'
-import {
-  defaultPageSize,
-  headers,
-  orderStatusCompleted,
-} from '../../../utils/constants'
 import {usePendingLabOrderContext} from '../../../context/pending-orders-context'
 import {useOrderTypeUuidConfig} from '../../../hooks/useOrderTypeUuidConfig'
 import {
@@ -26,6 +21,11 @@ import {
   PendingLabOrders as PendingLabOrdersTable,
 } from '../../../types'
 import {fetcher, getPendingLabOrdersURL} from '../../../utils/api-utils'
+import {
+  defaultPageSize,
+  headers,
+  orderStatusCompleted,
+} from '../../../utils/constants'
 
 const PendingLabOrdersTable = ({
   patientUuid,
@@ -47,6 +47,8 @@ const PendingLabOrdersTable = ({
     selectedPendingOrder,
     setSelectedPendingOrder,
   } = usePendingLabOrderContext()
+
+  const [selectAll, setSelectAll] = useState<boolean>(false)
 
   function filterPendingLabOrders(
     pendingLabOrders: LabOrdersFetchResponse,
@@ -74,7 +76,6 @@ const PendingLabOrdersTable = ({
         }
       })
   }
-
   const pendingLabOrderRows = useMemo(
     () => filterPendingLabOrders(pendingLabOrders),
     [pendingLabOrders],
@@ -90,6 +91,14 @@ const PendingLabOrdersTable = ({
     pendingLabOrderRows,
     defaultPageSize,
   )
+
+  useEffect(() => {
+    if (selectAll) {
+      setSelectedPendingOrder([...pendingLabOrderRows])
+    } else {
+      setSelectedPendingOrder([])
+    }
+  }, [selectAll])
 
   return (
     <div title="paginated-table">
@@ -111,7 +120,16 @@ const PendingLabOrdersTable = ({
                     <TableRow>
                       <TableSelectAll
                         {...getSelectionProps()}
+                        onSelect={() => {
+                          if (selectedPendingOrder.length > 0 && !selectAll) {
+                            setSelectAll(false)
+                            setSelectedPendingOrder([])
+                          } else {
+                            setSelectAll(!selectAll)
+                          }
+                        }}
                         disabled={onButtonClick}
+                        checked={selectAll}
                       />
                       {headers.map(header => (
                         <TableHeader {...getHeaderProps({header})}>
@@ -173,7 +191,7 @@ const PendingLabOrdersTable = ({
     return (
       selectedPendingOrder.filter(
         pendingOrderRow => pendingOrderRow.id === row.id,
-      ).length == 1
+      ).length === 1
     )
   }
 }
