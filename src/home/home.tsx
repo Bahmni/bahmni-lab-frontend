@@ -30,37 +30,6 @@ const Home = () => {
     Error
   >(auditLogGlobalPropertyURL, fetcher, swrOptions)
 
-  const {data: configResponse} = useSWR(configUrl, fetcher, swrOptions)
-
-  const {data: encounterTypeResponse} = useSWR(
-    encounterTypeUrl,
-    fetcher,
-    swrOptions,
-  )
-
-  useEffect(() => {
-    if (configResponse && !localStorage.getItem(defaultVisitTypeKey)) {
-      localStorage.setItem(
-        defaultVisitTypeKey,
-        configResponse.data.config.defaultVisitType,
-      )
-    }
-    if (encounterTypeResponse && !localStorage.getItem(encounterTypeUuidsKey)) {
-      let encounterUuid = []
-      encounterTypeResponse.data.results.map(res => {
-        if (res.display === 'LAB_RESULT')
-          encounterUuid.push({LAB_RESULT: res.uuid})
-        if (res.display === 'Patient Document')
-          encounterUuid.push({'Patient Document': res.uuid})
-      })
-      if (encounterUuid.length > 0)
-        localStorage.setItem(
-          encounterTypeUuidsKey,
-          JSON.stringify(encounterUuid),
-        )
-    }
-  }, [configResponse, encounterTypeResponse])
-
   useEffect(() => {
     const subscription = getCurrentUser({
       includeAuthStatus: false,

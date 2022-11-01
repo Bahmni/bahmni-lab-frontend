@@ -17,14 +17,21 @@ import {
   getPayloadForPatientAccess,
   saveDiagnosticReportURL,
 } from '../../utils/api-utils'
-import {defaultVisitTypeKey, encounterTypeUuidsKey, isAuditLogEnabledKey, loggedInUserKey} from '../../utils/constants'
+import {
+  defaultVisitTypeKey,
+  encounterTypeUuidsKey,
+  isAuditLogEnabledKey,
+  loggedInUserKey,
+} from '../../utils/constants'
 import {localStorageMock, verifyApiCall} from '../../utils/test-utils'
+import {mockConfigResponse} from '../../__mocks__/config.mock'
+import {mockDoctorNames} from '../../__mocks__/doctorNames.mock'
 import {
   mockBahmniEncounterErrorResponse,
   mockBahmniEncounterRequest,
   mockBahmniEncounterResponse,
+  mockEncounterTypeResponse,
 } from '../../__mocks__/encounter.mock'
-import {mockDoctorNames} from '../../__mocks__/doctorNames.mock'
 import {mockPendingLabOrder} from '../../__mocks__/patientLabDetails.mock'
 import {mockPendingLabOrdersResponse} from '../../__mocks__/pendingLabOrders.mock'
 import {
@@ -77,11 +84,6 @@ describe('Patient lab details', () => {
         },
       })
     localStorage.setItem('i18nextLng', 'en')
-    localStorage.setItem(
-      encounterTypeUuidsKey,
-      '[{"LAB_RESULT":"LabResultUuid"},{"Patient Document":"PatientdocumentUuid"}]',
-    )
-    localStorage.setItem(defaultVisitTypeKey,'OPD')
     when(ExtensionSlot).mockImplementation((props: any) => {
       return (
         <>
@@ -170,6 +172,11 @@ describe('Patient lab details', () => {
   it('should render Patient Dashboard and post audit log message', () => {
     localStorage.setItem(loggedInUserKey, 'superman')
     localStorage.setItem(isAuditLogEnabledKey, 'true')
+    localStorage.setItem(
+      encounterTypeUuidsKey,
+      '[{"LAB_RESULT":"LabResultUuid"},{"Patient Document":"PatientdocumentUuid"}]',
+    )
+    localStorage.setItem(defaultVisitTypeKey, 'OPD')
     const mockedOpenmrsFetch = openmrsFetch as jest.Mock
     render(
       <BrowserRouter>
@@ -213,6 +220,9 @@ describe('Patient lab details', () => {
     const mockedOpenmrsFetch = openmrsFetch as jest.Mock
     mockedOpenmrsFetch
       .mockReturnValueOnce(mockPendingLabOrdersResponse)
+      .mockReturnValueOnce(mockEmptyReportTableResponse)
+      .mockReturnValueOnce(mockConfigResponse)
+      .mockReturnValueOnce(mockEncounterTypeResponse)
       .mockReturnValue(mockLabTestsResponse)
     render(
       <SWRConfig value={{provider: () => new Map()}}>
@@ -279,6 +289,8 @@ describe('Patient lab details', () => {
     mockedOpenmrsFetch
       .mockReturnValueOnce(mockPendingLabOrdersResponse)
       .mockReturnValueOnce(mockEmptyReportTableResponse)
+      .mockReturnValueOnce(mockConfigResponse)
+      .mockReturnValueOnce(mockEncounterTypeResponse)
       .mockReturnValueOnce(mockLabTestsResponse)
       .mockReturnValueOnce(mockDoctorNames)
       .mockReturnValueOnce(mockUploadFileResponse)
@@ -357,6 +369,8 @@ describe('Patient lab details', () => {
     mockedOpenmrsFetch
       .mockReturnValueOnce(mockPendingLabOrdersResponse)
       .mockReturnValueOnce(mockEmptyReportTableResponse)
+      .mockReturnValueOnce(mockConfigResponse)
+      .mockReturnValueOnce(mockEncounterTypeResponse)
       .mockReturnValueOnce(mockLabTestsResponse)
       .mockReturnValueOnce(mockDoctorNames)
       .mockReturnValueOnce(mockUploadFileResponse)
@@ -399,7 +413,7 @@ describe('Patient lab details', () => {
     uploadFiles(fileInput, [file])
     await verifyFileName(fileInput)
     await saveReport()
-    expect(mockedOpenmrsFetch).toBeCalledTimes(7)
+    expect(mockedOpenmrsFetch).toBeCalledTimes(9)
     verifyApiCall(bahmniEncounterUrl, 'POST')
     verifyApiCall(
       saveDiagnosticReportURL,
@@ -416,6 +430,8 @@ describe('Patient lab details', () => {
     mockedOpenmrsFetch
       .mockReturnValueOnce(mockPendingLabOrdersResponse)
       .mockReturnValueOnce(mockReportTableResponse)
+      .mockReturnValueOnce(mockConfigResponse)
+      .mockReturnValueOnce(mockEncounterTypeResponse)
       .mockReturnValueOnce(mockLabTestsResponse)
       .mockReturnValueOnce(mockDoctorNames)
       .mockReturnValueOnce(mockUploadFileResponse)
@@ -481,7 +497,7 @@ describe('Patient lab details', () => {
 
     await saveReport()
 
-    expect(mockedOpenmrsFetch).toBeCalledTimes(9)
+    expect(mockedOpenmrsFetch).toBeCalledTimes(11)
     verifyApiCall(saveDiagnosticReportURL, 'POST')
     expect(mutateMock).toHaveBeenCalledTimes(2)
   })
@@ -490,12 +506,14 @@ describe('Patient lab details', () => {
     mockedOpenmrsFetch
       .mockReturnValueOnce(mockPendingLabOrdersResponse)
       .mockReturnValueOnce(mockEmptyReportTableResponse)
+      .mockReturnValueOnce(mockConfigResponse)
+      .mockReturnValueOnce(mockEncounterTypeResponse)
       .mockReturnValueOnce(mockLabTestsResponse)
       .mockReturnValueOnce(mockDoctorNames)
       .mockReturnValueOnce(mockUploadFileResponse)
       .mockReturnValueOnce(mockBahmniEncounterErrorResponse)
 
-      render(
+    render(
       <SWRConfig value={{provider: () => new Map()}}>
         <BrowserRouter>
           <PatientLabDetails
@@ -568,6 +586,8 @@ describe('Patient lab details', () => {
     mockedOpenmrsFetch
       .mockReturnValueOnce(mockPendingLabOrdersResponse)
       .mockReturnValueOnce(mockEmptyReportTableResponse)
+      .mockReturnValueOnce(mockConfigResponse)
+      .mockReturnValueOnce(mockEncounterTypeResponse)
       .mockReturnValueOnce(mockLabTestsResponse)
       .mockReturnValueOnce(mockDoctorNames)
       .mockReturnValueOnce(mockUploadFileResponse)
@@ -647,6 +667,8 @@ describe('Patient lab details', () => {
     mockedOpenmrsFetch
       .mockReturnValueOnce(mockPendingLabOrdersResponse)
       .mockReturnValueOnce(mockEmptyReportTableResponse)
+      .mockReturnValueOnce(mockConfigResponse)
+      .mockReturnValueOnce(mockEncounterTypeResponse)
       .mockReturnValueOnce(mockLabTestsResponse)
       .mockReturnValueOnce(mockDoctorNames)
       .mockReturnValueOnce(mockUploadFileResponse)
@@ -688,7 +710,7 @@ describe('Patient lab details', () => {
     uploadFiles(fileInput, [file])
     await verifyFileName(fileInput)
     await saveReport()
-    expect(mockedOpenmrsFetch).toBeCalledTimes(7)
+    expect(mockedOpenmrsFetch).toBeCalledTimes(9)
     verifyApiCall(
       bahmniEncounterUrl,
       'POST',
@@ -700,6 +722,8 @@ describe('Patient lab details', () => {
     mockedOpenmrsFetch
       .mockReturnValueOnce(mockPendingLabOrdersResponse)
       .mockReturnValueOnce(mockEmptyReportTableResponse)
+      .mockReturnValueOnce(mockConfigResponse)
+      .mockReturnValueOnce(mockEncounterTypeResponse)
       .mockReturnValueOnce(mockLabTestsResponse)
       .mockReturnValueOnce(mockDoctorNames)
       .mockReturnValueOnce(mockUploadFileResponse)

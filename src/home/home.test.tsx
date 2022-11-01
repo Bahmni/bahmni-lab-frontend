@@ -9,8 +9,6 @@ import {
   getPayloadForUserLogin
 } from '../utils/api-utils'
 import { verifyApiCall } from '../utils/test-utils'
-import { mockConfigResponse } from '../__mocks__/config.mock'
-import { mockEncounterTypeResponse } from '../__mocks__/encounter.mock'
 import { mockUser } from '../__mocks__/mockUser'
 import Home from './home'
 
@@ -24,8 +22,6 @@ describe('home page', () => {
   let mockedOpenmrsFetch = openmrsFetch as jest.Mock
   mockedOpenmrsFetch
     .mockReturnValueOnce({data: true})
-    .mockReturnValueOnce(mockConfigResponse)
-    .mockReturnValue(mockEncounterTypeResponse)
   it('should show home page', () => {
     render(
       <SWRConfig value={{provider: () => new Map()}}>
@@ -51,15 +47,13 @@ describe('home page - Auditing', () => {
   it('should update audit logs when user enters lab lite', async () => {
     mockedOpenmrsFetch
       .mockReturnValueOnce({data: true})
-      .mockReturnValueOnce(mockConfigResponse)
-      .mockReturnValue(mockEncounterTypeResponse)
 
     render(
       <SWRConfig value={{provider: () => new Map()}}>
         <Home />
       </SWRConfig>,
     )
-    await waitFor(() => expect(mockedOpenmrsFetch).toBeCalledTimes(4))
+    await waitFor(() => expect(mockedOpenmrsFetch).toBeCalledTimes(2))
 
     const auditMessagePayload = getPayloadForUserLogin(mockUser.username)
 
@@ -70,8 +64,6 @@ describe('home page - Auditing', () => {
   it('should not update audit logs when audit log property is disabled', async () => {
     mockedOpenmrsFetch
       .mockReturnValueOnce({data: false})
-      .mockReturnValueOnce(mockConfigResponse)
-      .mockReturnValueOnce(mockEncounterTypeResponse)
 
     render(
       <SWRConfig value={{provider: () => new Map()}}>
@@ -79,7 +71,7 @@ describe('home page - Auditing', () => {
       </SWRConfig>,
     )
 
-    await waitFor(() => expect(mockedOpenmrsFetch).toBeCalledTimes(3))
+    await waitFor(() => expect(mockedOpenmrsFetch).toBeCalledTimes(1))
 
     verifyApiCall(auditLogGlobalPropertyURL, 'GET')
   })
