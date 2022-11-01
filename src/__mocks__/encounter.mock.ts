@@ -62,7 +62,7 @@ export const mockEncounterTypeResponse = {
   data: {
     results: [
       {
-        uuid: '82024e00-3f10-11e4-adec-0800271c1b75',
+        uuid: 'LabResultUuid',
         display: 'LAB_RESULT',
         links: [
           {
@@ -74,7 +74,7 @@ export const mockEncounterTypeResponse = {
         ],
       },
       {
-        uuid: '82367e09-3f10-11e4-adec-0800271c1b75',
+        uuid: 'PatientdocumentUuid',
         display: 'Patient Document',
         links: [
           {
