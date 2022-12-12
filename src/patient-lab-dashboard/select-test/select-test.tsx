@@ -98,7 +98,8 @@ const SelectTest = ({isDiscardButtonClicked}) => {
     return filteredTest?.name?.display === selectedTest?.name?.display
   }
 
-  const isLabTest = (test: LabTest) => test.conceptClass.name == 'LabTest'
+  const isLabTest = (test: LabTest) =>
+    test.conceptClass.name === 'LabTest' || test.conceptClass.name === 'Test'
 
   const removeSelectedPanels = (
     updatedSearchResults: Array<LabTest>,
