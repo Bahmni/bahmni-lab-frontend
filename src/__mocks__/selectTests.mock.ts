@@ -120,8 +120,8 @@ export const mockLabTestsResponse = {
                 set: false,
                 conceptClass: {
                   uuid: '33a6291c-8a92-11e4-977f-0800271c1b75',
-                  name: 'LabTest',
-                  description: 'Lab Tests',
+                  name: 'Test',
+                  description: 'Acq. during patient encounter (vitals, labs, etc.)',
                 },
                 setMembers: [],
               },
