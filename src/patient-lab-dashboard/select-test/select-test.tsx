@@ -13,6 +13,7 @@ import Loader from '../../common/loader/loader.component'
 import {LabTest} from '../../types/selectTest'
 import {swrOptions, fetcher, getLabTests} from '../../utils/api-utils'
 import styles from './select-test.scss'
+import { getTestName } from '../../utils/helperFunctions'
 
 const SelectTest = ({isDiscardButtonClicked}) => {
   const [searchResults, setSearchResults] = useState<Array<LabTest>>([])
@@ -62,7 +63,9 @@ const SelectTest = ({isDiscardButtonClicked}) => {
   useEffect(() => {
     if (searchValue) {
       const filteredTestsAndPanels = allTestsAndPanels.filter(test =>
-        test.name.display.toLowerCase().includes(searchValue.toLowerCase()),
+        getTestName(test)
+          .toLowerCase()
+          .includes(searchValue.toLowerCase()),
       )
       filterSearchResults(filteredTestsAndPanels)
     } else {
@@ -106,7 +109,7 @@ const SelectTest = ({isDiscardButtonClicked}) => {
     selectedPanelName: Array<string>,
   ) =>
     updatedSearchResults.filter(
-      test => !selectedPanelName.includes(test.name.display),
+      test => !selectedPanelName.includes(getTestName(test)),
     )
 
   const filterSearchResults = (labTests: Array<LabTest>) => {
@@ -122,7 +125,7 @@ const SelectTest = ({isDiscardButtonClicked}) => {
               break
             }
           } else if (!isLabTest(selectedTest)) {
-            selectedPanelName.push(selectedTest.name.display)
+            selectedPanelName.push(getTestName(selectedTest))
             for (let selectedPanel of getTestsInLabOrder(selectedTest)) {
               if (isCommonTestPresent(labTest, selectedPanel)) {
                 isSelectedTestPresent = true
@@ -238,7 +241,9 @@ const SelectTest = ({isDiscardButtonClicked}) => {
 
   const isTestHavingSearchValue = (test: LabTest) =>
     !searchValue ||
-    test.name.display.toLowerCase().includes(searchValue.toLowerCase())
+    getTestName(test)
+      .toLowerCase()
+      .includes(searchValue.toLowerCase())
 
   const updateSearchResultsOnUnselect = (unselectedTest: LabTest) => {
     if (isTestHavingSearchValue(unselectedTest))
@@ -297,7 +302,7 @@ const SelectTest = ({isDiscardButtonClicked}) => {
           >
             <Checkbox
               id={searchResult.name.uuid}
-              labelText={searchResult.name.display}
+              labelText={getTestName(searchResult)}
               onChange={() => handleSelect(searchResult)}
             />
             {searchResult.conceptClass.name == 'LabSet' && (
@@ -329,7 +334,7 @@ const SelectTest = ({isDiscardButtonClicked}) => {
             <Checkbox
               id={selectedTest.name.uuid}
               checked={true}
-              labelText={selectedTest.name.display}
+              labelText={getTestName(selectedTest)}
               onChange={() => handleUnselect(selectedTest)}
             />
             {selectedTest.conceptClass.name == 'LabSet' && (

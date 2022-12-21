@@ -10,6 +10,7 @@ export interface LabOrders {
 interface Concept {
   name: string
   uuid: string
+  shortName?: string
 }
 export interface LabOrdersFetchResponse {
   data: Array<LabOrders>
