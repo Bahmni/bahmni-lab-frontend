@@ -37,6 +37,7 @@ import {
 } from '../../utils/constants'
 import DoctorListDropdown from '../doctors-list-dropdown/doctor-list-dropdown'
 import {useCookies} from 'react-cookie'
+import {getTestName} from '../../utils/helperFunctions'
 
 interface UploadReportProps {
   saveHandler: Function
@@ -212,7 +213,7 @@ const UploadReport: React.FC<UploadReportProps> = ({
             diagnosticReportResponse?.data?.subject?.display,
           ),
           selectedFile.name,
-          selectedTest.name.display,
+          getTestName(selectedTest),
         )
         postApiCall(auditLogURL, auditMessage, ac)
       }

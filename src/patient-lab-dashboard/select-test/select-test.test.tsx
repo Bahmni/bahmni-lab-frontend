@@ -1,21 +1,63 @@
-import {openmrsFetch} from '@openmrs/esm-framework'
 import {render, screen, waitFor} from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import React from 'react'
 import {SWRConfig} from 'swr'
+import {
+  LabTestResultsProvider,
+  useAllTestAndPanel,
+  useLabTestResultsContext,
+} from '../../context/lab-test-results-context'
 import PendingLabOrdersProvider from '../../context/pending-orders-context'
 import {UploadReportProvider} from '../../context/upload-report-context'
 import {
+  mockAlltestAndPanels,
   mockLabTestsErrorResponse,
-  mockLabTestsPendingResponse,
-  mockLabTestsResponse,
 } from '../../__mocks__/selectTests.mock'
 import SelectTest from './select-test'
 
+jest.mock('../../context/lab-test-results-context', () => ({
+  ...jest.requireActual('../../context/lab-test-results-context'),
+  useLabTestResultsContext: jest.fn(),
+  useAllTestAndPanel: jest.fn(),
+}))
+
 describe('Select Test', () => {
-  beforeEach(() => jest.clearAllMocks())
+  beforeEach(() => {
+    const mockUseLabTestResultsContext = useLabTestResultsContext as jest.Mock
+    mockUseLabTestResultsContext.mockImplementation(() => ({
+      labTestResultsError: undefined,
+    }))
+    const mockUseAllTestAndPanel = useAllTestAndPanel as jest.Mock
+    mockUseAllTestAndPanel.mockImplementation(() => ({
+      allTestsAndPanels: mockAlltestAndPanels,
+    }))
+  })
+  afterEach(() => jest.clearAllMocks())
+
   it('should show tests in available tests', async () => {
-    mockOpenmrsApi()
+    await renderSelectTestComponent()
+
+    await waitFor(() =>
+      expect(screen.getByText('Available Tests ( 4 )')).toBeInTheDocument(),
+    )
+
+    expect(screen.getByTestId(/available-tests/i)).toHaveTextContent(
+      /Absolute Eosinphil Count/i,
+    )
+  })
+  it('should display error message when call for lab result is unsuccessful', async () => {
+    const mockUseLabTestResultsContext = useLabTestResultsContext as jest.Mock
+    mockUseLabTestResultsContext.mockImplementation(() => ({
+      labTestResultsError: mockLabTestsErrorResponse,
+    }))
+   
+    await renderSelectTestComponent()
+    expect(
+      screen.getByText(/Something went wrong in fetching Lab Tests/i),
+    ).toBeInTheDocument()
+  })
+
+  it('should show tests in available tests', async () => {
     await renderSelectTestComponent()
 
     await waitFor(() =>
@@ -27,28 +69,7 @@ describe('Select Test', () => {
     )
   })
 
-  it('should display error message when call for lab result is unsuccessful', async () => {
-    const mockedOpenmrsFetch = openmrsFetch as jest.Mock
-    mockedOpenmrsFetch.mockRejectedValueOnce(mockLabTestsErrorResponse)
-
-    await renderSelectTestComponent()
-
-    await waitFor(() => {
-      expect(
-        screen.getByText(/Something went wrong in fetching Lab Tests/i),
-      ).toBeInTheDocument()
-    })
-  })
-
-  it('should show loader when fetching lab result data', async () => {
-    mockOpenmrsApi(mockLabTestsPendingResponse)
-    await renderSelectTestComponent(false)
-
-    expect(screen.getByText(/loading \.\.\./i)).toBeInTheDocument()
-  })
-
   it('should move test from available to selected list when selecting a test', async () => {
-    mockOpenmrsApi()
     await renderSelectTestComponent()
 
     userEvent.click(
@@ -62,7 +83,6 @@ describe('Select Test', () => {
     )
   })
   it('should filter tests based on search value', async () => {
-    mockOpenmrsApi()
     await renderSelectTestComponent()
 
     expect(screen.getByTestId(/available-tests/i)).toHaveTextContent(
@@ -84,7 +104,6 @@ describe('Select Test', () => {
   })
 
   it('should show message when search value has no matching tests', async () => {
-    mockOpenmrsApi()
     await renderSelectTestComponent()
 
     userEvent.type(screen.getByRole('searchbox', {name: /search/i}), 'abc')
@@ -93,7 +112,6 @@ describe('Select Test', () => {
   })
 
   it('should move test from selected to available when unselecting a test', async () => {
-    mockOpenmrsApi()
     await renderSelectTestComponent()
 
     userEvent.click(
@@ -125,7 +143,6 @@ describe('Select Test', () => {
     ).toBeInTheDocument()
   })
   it('should not include unselected test if it does not contains search value', async () => {
-    mockOpenmrsApi()
     await renderSelectTestComponent()
 
     userEvent.click(
@@ -159,7 +176,6 @@ describe('Select Test', () => {
     ).toBeInTheDocument()
   })
   it('should include unselected test if it contains search value', async () => {
-    mockOpenmrsApi()
     await renderSelectTestComponent()
 
     userEvent.click(
@@ -184,7 +200,6 @@ describe('Select Test', () => {
   })
 
   it('should load all the test on clearing search value', async () => {
-    mockOpenmrsApi()
     await renderSelectTestComponent()
 
     userEvent.type(screen.getByRole('searchbox', {name: /search/i}), 'ab')
@@ -205,7 +220,6 @@ describe('Select Test', () => {
     )
   })
   it('should exclude selected in available test test on clearing search value', async () => {
-    mockOpenmrsApi()
     await renderSelectTestComponent()
 
     userEvent.click(
@@ -231,7 +245,6 @@ describe('Select Test', () => {
     )
   })
   it('should show panel tag against each panel', async () => {
-    mockOpenmrsApi()
     await renderSelectTestComponent()
 
     const panelCount = screen.getAllByTitle(/panel/i).length
@@ -239,7 +252,6 @@ describe('Select Test', () => {
   })
 
   it('should update available tests when user selects a panel', async () => {
-    mockOpenmrsApi()
     await renderSelectTestComponent()
 
     userEvent.click(screen.getByRole('checkbox', {name: /TLC/i}))
@@ -252,7 +264,6 @@ describe('Select Test', () => {
   })
 
   it('should not display test in both lists when user selects a test and a panel containing the same test', async () => {
-    mockOpenmrsApi()
     await renderSelectTestComponent()
 
     userEvent.click(
@@ -271,7 +282,6 @@ describe('Select Test', () => {
   })
 
   it('should display tests in panel when user unselects a panel', async () => {
-    mockOpenmrsApi()
     await renderSelectTestComponent()
 
     userEvent.click(screen.getByRole('checkbox', {name: /TLC/i}))
@@ -289,7 +299,6 @@ describe('Select Test', () => {
   })
 
   it('should show test in available list if user unselects multiple panels that contains the common test', async () => {
-    mockOpenmrsApi()
     await renderSelectTestComponent()
 
     userEvent.click(screen.getByRole('checkbox', {name: /TLC/i}))
@@ -312,7 +321,6 @@ describe('Select Test', () => {
   })
 
   it('should show test in available list if test matches the search value on unselecting multiple panels that contains the common test', async () => {
-    mockOpenmrsApi()
     await renderSelectTestComponent()
 
     userEvent.click(screen.getByRole('checkbox', {name: /TLC/i}))
@@ -350,15 +358,13 @@ async function renderSelectTestComponent(waitForLoader: boolean = true) {
   if (waitForLoader) await waitForLoaderToComplete()
 }
 
-function mockOpenmrsApi(apiResponse: any = mockLabTestsResponse) {
-  const mockedOpenmrsFetch = openmrsFetch as jest.Mock
-  mockedOpenmrsFetch.mockResolvedValue(apiResponse)
-}
-
 function renderWithContextProvider(children) {
   return render(
-    <PendingLabOrdersProvider>
-      <UploadReportProvider>{children}</UploadReportProvider>
-    </PendingLabOrdersProvider>,
+    <LabTestResultsProvider>
+      <PendingLabOrdersProvider>
+        <UploadReportProvider>{children}</UploadReportProvider>
+      </PendingLabOrdersProvider>
+      ,
+    </LabTestResultsProvider>,
   )
 }

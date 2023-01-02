@@ -12,13 +12,19 @@ import {
   saveDiagnosticReportURL,
   uploadDocumentURL,
 } from '../../utils/api-utils'
-import {defaultVisitTypeKey, encounterTypeUuidsKey, isAuditLogEnabledKey, loggedInUserKey} from '../../utils/constants'
+import {
+  defaultVisitTypeKey,
+  encounterTypeUuidsKey,
+  isAuditLogEnabledKey,
+  loggedInUserKey,
+} from '../../utils/constants'
 import {localStorageMock, verifyApiCall} from '../../utils/test-utils'
 import {uploadFiles} from '../../utils/test-utils/upload-report-helper'
 import {mockBahmniEncounterResponse} from '../../__mocks__/encounter.mock'
 import {mockDoctorNames} from '../../__mocks__/doctorNames.mock'
 import {
   diagnosticReportRequestBody,
+  mockAlltestAndPanels,
   mockDiagnosticReportResponse,
   mockLabTestsResponse,
   mockUploadFileResponse,
@@ -26,6 +32,18 @@ import {
   uploadFileRequestBody,
 } from '../../__mocks__/selectTests.mock'
 import UploadReport from './upload-report'
+import {LabTestResultsProvider} from '../../context/lab-test-results-context'
+
+jest.mock('../../context/lab-test-results-context', () => ({
+  ...jest.requireActual('../../context/lab-test-results-context'),
+  useLabTestResultsContext: jest.fn(() => ({
+    labTestResults: mockLabTestsResponse,
+    labTestResultsError: undefined,
+  })),
+  useAllTestAndPanel: jest.fn(() => ({
+    allTestsAndPanels: mockAlltestAndPanels,
+  })),
+}))
 
 describe('Upload Report', () => {
   const saveHandler = jest.fn()
@@ -40,8 +58,7 @@ describe('Upload Report', () => {
       encounterTypeUuidsKey,
       '[{"LAB_RESULT":"LabResultUuid"},{"Patient Document":"PatientdocumentUuid"}]',
     )
-    localStorage.setItem(defaultVisitTypeKey,'OPD')
-
+    localStorage.setItem(defaultVisitTypeKey, 'OPD')
   })
   afterEach(() => {
     jest.clearAllMocks(), localStorage.clear()
@@ -53,12 +70,14 @@ describe('Upload Report', () => {
     mockedLayout.mockReturnValue('desktop')
 
     renderWithContextProvider(
-      <UploadReport
-        closeHandler={closeHandler}
-        saveHandler={saveHandler}
-        header={'Test Header'}
-        patientUuid={'123'}
-      />,
+      <LabTestResultsProvider>
+        <UploadReport
+          closeHandler={closeHandler}
+          saveHandler={saveHandler}
+          header={'Test Header'}
+          patientUuid={'123'}
+        />
+      </LabTestResultsProvider>,
     )
 
     userEvent.click(screen.getByLabelText('close-icon'))
@@ -72,17 +91,16 @@ describe('Upload Report', () => {
     const mockedLayout = useLayoutType as jest.Mock
     mockedLayout.mockReturnValue('desktop')
 
-    const mockedOpenmrsFetch = openmrsFetch as jest.Mock
-    mockedOpenmrsFetch.mockResolvedValue(mockLabTestsResponse)
-
     renderWithContextProvider(
       <SWRConfig value={{provider: () => new Map()}}>
-        <UploadReport
-          saveHandler={saveHandler}
-          closeHandler={closeHandler}
-          header={'Test Header'}
-          patientUuid={'123'}
-        />
+        <LabTestResultsProvider>
+          <UploadReport
+            saveHandler={saveHandler}
+            closeHandler={closeHandler}
+            header={'Test Header'}
+            patientUuid={'123'}
+          />
+        </LabTestResultsProvider>
       </SWRConfig>,
     )
 
@@ -186,7 +204,6 @@ describe('Upload Report', () => {
     localStorage.setItem('i18nextLng', 'en')
     const mockedOpenmrsFetch = openmrsFetch as jest.Mock
     mockedOpenmrsFetch
-      .mockReturnValueOnce(mockLabTestsResponse)
       .mockReturnValue(mockDoctorNames)
 
     const mockedLayout = useLayoutType as jest.Mock
@@ -256,7 +273,6 @@ describe('Upload Report', () => {
     localStorage.setItem(isAuditLogEnabledKey, 'true')
     const mockedOpenmrsFetch = openmrsFetch as jest.Mock
     mockedOpenmrsFetch
-      .mockReturnValueOnce(mockLabTestsResponse)
       .mockReturnValueOnce(mockDoctorNames)
       .mockReturnValueOnce(mockUploadFileResponse)
       .mockReturnValueOnce(mockBahmniEncounterResponse)
@@ -334,7 +350,7 @@ describe('Upload Report', () => {
     expect(saveButton).not.toBeDisabled()
     userEvent.click(saveButton)
     await waitFor(() => {
-      expect(mockedOpenmrsFetch).toBeCalledTimes(6)
+      expect(mockedOpenmrsFetch).toBeCalledTimes(5)
     })
     verifyApiCall(uploadDocumentURL, 'POST', uploadFileRequestBody)
     verifyApiCall(
@@ -361,7 +377,6 @@ describe('Upload Report', () => {
     localStorage.setItem('i18nextLng', 'en')
     const mockedOpenmrsFetch = openmrsFetch as jest.Mock
     mockedOpenmrsFetch
-      .mockReturnValueOnce(mockLabTestsResponse)
       .mockReturnValueOnce(mockDoctorNames)
       .mockReturnValueOnce(mockUploadFileResponse)
       .mockReturnValueOnce(mockBahmniEncounterResponse)
@@ -428,7 +443,7 @@ describe('Upload Report', () => {
     expect(saveButton).not.toBeDisabled()
     userEvent.click(saveButton)
     await waitFor(() => {
-      expect(mockedOpenmrsFetch).toBeCalledTimes(5)
+      expect(mockedOpenmrsFetch).toBeCalledTimes(4)
     })
     verifyApiCall(uploadDocumentURL, 'POST', uploadFileRequestBody)
     verifyApiCall(bahmniEncounterUrl, 'POST')
@@ -444,7 +459,6 @@ describe('Upload Report', () => {
     localStorage.setItem('i18nextLng', 'en')
     const mockedOpenmrsFetch = openmrsFetch as jest.Mock
     mockedOpenmrsFetch
-      .mockReturnValueOnce(mockLabTestsResponse)
       .mockReturnValueOnce(mockDoctorNames)
       .mockReturnValueOnce(mockUploadFileResponse)
       .mockReturnValueOnce(mockBahmniEncounterResponse)
@@ -514,7 +528,7 @@ describe('Upload Report', () => {
     userEvent.click(saveButton)
     expect(saveButton).toBeDisabled()
     await waitFor(() => {
-      expect(mockedOpenmrsFetch).toBeCalledTimes(5)
+      expect(mockedOpenmrsFetch).toBeCalledTimes(4)
     })
   })
 })
@@ -532,8 +546,10 @@ function getFormatedDate(addDays: number): string {
 
 function renderWithContextProvider(children) {
   return render(
-    <PendingLabOrdersProvider>
-      <UploadReportProvider>{children}</UploadReportProvider>
-    </PendingLabOrdersProvider>,
+    <LabTestResultsProvider>
+      <PendingLabOrdersProvider>
+        <UploadReportProvider>{children}</UploadReportProvider>
+      </PendingLabOrdersProvider>
+    </LabTestResultsProvider>,
   )
 }

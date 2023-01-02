@@ -16,14 +16,11 @@ import {
 } from 'carbon-components-react'
 import React, {useEffect, useMemo} from 'react'
 import useSWR, {mutate} from 'swr'
+import Loader from '../../../common/loader/loader.component'
 import {
-  defaultPageSize,
-  isAuditLogEnabledKey,
-  loggedInUserKey,
-  reportHeaders,
-  selfPatient,
-} from '../../../utils/constants'
-import ImagePreviewComponent from '../../image-preview-component/image-preview-component'
+  useAllTestAndPanel,
+  useLabTestResultsContext,
+} from '../../../context/lab-test-results-context'
 import {
   AuditMessage,
   ReportEntry,
@@ -31,12 +28,24 @@ import {
   ReportTableFetchResponse,
   ReportTableRow,
 } from '../../../types'
+import {LabTest} from '../../../types/selectTest'
 import {
   auditLogURL,
+  getLabTests,
   getPayloadForViewingPatientReport,
   postApiCall,
+  swrOptions,
 } from '../../../utils/api-utils'
+import {
+  defaultPageSize,
+  isAuditLogEnabledKey,
+  loggedInUserKey,
+  reportHeaders,
+  selfPatient,
+} from '../../../utils/constants'
+import {getShortName} from '../../../utils/helperFunctions'
 import {fetcher, getReportTableDataURL} from '../../../utils/lab-orders'
+import ImagePreviewComponent from '../../image-preview-component/image-preview-component'
 import classes from './report-table.component.scss'
 
 const documentPath = '/document_images/'
@@ -55,6 +64,14 @@ interface ReportTableProps {
 const ReportTable = (props: ReportTableProps) => {
   const {patientUuid, reloadTableData} = props
   const reportTableDataUrl = getReportTableDataURL(patientUuid)
+  const {
+    labTestResults,
+    setLabTestResults,
+    setLabTestResultsError,
+  } = useLabTestResultsContext()
+
+  const {allTestsAndPanels, setAllTestsAndPanels} = useAllTestAndPanel()
+
   useEffect(() => {
     if (reloadTableData) {
       mutate(reportTableDataUrl)
@@ -66,6 +83,11 @@ const ReportTable = (props: ReportTableProps) => {
     Error
   >(getReportTableDataURL(patientUuid), fetcher)
 
+  const {data: testResults, error: testResultsError} = useSWR<any, Error>(
+    getLabTests,
+    fetcher,
+    swrOptions,
+  )
   const getRequester = (
     performer: undefined | {display: string; reference: string},
   ) => {
@@ -74,6 +96,25 @@ const ReportTable = (props: ReportTableProps) => {
     }
     return selfPatient
   }
+
+  useEffect(() => {
+    if (testResults) {
+      setLabTestResults({...testResults})
+      const labOrder = testResults?.data?.results[0]
+      labOrder &&
+        getTestsInLabOrder(labOrder)?.map(sample => {
+          getTestsInLabOrder(sample).map((tests: LabTest) => {
+            setAllTestsAndPanels(allTestsAndPanels => [
+              ...allTestsAndPanels,
+              tests,
+            ])
+          })
+        })
+    }
+    if (testResultsError) setLabTestResultsError(testResultsError)
+  }, [testResults, testResultsError])
+
+  const getTestsInLabOrder = (labOrder: LabTest) => labOrder?.setMembers
 
   const rows = useMemo(() => {
     const uniqueUploadedReports: Array<ReportEntry> = dedupe(
@@ -91,7 +132,10 @@ const ReportTable = (props: ReportTableProps) => {
 
         return {
           id: row.resource.id,
-          tests: row.resource.code.coding[0].display,
+          tests: getShortName(
+            row.resource.code.coding[0].display,
+            allTestsAndPanels,
+          ),
           url: row.resource.presentedForm[0].url,
           date: new Date(row.resource.issued).toLocaleDateString(
             localStorage.getItem('i18nextLng'),
@@ -114,79 +158,67 @@ const ReportTable = (props: ReportTableProps) => {
     defaultPageSize,
   )
 
+  if (reportsTableDataError || testResultsError)
+    return (
+      <div>Something went wrong in fetching Report tables or Lab Tests...</div>
+    )
+
   return (
     <div title="report-table">
-      {reportsTableDataError ? (
-        <div>Something went wrong in fetching Report tables...</div>
-      ) : (
-        <>
-          <h4>Reports table</h4>
-          <DataTable rows={paginatedReportsTable} headers={reportHeaders}>
-            {({
-              rows: dataTableRows,
-              headers,
-              getHeaderProps,
-              getRowProps,
-              getTableProps,
-              getTableContainerProps,
-            }) => (
-              <TableContainer {...getTableContainerProps()}>
-                <Table
-                  {...getTableProps()}
-                  className={classes.reportTable}
-                  useZebraStyles={true}
-                >
-                  <TableHead>
-                    <TableRow>
-                      <TableExpandHeader id="expand" />
-                      {headers.map((header, i) => (
-                        <TableHeader
-                          id={header.header}
-                          key={i}
-                          {...getHeaderProps({header})}
-                        >
-                          {header.header}
-                        </TableHeader>
-                      ))}
-                    </TableRow>
-                  </TableHead>
-                  <TableBody>
-                    {rows?.length > 0 ? (
-                      dataTableRows.map((row, index) => {
-                        const rowIndex = getReportTableRowIndex(
-                          currentPage,
-                          index,
-                        )
-                        return (
-                          <React.Fragment key={row.id}>
-                            <TableExpandRow {...getRowProps({row})}>
-                              {row.cells.map(cell => {
-                                return cell.id.endsWith('file') ? (
-                                  <TableCell key={cell.id}>
-                                    {cell.value?.endsWith('pdf') ? (
-                                      <Link
-                                        href={getReportUrl(rows, row.id)}
-                                        target={'_blank'}
-                                        onClick={() => {
-                                          const auditMessage = getAuditMessageBody(
-                                            patientUuid,
-                                            rows[rowIndex]?.file,
-                                            rows[rowIndex]?.date,
-                                            getPatientIdentifier(
-                                              rows[rowIndex]?.patientId,
-                                            ),
-                                            rows[rowIndex]?.tests,
-                                          )
-                                          postAuditMessage(auditMessage)
-                                        }}
-                                      >
-                                        {cell.value}
-                                      </Link>
-                                    ) : (
-                                      <ImagePreviewComponent
-                                        url={getReportUrl(rows, row.id)}
-                                        fileName={cell.value}
-                                        auditMessage={getAuditMessageBody(
+      <>
+        <h4>Reports table</h4>
+        {(!testResultsError && !labTestResults) ||
+        (!reports && !reportsTableDataError) ? (
+          <Loader />
+        ) : null}
+        <DataTable rows={paginatedReportsTable} headers={reportHeaders}>
+          {({
+            rows: dataTableRows,
+            headers,
+            getHeaderProps,
+            getRowProps,
+            getTableProps,
+            getTableContainerProps,
+          }) => (
+            <TableContainer {...getTableContainerProps()}>
+              <Table
+                {...getTableProps()}
+                className={classes.reportTable}
+                useZebraStyles={true}
+              >
+                <TableHead>
+                  <TableRow>
+                    <TableExpandHeader id="expand" />
+                    {headers.map((header, i) => (
+                      <TableHeader
+                        id={header.header}
+                        key={i}
+                        {...getHeaderProps({header})}
+                      >
+                        {header.header}
+                      </TableHeader>
+                    ))}
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {rows?.length > 0 ? (
+                    dataTableRows.map((row, index) => {
+                      const rowIndex = getReportTableRowIndex(
+                        currentPage,
+                        index,
+                      )
+                      return (
+                        <React.Fragment key={row.id}>
+                          <TableExpandRow {...getRowProps({row})}>
+                            {row.cells.map(cell => {
+                              return cell.id.endsWith('file') ? (
+                                <TableCell key={cell.id}>
+                                  {cell.value?.endsWith('pdf') ? (
+                                    <Link
+                                      href={getReportUrl(rows, row.id)}
+                                      target={'_blank'}
+                                      onClick={() => {
+                                        const auditMessage = getAuditMessageBody(
                                           patientUuid,
                                           rows[rowIndex]?.file,
                                           rows[rowIndex]?.date,
@@ -194,55 +226,72 @@ const ReportTable = (props: ReportTableProps) => {
                                             rows[rowIndex]?.patientId,
                                           ),
                                           rows[rowIndex]?.tests,
-                                        )}
-                                        postAuditMessage={postAuditMessage}
-                                      />
-                                    )}
-                                  </TableCell>
-                                ) : (
-                                  <TableCell key={cell.id}>
-                                    {cell.value}
-                                  </TableCell>
-                                )
-                              })}
-                            </TableExpandRow>
-                            <TableExpandedRow
-                              colSpan={reportHeaders.length + 1}
-                            >
-                              <div
-                                style={{overflowWrap: 'anywhere'}}
-                              >{`Report conclusion : ${
-                                rows?.filter(
-                                  intialRow => intialRow.id === row.id,
-                                )[0]?.conclusion
-                              }`}</div>
-                            </TableExpandedRow>
-                          </React.Fragment>
-                        )
-                      })
-                    ) : (
-                      <TableExpandedRow colSpan={reportHeaders.length + 1}>
-                        No previous reports found for this patient
-                      </TableExpandedRow>
-                    )}
-                  </TableBody>
-                </Table>
-              </TableContainer>
-            )}
-          </DataTable>
-          {rows?.length > 0 && (
-            <PatientChartPagination
-              pageNumber={currentPage}
-              pageSize={defaultPageSize}
-              currentItems={paginatedReportsTable?.length}
-              totalItems={rows?.length}
-              onPageNumberChange={({page}) => {
-                goTo(page)
-              }}
-            />
+                                          allTestsAndPanels,
+                                        )
+                                        postAuditMessage(auditMessage)
+                                      }}
+                                    >
+                                      {cell.value}
+                                    </Link>
+                                  ) : (
+                                    <ImagePreviewComponent
+                                      url={getReportUrl(rows, row.id)}
+                                      fileName={cell.value}
+                                      auditMessage={getAuditMessageBody(
+                                        patientUuid,
+                                        rows[rowIndex]?.file,
+                                        rows[rowIndex]?.date,
+                                        getPatientIdentifier(
+                                          rows[rowIndex]?.patientId,
+                                        ),
+                                        rows[rowIndex]?.tests,
+                                        allTestsAndPanels,
+                                      )}
+                                      postAuditMessage={postAuditMessage}
+                                    />
+                                  )}
+                                </TableCell>
+                              ) : (
+                                <TableCell key={cell.id}>
+                                  {cell.value}
+                                </TableCell>
+                              )
+                            })}
+                          </TableExpandRow>
+                          <TableExpandedRow colSpan={reportHeaders.length + 1}>
+                            <div
+                              style={{overflowWrap: 'anywhere'}}
+                            >{`Report conclusion : ${
+                              rows?.filter(
+                                intialRow => intialRow.id === row.id,
+                              )[0]?.conclusion
+                            }`}</div>
+                          </TableExpandedRow>
+                        </React.Fragment>
+                      )
+                    })
+                  ) : (
+                    <TableExpandedRow colSpan={reportHeaders.length + 1}>
+                      No previous reports found for this patient
+                    </TableExpandedRow>
+                  )}
+                </TableBody>
+              </Table>
+            </TableContainer>
           )}
-        </>
-      )}
+        </DataTable>
+        {rows?.length > 0 && (
+          <PatientChartPagination
+            pageNumber={currentPage}
+            pageSize={defaultPageSize}
+            currentItems={paginatedReportsTable?.length}
+            totalItems={rows?.length}
+            onPageNumberChange={({page}) => {
+              goTo(page)
+            }}
+          />
+        )}
+      </>
     </div>
   )
 }
@@ -286,6 +335,7 @@ function getAuditMessageBody(
   reportDate: string,
   patientIdentifier: string,
   testName: string,
+  allTestsAndPanels: Array<LabTest>,
 ) {
   const loggedInUser = localStorage.getItem(loggedInUserKey)
   const auditMessage = getPayloadForViewingPatientReport(
@@ -294,7 +344,7 @@ function getAuditMessageBody(
     getPatientIdentifier(patientIdentifier),
     fileName,
     reportDate,
-    testName,
+    getShortName(testName, allTestsAndPanels),
   )
   return auditMessage
 }
