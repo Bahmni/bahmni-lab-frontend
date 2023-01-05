@@ -1,4 +1,6 @@
-export const mockLabTestsResponse = {
+import { LabTestResult } from "../types/selectTest"
+
+export const mockLabTestsResponse:LabTestResult = {
   data: {
     results: [
       {

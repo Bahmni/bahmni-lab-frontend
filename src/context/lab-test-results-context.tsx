@@ -1,8 +1,8 @@
 import React, {useState} from 'react'
-import {LabTest} from '../types/selectTest'
+import {LabTest, LabTestResult} from '../types/selectTest'
 
 interface LabTestResultsContextProps {
-  labTestResults: any
+  labTestResults: LabTestResult
   setLabTestResults: Function
   labTestResultsError: Error
   setLabTestResultsError: Function
@@ -41,7 +41,7 @@ const useAllTestAndPanel = () => {
 }
 
 const LabTestResultsProvider = ({children}) => {
-  const [labTestResults, setLabTestResults] = useState<any>([])
+  const [labTestResults, setLabTestResults] = useState<LabTestResult>()
   const [labTestResultsError, setLabTestResultsError] = useState<Error>()
   const [allTestsAndPanels, setAllTestsAndPanels] = useState<Array<LabTest>>([])
 

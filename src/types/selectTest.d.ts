@@ -20,6 +20,12 @@ export interface LabTest {
   name: Name
   names: Array<Names>
   set: boolean
-  conceptClass: ConceptClass
-  setMembers?: Array<any>
+  conceptClass?: ConceptClass
+  setMembers?: Array<LabTest>
+}
+
+export interface LabTestResult {
+  data: {
+    results: Array<LabTest>
+  }
 }

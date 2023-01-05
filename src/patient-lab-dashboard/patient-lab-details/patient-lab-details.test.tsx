@@ -2,7 +2,7 @@ import {
   ExtensionSlot,
   openmrsFetch,
   usePagination,
-  usePatient
+  usePatient,
 } from '@openmrs/esm-framework'
 import {fireEvent, render, screen, waitFor} from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
@@ -15,13 +15,13 @@ import {
   auditLogURL,
   bahmniEncounterUrl,
   getPayloadForPatientAccess,
-  saveDiagnosticReportURL
+  saveDiagnosticReportURL,
 } from '../../utils/api-utils'
 import {
   defaultVisitTypeKey,
   encounterTypeUuidsKey,
   isAuditLogEnabledKey,
-  loggedInUserKey
+  loggedInUserKey,
 } from '../../utils/constants'
 import {localStorageMock, verifyApiCall} from '../../utils/test-utils'
 import {mockConfigResponse} from '../../__mocks__/config.mock'
@@ -30,18 +30,20 @@ import {
   mockBahmniEncounterErrorResponse,
   mockBahmniEncounterRequest,
   mockBahmniEncounterResponse,
-  mockEncounterTypeResponse
+  mockEncounterTypeResponse,
 } from '../../__mocks__/encounter.mock'
 import {mockPendingLabOrder} from '../../__mocks__/patientLabDetails.mock'
 import {mockPendingLabOrdersResponse} from '../../__mocks__/pendingLabOrders.mock'
 import {
   mockEmptyReportTableResponse,
-  mockReportTableResponse
+  mockReportTableResponse,
 } from '../../__mocks__/reportTable.mock'
 import {
-  diagnosticReportRequestBodyWithBasedOn, mockDiagnosticReportErrorResponse,
-  mockDiagnosticReportResponse, mockLabTestsResponse,
-  mockUploadFileResponse
+  diagnosticReportRequestBodyWithBasedOn,
+  mockDiagnosticReportErrorResponse,
+  mockDiagnosticReportResponse,
+  mockLabTestsResponse,
+  mockUploadFileResponse,
 } from '../../__mocks__/selectTests.mock'
 import PatientLabDetails from './patient-lab-details'
 

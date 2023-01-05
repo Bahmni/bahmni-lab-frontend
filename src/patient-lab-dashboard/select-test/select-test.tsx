@@ -44,7 +44,7 @@ const SelectTest = ({isDiscardButtonClicked}) => {
 
   useEffect(() => {
     allTestsAndPanels &&
-      allTestsAndPanels.map((tests: LabTest) => {
+      allTestsAndPanels.forEach((tests: LabTest) => {
         if (isLabTest(tests)) setTotalTests(totalTest => [...totalTest, tests])
         setSearchResults(searchResults => [...searchResults, tests])
       })

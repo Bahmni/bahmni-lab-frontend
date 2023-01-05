@@ -152,7 +152,7 @@ const PatientLabDetails: React.FC<RouteComponentProps<PatientParamsType>> = ({
         <div>Something went wrong: {error.message}</div>
       ) : (
         <div>
-          <div>
+          <div style={{marginBottom: '3rem'}}>
             <Grid style={{paddingLeft: '0'}}>
               <Row>
                 <Column lg={9}>
@@ -182,17 +182,15 @@ const PatientLabDetails: React.FC<RouteComponentProps<PatientParamsType>> = ({
               </Row>
             </Grid>
           </div>
-          <br></br>
-          <br></br>
           <LabTestResultsProvider>
             <PendingLabOrdersProvider>
-              <PendingLabOrdersTable
-                patientUuid={patientUuid}
-                onButtonClick={onButtonClick}
-                reloadTableData={reloadReportTable}
-              />
-              <br></br>
-              <br></br>
+              <div style={{paddingBottom: '2rem'}}>
+                <PendingLabOrdersTable
+                  patientUuid={patientUuid}
+                  onButtonClick={onButtonClick}
+                  reloadTableData={reloadReportTable}
+                />
+              </div>
               <Button renderIcon={AddFilled16} onClick={handleClick}>
                 Upload Report
               </Button>
@@ -208,17 +206,14 @@ const PatientLabDetails: React.FC<RouteComponentProps<PatientParamsType>> = ({
                   />
                 </UploadReportProvider>
               )}
-              <br></br>
-              <br></br>
             </PendingLabOrdersProvider>
-
-            <ReportTable
-              patientUuid={patientUuid}
-              reloadTableData={reloadReportTable}
-            />
+            <div style={{marginTop: '2rem', marginBottom: '2rem'}}>
+              <ReportTable
+                patientUuid={patientUuid}
+                reloadTableData={reloadReportTable}
+              />
+            </div>
           </LabTestResultsProvider>
-          <br></br>
-          <br></br>
         </div>
       )}
     </main>

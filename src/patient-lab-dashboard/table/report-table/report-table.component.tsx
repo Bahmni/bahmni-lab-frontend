@@ -28,7 +28,7 @@ import {
   ReportTableFetchResponse,
   ReportTableRow,
 } from '../../../types'
-import {LabTest} from '../../../types/selectTest'
+import {LabTest, LabTestResult} from '../../../types/selectTest'
 import {
   auditLogURL,
   getLabTests,
@@ -83,11 +83,10 @@ const ReportTable = (props: ReportTableProps) => {
     Error
   >(getReportTableDataURL(patientUuid), fetcher)
 
-  const {data: testResults, error: testResultsError} = useSWR<any, Error>(
-    getLabTests,
-    fetcher,
-    swrOptions,
-  )
+  const {data: testResults, error: testResultsError} = useSWR<
+    LabTestResult,
+    Error
+  >(getLabTests, fetcher, swrOptions)
   const getRequester = (
     performer: undefined | {display: string; reference: string},
   ) => {
@@ -102,8 +101,8 @@ const ReportTable = (props: ReportTableProps) => {
       setLabTestResults({...testResults})
       const labOrder = testResults?.data?.results[0]
       labOrder &&
-        getTestsInLabOrder(labOrder)?.map(sample => {
-          getTestsInLabOrder(sample).map((tests: LabTest) => {
+        getTestsInLabOrder(labOrder)?.forEach(sample => {
+          getTestsInLabOrder(sample).forEach((tests: LabTest) => {
             setAllTestsAndPanels(allTestsAndPanels => [
               ...allTestsAndPanels,
               tests,
@@ -133,7 +132,7 @@ const ReportTable = (props: ReportTableProps) => {
         return {
           id: row.resource.id,
           tests: getShortName(
-            row.resource.code.coding[0].display,
+            row.resource.code.coding[0]?.display,
             allTestsAndPanels,
           ),
           url: row.resource.presentedForm[0].url,
@@ -192,7 +191,7 @@ const ReportTable = (props: ReportTableProps) => {
                     {headers.map((header, i) => (
                       <TableHeader
                         id={header.header}
-                        key={i}
+                        key={`${header.header}-${i}`}
                         {...getHeaderProps({header})}
                       >
                         {header.header}
