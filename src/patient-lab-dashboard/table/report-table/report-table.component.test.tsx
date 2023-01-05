@@ -1,36 +1,39 @@
 import {openmrsFetch, usePagination} from '@openmrs/esm-framework'
 import {render, screen, waitFor} from '@testing-library/react'
-import {when} from 'jest-when'
 import userEvent from '@testing-library/user-event'
+import {when} from 'jest-when'
 import React from 'react'
 import {BrowserRouter} from 'react-router-dom'
 import {SWRConfig} from 'swr'
+import {LabTestResultsProvider} from '../../../context/lab-test-results-context'
+import {
+  auditLogURL,
+  getPayloadForViewingPatientReport,
+} from '../../../utils/api-utils'
 import {
   isAuditLogEnabledKey,
   loggedInUserKey,
   reportHeaders,
 } from '../../../utils/constants'
 import {localStorageMock, verifyApiCall} from '../../../utils/test-utils'
-import ReportTable from './report-table.component'
 import {
-  mockReportTableResponse,
-  mockReportTableErrorResponse,
   mockEmptyReportTableResponse,
+  mockReportTableErrorResponse,
+  mockReportTableResponse,
 } from '../../../__mocks__/reportTable.mock'
 import {
-  auditLogURL,
-  getPayloadForViewingPatientReport,
-} from '../../../utils/api-utils'
+  mockLabTestsErrorResponse,
+  mockLabTestsResponse,
+} from '../../../__mocks__/selectTests.mock'
+import ReportTable from './report-table.component'
 
 const mockPatientUuid = 'uuid-1'
-const mockedOpenmrsFetch = openmrsFetch as jest.Mock
 
 describe('Paginated Reports Table', () => {
   beforeEach(() => {
     Object.defineProperty(window, 'localStorage', {value: localStorageMock})
     when(openmrsFetch).mockImplementation(() => jest.fn())
     localStorage.setItem('i18nextLng', 'en-us')
-    mockedOpenmrsFetch.mockReturnValue(mockReportTableResponse)
     when(usePagination)
       .calledWith(expect.anything(), 5)
       .mockReturnValue({
@@ -57,10 +60,16 @@ describe('Paginated Reports Table', () => {
   })
 
   it('should display uploaded reports table when call for reports data is successful', async () => {
+    const mockedOpenmrsFetch = openmrsFetch as jest.Mock
+    mockedOpenmrsFetch
+      .mockReturnValueOnce(mockReportTableResponse)
+      .mockReturnValue(mockLabTestsResponse)
     render(
       <SWRConfig value={{provider: () => new Map()}}>
         <BrowserRouter>
-          <ReportTable patientUuid={mockPatientUuid} />
+          <LabTestResultsProvider>
+            <ReportTable patientUuid={mockPatientUuid} />
+          </LabTestResultsProvider>
         </BrowserRouter>
       </SWRConfig>,
     )
@@ -90,12 +99,17 @@ describe('Paginated Reports Table', () => {
   })
 
   it('should able to display only the provider name in the requester field', async () => {
+    const mockedOpenmrsFetch = openmrsFetch as jest.Mock
+    mockedOpenmrsFetch
+      .mockReturnValueOnce(mockReportTableResponse)
+      .mockReturnValue(mockLabTestsResponse)
     const mockUsePagination = usePagination as jest.Mock
-
     render(
       <SWRConfig value={{provider: () => new Map()}}>
         <BrowserRouter>
-          <ReportTable patientUuid={mockPatientUuid} />
+          <LabTestResultsProvider>
+            <ReportTable patientUuid={mockPatientUuid} />
+          </LabTestResultsProvider>
         </BrowserRouter>
       </SWRConfig>,
     )
@@ -116,12 +130,17 @@ describe('Paginated Reports Table', () => {
   })
 
   it('should display error message when call for reports data is unsuccessful', async () => {
-    mockedOpenmrsFetch.mockRejectedValueOnce(mockReportTableErrorResponse)
+    const mockedOpenmrsFetch = openmrsFetch as jest.Mock
+    mockedOpenmrsFetch
+      .mockRejectedValueOnce(mockReportTableErrorResponse)
+      .mockReturnValue(mockLabTestsResponse)
 
     render(
       <SWRConfig value={{provider: () => new Map()}}>
         <BrowserRouter>
-          <ReportTable patientUuid={mockPatientUuid} />
+          <LabTestResultsProvider>
+            <ReportTable patientUuid={mockPatientUuid} />
+          </LabTestResultsProvider>
         </BrowserRouter>
       </SWRConfig>,
     )
@@ -129,7 +148,7 @@ describe('Paginated Reports Table', () => {
     await waitFor(() => {
       expect(
         screen.getByText(
-          /Something went wrong in fetching Report tables\.\.\./i,
+          /Something went wrong in fetching Report tables or Lab Tests\.\.\./i,
         ),
       ).toBeInTheDocument()
     })
@@ -137,11 +156,17 @@ describe('Paginated Reports Table', () => {
     expect(screen.queryByText(/1 \/ 1 items/i)).not.toBeInTheDocument()
   })
   it('should not display report table when there is no reports uploaded', async () => {
-    mockedOpenmrsFetch.mockReturnValue(mockEmptyReportTableResponse)
+    const mockedOpenmrsFetch = openmrsFetch as jest.Mock
+    mockedOpenmrsFetch
+      .mockReturnValueOnce(mockEmptyReportTableResponse)
+      .mockReturnValue(mockLabTestsErrorResponse)
+
     render(
       <SWRConfig value={{provider: () => new Map()}}>
         <BrowserRouter>
-          <ReportTable patientUuid={mockPatientUuid} />
+          <LabTestResultsProvider>
+            <ReportTable patientUuid={mockPatientUuid} />
+          </LabTestResultsProvider>
         </BrowserRouter>
       </SWRConfig>,
     )
@@ -155,12 +180,18 @@ describe('Paginated Reports Table', () => {
   })
 
   it('should display uploaded jpg file as pop up in the screen when clicked and post audit log message', async () => {
+    const mockedOpenmrsFetch = openmrsFetch as jest.Mock
+    mockedOpenmrsFetch
+      .mockReturnValueOnce(mockReportTableResponse)
+      .mockReturnValue(mockLabTestsResponse)
     localStorage.setItem(loggedInUserKey, 'superman')
     localStorage.setItem(isAuditLogEnabledKey, 'true')
     render(
       <SWRConfig value={{provider: () => new Map()}}>
         <BrowserRouter>
-          <ReportTable patientUuid={mockPatientUuid} />
+          <LabTestResultsProvider>
+            <ReportTable patientUuid={mockPatientUuid} />
+          </LabTestResultsProvider>
         </BrowserRouter>
       </SWRConfig>,
     )
@@ -187,7 +218,7 @@ describe('Paginated Reports Table', () => {
     })
     expect(screen.getByAltText('MP Report.jpg')).toHaveClass('image')
 
-    expect(mockedOpenmrsFetch).toBeCalledTimes(2)
+    expect(mockedOpenmrsFetch).toBeCalledTimes(3)
     verifyApiCall(
       auditLogURL,
       'POST',
@@ -198,7 +229,7 @@ describe('Paginated Reports Table', () => {
           '10005V1',
           'MP Report',
           'May 24, 2022',
-          'Systolic blood pressure',
+          'Systolic blood pressure short name',
         ),
       ),
     )
@@ -215,6 +246,10 @@ describe('Paginated Reports Table', () => {
   })
 
   it('should display uploaded pdf file and post audit log message', async () => {
+    const mockedOpenmrsFetch = openmrsFetch as jest.Mock
+    mockedOpenmrsFetch
+      .mockReturnValueOnce(mockReportTableResponse)
+      .mockReturnValue(mockLabTestsResponse)
     localStorage.setItem(loggedInUserKey, 'superman')
     localStorage.setItem(isAuditLogEnabledKey, 'true')
     when(usePagination)
@@ -238,7 +273,9 @@ describe('Paginated Reports Table', () => {
     render(
       <SWRConfig value={{provider: () => new Map()}}>
         <BrowserRouter>
-          <ReportTable patientUuid={mockPatientUuid} />
+          <LabTestResultsProvider>
+            <ReportTable patientUuid={mockPatientUuid} />
+          </LabTestResultsProvider>
         </BrowserRouter>
       </SWRConfig>,
     )
@@ -256,7 +293,7 @@ describe('Paginated Reports Table', () => {
       }),
     )
 
-    await waitFor(() => expect(mockedOpenmrsFetch).toBeCalledTimes(2))
+    await waitFor(() => expect(mockedOpenmrsFetch).toBeCalledTimes(3))
 
     verifyApiCall(
       auditLogURL,
@@ -268,9 +305,36 @@ describe('Paginated Reports Table', () => {
           '10005V1',
           'MP Report',
           'May 24, 2022',
-          'Systolic blood pressure',
+          'Systolic blood pressure short name',
         ),
       ),
     )
+  })
+
+  it('should display error message when call for lab test data is unsuccessful', async () => {
+    const mockedOpenmrsFetch = openmrsFetch as jest.Mock
+    mockedOpenmrsFetch
+      .mockReturnValueOnce(mockReportTableResponse)
+      .mockRejectedValue(mockLabTestsErrorResponse)
+
+    render(
+      <SWRConfig value={{provider: () => new Map()}}>
+        <BrowserRouter>
+          <LabTestResultsProvider>
+            <ReportTable patientUuid={mockPatientUuid} />
+          </LabTestResultsProvider>
+        </BrowserRouter>
+      </SWRConfig>,
+    )
+
+    await waitFor(() => {
+      expect(
+        screen.getByText(
+          /Something went wrong in fetching Report tables or Lab Tests\.\.\./i,
+        ),
+      ).toBeInTheDocument()
+    })
+    expect(screen.queryByText('Reports table')).not.toBeInTheDocument()
+    expect(screen.queryByText(/1 \/ 1 items/i)).not.toBeInTheDocument()
   })
 })

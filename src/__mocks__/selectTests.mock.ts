@@ -1,4 +1,6 @@
-export const mockLabTestsResponse = {
+import { LabTestResult } from "../types/selectTest"
+
+export const mockLabTestsResponse:LabTestResult = {
   data: {
     results: [
       {
@@ -121,7 +123,8 @@ export const mockLabTestsResponse = {
                 conceptClass: {
                   uuid: '33a6291c-8a92-11e4-977f-0800271c1b75',
                   name: 'Test',
-                  description: 'Acq. during patient encounter (vitals, labs, etc.)',
+                  description:
+                    'Acq. during patient encounter (vitals, labs, etc.)',
                 },
                 setMembers: [],
               },
@@ -253,6 +256,28 @@ export const mockLabTestsResponse = {
                   },
                 ],
               },
+              {
+                uuid: 'c3d078ae-0dcf-4e69-bc59-76gv934hg373',
+                name: {
+                  display: 'Systolic blood pressure',
+                  uuid: 'a1a46ef5-aafd-48e8-af02-8bafe6ccdaeb',
+                },
+                names: [
+                  {
+                    display: 'Systolic blood pressure short name',
+                    conceptNameType: 'SHORT',
+                    name: 'Systolic blood pressure short name',
+                  },
+                ],
+                set: false,
+                conceptClass: {
+                  uuid: '33a6291c-8a92-11e4-977f-0800271c1b75',
+                  name: 'Test',
+                  description:
+                    'Acq. during patient encounter (vitals, labs, etc.)',
+                },
+                setMembers: [],
+              },
             ],
           },
         ],
@@ -303,6 +328,221 @@ export const mockDiagnosticReportErrorResponse = {
     statusText: 'Internal Server Error',
   },
 }
+
+export const mockAlltestAndPanels = [
+  {
+    uuid: '07a128f7-f596-45d5-a2a9-c447bc9e5112',
+    name: {
+      display: 'Absolute Eosinphil Count',
+      uuid: 'fd2ec116-74c9-4d48-86cf-1c7e8aa1a748',
+    },
+    names: [
+      {
+        display: 'Absolute Eosinphil Count',
+        conceptNameType: 'FULLY_SPECIFIED',
+        name: 'Absolute Eosinphil Count',
+      },
+    ],
+    set: false,
+    conceptClass: {
+      uuid: '33a6291c-8a92-11e4-977f-0800271c1b75',
+      name: 'LabTest',
+      description: 'Lab Tests',
+    },
+    setMembers: [],
+  },
+  {
+    uuid: '72ae28f1-4be4-499a-a8f5-aff54a11c9e3',
+    name: {
+      display: 'Sickling Test',
+      uuid: '5d929c96-b566-4f3e-ba21-0b15b555cbb4',
+    },
+    names: [
+      {
+        display: 'Sickling Test',
+        conceptNameType: 'FULLY_SPECIFIED',
+        name: 'Sickling Test',
+      },
+    ],
+    set: false,
+    conceptClass: {
+      uuid: '33a6291c-8a92-11e4-977f-0800271c1b75',
+      name: 'LabTest',
+      description: 'Lab Tests',
+    },
+    setMembers: [],
+  },
+  {
+    uuid: 'fe769568-16da-4d9e-9c99-fbed0a8a60f5',
+    name: {
+      display: 'Haemoglobin',
+      uuid: 'b8b8c317-43d2-4c4b-a67d-2ef3782c53eb',
+    },
+    names: [
+      {
+        display: 'Haemoglobin',
+        conceptNameType: 'FULLY_SPECIFIED',
+        name: 'Haemoglobin',
+      },
+    ],
+    set: false,
+    conceptClass: {
+      uuid: '33a6291c-8a92-11e4-977f-0800271c1b75',
+      name: 'LabTest',
+      description: 'Lab Tests',
+    },
+    setMembers: [],
+  },
+  {
+    uuid: 'c3d078ae-0dcf-4e69-bc59-a7eef9343b93',
+    name: {
+      display: 'Total Leucocyte Count',
+      uuid: 'a1a46ef5-aafd-48e8-af02-8bafe6ccdaeb',
+    },
+    names: [
+      {
+        display: 'Total Leucocyte Count',
+        conceptNameType: 'FULLY_SPECIFIED',
+        name: 'Total Leucocyte Count',
+      },
+    ],
+    set: false,
+    conceptClass: {
+      uuid: '33a6291c-8a92-11e4-977f-0800271c1b75',
+      name: 'Test',
+      description: 'Acq. during patient encounter (vitals, labs, etc.)',
+    },
+    setMembers: [],
+  },
+  {
+    uuid: '5b0cdc41-7371-4c2f-a1e4-ed1bf7416a8d',
+    name: {
+      display: 'Anaemia Panel',
+      uuid: '8ce76a2c-e63d-4358-aabb-f8c5a6239fbd',
+    },
+    names: [
+      {
+        display: 'Anaemia Panel',
+        conceptNameType: 'FULLY_SPECIFIED',
+        name: 'Anaemia Panel',
+      },
+    ],
+    set: true,
+    conceptClass: {
+      uuid: '8d492026-c2cc-11de-8d13-0010c6dffd0f',
+      name: 'LabSet',
+      description: 'Panels',
+    },
+    setMembers: [
+      {
+        uuid: '07a128f7-f596-45d5-a2a9-c447bc9e5112',
+        name: {
+          display: 'Absolute Eosinphil Count',
+          uuid: 'fd2ec116-74c9-4d48-86cf-1c7e8aa1a748',
+        },
+        names: [
+          {
+            display: 'Absolute Eosinphil Count',
+            conceptNameType: 'FULLY_SPECIFIED',
+            name: 'Absolute Eosinphil Count',
+          },
+        ],
+        set: false,
+        conceptClass: {
+          uuid: '33a6291c-8a92-11e4-977f-0800271c1b75',
+          name: 'LabTest',
+          description: 'Lab Tests',
+        },
+        setMembers: [],
+      },
+      {
+        uuid: 'fe769568-16da-4d9e-9c99-fbed0a8a60f5',
+        name: {
+          display: 'Haemoglobin',
+          uuid: 'b8b8c317-43d2-4c4b-a67d-2ef3782c53eb',
+        },
+        names: [
+          {
+            display: 'Haemoglobin',
+            conceptNameType: 'FULLY_SPECIFIED',
+            name: 'Haemoglobin',
+          },
+        ],
+        set: false,
+        conceptClass: {
+          uuid: '33a6291c-8a92-11e4-977f-0800271c1b75',
+          name: 'LabTest',
+          description: 'Lab Tests',
+        },
+        setMembers: [],
+      },
+    ],
+  },
+  {
+    uuid: 'ec22edfc-76ff-482a-b89b-022b9c3e34d0',
+    name: {
+      display: 'TLC',
+      uuid: 'd3458ce6-5558-4709-88ee-4612dafc0083',
+    },
+    names: [
+      {
+        display: 'TLC',
+        conceptNameType: 'FULLY_SPECIFIED',
+        name: 'TLC',
+      },
+    ],
+    set: true,
+    conceptClass: {
+      uuid: '8d492026-c2cc-11de-8d13-0010c6dffd0f',
+      name: 'LabSet',
+      description: 'Panels',
+    },
+    setMembers: [
+      {
+        uuid: '07a128f7-f596-45d5-a2a9-c447bc9e5112',
+        name: {
+          display: 'Absolute Eosinphil Count',
+          uuid: 'fd2ec116-74c9-4d48-86cf-1c7e8aa1a748',
+        },
+        names: [
+          {
+            display: 'Absolute Eosinphil Count',
+            conceptNameType: 'FULLY_SPECIFIED',
+            name: 'Absolute Eosinphil Count',
+          },
+        ],
+        set: false,
+        conceptClass: {
+          uuid: '33a6291c-8a92-11e4-977f-0800271c1b75',
+          name: 'LabTest',
+          description: 'Lab Tests',
+        },
+        setMembers: [],
+      },
+      {
+        uuid: 'c3d078ae-0dcf-4e69-bc59-a7eef9343b93',
+        name: {
+          display: 'Total Leucocyte Count',
+          uuid: 'a1a46ef5-aafd-48e8-af02-8bafe6ccdaeb',
+        },
+        names: [
+          {
+            display: 'Total Leucocyte Count',
+            conceptNameType: 'FULLY_SPECIFIED',
+            name: 'Total Leucocyte Count',
+          },
+        ],
+        set: false,
+        conceptClass: {
+          uuid: '33a6291c-8a92-11e4-977f-0800271c1b75',
+          name: 'LabTest',
+          description: 'Lab Tests',
+        },
+        setMembers: [],
+      },
+    ],
+  },
+]
 
 export const uploadFileRequestBody =
   '{"content":",Y29udGVudA==","encounterTypeName":"Patient Document","fileType":"application","format":"pdf","patientUuid":"123"}'

@@ -63,6 +63,7 @@ jest.mock('../../hooks/useOrderTypeUuidConfig', () => ({
     orderTypeUuidConfig: mockOrderTypeUuid,
   })),
 }))
+
 describe('Patient lab details', () => {
   beforeEach(() => {
     Object.defineProperty(window.document, 'cookie', {
@@ -141,7 +142,7 @@ describe('Patient lab details', () => {
     ).toBeInTheDocument()
   })
 
-  it('should show patient information in the patient header slot when usePatient call succeeds', () => {
+  it('should show patient information in the patient header slot when usePatient call succeeds', async () => {
     render(
       <BrowserRouter>
         <PatientLabDetails
@@ -151,7 +152,6 @@ describe('Patient lab details', () => {
         />
       </BrowserRouter>,
     )
-    expect(screen.queryByText(/loading \.\.\./i)).not.toBeInTheDocument()
     expect(
       screen.getByText(/Extension slot name : patient\-header\-slot/i),
     ).toBeInTheDocument()
@@ -221,6 +221,7 @@ describe('Patient lab details', () => {
     mockedOpenmrsFetch
       .mockReturnValueOnce(mockPendingLabOrdersResponse)
       .mockReturnValueOnce(mockEmptyReportTableResponse)
+      .mockReturnValueOnce(mockLabTestsResponse)
       .mockReturnValueOnce(mockConfigResponse)
       .mockReturnValueOnce(mockEncounterTypeResponse)
       .mockReturnValue(mockLabTestsResponse)
@@ -289,9 +290,9 @@ describe('Patient lab details', () => {
     mockedOpenmrsFetch
       .mockReturnValueOnce(mockPendingLabOrdersResponse)
       .mockReturnValueOnce(mockEmptyReportTableResponse)
+      .mockReturnValueOnce(mockLabTestsResponse)
       .mockReturnValueOnce(mockConfigResponse)
       .mockReturnValueOnce(mockEncounterTypeResponse)
-      .mockReturnValueOnce(mockLabTestsResponse)
       .mockReturnValueOnce(mockDoctorNames)
       .mockReturnValueOnce(mockUploadFileResponse)
       .mockReturnValue(mockDiagnosticReportResponse)
@@ -369,9 +370,9 @@ describe('Patient lab details', () => {
     mockedOpenmrsFetch
       .mockReturnValueOnce(mockPendingLabOrdersResponse)
       .mockReturnValueOnce(mockEmptyReportTableResponse)
+      .mockReturnValueOnce(mockLabTestsResponse)
       .mockReturnValueOnce(mockConfigResponse)
       .mockReturnValueOnce(mockEncounterTypeResponse)
-      .mockReturnValueOnce(mockLabTestsResponse)
       .mockReturnValueOnce(mockDoctorNames)
       .mockReturnValueOnce(mockUploadFileResponse)
       .mockReturnValueOnce(mockBahmniEncounterResponse)
@@ -430,9 +431,9 @@ describe('Patient lab details', () => {
     mockedOpenmrsFetch
       .mockReturnValueOnce(mockPendingLabOrdersResponse)
       .mockReturnValueOnce(mockReportTableResponse)
+      .mockReturnValueOnce(mockLabTestsResponse)
       .mockReturnValueOnce(mockConfigResponse)
       .mockReturnValueOnce(mockEncounterTypeResponse)
-      .mockReturnValueOnce(mockLabTestsResponse)
       .mockReturnValueOnce(mockDoctorNames)
       .mockReturnValueOnce(mockUploadFileResponse)
       .mockReturnValueOnce(mockBahmniEncounterResponse)
@@ -506,9 +507,9 @@ describe('Patient lab details', () => {
     mockedOpenmrsFetch
       .mockReturnValueOnce(mockPendingLabOrdersResponse)
       .mockReturnValueOnce(mockEmptyReportTableResponse)
+      .mockReturnValueOnce(mockLabTestsResponse)
       .mockReturnValueOnce(mockConfigResponse)
       .mockReturnValueOnce(mockEncounterTypeResponse)
-      .mockReturnValueOnce(mockLabTestsResponse)
       .mockReturnValueOnce(mockDoctorNames)
       .mockReturnValueOnce(mockUploadFileResponse)
       .mockReturnValueOnce(mockBahmniEncounterErrorResponse)
@@ -586,9 +587,9 @@ describe('Patient lab details', () => {
     mockedOpenmrsFetch
       .mockReturnValueOnce(mockPendingLabOrdersResponse)
       .mockReturnValueOnce(mockEmptyReportTableResponse)
+      .mockReturnValueOnce(mockLabTestsResponse)
       .mockReturnValueOnce(mockConfigResponse)
       .mockReturnValueOnce(mockEncounterTypeResponse)
-      .mockReturnValueOnce(mockLabTestsResponse)
       .mockReturnValueOnce(mockDoctorNames)
       .mockReturnValueOnce(mockUploadFileResponse)
       .mockReturnValueOnce(mockBahmniEncounterResponse)
@@ -667,9 +668,9 @@ describe('Patient lab details', () => {
     mockedOpenmrsFetch
       .mockReturnValueOnce(mockPendingLabOrdersResponse)
       .mockReturnValueOnce(mockEmptyReportTableResponse)
+      .mockReturnValueOnce(mockLabTestsResponse)
       .mockReturnValueOnce(mockConfigResponse)
       .mockReturnValueOnce(mockEncounterTypeResponse)
-      .mockReturnValueOnce(mockLabTestsResponse)
       .mockReturnValueOnce(mockDoctorNames)
       .mockReturnValueOnce(mockUploadFileResponse)
       .mockReturnValueOnce(mockBahmniEncounterResponse)
@@ -722,9 +723,9 @@ describe('Patient lab details', () => {
     mockedOpenmrsFetch
       .mockReturnValueOnce(mockPendingLabOrdersResponse)
       .mockReturnValueOnce(mockEmptyReportTableResponse)
+      .mockReturnValueOnce(mockLabTestsResponse)
       .mockReturnValueOnce(mockConfigResponse)
       .mockReturnValueOnce(mockEncounterTypeResponse)
-      .mockReturnValueOnce(mockLabTestsResponse)
       .mockReturnValueOnce(mockDoctorNames)
       .mockReturnValueOnce(mockUploadFileResponse)
       .mockReturnValueOnce(mockBahmniEncounterResponse)

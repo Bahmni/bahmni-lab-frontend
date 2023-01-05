@@ -6,12 +6,14 @@ import {
   Tag,
 } from 'carbon-components-react'
 import React, {useEffect, useState} from 'react'
-import useSWR from 'swr'
-import {useSelectedTests} from '../../context/upload-report-context'
+import {
+  useAllTestAndPanel,
+  useLabTestResultsContext,
+} from '../../context/lab-test-results-context'
 import {usePendingLabOrderContext} from '../../context/pending-orders-context'
-import Loader from '../../common/loader/loader.component'
+import {useSelectedTests} from '../../context/upload-report-context'
 import {LabTest} from '../../types/selectTest'
-import {swrOptions, fetcher, getLabTests} from '../../utils/api-utils'
+import {getTestName} from '../../utils/helperFunctions'
 import styles from './select-test.scss'
 
 const SelectTest = ({isDiscardButtonClicked}) => {
@@ -22,14 +24,10 @@ const SelectTest = ({isDiscardButtonClicked}) => {
     boolean
   >(true)
   const {selectedTests, setSelectedTests} = useSelectedTests()
-  const [allTestsAndPanels, setAllTestsAndPanels] = useState<Array<LabTest>>([])
   const {selectedPendingOrder} = usePendingLabOrderContext()
+  const {labTestResultsError} = useLabTestResultsContext()
+  const {allTestsAndPanels} = useAllTestAndPanel()
 
-  const {data: labTestResults, error: labTestResultsError} = useSWR<any, Error>(
-    getLabTests,
-    fetcher,
-    swrOptions,
-  )
   useEffect(() => {
     isDiscardButtonClicked && setSearchValue('')
   }, [isDiscardButtonClicked])
@@ -45,24 +43,20 @@ const SelectTest = ({isDiscardButtonClicked}) => {
   }, [searchValue, searchResults, selectedTests])
 
   useEffect(() => {
-    const labOrder = labTestResults?.data?.results[0]
-    searchResults.length === 0 &&
-      labTestResults &&
-      getTestsInLabOrder(labOrder)?.map(sample => {
-        getTestsInLabOrder(sample).map((tests: LabTest) => {
-          if (isLabTest(tests))
-            setTotalTests(totalTest => [...totalTest, tests])
-          setSearchResults(searchResults => [...searchResults, tests])
-          setAllTestsAndPanels(searchResults => [...searchResults, tests])
-        })
+    allTestsAndPanels &&
+      allTestsAndPanels.forEach((tests: LabTest) => {
+        if (isLabTest(tests)) setTotalTests(totalTest => [...totalTest, tests])
+        setSearchResults(searchResults => [...searchResults, tests])
       })
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [labTestResults])
+  }, [allTestsAndPanels])
 
   useEffect(() => {
     if (searchValue) {
       const filteredTestsAndPanels = allTestsAndPanels.filter(test =>
-        test.name.display.toLowerCase().includes(searchValue.toLowerCase()),
+        getTestName(test)
+          .toLowerCase()
+          .includes(searchValue.toLowerCase()),
       )
       filterSearchResults(filteredTestsAndPanels)
     } else {
@@ -72,22 +66,16 @@ const SelectTest = ({isDiscardButtonClicked}) => {
   }, [searchValue])
 
   useEffect(() => {
-    const allTests: Array<LabTest> = []
-    labTestResults?.data?.results[0]?.setMembers?.map(sample => {
-      sample.setMembers.map(tests => {
-        allTests.push(tests)
-      })
-    })
-    const initialSelectedFromOrdersTable = allTests.filter(
+    const initialSelectedFromOrdersTable = allTestsAndPanels.filter(
       pendingOrderTest =>
         selectedPendingOrder.findIndex(
           tempPendingTest =>
             tempPendingTest?.conceptUuid === pendingOrderTest.uuid,
         ) > -1,
     )
-    handleMultipleSelect(initialSelectedFromOrdersTable, allTests)
+    handleMultipleSelect(initialSelectedFromOrdersTable, allTestsAndPanels)
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [selectedPendingOrder, labTestResults])
+  }, [selectedPendingOrder, allTestsAndPanels])
 
   const getTestsInLabOrder = (labOrder: LabTest) => labOrder?.setMembers
 
@@ -106,7 +94,7 @@ const SelectTest = ({isDiscardButtonClicked}) => {
     selectedPanelName: Array<string>,
   ) =>
     updatedSearchResults.filter(
-      test => !selectedPanelName.includes(test.name.display),
+      test => !selectedPanelName.includes(getTestName(test)),
     )
 
   const filterSearchResults = (labTests: Array<LabTest>) => {
@@ -122,7 +110,7 @@ const SelectTest = ({isDiscardButtonClicked}) => {
               break
             }
           } else if (!isLabTest(selectedTest)) {
-            selectedPanelName.push(selectedTest.name.display)
+            selectedPanelName.push(getTestName(selectedTest))
             for (let selectedPanel of getTestsInLabOrder(selectedTest)) {
               if (isCommonTestPresent(labTest, selectedPanel)) {
                 isSelectedTestPresent = true
@@ -238,7 +226,9 @@ const SelectTest = ({isDiscardButtonClicked}) => {
 
   const isTestHavingSearchValue = (test: LabTest) =>
     !searchValue ||
-    test.name.display.toLowerCase().includes(searchValue.toLowerCase())
+    getTestName(test)
+      .toLowerCase()
+      .includes(searchValue.toLowerCase())
 
   const updateSearchResultsOnUnselect = (unselectedTest: LabTest) => {
     if (isTestHavingSearchValue(unselectedTest))
@@ -290,14 +280,14 @@ const SelectTest = ({isDiscardButtonClicked}) => {
         <div className={searchValue && styles.searchValue}>
           {searchValue && showSearchCount()}
         </div>
-        {searchResults.map((searchResult, index) => (
+        {searchResults?.map((searchResult, index) => (
           <div
             style={{display: 'flex'}}
             key={`search-${searchResult.name.uuid}${index}`}
           >
             <Checkbox
               id={searchResult.name.uuid}
-              labelText={searchResult.name.display}
+              labelText={getTestName(searchResult)}
               onChange={() => handleSelect(searchResult)}
             />
             {searchResult.conceptClass.name == 'LabSet' && (
@@ -329,7 +319,7 @@ const SelectTest = ({isDiscardButtonClicked}) => {
             <Checkbox
               id={selectedTest.name.uuid}
               checked={true}
-              labelText={selectedTest.name.display}
+              labelText={getTestName(selectedTest)}
               onChange={() => handleUnselect(selectedTest)}
             />
             {selectedTest.conceptClass.name == 'LabSet' && (
@@ -359,7 +349,7 @@ const SelectTest = ({isDiscardButtonClicked}) => {
 
   if (labTestResultsError)
     return <h3>Something went wrong in fetching Lab Tests</h3>
-  if (!labTestResultsError && !labTestResults) return <Loader />
+
   return (
     <>
       <p className={'bx--label'}>Select Tests</p>

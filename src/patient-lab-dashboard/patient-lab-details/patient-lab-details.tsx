@@ -12,6 +12,7 @@ import React, {useEffect, useState} from 'react'
 import {RouteComponentProps} from 'react-router-dom'
 import useSWR from 'swr'
 import Loader from '../../common/loader/loader.component'
+import {LabTestResultsProvider} from '../../context/lab-test-results-context'
 import PendingLabOrdersProvider from '../../context/pending-orders-context'
 import {UploadReportProvider} from '../../context/upload-report-context'
 import {
@@ -151,7 +152,7 @@ const PatientLabDetails: React.FC<RouteComponentProps<PatientParamsType>> = ({
         <div>Something went wrong: {error.message}</div>
       ) : (
         <div>
-          <div>
+          <div style={{marginBottom: '3rem'}}>
             <Grid style={{paddingLeft: '0'}}>
               <Row>
                 <Column lg={9}>
@@ -181,40 +182,38 @@ const PatientLabDetails: React.FC<RouteComponentProps<PatientParamsType>> = ({
               </Row>
             </Grid>
           </div>
-          <br></br>
-          <br></br>
-          <PendingLabOrdersProvider>
-            <PendingLabOrdersTable
-              patientUuid={patientUuid}
-              onButtonClick={onButtonClick}
-              reloadTableData={reloadReportTable}
-            />
-            <br></br>
-            <br></br>
-            <Button renderIcon={AddFilled16} onClick={handleClick}>
-              Upload Report
-            </Button>
-            {onButtonClick && (
-              <UploadReportProvider>
-                <UploadReport
-                  saveHandler={(isSaveSuccess = false) =>
-                    handleUploadAndSave(isSaveSuccess)
-                  }
-                  closeHandler={() => handleClose()}
-                  header="Upload Report"
+          <LabTestResultsProvider>
+            <PendingLabOrdersProvider>
+              <div style={{paddingBottom: '2rem'}}>
+                <PendingLabOrdersTable
                   patientUuid={patientUuid}
+                  onButtonClick={onButtonClick}
+                  reloadTableData={reloadReportTable}
                 />
-              </UploadReportProvider>
-            )}
-            <br></br>
-            <br></br>
-          </PendingLabOrdersProvider>
-          <ReportTable
-            patientUuid={patientUuid}
-            reloadTableData={reloadReportTable}
-          />
-          <br></br>
-          <br></br>
+              </div>
+              <Button renderIcon={AddFilled16} onClick={handleClick}>
+                Upload Report
+              </Button>
+              {onButtonClick && (
+                <UploadReportProvider>
+                  <UploadReport
+                    saveHandler={(isSaveSuccess = false) =>
+                      handleUploadAndSave(isSaveSuccess)
+                    }
+                    closeHandler={() => handleClose()}
+                    header="Upload Report"
+                    patientUuid={patientUuid}
+                  />
+                </UploadReportProvider>
+              )}
+            </PendingLabOrdersProvider>
+            <div style={{marginTop: '2rem', marginBottom: '2rem'}}>
+              <ReportTable
+                patientUuid={patientUuid}
+                reloadTableData={reloadReportTable}
+              />
+            </div>
+          </LabTestResultsProvider>
         </div>
       )}
     </main>

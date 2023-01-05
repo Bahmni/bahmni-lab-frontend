@@ -12,6 +12,7 @@ import {
   encounterTypes,
   encounterTypeUuidsKey,
 } from '../../utils/constants'
+import {getTestName} from '../../utils/helperFunctions'
 
 interface UploadFileResponseType {
   url: string
@@ -105,7 +106,7 @@ export function saveDiagnosticReport(
       {
         identifier: {value: selectedPendingOrderTest[0].id},
         reference: 'ServiceRequest',
-        display: selectedTest.name.display,
+        display: getTestName(selectedTest),
       },
     ]
   const requestBody: DiagnosticReportRequestType = {
@@ -115,7 +116,7 @@ export function saveDiagnosticReport(
       coding: [
         {
           code: selectedTest.uuid,
-          display: selectedTest.name.display,
+          display: getTestName(selectedTest),
         },
       ],
     },

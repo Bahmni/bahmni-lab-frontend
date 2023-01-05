@@ -61,7 +61,7 @@ const PendingLabOrdersTable = ({
       .map(pendingLabOrderRow => {
         return {
           id: pendingLabOrderRow.orderUuid,
-          testName: pendingLabOrderRow.concept.name,
+          testName: pendingLabOrderRow.concept.shortName,
           date: new Date(pendingLabOrderRow.orderDate).toLocaleDateString(
             localStorage.getItem('i18nextLng'),
             {
