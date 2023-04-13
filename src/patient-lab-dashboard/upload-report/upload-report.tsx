@@ -18,7 +18,6 @@ import {LabTest} from '../../types/selectTest'
 import SelectTest from '../select-test/select-test'
 import UploadFile from '../upload-file/upload-file'
 import {
-  bahmniEncounter,
   saveDiagnosticReport,
   uploadFile,
 } from './upload-report.resources'
@@ -32,11 +31,8 @@ import {
 import {
   isAuditLogEnabledKey,
   loggedInUserKey,
-  selfPatient,
-  userLocationKey,
 } from '../../utils/constants'
 import DoctorListDropdown from '../doctors-list-dropdown/doctor-list-dropdown'
-import {useCookies} from 'react-cookie'
 import {getTestName} from '../../utils/helperFunctions'
 
 interface UploadReportProps {
@@ -71,9 +67,7 @@ const UploadReport: React.FC<UploadReportProps> = ({
     boolean
   >(true)
   const [isSaveButtonClicked, setIsSaveButtonClicked] = useState(false)
-  const [cookie] = useCookies()
 
-  const locationUuid = cookie[userLocationKey].uuid
   const handleDiscard = () => {
     setIsDiscardButtonClicked(true)
     setReportDate(null)
@@ -97,23 +91,11 @@ const UploadReport: React.FC<UploadReportProps> = ({
       if (uploadFileResponse?.ok) {
         const url = uploadFileResponse.data.url
         if (url) {
-          const providerUuid =
-            doctor.person.display !== selfPatient ? doctor.uuid : null
           let allSuccess: boolean = true
           try {
             for (let index = 0; index < selectedTests.length; index++) {
-              const bahmniEncounterResponse = await bahmniEncounter(
-                locationUuid,
-                patientUuid,
-                providerUuid,
-                selectedTests[index],
-                selectedPendingOrder,
-                ac,
-              )
-              if (bahmniEncounterResponse) {
-                allSuccess = true
                 await uploadSelectedTests(
-                  bahmniEncounterResponse,
+                  undefined,
                   selectedTests[index],
                   patientUuid,
                   doctor.uuid,
@@ -126,9 +108,6 @@ const UploadReport: React.FC<UploadReportProps> = ({
                   saveHandler,
                   allSuccess,
                 )
-              } else {
-                allSuccess = false
-              }
             }
           } catch (e) {
             allSuccess = false
@@ -177,7 +156,7 @@ const UploadReport: React.FC<UploadReportProps> = ({
   }
 
   async function uploadSelectedTests(
-    bahmniEncounterResponse,
+    encounter,
     selectedTest: LabTest,
     patientUuid: string,
     doctorUuid: string,
@@ -191,7 +170,7 @@ const UploadReport: React.FC<UploadReportProps> = ({
     allSuccess: boolean,
   ) {
     const diagnosticReportResponse = await saveDiagnosticReport(
-      bahmniEncounterResponse,
+      encounter,
       patientUuid,
       doctorUuid,
       reportDate,

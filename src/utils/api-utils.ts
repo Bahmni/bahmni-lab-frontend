@@ -29,10 +29,6 @@ export const auditLogGlobalPropertyURL =
 
 export const configUrl = '/../bahmni_config/openmrs/apps/registration/app.json'
 
-export const encounterTypeUrl = '/ws/rest/v1/encountertype'
-
-export const bahmniEncounterUrl = '/ws/rest/v1/bahmnicore/bahmniencounter'
-
 export const getPayloadForUserLogin = (username: string): AuditMessage => ({
   eventType: 'ACCESSED_LAB_ENTRY',
   message: `User ${username} accessed lab entry module`,

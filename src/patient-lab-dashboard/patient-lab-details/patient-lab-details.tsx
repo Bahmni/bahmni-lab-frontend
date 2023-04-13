@@ -10,23 +10,16 @@ import {
 } from 'carbon-components-react'
 import React, {useEffect, useState} from 'react'
 import {RouteComponentProps} from 'react-router-dom'
-import useSWR from 'swr'
 import Loader from '../../common/loader/loader.component'
 import {LabTestResultsProvider} from '../../context/lab-test-results-context'
 import PendingLabOrdersProvider from '../../context/pending-orders-context'
 import {UploadReportProvider} from '../../context/upload-report-context'
 import {
   auditLogURL,
-  configUrl,
-  encounterTypeUrl,
-  fetcher,
   getPayloadForPatientAccess,
   postApiCall,
-  swrOptions,
 } from '../../utils/api-utils'
 import {
-  defaultVisitTypeKey,
-  encounterTypeUuidsKey,
   failureMessage,
   isAuditLogEnabledKey,
   loggedInUserKey,
@@ -84,41 +77,6 @@ const PatientLabDetails: React.FC<RouteComponentProps<PatientParamsType>> = ({
       }}
     />
   )
-  const {data: configResponse} = useSWR(
-    () => (!localStorage.getItem(defaultVisitTypeKey) ? configUrl : null),
-    fetcher,
-    swrOptions,
-  )
-
-  const {data: encounterTypeResponse} = useSWR(
-    () =>
-      !localStorage.getItem(encounterTypeUuidsKey) ? encounterTypeUrl : null,
-    fetcher,
-    swrOptions,
-  )
-
-  useEffect(() => {
-    if (configResponse && !localStorage.getItem(defaultVisitTypeKey)) {
-      localStorage.setItem(
-        defaultVisitTypeKey,
-        configResponse.data.config.defaultVisitType,
-      )
-    }
-    if (encounterTypeResponse && !localStorage.getItem(encounterTypeUuidsKey)) {
-      let encounterUuid = []
-      encounterTypeResponse.data.results.map(res => {
-        if (res.display === 'LAB_RESULT')
-          encounterUuid.push({LAB_RESULT: res.uuid})
-        if (res.display === 'Patient Document')
-          encounterUuid.push({'Patient Document': res.uuid})
-      })
-      if (encounterUuid.length > 0)
-        localStorage.setItem(
-          encounterTypeUuidsKey,
-          JSON.stringify(encounterUuid),
-        )
-    }
-  }, [configResponse, encounterTypeResponse])
 
   useEffect(() => {
     const loggedInUser = localStorage.getItem(loggedInUserKey)

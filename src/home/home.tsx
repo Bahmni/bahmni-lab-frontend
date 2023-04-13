@@ -4,17 +4,13 @@ import useSWR from 'swr'
 import BahmniLogo from '../assets/bahmniLogoFull.png'
 import {
   auditLogGlobalPropertyURL,
-  auditLogURL,
-  configUrl,
+  auditLogURL, 
   swrOptions,
-  encounterTypeUrl,
   fetcher,
   getPayloadForUserLogin,
   postApiCall,
 } from '../utils/api-utils'
 import {
-  defaultVisitTypeKey,
-  encounterTypeUuidsKey,
   isAuditLogEnabledKey,
   loggedInUserKey,
 } from '../utils/constants'

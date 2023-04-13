@@ -13,25 +13,15 @@ import * as swr from 'swr'
 import {SWRConfig} from 'swr'
 import {
   auditLogURL,
-  bahmniEncounterUrl,
   getPayloadForPatientAccess,
   saveDiagnosticReportURL,
 } from '../../utils/api-utils'
 import {
-  defaultVisitTypeKey,
-  encounterTypeUuidsKey,
   isAuditLogEnabledKey,
   loggedInUserKey,
 } from '../../utils/constants'
 import {localStorageMock, verifyApiCall} from '../../utils/test-utils'
-import {mockConfigResponse} from '../../__mocks__/config.mock'
 import {mockDoctorNames} from '../../__mocks__/doctorNames.mock'
-import {
-  mockBahmniEncounterErrorResponse,
-  mockBahmniEncounterRequest,
-  mockBahmniEncounterResponse,
-  mockEncounterTypeResponse,
-} from '../../__mocks__/encounter.mock'
 import {mockPendingLabOrder} from '../../__mocks__/patientLabDetails.mock'
 import {mockPendingLabOrdersResponse} from '../../__mocks__/pendingLabOrders.mock'
 import {
@@ -172,11 +162,6 @@ describe('Patient lab details', () => {
   it('should render Patient Dashboard and post audit log message', () => {
     localStorage.setItem(loggedInUserKey, 'superman')
     localStorage.setItem(isAuditLogEnabledKey, 'true')
-    localStorage.setItem(
-      encounterTypeUuidsKey,
-      '[{"LAB_RESULT":"LabResultUuid"},{"Patient Document":"PatientdocumentUuid"}]',
-    )
-    localStorage.setItem(defaultVisitTypeKey, 'OPD')
     const mockedOpenmrsFetch = openmrsFetch as jest.Mock
     render(
       <BrowserRouter>
@@ -222,8 +207,6 @@ describe('Patient lab details', () => {
       .mockReturnValueOnce(mockPendingLabOrdersResponse)
       .mockReturnValueOnce(mockEmptyReportTableResponse)
       .mockReturnValueOnce(mockLabTestsResponse)
-      .mockReturnValueOnce(mockConfigResponse)
-      .mockReturnValueOnce(mockEncounterTypeResponse)
       .mockReturnValue(mockLabTestsResponse)
     render(
       <SWRConfig value={{provider: () => new Map()}}>
@@ -291,8 +274,6 @@ describe('Patient lab details', () => {
       .mockReturnValueOnce(mockPendingLabOrdersResponse)
       .mockReturnValueOnce(mockEmptyReportTableResponse)
       .mockReturnValueOnce(mockLabTestsResponse)
-      .mockReturnValueOnce(mockConfigResponse)
-      .mockReturnValueOnce(mockEncounterTypeResponse)
       .mockReturnValueOnce(mockDoctorNames)
       .mockReturnValueOnce(mockUploadFileResponse)
       .mockReturnValue(mockDiagnosticReportResponse)
@@ -371,11 +352,8 @@ describe('Patient lab details', () => {
       .mockReturnValueOnce(mockPendingLabOrdersResponse)
       .mockReturnValueOnce(mockEmptyReportTableResponse)
       .mockReturnValueOnce(mockLabTestsResponse)
-      .mockReturnValueOnce(mockConfigResponse)
-      .mockReturnValueOnce(mockEncounterTypeResponse)
       .mockReturnValueOnce(mockDoctorNames)
       .mockReturnValueOnce(mockUploadFileResponse)
-      .mockReturnValueOnce(mockBahmniEncounterResponse)
       .mockReturnValue(mockDiagnosticReportResponse)
 
     render(
@@ -414,8 +392,7 @@ describe('Patient lab details', () => {
     uploadFiles(fileInput, [file])
     await verifyFileName(fileInput)
     await saveReport()
-    expect(mockedOpenmrsFetch).toBeCalledTimes(9)
-    verifyApiCall(bahmniEncounterUrl, 'POST')
+    expect(mockedOpenmrsFetch).toBeCalledTimes(6)
     verifyApiCall(
       saveDiagnosticReportURL,
       'POST',
@@ -432,11 +409,8 @@ describe('Patient lab details', () => {
       .mockReturnValueOnce(mockPendingLabOrdersResponse)
       .mockReturnValueOnce(mockReportTableResponse)
       .mockReturnValueOnce(mockLabTestsResponse)
-      .mockReturnValueOnce(mockConfigResponse)
-      .mockReturnValueOnce(mockEncounterTypeResponse)
       .mockReturnValueOnce(mockDoctorNames)
       .mockReturnValueOnce(mockUploadFileResponse)
-      .mockReturnValueOnce(mockBahmniEncounterResponse)
       .mockReturnValueOnce(mockDiagnosticReportResponse)
 
     render(
@@ -498,89 +472,9 @@ describe('Patient lab details', () => {
 
     await saveReport()
 
-    expect(mockedOpenmrsFetch).toBeCalledTimes(11)
+    expect(mockedOpenmrsFetch).toBeCalledTimes(7)
     verifyApiCall(saveDiagnosticReportURL, 'POST')
     expect(mutateMock).toHaveBeenCalledTimes(2)
-  })
-  it('should show failure notification when encounter call fails', async () => {
-    const mockedOpenmrsFetch = openmrsFetch as jest.Mock
-    mockedOpenmrsFetch
-      .mockReturnValueOnce(mockPendingLabOrdersResponse)
-      .mockReturnValueOnce(mockEmptyReportTableResponse)
-      .mockReturnValueOnce(mockLabTestsResponse)
-      .mockReturnValueOnce(mockConfigResponse)
-      .mockReturnValueOnce(mockEncounterTypeResponse)
-      .mockReturnValueOnce(mockDoctorNames)
-      .mockReturnValueOnce(mockUploadFileResponse)
-      .mockReturnValueOnce(mockBahmniEncounterErrorResponse)
-
-    render(
-      <SWRConfig value={{provider: () => new Map()}}>
-        <BrowserRouter>
-          <PatientLabDetails
-            match={matchParams}
-            history={undefined}
-            location={undefined}
-          />
-        </BrowserRouter>
-      </SWRConfig>,
-    )
-
-    userEvent.click(screen.getByRole('button', {name: /upload report/i}))
-
-    expect(
-      screen.getByRole('button', {name: /save and upload/i}),
-    ).toBeDisabled()
-
-    userEvent.click(
-      screen.getByRole('textbox', {
-        name: /report date/i,
-      }),
-    )
-
-    userEvent.click(screen.getByLabelText(currentDay))
-
-    await waitFor(() =>
-      expect(
-        screen.getByRole('checkbox', {name: /Absolute Eosinphil Count/i}),
-      ).toBeInTheDocument(),
-    )
-    expect(screen.getByText(/select tests/i)).toBeInTheDocument()
-
-    userEvent.click(
-      screen.getByRole('checkbox', {name: /Absolute Eosinphil Count/i}),
-    )
-
-    const fileInput = screen.getByLabelText(
-      'Drag and drop files here or click to upload',
-    ) as HTMLInputElement
-
-    uploadFiles(fileInput, [file])
-
-    expect(fileInput.files.length).toBe(1)
-    const fileName = await screen.findByText('test.pdf')
-    expect(fileName).toBeInTheDocument()
-
-    userEvent.click(
-      screen.getByRole('button', {
-        name: /Select a Doctor/i,
-      }),
-    )
-
-    userEvent.click(await screen.findByText('admin - Super User'))
-    expect(await screen.findByText(/admin - Super user/i)).toBeInTheDocument()
-    const saveButton = screen.getByRole('button', {name: /save and upload/i})
-
-    expect(saveButton).not.toBeDisabled()
-    userEvent.click(saveButton)
-
-    await waitFor(() => {
-      expect(screen.getByText(/Failed to upload report/i)).toBeInTheDocument()
-      expect(
-        screen.queryByRole('button', {name: /save and upload/i}),
-      ).not.toBeInTheDocument()
-    })
-    userEvent.click(screen.getByTitle(/closes notification/i))
   })
   it('should show failure notification on report upload', async () => {
     const mockedOpenmrsFetch = openmrsFetch as jest.Mock
@@ -588,11 +482,8 @@ describe('Patient lab details', () => {
       .mockReturnValueOnce(mockPendingLabOrdersResponse)
       .mockReturnValueOnce(mockEmptyReportTableResponse)
       .mockReturnValueOnce(mockLabTestsResponse)
-      .mockReturnValueOnce(mockConfigResponse)
-      .mockReturnValueOnce(mockEncounterTypeResponse)
       .mockReturnValueOnce(mockDoctorNames)
       .mockReturnValueOnce(mockUploadFileResponse)
-      .mockReturnValueOnce(mockBahmniEncounterResponse)
       .mockRejectedValue(mockDiagnosticReportErrorResponse)
 
     render(
@@ -662,134 +553,6 @@ describe('Patient lab details', () => {
       ).not.toBeInTheDocument()
     })
     userEvent.click(screen.getByTitle(/closes notification/i))
-  })
-  it('should make encounter post call with Lab result encounterTypeUuid when selected order is an open order', async () => {
-    const mockedOpenmrsFetch = openmrsFetch as jest.Mock
-    mockedOpenmrsFetch
-      .mockReturnValueOnce(mockPendingLabOrdersResponse)
-      .mockReturnValueOnce(mockEmptyReportTableResponse)
-      .mockReturnValueOnce(mockLabTestsResponse)
-      .mockReturnValueOnce(mockConfigResponse)
-      .mockReturnValueOnce(mockEncounterTypeResponse)
-      .mockReturnValueOnce(mockDoctorNames)
-      .mockReturnValueOnce(mockUploadFileResponse)
-      .mockReturnValueOnce(mockBahmniEncounterResponse)
-      .mockReturnValue(mockDiagnosticReportResponse)
-
-    render(
-      <SWRConfig value={{provider: () => new Map()}}>
-        <BrowserRouter>
-          <PatientLabDetails
-            match={matchParams}
-            history={undefined}
-            location={undefined}
-          />
-        </BrowserRouter>
-      </SWRConfig>,
-    )
-    await waitFor(() => {
-      userEvent.click(screen.getAllByRole('checkbox', {name: /Select row/i})[0])
-    })
-    userEvent.click(screen.getByRole('button', {name: /upload report/i}))
-
-    expect(
-      screen.getByRole('button', {name: /save and upload/i}),
-    ).toBeDisabled()
-
-    await waitFor(() => {
-      expect(screen.getByTestId(/selected-tests/i)).toHaveTextContent(
-        'Selected Tests ( 1 )',
-      )
-    })
-
-    userEvent.click(screen.getByText('Super Man'))
-
-    const fileInput = screen.getByLabelText(
-      'Drag and drop files here or click to upload',
-    ) as HTMLInputElement
-
-    uploadFiles(fileInput, [file])
-    await verifyFileName(fileInput)
-    await saveReport()
-    expect(mockedOpenmrsFetch).toBeCalledTimes(9)
-    verifyApiCall(
-      bahmniEncounterUrl,
-      'POST',
-      JSON.stringify(mockBahmniEncounterRequest.labResult),
-    )
-  })
-  it('should make encounter post call with Patinet document encounterTypeUuid when selected order is not an open order', async () => {
-    const mockedOpenmrsFetch = openmrsFetch as jest.Mock
-    mockedOpenmrsFetch
-      .mockReturnValueOnce(mockPendingLabOrdersResponse)
-      .mockReturnValueOnce(mockEmptyReportTableResponse)
-      .mockReturnValueOnce(mockLabTestsResponse)
-      .mockReturnValueOnce(mockConfigResponse)
-      .mockReturnValueOnce(mockEncounterTypeResponse)
-      .mockReturnValueOnce(mockDoctorNames)
-      .mockReturnValueOnce(mockUploadFileResponse)
-      .mockReturnValueOnce(mockBahmniEncounterResponse)
-      .mockReturnValue(mockDiagnosticReportResponse)
-
-    render(
-      <SWRConfig value={{provider: () => new Map()}}>
-        <BrowserRouter>
-          <PatientLabDetails
-            match={matchParams}
-            history={undefined}
-            location={undefined}
-          />
-        </BrowserRouter>
-      </SWRConfig>,
-    )
-
-    userEvent.click(screen.getByRole('button', {name: /upload report/i}))
-
-    expect(
-      screen.getByRole('button', {name: /save and upload/i}),
-    ).toBeDisabled()
-
-    userEvent.click(
-      screen.getByRole('textbox', {
-        name: /report date/i,
-      }),
-    )
-
-    userEvent.click(screen.getByLabelText(currentDay))
-
-    await waitFor(() =>
-      expect(
-        screen.getByRole('checkbox', {name: /Absolute Eosinphil Count/i}),
-      ).toBeInTheDocument(),
-    )
-    expect(screen.getByText(/select tests/i)).toBeInTheDocument()
-
-    userEvent.click(
-      screen.getByRole('checkbox', {name: /Absolute Eosinphil Count/i}),
-    )
-
-    const fileInput = screen.getByLabelText(
-      'Drag and drop files here or click to upload',
-    ) as HTMLInputElement
-
-    uploadFiles(fileInput, [file])
-
-    expect(fileInput.files.length).toBe(1)
-    const fileName = await screen.findByText('test.pdf')
-    expect(fileName).toBeInTheDocument()
-    userEvent.click(
-      screen.getByRole('button', {
-        name: /Select a Doctor/i,
-      }),
-    )
-    userEvent.click(await screen.findByText('self (patient)'))
-    expect(await screen.findByText('self (patient)')).toBeInTheDocument()
-    await saveReport()
-    verifyApiCall(
-      bahmniEncounterUrl,
-      'POST',
-      JSON.stringify(mockBahmniEncounterRequest.patientDocument),
-    )
   })
 })
 

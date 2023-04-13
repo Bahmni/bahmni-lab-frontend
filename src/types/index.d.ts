@@ -143,32 +143,3 @@ export interface ImagePreviewComponentProps {
   postAuditMessage: Function
 }
 
-export interface BahmniEncounterResponseType {
-  data: {
-    bahmniDiagnoses: []
-    observations: []
-    accessionNotes: []
-    encounterType: string
-    visitType: string
-    patientId: string
-    reason: null
-    patientProgramUuid: null
-    visitUuid: string
-    patientUuid: string
-    associatedToPatientProgram: boolean
-    encounterTypeUuid: string
-    visitTypeUuid: string
-    drugOrders: []
-    locationUuid: string
-    encounterDateTime: number
-    encounterUuid: string
-    disposition: null
-    locationName: string
-    orders: []
-    providers: []
-    context: {}
-    extensions: {
-      mdrtbSpecimen: []
-    }
-  }
-}

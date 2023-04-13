@@ -7,20 +7,16 @@ import PendingLabOrdersProvider from '../../context/pending-orders-context'
 import {UploadReportProvider} from '../../context/upload-report-context'
 import {
   auditLogURL,
-  bahmniEncounterUrl,
   getPayloadForPatientReportUpload,
   saveDiagnosticReportURL,
   uploadDocumentURL,
 } from '../../utils/api-utils'
 import {
-  defaultVisitTypeKey,
-  encounterTypeUuidsKey,
   isAuditLogEnabledKey,
   loggedInUserKey,
 } from '../../utils/constants'
 import {localStorageMock, verifyApiCall} from '../../utils/test-utils'
 import {uploadFiles} from '../../utils/test-utils/upload-report-helper'
-import {mockBahmniEncounterResponse} from '../../__mocks__/encounter.mock'
 import {mockDoctorNames} from '../../__mocks__/doctorNames.mock'
 import {
   diagnosticReportRequestBody,
@@ -54,11 +50,6 @@ describe('Upload Report', () => {
       value: 'bahmni.user.location={"uuid":"locationuuid123"}',
     })
     Object.defineProperty(window, 'localStorage', {value: localStorageMock})
-    localStorage.setItem(
-      encounterTypeUuidsKey,
-      '[{"LAB_RESULT":"LabResultUuid"},{"Patient Document":"PatientdocumentUuid"}]',
-    )
-    localStorage.setItem(defaultVisitTypeKey, 'OPD')
   })
   afterEach(() => {
     jest.clearAllMocks(), localStorage.clear()
@@ -275,7 +266,6 @@ describe('Upload Report', () => {
     mockedOpenmrsFetch
       .mockReturnValueOnce(mockDoctorNames)
       .mockReturnValueOnce(mockUploadFileResponse)
-      .mockReturnValueOnce(mockBahmniEncounterResponse)
       .mockReturnValue(mockDiagnosticReportResponse)
 
     const mockedLayout = useLayoutType as jest.Mock
@@ -350,7 +340,7 @@ describe('Upload Report', () => {
     expect(saveButton).not.toBeDisabled()
     userEvent.click(saveButton)
     await waitFor(() => {
-      expect(mockedOpenmrsFetch).toBeCalledTimes(5)
+      expect(mockedOpenmrsFetch).toBeCalledTimes(4)
     })
     verifyApiCall(uploadDocumentURL, 'POST', uploadFileRequestBody)
     verifyApiCall(
@@ -379,7 +369,6 @@ describe('Upload Report', () => {
     mockedOpenmrsFetch
       .mockReturnValueOnce(mockDoctorNames)
       .mockReturnValueOnce(mockUploadFileResponse)
-      .mockReturnValueOnce(mockBahmniEncounterResponse)
       .mockReturnValue(mockDiagnosticReportResponse)
 
     const mockedLayout = useLayoutType as jest.Mock
@@ -443,10 +432,9 @@ describe('Upload Report', () => {
     expect(saveButton).not.toBeDisabled()
     userEvent.click(saveButton)
     await waitFor(() => {
-      expect(mockedOpenmrsFetch).toBeCalledTimes(4)
+      expect(mockedOpenmrsFetch).toBeCalledTimes(3)
     })
     verifyApiCall(uploadDocumentURL, 'POST', uploadFileRequestBody)
-    verifyApiCall(bahmniEncounterUrl, 'POST')
     verifyApiCall(
       saveDiagnosticReportURL,
       'POST',
@@ -461,7 +449,6 @@ describe('Upload Report', () => {
     mockedOpenmrsFetch
       .mockReturnValueOnce(mockDoctorNames)
       .mockReturnValueOnce(mockUploadFileResponse)
-      .mockReturnValueOnce(mockBahmniEncounterResponse)
       .mockReturnValue(mockDiagnosticReportResponse)
 
     const mockedLayout = useLayoutType as jest.Mock
@@ -528,7 +515,7 @@ describe('Upload Report', () => {
     userEvent.click(saveButton)
     expect(saveButton).toBeDisabled()
     await waitFor(() => {
-      expect(mockedOpenmrsFetch).toBeCalledTimes(4)
+      expect(mockedOpenmrsFetch).toBeCalledTimes(3)
     })
   })
 })
