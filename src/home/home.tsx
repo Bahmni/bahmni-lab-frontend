@@ -4,16 +4,13 @@ import useSWR from 'swr'
 import BahmniLogo from '../assets/bahmniLogoFull.png'
 import {
   auditLogGlobalPropertyURL,
-  auditLogURL, 
+  auditLogURL,
   swrOptions,
   fetcher,
   getPayloadForUserLogin,
   postApiCall,
 } from '../utils/api-utils'
-import {
-  isAuditLogEnabledKey,
-  loggedInUserKey,
-} from '../utils/constants'
+import {isAuditLogEnabledKey, loggedInUserKey} from '../utils/constants'
 import classes from './home.scss'
 interface AuditLogResponse {
   data: boolean

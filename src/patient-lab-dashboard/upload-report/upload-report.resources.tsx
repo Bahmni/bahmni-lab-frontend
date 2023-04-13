@@ -140,7 +140,6 @@ const removeBase64 = fileData => {
   )
 }
 
-
 const getSelectedPendingOrderTests = (
   selectedTest: LabTest,
   selectedPendingOrder: PendingLabOrders[],

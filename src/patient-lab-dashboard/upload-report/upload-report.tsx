@@ -17,10 +17,7 @@ import {PendingLabOrders} from '../../types'
 import {LabTest} from '../../types/selectTest'
 import SelectTest from '../select-test/select-test'
 import UploadFile from '../upload-file/upload-file'
-import {
-  saveDiagnosticReport,
-  uploadFile,
-} from './upload-report.resources'
+import {saveDiagnosticReport, uploadFile} from './upload-report.resources'
 import styles from './upload-report.scss'
 
 import {
@@ -28,10 +25,7 @@ import {
   getPayloadForPatientReportUpload,
   postApiCall,
 } from '../../utils/api-utils'
-import {
-  isAuditLogEnabledKey,
-  loggedInUserKey,
-} from '../../utils/constants'
+import {isAuditLogEnabledKey, loggedInUserKey} from '../../utils/constants'
 import DoctorListDropdown from '../doctors-list-dropdown/doctor-list-dropdown'
 import {getTestName} from '../../utils/helperFunctions'
 
@@ -94,20 +88,20 @@ const UploadReport: React.FC<UploadReportProps> = ({
           let allSuccess: boolean = true
           try {
             for (let index = 0; index < selectedTests.length; index++) {
-                await uploadSelectedTests(
-                  undefined,
-                  selectedTests[index],
-                  patientUuid,
-                  doctor.uuid,
-                  reportDate,
-                  url,
-                  selectedFile,
-                  reportConclusion,
-                  ac,
-                  selectedPendingOrder,
-                  saveHandler,
-                  allSuccess,
-                )
+              await uploadSelectedTests(
+                undefined,
+                selectedTests[index],
+                patientUuid,
+                doctor.uuid,
+                reportDate,
+                url,
+                selectedFile,
+                reportConclusion,
+                ac,
+                selectedPendingOrder,
+                saveHandler,
+                allSuccess,
+              )
             }
           } catch (e) {
             allSuccess = false
