@@ -38,6 +38,7 @@ import {
 } from '../../../utils/api-utils'
 import {
   defaultPageSize,
+  documentPath,
   isAuditLogEnabledKey,
   loggedInUserKey,
   reportHeaders,
@@ -47,8 +48,6 @@ import {getShortName} from '../../../utils/helperFunctions'
 import {fetcher, getReportTableDataURL} from '../../../utils/lab-orders'
 import ImagePreviewComponent from '../../image-preview-component/image-preview-component'
 import classes from './report-table.component.scss'
-
-const documentPath = '/document_images/'
 
 function getReportUrl(reportsData: Array<ReportTableRow>, reportId: string) {
   const url = reportsData?.find(intialRow => intialRow.id === reportId)?.url
