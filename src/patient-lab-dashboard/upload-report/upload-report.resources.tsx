@@ -6,6 +6,7 @@ import {
   saveDiagnosticReportURL,
   uploadDocumentURL,
 } from '../../utils/api-utils'
+import {uploadedDocumentEncounterType} from '../../utils/constants'
 import {getTestName} from '../../utils/helperFunctions'
 
 interface UploadFileResponseType {
@@ -61,7 +62,7 @@ const uploadFileRequestBody = (fileContent, fileType, patientUuid) => {
   const extension = fileType.split('/')[1]
   return {
     content: removeBase64(fileContent),
-    encounterTypeName: 'Patient Document',
+    encounterTypeName: uploadedDocumentEncounterType,
     fileType: fileType.split('/')[0],
     format: extension,
     patientUuid: patientUuid,
