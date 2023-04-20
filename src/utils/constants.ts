@@ -21,6 +21,7 @@ export const failureMessage = 'Failed to upload report'
 export const labEntryHomePath = '/home'
 export const userLocationKey = 'bahmni.user.location'
 export const documentPath = '/uploaded_results/'
+export const uploadedDocumentEncounterType = 'LAB_RESULT'
 
 export const headers = [
   {

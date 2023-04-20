@@ -257,7 +257,7 @@ describe('Upload Report', () => {
     ).not.toBeDisabled()
   })
 
-  it('should make a file upload api call, encounter and fhir diagnostic api call on click of save and upload button', async () => {
+  it('should make a file upload api call and fhir diagnostic api call on click of save and upload button', async () => {
     const file = new File(['content'], 'test.pdf', {type: 'application/pdf'})
     localStorage.setItem('i18nextLng', 'en')
     localStorage.setItem(loggedInUserKey, 'superman')
