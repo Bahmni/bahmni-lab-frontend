@@ -2,16 +2,10 @@ import {FetchResponse} from '@openmrs/esm-framework'
 import {PendingLabOrders} from '../../types'
 import {LabTest} from '../../types/selectTest'
 import {
-  bahmniEncounterUrl,
   postApiCall,
   saveDiagnosticReportURL,
   uploadDocumentURL,
 } from '../../utils/api-utils'
-import {
-  defaultVisitTypeKey,
-  encounterTypes,
-  encounterTypeUuidsKey,
-} from '../../utils/constants'
 import {getTestName} from '../../utils/helperFunctions'
 
 interface UploadFileResponseType {
@@ -30,16 +24,6 @@ export interface BasedOnType {
   }
 }
 
-interface BahmniEncounteRequestType {
-  locationUuid: string
-  patientUuid: string
-  providers?: Array<{uuid: string}>
-  encounterUuid: string
-  encounterTypeUuid: string
-  visitType: string
-  visitUuid: string
-}
-
 interface DiagnosticReportRequestType {
   resourceType: string
   status: string
@@ -52,7 +36,7 @@ interface DiagnosticReportRequestType {
     ]
   }
   subject: ReferenceRequestType
-  encounter: {reference: string}
+  encounter?: {reference: string}
   issued: Date
   conclusion?: string
   presentedForm: Array<{
@@ -85,7 +69,7 @@ const uploadFileRequestBody = (fileContent, fileType, patientUuid) => {
 }
 
 export function saveDiagnosticReport(
-  bahmniEncounterResponse,
+  encounter,
   patientUuid: string,
   performerUuid: string,
   reportDate: Date,
@@ -123,9 +107,6 @@ export function saveDiagnosticReport(
     subject: {
       reference: 'Patient/' + patientUuid,
     },
-    encounter: {
-      reference: `Encounter/${bahmniEncounterResponse.data.encounterUuid}`,
-    },
     issued: reportDate,
     presentedForm: [{url: uploadFileUrl, title: uploadedFileName}],
   }
@@ -142,6 +123,11 @@ export function saveDiagnosticReport(
       },
     ]
   }
+  if (encounter && encounter.encounterUuid) {
+    requestBody.encounter = {
+      reference: `Encounter/${encounter.encounterUuid}`,
+    }
+  }
 
   return postApiCall(saveDiagnosticReportURL, requestBody, ac)
 }
@@ -152,66 +138,6 @@ const removeBase64 = fileData => {
     fileData.indexOf(searchStr) + searchStr.length,
     fileData.length,
   )
-}
-
-export const bahmniEncounter = (
-  locationUuid: string,
-  patientUuid: string,
-  providerUuid: string,
-  selectedTest: LabTest,
-  selectedPendingOrder: PendingLabOrders[],
-  ac: AbortController,
-) => {
-  const defaultVisitType = localStorage.getItem(defaultVisitTypeKey)
-  let requestBody: BahmniEncounteRequestType
-  if (providerUuid && providerUuid !== null) {
-    requestBody = {
-      locationUuid,
-      patientUuid,
-      encounterUuid: null,
-      visitUuid: null,
-      providers: [
-        {
-          uuid: providerUuid,
-        },
-      ],
-      visitType: defaultVisitType,
-      encounterTypeUuid: getEncounterTypeUuid(
-        selectedTest,
-        selectedPendingOrder,
-      ),
-    }
-  } else {
-    requestBody = {
-      locationUuid,
-      patientUuid,
-      encounterUuid: null,
-      visitUuid: null,
-      visitType: defaultVisitType,
-      encounterTypeUuid: getEncounterTypeUuid(
-        selectedTest,
-        selectedPendingOrder,
-      ),
-    }
-  }
-  return postApiCall(bahmniEncounterUrl, requestBody, ac)
-}
-
-const getEncounterTypeUuid = (
-  selectedTest: LabTest,
-  selectedPendingOrder: PendingLabOrders[],
-): string => {
-  const encounterTypeUuidlist = JSON.parse(
-    localStorage.getItem(encounterTypeUuidsKey),
-  )
-  let encounterTypeUuid = encounterTypeUuidlist[1][encounterTypes[1]]
-  const selectedPendingOrderTest = getSelectedPendingOrderTests(
-    selectedTest,
-    selectedPendingOrder,
-  )
-  if (selectedPendingOrderTest.length === 1)
-    encounterTypeUuid = encounterTypeUuidlist[0][encounterTypes[0]]
-  return encounterTypeUuid
 }
 
 const getSelectedPendingOrderTests = (

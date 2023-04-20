@@ -2,8 +2,6 @@ import { openmrsFetch } from '@openmrs/esm-framework'
 import { render, screen, waitFor } from '@testing-library/react'
 import React from 'react'
 import { of } from 'rxjs'
-import { mockConfigResponse } from '../__mocks__/config.mock'
-import { mockEncounterTypeResponse } from '../__mocks__/encounter.mock'
 import { mockUnauthorizedUser, mockUser } from '../__mocks__/mockUser'
 import Root from './patient-lab-root.component'
 
@@ -41,8 +39,6 @@ describe('Root', () => {
     let mockedOpenmrsFetch = openmrsFetch as jest.Mock
     mockedOpenmrsFetch
       .mockReturnValueOnce({data: true})
-      .mockReturnValueOnce(mockConfigResponse)
-      .mockReturnValue(mockEncounterTypeResponse)
     window.history.pushState({}, 'Lab Entry', '/lab/home')
     render(<Root />)
     await waitFor(() =>

@@ -17,11 +17,7 @@ import {PendingLabOrders} from '../../types'
 import {LabTest} from '../../types/selectTest'
 import SelectTest from '../select-test/select-test'
 import UploadFile from '../upload-file/upload-file'
-import {
-  bahmniEncounter,
-  saveDiagnosticReport,
-  uploadFile,
-} from './upload-report.resources'
+import {saveDiagnosticReport, uploadFile} from './upload-report.resources'
 import styles from './upload-report.scss'
 
 import {
@@ -29,14 +25,8 @@ import {
   getPayloadForPatientReportUpload,
   postApiCall,
 } from '../../utils/api-utils'
-import {
-  isAuditLogEnabledKey,
-  loggedInUserKey,
-  selfPatient,
-  userLocationKey,
-} from '../../utils/constants'
+import {isAuditLogEnabledKey, loggedInUserKey} from '../../utils/constants'
 import DoctorListDropdown from '../doctors-list-dropdown/doctor-list-dropdown'
-import {useCookies} from 'react-cookie'
 import {getTestName} from '../../utils/helperFunctions'
 
 interface UploadReportProps {
@@ -71,9 +61,7 @@ const UploadReport: React.FC<UploadReportProps> = ({
     boolean
   >(true)
   const [isSaveButtonClicked, setIsSaveButtonClicked] = useState(false)
-  const [cookie] = useCookies()
 
-  const locationUuid = cookie[userLocationKey].uuid
   const handleDiscard = () => {
     setIsDiscardButtonClicked(true)
     setReportDate(null)
@@ -97,38 +85,23 @@ const UploadReport: React.FC<UploadReportProps> = ({
       if (uploadFileResponse?.ok) {
         const url = uploadFileResponse.data.url
         if (url) {
-          const providerUuid =
-            doctor.person.display !== selfPatient ? doctor.uuid : null
           let allSuccess: boolean = true
           try {
             for (let index = 0; index < selectedTests.length; index++) {
-              const bahmniEncounterResponse = await bahmniEncounter(
-                locationUuid,
-                patientUuid,
-                providerUuid,
+              await uploadSelectedTests(
+                undefined,
                 selectedTests[index],
-                selectedPendingOrder,
+                patientUuid,
+                doctor.uuid,
+                reportDate,
+                url,
+                selectedFile,
+                reportConclusion,
                 ac,
+                selectedPendingOrder,
+                saveHandler,
+                allSuccess,
               )
-              if (bahmniEncounterResponse) {
-                allSuccess = true
-                await uploadSelectedTests(
-                  bahmniEncounterResponse,
-                  selectedTests[index],
-                  patientUuid,
-                  doctor.uuid,
-                  reportDate,
-                  url,
-                  selectedFile,
-                  reportConclusion,
-                  ac,
-                  selectedPendingOrder,
-                  saveHandler,
-                  allSuccess,
-                )
-              } else {
-                allSuccess = false
-              }
             }
           } catch (e) {
             allSuccess = false
@@ -177,7 +150,7 @@ const UploadReport: React.FC<UploadReportProps> = ({
   }
 
   async function uploadSelectedTests(
-    bahmniEncounterResponse,
+    encounter,
     selectedTest: LabTest,
     patientUuid: string,
     doctorUuid: string,
@@ -191,7 +164,7 @@ const UploadReport: React.FC<UploadReportProps> = ({
     allSuccess: boolean,
   ) {
     const diagnosticReportResponse = await saveDiagnosticReport(
-      bahmniEncounterResponse,
+      encounter,
       patientUuid,
       doctorUuid,
       reportDate,
