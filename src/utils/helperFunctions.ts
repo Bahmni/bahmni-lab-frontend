@@ -13,9 +13,9 @@ export const getShortName = (
   testName: string,
   allTestsAndPanels: Array<LabTest>,
 ) => {
-  const names = testName.split(',')
+  const names = testName?.split(',')
   let concatNames = ''
-  for (let nameIndex = 0; nameIndex < names.length; nameIndex++) {
+  for (let nameIndex = 0; nameIndex < names?.length; nameIndex++) {
     for (let testIndex = 0; testIndex < allTestsAndPanels.length; testIndex++) {
       if (
         allTestsAndPanels[testIndex].name.display === names[nameIndex].trim()
