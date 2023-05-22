@@ -1,0 +1,34 @@
+@import "~@openmrs/esm-styleguide/src/vars";
+@import "~carbon-components/src/globals/scss/vars";
+@import 'carbon-components/scss/globals/scss/typography.scss';
+
+.buttonsGroup {
+  width: 100%;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+
+}
+
+.datePicker {
+  padding: 1rem 0 1rem 0;
+}
+
+.overlayButtons {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+}
+
+.overlayButtons button {
+  max-width: unset;
+}
+
+.textArea {
+  :global(.bx-label){
+    width: 100%;
+  }
+}
+
+.testresultinputfield{
+    width: 90%;
+    padding: 2% 2% 2% 0%;
+}

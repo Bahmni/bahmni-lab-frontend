@@ -16,8 +16,7 @@ import {
   useSelectedFile,
   useSelectedTests,
 } from '../../context/upload-report-context'
-import styles from '../upload-report/upload-report.scss'
-
+import styles from './test-results.scss'
 import {fetcher, getTestResults, swrOptions} from '../../utils/api-utils'
 import {getTestName} from '../../utils/helperFunctions'
 import DoctorListDropdown from '../doctors-list-dropdown/doctor-list-dropdown'
@@ -62,7 +61,9 @@ const TestResults: React.FC<UploadReportProps> = ({
     setSelectedTests([])
     setDoctor(null)
     setShowReportConclusionLabel(true)
+    setLabResult(new Map())
   }
+
   const [labResult, setLabResult] = useState(new Map())
 
   const isDisabled = () =>
@@ -85,25 +86,31 @@ const TestResults: React.FC<UploadReportProps> = ({
     </div>
   )
 
+  const getSelectedPendingOrderTest = index => {
+    //  return testResultData.map(async testResults=>{
+    //   if(testResults.data.uuid===selectedPendingOrder[index].conceptUuid && testResults?.data.setMembers.length>0){
+    //     return testResults?.data.setMembers
+    //   }
+    return selectedPendingOrder[index]
+    // })
+  }
   const saveReport = async () => {
+    console.log('Inside save')
     const ac = new AbortController()
-    console.log('inside event')
     let allSuccess: boolean = true
     try {
-      console.log('inside try')
-      // for (let index = 0; index < selectedPendingOrder.length; index++) {
-      const response = await saveTestDiagnosticReport(
-        undefined,
-        patientUuid,
-        doctor.uuid,
-        reportDate,
-        reportConclusion,
-        ac,
-        selectedPendingOrder[0],
-        labResult,
-      )
-      console.log('response', response)
-      // }
+      for (let index = 0; index < selectedPendingOrder.length; index++) {
+        const response = await saveTestDiagnosticReport(
+          undefined,
+          patientUuid,
+          doctor.uuid,
+          reportDate,
+          reportConclusion,
+          ac,
+          getSelectedPendingOrderTest(index),
+          labResult,
+        )
+      }
     } catch (e) {
       allSuccess = false
     }
@@ -132,41 +139,53 @@ const TestResults: React.FC<UploadReportProps> = ({
     }
     return getTestName(test)
   }
-
-  const updateOrStoreLabResult = (value, uuid) => {
-    console.log('map values', labResult, labResult.size)
-    console.log('inside updateOrStoreLabResult', uuid, value)
-    if (value !== null || value !== undefined || !isNaN(value))
-      setLabResult(map => new Map(map.set(uuid, value)))
+  const isAbnormal = (value, test) => {
+    return (
+      (value < test.lowNormal || value > test.hiNormal) &&
+      test.lowNormal !== null && test.hiNormal !== null
+    )
   }
-
+  const updateOrStoreLabResult = (value, test) => {
+    if (value !== null || value !== undefined || !isNaN(value)) {
+      isAbnormal(value, test)
+        ? setLabResult(
+            map =>
+              new Map(
+                map.set(test.uuid, {
+                  value: value,
+                  abnormal: true,
+                }),
+              ),
+          )
+        : setLabResult(
+            map =>
+              new Map(
+                map.set(test.uuid, {
+                  value: value,
+                  abnormal: false,
+                }),
+              ),
+          )
+    }
+  }
+  const labTestResult = (labResult, test) => {
+    return labResult.get(test.uuid)?.value ?? ''
+  }
   const renderInputField = (test, index) => {
     if (test) {
-      if (test?.datatype?.name === 'Numeric') {
-        return (
-          <NumberInput
-            key={`number-${test.uuid}-${index}`}
-            label={getTestNameWithUnits(test)}
-            size="xl"
-            value={test.lowNormal ?? 0}
-            id={`${test.uuid}-${index}`}
-            min={test.lowNormal ?? 0}
-            max={test.hiNormal ?? 100}
-            onChange={e =>
-              updateOrStoreLabResult(e.target.valueAsNumber, test.uuid)
-            }
-          />
-        )
-      }
       return (
-        <TextInput
-          key={`text-${test.uuid}-${index}`}
-          labelText={getTestNameWithUnits(test)}
-          id={`${test.uuid}-${index}`}
-          placeholder="Input Text"
-          size="sm"
-          onChange={e => updateOrStoreLabResult(e.target.value, test.uuid)}
-        />
+        <div className={styles.testresultinputfield}>
+          <TextInput
+            key={`text-${test.uuid}-${index}`}
+            labelText={getTestNameWithUnits(test)}
+            id={`${test.uuid}-${index}`}
+            placeholder="Input Text"
+            size="sm"
+            onChange={e => updateOrStoreLabResult(e.target.value, test)}
+            style={labResult.get(test.uuid)?.abnormal ? {color: 'red'} : {}}
+            value={labTestResult(labResult, test)}
+          />
+        </div>
       )
     }
   }

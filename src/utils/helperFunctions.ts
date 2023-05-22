@@ -6,7 +6,7 @@ export const getTestName = (test: LabTest) => {
       name.conceptNameType == 'SHORT' ||
       name.conceptNameType == 'FULLY_SPECIFIED',
   )[0].name
-  console.log('first', test)
+ 
   return testName ? testName : undefined
 }
 

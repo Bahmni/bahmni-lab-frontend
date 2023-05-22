@@ -16,8 +16,10 @@ import PendingLabOrdersProvider from '../../context/pending-orders-context'
 import {UploadReportProvider} from '../../context/upload-report-context'
 import {
   auditLogURL,
+  fetcher,
   getPayloadForPatientAccess,
   postApiCall,
+  swrOptions,
 } from '../../utils/api-utils'
 import {
   failureMessage,
@@ -30,6 +32,9 @@ import ReportTable from '../table/report-table/report-table.component'
 import UploadReport from '../upload-report/upload-report'
 import styles from './patient-lab-details.scss'
 import TestResults from '../test-results/test-results'
+import useSWR from 'swr'
+import { getLabConfig } from '../../utils/lab-orders'
+
 interface PatientParamsType {
   patientUuid: string
 }
@@ -43,9 +48,18 @@ const PatientLabDetails: React.FC<RouteComponentProps<PatientParamsType>> = ({
   const [onSaveSuccess, setOnSaveSuccess] = useState<boolean>(false)
   const [onSaveFailure, setOnSaveFailure] = useState<boolean>(false)
   const [reloadReportTable, setReloadReportTable] = useState<boolean>(false)
+  // let urll='https://localhost/bahmni_config/openmrs/apps/home/extension.json'
   const [onEnterResultButtonClick, setOnEnterResultButtonClick] = useState<
     boolean
   >(false)
+
+
+// const getApiCall = async url => {
+//   const response = await fetch(url, {
+//     method: 'GET',
+//   })
+//   return response.json()
+// }
 
   const handleClick = () => {
     setOnButtonClick(true)
@@ -53,7 +67,15 @@ const PatientLabDetails: React.FC<RouteComponentProps<PatientParamsType>> = ({
     setReloadReportTable(false)
     setOnSaveFailure(false)
   }
-
+  const enterResultsHandleClick = () => {
+    setOnEnterResultButtonClick(true)
+    setOnSaveSuccess(false)
+    setReloadReportTable(false)
+    setOnSaveFailure(false)
+  }
+  const enterResultsHandleClose = () => {
+    setOnEnterResultButtonClick(false)
+  }
   const handleClose = () => {
     setOnButtonClick(false)
   }
@@ -81,13 +103,30 @@ const PatientLabDetails: React.FC<RouteComponentProps<PatientParamsType>> = ({
       }}
     />
   )
-
-  const enterResultsHandleClick = () => {
-    setOnEnterResultButtonClick(true)
-    setOnSaveSuccess(false)
-    setReloadReportTable(false)
-    setOnSaveFailure(false)
+  const captureConfig=()=>{
+    return false
   }
+  const captureConfigData={
+    "labLite": {
+      "id": "bahmni.lab",
+      "extensionPointId": "org.bahmni.home.dashboard",
+      "type": "link",
+      "translationKey": "MODULE_LABEL_LAB_ENTRY_KEY",
+      "url": "/lab",
+      "icon": "fa fa-flask",
+      "order": 7,
+      "captureTestResults": true,
+      "requiredPrivilege": "app:lab-lite"
+  }
+  }
+  console.log("captureConfigData.labLite.captureTestResults",captureConfigData.labLite.captureTestResults);
+
+  const {data: labConfig, error: labConfigError} = useSWR<any, Error>(
+    getLabConfig,
+    fetcher,
+    swrOptions,
+  )
+  console.log("labConfig",labConfig);
 
   useEffect(() => {
     const loggedInUser = localStorage.getItem(loggedInUserKey)
@@ -157,10 +196,13 @@ const PatientLabDetails: React.FC<RouteComponentProps<PatientParamsType>> = ({
                 <PendingLabOrdersTable
                   patientUuid={patientUuid}
                   onButtonClick={onButtonClick}
+                  onEnterResultButtonClick={onEnterResultButtonClick}
                   reloadTableData={reloadReportTable}
                 />
               </div>
-              <Button renderIcon={AddFilled16} onClick={handleClick}>
+              {/* className={styles.testresultinputfield} */}
+              <div style={{float:'right'}} className={styles.flexContainer}>
+              <Button renderIcon={AddFilled16} onClick={handleClick} style={{margin:'0%'}}>
                 Upload Report
               </Button>
               {onButtonClick && (
@@ -175,26 +217,27 @@ const PatientLabDetails: React.FC<RouteComponentProps<PatientParamsType>> = ({
                   />
                 </UploadReportProvider>
               )}
-              <br />
-              <br />
+              {captureConfigData.labLite.captureTestResults &&(
               <Button
-                renderIcon={AddFilled16}
-                onClick={enterResultsHandleClick}
-              >
-                Enter Test Results
-              </Button>
+              renderIcon={AddFilled16}
+              onClick={enterResultsHandleClick}
+            >
+              Enter Test Results
+            </Button>
+              )}
               {onEnterResultButtonClick && (
                 <UploadReportProvider>
                   <TestResults
                     saveHandler={(isSaveSuccess = false) =>
                       handleUploadAndSave(isSaveSuccess)
                     }
-                    closeHandler={() => handleClose()}
+                    closeHandler={() => enterResultsHandleClose()}
                     header="Enter Test Results"
                     patientUuid={patientUuid}
                   />
                 </UploadReportProvider>
               )}
+              </div>
             </PendingLabOrdersProvider>
             <div style={{marginTop: '2rem', marginBottom: '2rem'}}>
               <ReportTable

@@ -27,9 +27,7 @@ export interface BasedOnType {
 
 export interface Observation {
   reference: string
-  identifier: {
-    value: string
-  }
+  type: string
 }
 
 interface DiagnosticReportRequestType {
@@ -72,6 +70,7 @@ interface TestResultDiagnosticReportRequestType {
   conclusion?: string
   basedOn?: Array<BasedOnType>
   performer?: Array<ReferenceRequestType>
+  contained: any
   result?: Array<Observation>
 }
 
@@ -168,11 +167,12 @@ export function saveTestDiagnosticReport(
   reportConclusion: string,
   ac: AbortController,
   selectedPendingOrder: PendingLabOrders,
-  resultValue?: any,
+  labResult?: Map<string, {value: string; abnormal: boolean}>,
 ) {
   console.log(
     'Inside saveTestDiagnosticReport',
-    resultValue.get('678AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA'),
+    selectedPendingOrder,
+    labResult,
   )
   let basedOn: Array<BasedOnType> = null
   if (selectedPendingOrder)
@@ -199,11 +199,31 @@ export function saveTestDiagnosticReport(
       reference: 'Patient/' + patientUuid,
     },
     issued: reportDate,
-
+    contained: [
+      {
+        resourceType: 'Observation',
+        id: 'example-result-1',
+        status: 'final',
+        code: {
+          coding: [
+            {
+              code: selectedPendingOrder.conceptUuid,
+              display: selectedPendingOrder.testName,
+            },
+          ],
+        },
+        subject: {
+          reference: 'Patient/' + patientUuid,
+        },
+        valueQuantity: {
+          value: 8,
+        },
+      },
+    ],
     result: [
       {
-        reference: `Observation/${selectedPendingOrder.conceptUuid}`,
-         identifier: {value: resultValue.get('678AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA')},
+        reference: 'example-result-1',
+        type: 'Observation',
       },
     ],
   }
