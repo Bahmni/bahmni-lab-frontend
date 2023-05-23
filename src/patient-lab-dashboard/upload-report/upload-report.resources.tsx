@@ -169,11 +169,7 @@ export function saveTestDiagnosticReport(
   selectedPendingOrder: PendingLabOrders,
   labResult?: Map<string, {value: string; abnormal: boolean}>,
 ) {
-  console.log(
-    'Inside saveTestDiagnosticReport',
-    selectedPendingOrder,
-    labResult,
-  )
+
   let basedOn: Array<BasedOnType> = null
   if (selectedPendingOrder)
     basedOn = [

@@ -70,6 +70,7 @@ const ReportTable = (props: ReportTableProps) => {
   } = useLabTestResultsContext()
 
   const {allTestsAndPanels, setAllTestsAndPanels} = useAllTestAndPanel()
+  const temp = []
 
   useEffect(() => {
     if (reloadTableData) {
@@ -114,11 +115,10 @@ const ReportTable = (props: ReportTableProps) => {
 
   const getTestsInLabOrder = (labOrder: LabTest) => labOrder?.setMembers
 
-  const rows = useMemo(() => {
+  let rows = useMemo(() => {
     const uniqueUploadedReports: Array<ReportEntry> = dedupe(
       reports?.data?.entry,
     )
-    console.log('uniqueUploadedReports', uniqueUploadedReports)
     return uniqueUploadedReports
       ?.sort((reportEntry1, reportEntry2) => {
         return (
@@ -127,30 +127,39 @@ const ReportTable = (props: ReportTableProps) => {
         )
       })
       .map(row => {
-        const title = row.resource?.presentedForm ? row.resource?.presentedForm[0]?.title : ''
+        if (row !== undefined) {
+          const title = row.resource?.presentedForm[0]?.title
 
-        return {
-          id: row.resource.id,
-          tests: getShortName(
-            row.resource.code.coding[0]?.display,
-            allTestsAndPanels,
-          ),
-          url: row.resource?.presentedForm ? row.resource?.presentedForm[0]?.url : '',
-          date: new Date(row.resource.issued).toLocaleDateString(
-            localStorage.getItem('i18nextLng'),
-            {
-              year: 'numeric',
-              month: 'long',
-              day: '2-digit',
-            },
-          ),
-          requester: getRequester(row.resource.performer),
-          file: title,
-          conclusion: row.resource.conclusion ? row.resource.conclusion : '',
-          patientId: row.resource.subject.display,
+          return {
+            id: row.resource.id,
+            tests: getShortName(
+              row.resource.code.coding[0]?.display,
+              allTestsAndPanels,
+            ),
+            url: row.resource?.presentedForm[0]?.url,
+            date: new Date(row.resource.issued).toLocaleDateString(
+              localStorage.getItem('i18nextLng'),
+              {
+                year: 'numeric',
+                month: 'long',
+                day: '2-digit',
+              },
+            ),
+            requester: getRequester(row.resource.performer),
+            file: title,
+            conclusion: row.resource.conclusion ? row.resource.conclusion : '',
+            patientId: row.resource.subject.display,
+          }
         }
       })
   }, [reports])
+
+  if (rows.length > 0) {
+    rows.map(row => {
+      if (row !== undefined) temp.push(row)
+    })
+    rows = temp
+  }
 
   const {results: paginatedReportsTable, goTo, currentPage} = usePagination(
     rows,
@@ -296,10 +305,7 @@ const ReportTable = (props: ReportTableProps) => {
 }
 
 function url(resource: ReportResource) {
-  if (resource?.presentedForm) {
-    resource?.presentedForm[0].url
-  }
-  return resource.code.coding[0].display
+  return resource?.presentedForm ? resource?.presentedForm[0].url : ''
 }
 function code(resource: ReportResource) {
   return resource.code.coding[0].display
@@ -310,18 +316,21 @@ function getUniqueReportUrls(diagnosticReport: ReportEntry[]) {
 }
 
 function dedupe(diagnosticReport: Array<ReportEntry>) {
-  return Array.from(getUniqueReportUrls(diagnosticReport)).map(reportUrl =>
-    diagnosticReport.reduce<ReportEntry | undefined>((acc, curr) => {
-      if (url(curr.resource) === reportUrl) {
-        if (acc)
-          acc.resource.code.coding[0].display = `${code(acc.resource)}, ${code(
-            curr.resource,
-          )}`
-        else return curr
-      }
-      return acc
-    }, undefined),
-  )
+  return Array.from(getUniqueReportUrls(diagnosticReport)).map(reportUrl => {
+    if (reportUrl != '') {
+      return diagnosticReport.reduce<ReportEntry | undefined>((acc, curr) => {
+        if (url(curr.resource) === reportUrl) {
+          if (acc)
+            acc.resource.code.coding[0].display = `${code(
+              acc.resource,
+            )}, ${code(curr.resource)}`
+          else return curr
+        }
+        return acc
+      }, undefined)
+    }
+    return undefined
+  })
 }
 
 const getPatientIdentifier = (displayName: string) => {

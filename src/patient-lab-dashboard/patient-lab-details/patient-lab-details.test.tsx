@@ -36,6 +36,7 @@ import {
   mockUploadFileResponse,
 } from '../../__mocks__/selectTests.mock'
 import PatientLabDetails from './patient-lab-details'
+import {mockLabConfigResponse} from '../../__mocks__/labConfig'
 
 const mockPatientUuid = '123'
 const matchParams = {
@@ -274,6 +275,7 @@ describe('Patient lab details', () => {
       .mockReturnValueOnce(mockPendingLabOrdersResponse)
       .mockReturnValueOnce(mockEmptyReportTableResponse)
       .mockReturnValueOnce(mockLabTestsResponse)
+      .mockReturnValueOnce(mockLabConfigResponse)
       .mockReturnValueOnce(mockDoctorNames)
       .mockReturnValueOnce(mockUploadFileResponse)
       .mockReturnValue(mockDiagnosticReportResponse)
@@ -352,6 +354,7 @@ describe('Patient lab details', () => {
       .mockReturnValueOnce(mockPendingLabOrdersResponse)
       .mockReturnValueOnce(mockEmptyReportTableResponse)
       .mockReturnValueOnce(mockLabTestsResponse)
+      .mockReturnValueOnce(mockLabConfigResponse)
       .mockReturnValueOnce(mockDoctorNames)
       .mockReturnValueOnce(mockUploadFileResponse)
       .mockReturnValue(mockDiagnosticReportResponse)
@@ -392,7 +395,7 @@ describe('Patient lab details', () => {
     uploadFiles(fileInput, [file])
     await verifyFileName(fileInput)
     await saveReport()
-    expect(mockedOpenmrsFetch).toBeCalledTimes(6)
+    expect(mockedOpenmrsFetch).toBeCalledTimes(7)
     verifyApiCall(
       saveDiagnosticReportURL,
       'POST',
@@ -409,6 +412,7 @@ describe('Patient lab details', () => {
       .mockReturnValueOnce(mockPendingLabOrdersResponse)
       .mockReturnValueOnce(mockReportTableResponse)
       .mockReturnValueOnce(mockLabTestsResponse)
+      .mockReturnValueOnce(mockLabConfigResponse)
       .mockReturnValueOnce(mockDoctorNames)
       .mockReturnValueOnce(mockUploadFileResponse)
       .mockReturnValueOnce(mockDiagnosticReportResponse)
@@ -472,7 +476,7 @@ describe('Patient lab details', () => {
 
     await saveReport()
 
-    expect(mockedOpenmrsFetch).toBeCalledTimes(7)
+    expect(mockedOpenmrsFetch).toBeCalledTimes(8)
     verifyApiCall(saveDiagnosticReportURL, 'POST')
     expect(mutateMock).toHaveBeenCalledTimes(2)
   })
@@ -482,6 +486,7 @@ describe('Patient lab details', () => {
       .mockReturnValueOnce(mockPendingLabOrdersResponse)
       .mockReturnValueOnce(mockEmptyReportTableResponse)
       .mockReturnValueOnce(mockLabTestsResponse)
+      .mockReturnValueOnce(mockLabConfigResponse)
       .mockReturnValueOnce(mockDoctorNames)
       .mockReturnValueOnce(mockUploadFileResponse)
       .mockRejectedValue(mockDiagnosticReportErrorResponse)

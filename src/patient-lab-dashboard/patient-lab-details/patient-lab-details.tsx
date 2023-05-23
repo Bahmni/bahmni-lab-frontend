@@ -48,18 +48,10 @@ const PatientLabDetails: React.FC<RouteComponentProps<PatientParamsType>> = ({
   const [onSaveSuccess, setOnSaveSuccess] = useState<boolean>(false)
   const [onSaveFailure, setOnSaveFailure] = useState<boolean>(false)
   const [reloadReportTable, setReloadReportTable] = useState<boolean>(false)
-  // let urll='https://localhost/bahmni_config/openmrs/apps/home/extension.json'
   const [onEnterResultButtonClick, setOnEnterResultButtonClick] = useState<
     boolean
   >(false)
 
-
-// const getApiCall = async url => {
-//   const response = await fetch(url, {
-//     method: 'GET',
-//   })
-//   return response.json()
-// }
 
   const handleClick = () => {
     setOnButtonClick(true)
@@ -119,14 +111,12 @@ const PatientLabDetails: React.FC<RouteComponentProps<PatientParamsType>> = ({
       "requiredPrivilege": "app:lab-lite"
   }
   }
-  console.log("captureConfigData.labLite.captureTestResults",captureConfigData.labLite.captureTestResults);
 
   const {data: labConfig, error: labConfigError} = useSWR<any, Error>(
     getLabConfig,
     fetcher,
     swrOptions,
   )
-  console.log("labConfig",labConfig);
 
   useEffect(() => {
     const loggedInUser = localStorage.getItem(loggedInUserKey)
