@@ -216,13 +216,13 @@ export function saveTestDiagnosticReport(
           reference: 'Patient/' + patientUuid,
         },
         valueQuantity: {
-          value: 8,
+          value: labResult.get(selectedPendingOrder.conceptUuid)?.value,
         },
       },
     ],
     result: [
       {
-        reference: 'example-result-1',
+        reference: '#example-result-1',
         type: 'Observation',
       },
     ],

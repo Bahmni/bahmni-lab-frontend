@@ -118,6 +118,7 @@ const ReportTable = (props: ReportTableProps) => {
     const uniqueUploadedReports: Array<ReportEntry> = dedupe(
       reports?.data?.entry,
     )
+    console.log('uniqueUploadedReports', uniqueUploadedReports)
     return uniqueUploadedReports
       ?.sort((reportEntry1, reportEntry2) => {
         return (
@@ -126,7 +127,7 @@ const ReportTable = (props: ReportTableProps) => {
         )
       })
       .map(row => {
-        const title = row.resource.presentedForm[0].title
+        const title = row.resource?.presentedForm ? row.resource?.presentedForm[0]?.title : ''
 
         return {
           id: row.resource.id,
@@ -134,7 +135,7 @@ const ReportTable = (props: ReportTableProps) => {
             row.resource.code.coding[0]?.display,
             allTestsAndPanels,
           ),
-          url: row.resource.presentedForm[0].url,
+          url: row.resource?.presentedForm ? row.resource?.presentedForm[0]?.url : '',
           date: new Date(row.resource.issued).toLocaleDateString(
             localStorage.getItem('i18nextLng'),
             {
@@ -218,7 +219,7 @@ const ReportTable = (props: ReportTableProps) => {
                                       onClick={() => {
                                         const auditMessage = getAuditMessageBody(
                                           patientUuid,
-                                          rows[rowIndex]?.file,
+                                          rows[rowIndex]?.file ?? '',
                                           rows[rowIndex]?.date,
                                           getPatientIdentifier(
                                             rows[rowIndex]?.patientId,
@@ -295,7 +296,10 @@ const ReportTable = (props: ReportTableProps) => {
 }
 
 function url(resource: ReportResource) {
-  return resource.presentedForm[0].url
+  if (resource?.presentedForm) {
+    resource?.presentedForm[0].url
+  }
+  return resource.code.coding[0].display
 }
 function code(resource: ReportResource) {
   return resource.code.coding[0].display
