@@ -135,44 +135,6 @@ describe('TestResults Report', () => {
     expect(currentDay.className).not.toMatch(/-disabled/i)
     expect(futureDate.className).toMatch(/-disabled/i)
   })
-  it.skip('should disable save and upload button until report date, doctor name have value', async () => {
-    localStorage.setItem('i18nextLng', 'en')
-    const mockedOpenmrsFetch = openmrsFetch as jest.Mock
-    mockedOpenmrsFetch
-      .mockReturnValue(mockDoctorNames)
-    const mockedLayout = useLayoutType as jest.Mock
-    mockedLayout.mockReturnValue('desktop')
-    renderWithContextProvider(
-      <SWRConfig value={{provider: () => new Map()}}>
-        <TestResults
-          closeHandler={closeHandler}
-          saveHandler={saveHandler}
-          header={'Test Header'}
-          patientUuid={'123'}
-        />
-      </SWRConfig>,
-    )
-    expect(
-      screen.getByRole('button', {name: /save and upload/i}),
-    ).toBeDisabled()
-    userEvent.click(
-      screen.getByRole('textbox', {
-        name: /report date/i,
-      }),
-    )
-    const currentDay: string = getFormatedDate(0)
-    userEvent.click(screen.getByLabelText(currentDay))
-    userEvent.click(
-      screen.getByRole('button', {
-        name: /Select a Doctor/i,
-      }),
-    )
-    userEvent.click(await screen.findByText('admin - Super User'))
-    expect(await screen.findByText(/admin - Super user/i)).toBeInTheDocument()
-    expect(
-      screen.getByRole('button', {name: /save and upload/i}),
-    ).not.toBeDisabled()
-  })
 })
 function getFormatedDate(addDays: number): string {
   let date = new Date()

@@ -17,10 +17,7 @@ import {
   getPayloadForPatientReportUpload,
   saveDiagnosticReportURL,
 } from '../../utils/api-utils'
-import {
-  isAuditLogEnabledKey,
-  loggedInUserKey,
-} from '../../utils/constants'
+import {isAuditLogEnabledKey, loggedInUserKey} from '../../utils/constants'
 import {localStorageMock, verifyApiCall} from '../../utils/test-utils'
 import {mockDoctorNames} from '../../__mocks__/doctorNames.mock'
 import {mockPendingLabOrder} from '../../__mocks__/patientLabDetails.mock'
@@ -40,7 +37,7 @@ import {
 } from '../../__mocks__/selectTests.mock'
 import PatientLabDetails from './patient-lab-details'
 import {mockLabConfigResponse} from '../../__mocks__/labConfig'
-import { mockTestResultResponse } from '../../__mocks__/testResults'
+import {mockTestResultResponse} from '../../__mocks__/testResults'
 
 const mockPatientUuid = '123'
 const matchParams = {
@@ -51,7 +48,7 @@ const matchParams = {
 }
 const file = new File(['content'], 'test.pdf', {type: 'application/pdf'})
 const currentDay: string = getFormatedDate(0)
-const value: string = "8"
+const value: string = '8'
 const mockOrderTypeUuid = '8189b409-3f10-11e4-adec-0800271c1b75'
 
 jest.mock('../../hooks/useOrderTypeUuidConfig', () => ({
@@ -213,7 +210,7 @@ describe('Patient lab details', () => {
       .mockReturnValueOnce(mockPendingLabOrdersResponse)
       .mockReturnValueOnce(mockEmptyReportTableResponse)
       .mockReturnValueOnce(mockLabTestsResponse)
-      .mockReturnValue(mockLabTestsResponse)
+
     render(
       <SWRConfig value={{provider: () => new Map()}}>
         <BrowserRouter>
@@ -603,10 +600,10 @@ describe('Patient lab details', () => {
       screen.getByRole('button', {name: /save and upload/i}),
     ).toBeDisabled()
 
-    await waitFor(()=>
-    expect(screen.getByPlaceholderText(/Input Text/i)).toBeInTheDocument()
+    await waitFor(() =>
+      expect(screen.getByPlaceholderText(/Input Text/i)).toBeInTheDocument(),
     )
-    userEvent.type(screen.getByPlaceholderText(/Input Text/i),value)
+    userEvent.type(screen.getByPlaceholderText(/Input Text/i), value)
 
     userEvent.click(
       screen.getByRole('textbox', {
@@ -632,7 +629,9 @@ describe('Patient lab details', () => {
     verifyApiCall(
       saveDiagnosticReportURL,
       'POST',
-      testResultsdiagnosticReportRequestBody(new Date(currentDay).toISOString()),
+      testResultsdiagnosticReportRequestBody(
+        new Date(currentDay).toISOString(),
+      ),
     )
   })
   it('should show failure notification on report upload on not providing any data', async () => {
@@ -674,9 +673,9 @@ describe('Patient lab details', () => {
     ).toBeDisabled()
 
     await waitFor(()=>
-    expect(screen.getByPlaceholderText(/Input Text/i)).toBeInTheDocument()
+    expect(screen.getByPlaceholderText(/Input Text/i)).toBeInTheDocument(),
     )
-    userEvent.type(screen.getByPlaceholderText(/Input Text/i),value)
+    userEvent.type(screen.getByPlaceholderText(/Input Text/i), value)
 
     expect(await screen.findByText(/Super Man/i)).toBeInTheDocument()
 
@@ -698,9 +697,68 @@ describe('Patient lab details', () => {
 
     await waitFor(() => {
       expect(screen.getByText(/Failed to upload report/i)).toBeInTheDocument()
-
     })
-    // userEvent.click(screen.getByTitle(/closes notification/i))
+    userEvent.click(screen.getByTitle(/closes notification/i))
+  })
+  it('should disable save and upload button until report date, doctor name and input text have value', async () => {
+    const mockedOpenmrsFetch = openmrsFetch as jest.Mock
+    mockedOpenmrsFetch
+      .mockReturnValueOnce(mockPendingLabOrdersResponse)
+      .mockReturnValueOnce(mockEmptyReportTableResponse)
+      .mockReturnValueOnce(mockLabTestsResponse)
+      .mockReturnValueOnce(mockLabConfigResponse)
+      .mockReturnValueOnce(mockDoctorNames)
+      .mockReturnValueOnce(mockTestResultResponse)
+
+    render(
+      <SWRConfig value={{provider: () => new Map()}}>
+        <BrowserRouter>
+          <PatientLabDetails
+            match={matchParams}
+            history={undefined}
+            location={undefined}
+          />
+        </BrowserRouter>
+      </SWRConfig>,
+    )
+
+    await waitFor(() => {
+      expect(screen.getByText(/Pending lab orders/i)).toBeInTheDocument()
+    })
+
+    expect(
+      screen.getByRole('cell', {name: 'Routine Blood'}),
+    ).toBeInTheDocument()
+
+    userEvent.click(screen.getAllByRole('checkbox', {name: /Select row/i})[0])
+
+    userEvent.click(screen.getByRole('button', {name: /enter test results/i}))
+
+    expect(
+      screen.getByRole('button', {name: /save and upload/i}),
+    ).toBeDisabled()
+
+    await waitFor(() =>
+      expect(screen.getByPlaceholderText(/Input Text/i)).toBeInTheDocument(),
+    )
+
+    expect(await screen.findByText(/Super Man/i)).toBeInTheDocument()
+
+    const saveButton = screen.getByRole('button', {name: /save and upload/i})
+
+    expect(saveButton).toBeDisabled()
+
+    userEvent.click(
+      screen.getByRole('textbox', {
+        name: /report date/i,
+      }),
+    )
+
+    userEvent.click(screen.getByLabelText(currentDay))
+
+    expect(
+      screen.getByRole('button', {name: /save and upload/i}),
+    ).toBeDisabled()
   })
 })
 

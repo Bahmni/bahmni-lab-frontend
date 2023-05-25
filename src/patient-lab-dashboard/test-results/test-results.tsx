@@ -2,18 +2,16 @@ import {
   Button,
   DatePicker,
   DatePickerInput,
-  NumberInput,
   TextArea,
   TextInput,
 } from 'carbon-components-react'
 import dayjs from 'dayjs'
-import React, {useState} from 'react'
+import React, {useEffect, useState} from 'react'
 import useSWR from 'swr'
 import Overlay from '../../common/overlay'
 import {usePendingLabOrderContext} from '../../context/pending-orders-context'
 import {
   useDoctorDetails,
-  useSelectedFile,
   useSelectedTests,
 } from '../../context/upload-report-context'
 import styles from './test-results.scss'
@@ -21,16 +19,15 @@ import {fetcher, getTestResults, swrOptions} from '../../utils/api-utils'
 import {getTestName} from '../../utils/helperFunctions'
 import DoctorListDropdown from '../doctors-list-dropdown/doctor-list-dropdown'
 import {saveTestDiagnosticReport} from '../upload-report/upload-report.resources'
-import {LabTest} from '../../types/selectTest'
 
-interface UploadReportProps {
+interface TestResultProps {
   saveHandler: Function
   closeHandler: Function
   header: string
   patientUuid: string
 }
 
-const TestResults: React.FC<UploadReportProps> = ({
+const TestResults: React.FC<TestResultProps> = ({
   saveHandler,
   closeHandler,
   header,
@@ -40,13 +37,9 @@ const TestResults: React.FC<UploadReportProps> = ({
   const currentDate: string = dayjs().format('MM/DD/YYYY')
   const [reportDate, setReportDate] = useState<Date>(null)
   const [reportConclusion, setReportConclusion] = useState<string>('')
-  const [isDiscardButtonClicked, setIsDiscardButtonClicked] = useState<boolean>(
-    false,
-  )
   const {doctor, setDoctor} = useDoctorDetails()
   const {setSelectedTests} = useSelectedTests()
   const maxCount: number = 500
-  const {selectedFile, setSelectedFile} = useSelectedFile()
   const {selectedPendingOrder} = usePendingLabOrderContext()
   const [showReportConclusionLabel, setShowReportConclusionLabel] = useState<
     boolean
@@ -54,10 +47,8 @@ const TestResults: React.FC<UploadReportProps> = ({
   const [isSaveButtonClicked, setIsSaveButtonClicked] = useState(false)
   const testResultData = []
   const handleDiscard = () => {
-    setIsDiscardButtonClicked(true)
     setReportDate(null)
     setReportConclusion('')
-    setSelectedFile(null)
     setSelectedTests([])
     setDoctor(null)
     setShowReportConclusionLabel(true)
@@ -67,7 +58,16 @@ const TestResults: React.FC<UploadReportProps> = ({
   const [labResult, setLabResult] = useState(new Map())
 
   const isDisabled = () =>
-    !reportDate || !doctor || labResult.size==0 || isSaveButtonClicked
+    !reportDate || !doctor || !isValidDataPreset() || isSaveButtonClicked
+
+  const isValidDataPreset = () => {
+    if (labResult.size == 0 || labResult.size !== selectedPendingOrder.length) return false
+    for (let mapEntry of labResult.values()){
+      if(mapEntry.value === '')
+       return false
+    }
+    return true
+  }
 
   const renderButtonGroup = () => (
     <div className={styles.overlayButtons}>
@@ -76,7 +76,7 @@ const TestResults: React.FC<UploadReportProps> = ({
       </Button>
       <Button
         onClick={() => {
-          setIsSaveButtonClicked(true), saveReport()
+          setIsSaveButtonClicked(true), saveTestResults(), closeHandler()
         }}
         size="lg"
         disabled={isDisabled()}
@@ -89,7 +89,7 @@ const TestResults: React.FC<UploadReportProps> = ({
   const getSelectedPendingOrderTest = index => {
     return selectedPendingOrder[index]
   }
-  const saveReport = async () => {
+  const saveTestResults = async () => {
     const ac = new AbortController()
     let allSuccess: boolean = true
     try {
@@ -114,6 +114,7 @@ const TestResults: React.FC<UploadReportProps> = ({
     }
     if (allSuccess) {
       saveHandler(true)
+      setLabResult(new Map())
     } else {
       saveHandler(false)
     }
@@ -139,27 +140,16 @@ const TestResults: React.FC<UploadReportProps> = ({
   const isAbnormal = (value, test) => {
     return (
       (value < test.lowNormal || value > test.hiNormal) &&
-      test.lowNormal !== null && test.hiNormal !== null
+      test.lowNormal !== null &&
+      test.hiNormal !== null
     )
   }
-  // let a=JSON.stringify(labResult)
-  // console.log("-----------labResult-----------",labResult,a);
 
   const updateOrStoreLabResult = (value, test) => {
-    console.log("value",value);
-    console.log(labResult.get(test.uuid));
-
-    // if(value==="" && labResult.get(test.uuid)){
-    //   // console.log("inside if");
-    //   // const tempMap = new Map()
-    //   // labResult.forEach(map => {
-    //   // if(map.get)
-
-    //   // })
-
-    // }
-    if(value !== null || value !== undefined || !isNaN(value) || value !== '') {
-      console.log("inside else");
+    console.log('value', value)
+    console.log(labResult.get(test.uuid))
+    if (value !== null || value !== undefined || !isNaN(value)) {
+      console.log('inside else')
       isAbnormal(value, test)
         ? setLabResult(
             map =>
@@ -181,9 +171,8 @@ const TestResults: React.FC<UploadReportProps> = ({
           )
     }
   }
-  const labTestResult = (labResult, test) => {
-    return labResult.get(test.uuid)?.value ?? ''
-  }
+  const getValue = (labResult, test) => labResult.get(test.uuid)?.value ?? ''
+
   const renderInputField = (test, index) => {
     if (test) {
       return (
@@ -196,7 +185,7 @@ const TestResults: React.FC<UploadReportProps> = ({
             size="sm"
             onChange={e => updateOrStoreLabResult(e.target.value, test)}
             style={labResult.get(test.uuid)?.abnormal ? {color: 'red'} : {}}
-            value={labTestResult(labResult, test)}
+            value={getValue(labResult, test)}
           />
         </div>
       )
