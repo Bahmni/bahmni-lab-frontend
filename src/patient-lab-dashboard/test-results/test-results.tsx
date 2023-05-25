@@ -67,7 +67,7 @@ const TestResults: React.FC<UploadReportProps> = ({
   const [labResult, setLabResult] = useState(new Map())
 
   const isDisabled = () =>
-    !reportDate || !doctor || !labResult || isSaveButtonClicked
+    !reportDate || !doctor || labResult.size==0 || isSaveButtonClicked
 
   const renderButtonGroup = () => (
     <div className={styles.overlayButtons}>
@@ -87,15 +87,9 @@ const TestResults: React.FC<UploadReportProps> = ({
   )
 
   const getSelectedPendingOrderTest = index => {
-    //  return testResultData.map(async testResults=>{
-    //   if(testResults.data.uuid===selectedPendingOrder[index].conceptUuid && testResults?.data.setMembers.length>0){
-    //     return testResults?.data.setMembers
-    //   }
     return selectedPendingOrder[index]
-    // })
   }
   const saveReport = async () => {
-    console.log('Inside save')
     const ac = new AbortController()
     let allSuccess: boolean = true
     try {
@@ -110,6 +104,10 @@ const TestResults: React.FC<UploadReportProps> = ({
           getSelectedPendingOrderTest(index),
           labResult,
         )
+        if (allSuccess && !response.ok) {
+          allSuccess = false
+          break
+        }
       }
     } catch (e) {
       allSuccess = false
@@ -120,14 +118,13 @@ const TestResults: React.FC<UploadReportProps> = ({
       saveHandler(false)
     }
   }
-
   selectedPendingOrder.forEach(selectedPendingOrder => {
-    const {data: testResults2, error: testResultsError} = useSWR<any, Error>(
+    const {data: testResults, error: testResultsError} = useSWR<any, Error>(
       getTestResults(selectedPendingOrder.conceptUuid),
       fetcher,
       swrOptions,
     )
-    testResultData.push(testResults2)
+    testResultData.push(testResults)
   })
   const getTestNameWithUnits = test => {
     if (test.units) {
@@ -145,8 +142,24 @@ const TestResults: React.FC<UploadReportProps> = ({
       test.lowNormal !== null && test.hiNormal !== null
     )
   }
+  // let a=JSON.stringify(labResult)
+  // console.log("-----------labResult-----------",labResult,a);
+
   const updateOrStoreLabResult = (value, test) => {
-    if (value !== null || value !== undefined || !isNaN(value)) {
+    console.log("value",value);
+    console.log(labResult.get(test.uuid));
+
+    // if(value==="" && labResult.get(test.uuid)){
+    //   // console.log("inside if");
+    //   // const tempMap = new Map()
+    //   // labResult.forEach(map => {
+    //   // if(map.get)
+
+    //   // })
+
+    // }
+    if(value !== null || value !== undefined || !isNaN(value) || value !== '') {
+      console.log("inside else");
       isAbnormal(value, test)
         ? setLabResult(
             map =>
@@ -193,7 +206,7 @@ const TestResults: React.FC<UploadReportProps> = ({
     return (
       <>
         {testResultData.map((testResult, index) =>
-          testResult?.data.conceptClass.name === 'LabSet'
+          testResult?.data.conceptClass?.name === 'LabSet'
             ? testResult?.data.setMembers.map((test, index) =>
                 renderInputField(test, index),
               )
@@ -211,7 +224,7 @@ const TestResults: React.FC<UploadReportProps> = ({
     >
       {testResultData.length > 0
         ? renderTestResultWidget()
-        : console.log('else condition')}
+        : console.log('else condition on overlay')}
       <DatePicker
         className={styles.datePicker}
         datePickerType="single"
