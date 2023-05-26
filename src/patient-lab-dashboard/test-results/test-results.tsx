@@ -19,6 +19,7 @@ import {fetcher, getTestResults, swrOptions} from '../../utils/api-utils'
 import {getTestName} from '../../utils/helperFunctions'
 import DoctorListDropdown from '../doctors-list-dropdown/doctor-list-dropdown'
 import {saveTestDiagnosticReport} from '../upload-report/upload-report.resources'
+import {TestResultsLabOrder} from '../../types'
 
 interface TestResultProps {
   saveHandler: Function
@@ -61,10 +62,10 @@ const TestResults: React.FC<TestResultProps> = ({
     !reportDate || !doctor || !isValidDataPreset() || isSaveButtonClicked
 
   const isValidDataPreset = () => {
-    if (labResult.size == 0 || labResult.size !== selectedPendingOrder.length) return false
-    for (let mapEntry of labResult.values()){
-      if(mapEntry.value === '')
-       return false
+    if (labResult.size == 0 || labResult.size !== selectedPendingOrder.length)
+      return false
+    for (let mapEntry of labResult.values()) {
+      if (mapEntry.value === '') return false
     }
     return true
   }
@@ -120,11 +121,10 @@ const TestResults: React.FC<TestResultProps> = ({
     }
   }
   selectedPendingOrder.forEach(selectedPendingOrder => {
-    const {data: testResults, error: testResultsError} = useSWR<any, Error>(
-      getTestResults(selectedPendingOrder.conceptUuid),
-      fetcher,
-      swrOptions,
-    )
+    const {data: testResults, error: testResultsError} = useSWR<
+      TestResultsLabOrder,
+      Error
+    >(getTestResults(selectedPendingOrder.conceptUuid), fetcher, swrOptions)
     testResultData.push(testResults)
   })
   const getTestNameWithUnits = test => {
@@ -146,8 +146,6 @@ const TestResults: React.FC<TestResultProps> = ({
   }
 
   const updateOrStoreLabResult = (value, test) => {
-    console.log('value', value)
-    console.log(labResult.get(test.uuid))
     if (value !== null || value !== undefined || !isNaN(value)) {
       console.log('inside else')
       isAbnormal(value, test)

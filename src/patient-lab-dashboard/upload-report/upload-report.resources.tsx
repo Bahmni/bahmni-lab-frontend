@@ -1,5 +1,5 @@
 import {FetchResponse} from '@openmrs/esm-framework'
-import {PendingLabOrders} from '../../types'
+import {Contained, PendingLabOrders} from '../../types'
 import {LabTest} from '../../types/selectTest'
 import {
   postApiCall,
@@ -70,7 +70,7 @@ interface TestResultDiagnosticReportRequestType {
   conclusion?: string
   basedOn?: Array<BasedOnType>
   performer?: Array<ReferenceRequestType>
-  contained: any
+  contained: Array<Contained>
   result?: Array<Observation>
 }
 
@@ -169,7 +169,6 @@ export function saveTestDiagnosticReport(
   selectedPendingOrder: PendingLabOrders,
   labResult?: Map<string, {value: string; abnormal: boolean}>,
 ) {
-
   let basedOn: Array<BasedOnType> = null
   if (selectedPendingOrder)
     basedOn = [

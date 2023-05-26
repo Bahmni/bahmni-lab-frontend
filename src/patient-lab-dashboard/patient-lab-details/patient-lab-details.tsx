@@ -34,6 +34,7 @@ import styles from './patient-lab-details.scss'
 import TestResults from '../test-results/test-results'
 import useSWR from 'swr'
 import {getLabConfig} from '../../utils/lab-orders'
+import {LabConfigResponse} from '../../types'
 
 interface PatientParamsType {
   patientUuid: string
@@ -95,11 +96,10 @@ const PatientLabDetails: React.FC<RouteComponentProps<PatientParamsType>> = ({
       }}
     />
   )
-  const {data: labConfig, error: labConfigError} = useSWR<any, Error>(
-    getLabConfig,
-    fetcher,
-    swrOptions,
-  )
+  const {data: labConfig, error: labConfigError} = useSWR<
+    LabConfigResponse,
+    Error
+  >(getLabConfig, fetcher, swrOptions)
 
   useEffect(() => {
     const loggedInUser = localStorage.getItem(loggedInUserKey)
