@@ -210,40 +210,42 @@ const TestResults: React.FC<TestResultProps> = ({
       header={header}
       buttonsGroup={renderButtonGroup()}
     >
-      {testResultData.length > 0
-        ? renderTestResultWidget()
-        : console.log('else condition on overlay')}
-      <DatePicker
-        className={styles.datePicker}
-        datePickerType="single"
-        locale={locale}
-        short={true}
-        value={reportDate}
-        maxDate={currentDate}
-        onChange={(selectedDate: Date[]) => setReportDate(selectedDate[0])}
-        allowInput={false}
-      >
-        <label id="reportDateLabel">
-          <DatePickerInput
-            placeholder="mm/dd/yyyy"
-            labelText="Report Date"
-            id="reportDate"
-          />
-        </label>
-      </DatePicker>
-      <br></br>
-      <div
-        className={'bx--label'}
-        style={{
-          display: 'flex',
-          justifyContent: 'space-between',
-          padding: '2px 0px 2px 0px',
-          width: '100%',
-        }}
-      >
-        Requested by
+      <div className={styles.controlFields}>
+        {testResultData.length > 0
+          ? renderTestResultWidget()
+          : console.log('else condition on overlay')}
+        <DatePicker
+          className={styles.datePicker}
+          datePickerType="single"
+          locale={locale}
+          short={true}
+          value={reportDate}
+          maxDate={currentDate}
+          onChange={(selectedDate: Date[]) => setReportDate(selectedDate[0])}
+          allowInput={false}
+        >
+          <label id="reportDateLabel">
+            <DatePickerInput
+              placeholder="mm/dd/yyyy"
+              labelText="Report Date"
+              id="reportDate"
+            />
+          </label>
+        </DatePicker>
+        <br></br>
+        <div
+          className={'bx--label'}
+          style={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            padding: '2px 0px 2px 0px',
+            width: '100%',
+          }}
+        >
+          Requested by
+        </div>
+        <DoctorListDropdown />
       </div>
-      <DoctorListDropdown />
       {showReportConclusionLabel ? (
         <Button
           role="button"
