@@ -58,6 +58,15 @@ const TestResults: React.FC<TestResultProps> = ({
 
   const [labResult, setLabResult] = useState(new Map())
 
+  selectedPendingOrder.forEach(selectedPendingOrder => {
+    // eslint-disable-next-line
+    const {data: testResults, error: testResultsError} = useSWR<
+      TestResultsLabOrder,
+      Error
+    >(getTestResults(selectedPendingOrder.conceptUuid), fetcher, swrOptions)
+    testResultData.push(testResults)
+  })
+
   const isDisabled = () =>
     !reportDate || !doctor || !isValidDataPreset() || isSaveButtonClicked
 
@@ -120,13 +129,7 @@ const TestResults: React.FC<TestResultProps> = ({
       saveHandler(false)
     }
   }
-  selectedPendingOrder.forEach(selectedPendingOrder => {
-    const {data: testResults, error: testResultsError} = useSWR<
-      TestResultsLabOrder,
-      Error
-    >(getTestResults(selectedPendingOrder.conceptUuid), fetcher, swrOptions)
-    testResultData.push(testResults)
-  })
+
   const getTestNameWithUnits = test => {
     if (test.units) {
       return test.hiNormal && test.lowNormal
