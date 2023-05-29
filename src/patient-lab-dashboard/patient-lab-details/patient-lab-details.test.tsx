@@ -14,7 +14,6 @@ import {SWRConfig} from 'swr'
 import {
   auditLogURL,
   getPayloadForPatientAccess,
-  getPayloadForPatientReportUpload,
   saveDiagnosticReportURL,
 } from '../../utils/api-utils'
 import {isAuditLogEnabledKey, loggedInUserKey} from '../../utils/constants'
@@ -27,7 +26,6 @@ import {
   mockReportTableResponse,
 } from '../../__mocks__/reportTable.mock'
 import {
-  diagnosticReportRequestBody,
   diagnosticReportRequestBodyWithBasedOn,
   mockDiagnosticReportErrorResponse,
   mockDiagnosticReportResponse,
@@ -614,6 +612,13 @@ describe('Patient lab details', () => {
     userEvent.click(screen.getByLabelText(currentDay))
     expect(await screen.findByText(/Super Man/i)).toBeInTheDocument()
 
+    userEvent.click(
+      screen.getByRole('button', {
+        name: /click to record clinical conclusion/i,
+      }),
+    )
+    userEvent.type(screen.getByTestId(/conclusion/i),"Normal Report")
+
     const saveButton = screen.getByRole('button', {name: /save and upload/i})
 
     expect(saveButton).not.toBeDisabled()
@@ -672,8 +677,8 @@ describe('Patient lab details', () => {
       screen.getByRole('button', {name: /save and upload/i}),
     ).toBeDisabled()
 
-    await waitFor(()=>
-    expect(screen.getByPlaceholderText(/Input Text/i)).toBeInTheDocument(),
+    await waitFor(() =>
+      expect(screen.getByPlaceholderText(/Input Text/i)).toBeInTheDocument(),
     )
     userEvent.type(screen.getByPlaceholderText(/Input Text/i), value)
 

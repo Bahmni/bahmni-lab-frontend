@@ -1,26 +1,22 @@
-import { openmrsFetch, useLayoutType } from '@openmrs/esm-framework'
-import { render, screen, waitFor } from '@testing-library/react'
+import {openmrsFetch, useLayoutType} from '@openmrs/esm-framework'
+import {render, screen, waitFor} from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import React from 'react'
-import { SWRConfig } from 'swr'
-import { mockDoctorNames } from '../../__mocks__/doctorNames.mock'
-import {
-  mockAlltestAndPanels,
-  mockLabTestsResponse
-} from '../../__mocks__/selectTests.mock'
-import { LabTestResultsProvider } from '../../context/lab-test-results-context'
-import PendingLabOrdersProvider from '../../context/pending-orders-context'
-import { UploadReportProvider } from '../../context/upload-report-context'
-import { localStorageMock } from '../../utils/test-utils'
+import {SWRConfig} from 'swr'
+import {LabTestResultsProvider} from '../../context/lab-test-results-context'
+import {PendingLabOrdersProvider} from '../../context/pending-orders-context'
+import {UploadReportProvider} from '../../context/upload-report-context'
+import {localStorageMock} from '../../utils/test-utils'
 import TestResults from './test-results'
-jest.mock('../../context/lab-test-results-context', () => ({
-  ...jest.requireActual('../../context/lab-test-results-context'),
-  useLabTestResultsContext: jest.fn(() => ({
-    labTestResults: mockLabTestsResponse,
-    labTestResultsError: undefined,
-  })),
-  useAllTestAndPanel: jest.fn(() => ({
-    allTestsAndPanels: mockAlltestAndPanels,
+import {
+  mockPanelTestResult,
+  mockSelectedPendingOrder,
+} from '../../__mocks__/testResults'
+
+jest.mock('../../context/pending-orders-context', () => ({
+  ...jest.requireActual('../../context/pending-orders-context'),
+  usePendingLabOrderContext: jest.fn(() => ({
+    selectedPendingOrder: mockSelectedPendingOrder,
   })),
 }))
 
@@ -41,15 +37,16 @@ describe('TestResults Report', () => {
     localStorage.setItem('i18nextLng', 'en')
     const mockedLayout = useLayoutType as jest.Mock
     mockedLayout.mockReturnValue('desktop')
+    const mockedOpenmrsFetch = openmrsFetch as jest.Mock
+    mockedOpenmrsFetch.mockReturnValue(mockPanelTestResult)
+
     renderWithContextProvider(
-      <LabTestResultsProvider>
-        <TestResults
-          closeHandler={closeHandler}
-          saveHandler={saveHandler}
-          header={'Test Header'}
-          patientUuid={'123'}
-        />
-      </LabTestResultsProvider>,
+      <TestResults
+        closeHandler={closeHandler}
+        saveHandler={saveHandler}
+        header={'Test Header'}
+        patientUuid={'123'}
+      />,
     )
     userEvent.click(screen.getByLabelText('close-icon'))
     expect(closeHandler).toBeCalled()
@@ -58,16 +55,17 @@ describe('TestResults Report', () => {
     localStorage.setItem('i18nextLng', 'en')
     const mockedLayout = useLayoutType as jest.Mock
     mockedLayout.mockReturnValue('desktop')
+    const mockedOpenmrsFetch = openmrsFetch as jest.Mock
+    mockedOpenmrsFetch.mockReturnValue(mockPanelTestResult)
+
     renderWithContextProvider(
       <SWRConfig value={{provider: () => new Map()}}>
-        <LabTestResultsProvider>
-          <TestResults
-            saveHandler={saveHandler}
-            closeHandler={closeHandler}
-            header={'Test Header'}
-            patientUuid={'123'}
-          />
-        </LabTestResultsProvider>
+        <TestResults
+          saveHandler={saveHandler}
+          closeHandler={closeHandler}
+          header={'Test Header'}
+          patientUuid={'123'}
+        />
       </SWRConfig>,
     )
     userEvent.click(
@@ -89,14 +87,14 @@ describe('TestResults Report', () => {
       }),
     )
     userEvent.click(
-        screen.getByRole('button', {
-          name: /Click to record clinical conclusion/i,
-        }),
-      )
+      screen.getByRole('button', {
+        name: /Click to record clinical conclusion/i,
+      }),
+    )
     await waitFor(() =>
-    userEvent.type(screen.getAllByRole('textbox')[1], 'Normal Report', {
+      userEvent.type(screen.getAllByRole('textbox')[1], 'Normal Report', {
         delay: 1,
-    }),
+      }),
     )
     userEvent.click(screen.getByRole('button', {name: /discard/i}))
     expect(
@@ -114,6 +112,9 @@ describe('TestResults Report', () => {
     localStorage.setItem('i18nextLng', 'en')
     const mockedLayout = useLayoutType as jest.Mock
     mockedLayout.mockReturnValue('desktop')
+    const mockedOpenmrsFetch = openmrsFetch as jest.Mock
+    mockedOpenmrsFetch.mockReturnValue(mockPanelTestResult)
+
     renderWithContextProvider(
       <TestResults
         closeHandler={closeHandler}
@@ -135,7 +136,63 @@ describe('TestResults Report', () => {
     expect(currentDay.className).not.toMatch(/-disabled/i)
     expect(futureDate.className).toMatch(/-disabled/i)
   })
+
+  it('should indicate when the entered value is abnormal', async () => {
+    localStorage.setItem('i18nextLng', 'en')
+    const mockedLayout = useLayoutType as jest.Mock
+    mockedLayout.mockReturnValue('desktop')
+    const mockedOpenmrsFetch = openmrsFetch as jest.Mock
+    mockedOpenmrsFetch.mockReturnValue(mockPanelTestResult)
+
+    renderWithContextProvider(
+      <TestResults
+        closeHandler={closeHandler}
+        saveHandler={saveHandler}
+        header={'Test Header'}
+        patientUuid={'123'}
+      />,
+    )
+    await waitFor(() =>
+      expect(
+        screen.getAllByPlaceholderText(/Input Text/i)[0],
+      ).toBeInTheDocument(),
+    )
+
+    expect(
+      screen.getByRole('button', {name: /save and upload/i}),
+    ).toBeDisabled()
+
+    userEvent.type(screen.getAllByPlaceholderText(/Input Text/i)[0], '6')
+
+    expect(screen.getAllByPlaceholderText(/Input Text/i)[0]).toHaveStyle({
+      color: 'red',
+    })
+  })
+  it('should display text input for each tests for a panel', async () => {
+    localStorage.setItem('i18nextLng', 'en')
+    const mockedLayout = useLayoutType as jest.Mock
+    mockedLayout.mockReturnValue('desktop')
+    const mockedOpenmrsFetch = openmrsFetch as jest.Mock
+    mockedOpenmrsFetch
+      .mockReturnValue(mockPanelTestResult)
+
+    renderWithContextProvider(
+      <TestResults
+        closeHandler={closeHandler}
+        saveHandler={saveHandler}
+        header={'Test Header'}
+        patientUuid={'123'}
+      />,
+    )
+    await waitFor(() =>
+      expect(
+        screen.getAllByPlaceholderText(/Input Text/i)[0],
+      ).toBeInTheDocument(),
+    )
+    expect(screen.getAllByPlaceholderText(/Input Text/i).length).toBe(2)
+  })
 })
+
 function getFormatedDate(addDays: number): string {
   let date = new Date()
   date.setDate(date.getDate() + addDays)

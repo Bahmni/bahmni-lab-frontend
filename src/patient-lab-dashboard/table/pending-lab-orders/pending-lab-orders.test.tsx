@@ -12,7 +12,7 @@ import {
   mockPendingLabOrdersResponse,
 } from '../../../__mocks__/pendingLabOrders.mock'
 import PendingLabOrdersTable from './pending-lab-orders'
-import PendingLabOrdersProvider from '../../../context/pending-orders-context'
+import {PendingLabOrdersProvider} from '../../../context/pending-orders-context'
 import userEvent from '@testing-library/user-event'
 
 const mockPatientUuid = '1'

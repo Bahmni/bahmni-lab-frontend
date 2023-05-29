@@ -7,7 +7,7 @@ import {
   useAllTestAndPanel,
   useLabTestResultsContext,
 } from '../../context/lab-test-results-context'
-import PendingLabOrdersProvider from '../../context/pending-orders-context'
+import {PendingLabOrdersProvider} from '../../context/pending-orders-context'
 import {UploadReportProvider} from '../../context/upload-report-context'
 import {
   mockAlltestAndPanels,

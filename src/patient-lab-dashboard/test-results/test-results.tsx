@@ -6,7 +6,7 @@ import {
   TextInput,
 } from 'carbon-components-react'
 import dayjs from 'dayjs'
-import React, {useEffect, useState} from 'react'
+import React, {useState} from 'react'
 import useSWR from 'swr'
 import Overlay from '../../common/overlay'
 import {usePendingLabOrderContext} from '../../context/pending-orders-context'
@@ -114,8 +114,8 @@ const TestResults: React.FC<TestResultProps> = ({
       allSuccess = false
     }
     if (allSuccess) {
-      saveHandler(true)
       setLabResult(new Map())
+      saveHandler(true)
     } else {
       saveHandler(false)
     }
@@ -144,10 +144,8 @@ const TestResults: React.FC<TestResultProps> = ({
       test.hiNormal !== null
     )
   }
-
   const updateOrStoreLabResult = (value, test) => {
     if (value !== null || value !== undefined || !isNaN(value)) {
-      console.log('inside else')
       isAbnormal(value, test)
         ? setLabResult(
             map =>
@@ -268,6 +266,7 @@ const TestResults: React.FC<TestResultProps> = ({
             <span id="counter">{`${reportConclusion?.length}/${maxCount}`}</span>
           </div>
           <TextArea
+            data-testId="conclusion"
             labelText=""
             maxLength={maxCount}
             required={true}
