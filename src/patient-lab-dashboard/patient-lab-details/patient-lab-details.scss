@@ -7,3 +7,8 @@
     width: 68%;
     padding: 0 1rem 0 1rem ;
 }
+.flexContainer{
+    display: flex;
+    column-gap: 20px;
+    align-items: flex-start;
+}

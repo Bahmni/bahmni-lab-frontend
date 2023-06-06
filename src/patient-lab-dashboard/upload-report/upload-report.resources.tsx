@@ -1,5 +1,5 @@
 import {FetchResponse} from '@openmrs/esm-framework'
-import {PendingLabOrders} from '../../types'
+import {Contained, PendingLabOrders} from '../../types'
 import {LabTest} from '../../types/selectTest'
 import {
   postApiCall,
@@ -25,6 +25,11 @@ export interface BasedOnType {
   }
 }
 
+export interface Observation {
+  reference: string
+  type: string
+}
+
 interface DiagnosticReportRequestType {
   resourceType: string
   status: string
@@ -46,6 +51,27 @@ interface DiagnosticReportRequestType {
   }>
   basedOn?: Array<BasedOnType>
   performer?: Array<ReferenceRequestType>
+}
+
+interface TestResultDiagnosticReportRequestType {
+  resourceType: string
+  status: string
+  code: {
+    coding: [
+      {
+        code: string
+        display: string
+      },
+    ]
+  }
+  subject: ReferenceRequestType
+  encounter?: {reference: string}
+  issued: Date
+  conclusion?: string
+  basedOn?: Array<BasedOnType>
+  performer?: Array<ReferenceRequestType>
+  contained: Array<Contained>
+  result?: Array<Observation>
 }
 
 export function uploadFile(
@@ -117,6 +143,91 @@ export function saveDiagnosticReport(
   if (selectedPendingOrderTest.length === 1) {
     requestBody.basedOn = basedOn
   }
+  if (performerUuid) {
+    requestBody.performer = [
+      {
+        reference: 'Practitioner/' + performerUuid,
+      },
+    ]
+  }
+  if (encounter && encounter.encounterUuid) {
+    requestBody.encounter = {
+      reference: `Encounter/${encounter.encounterUuid}`,
+    }
+  }
+
+  return postApiCall(saveDiagnosticReportURL, requestBody, ac)
+}
+
+export function saveTestDiagnosticReport(
+  encounter,
+  patientUuid: string,
+  performerUuid: string,
+  reportDate: Date,
+  reportConclusion: string,
+  ac: AbortController,
+  selectedPendingOrder: PendingLabOrders,
+  labResult?: Map<string, {value: string; abnormal: boolean}>,
+) {
+  let basedOn: Array<BasedOnType> = null
+  if (selectedPendingOrder)
+    basedOn = [
+      {
+        identifier: {value: selectedPendingOrder.id},
+        reference: 'ServiceRequest',
+        display: selectedPendingOrder.testName,
+      },
+    ]
+
+  const requestBody: TestResultDiagnosticReportRequestType = {
+    resourceType: 'DiagnosticReport',
+    status: 'final',
+    code: {
+      coding: [
+        {
+          code: selectedPendingOrder.conceptUuid,
+          display: selectedPendingOrder.testName,
+        },
+      ],
+    },
+    subject: {
+      reference: 'Patient/' + patientUuid,
+    },
+    issued: reportDate,
+    contained: [
+      {
+        resourceType: 'Observation',
+        id: 'example-result-1',
+        status: 'final',
+        code: {
+          coding: [
+            {
+              code: selectedPendingOrder.conceptUuid,
+              display: selectedPendingOrder.testName,
+            },
+          ],
+        },
+        subject: {
+          reference: 'Patient/' + patientUuid,
+        },
+        valueQuantity: {
+          value: labResult.get(selectedPendingOrder.conceptUuid)?.value,
+        },
+      },
+    ],
+    result: [
+      {
+        reference: '#example-result-1',
+        type: 'Observation',
+      },
+    ],
+  }
+
+  if (reportConclusion) {
+    requestBody.conclusion = reportConclusion
+  }
+
+  requestBody.basedOn = basedOn
   if (performerUuid) {
     requestBody.performer = [
       {

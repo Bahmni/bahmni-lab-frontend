@@ -12,12 +12,14 @@ import React, {useEffect, useState} from 'react'
 import {RouteComponentProps} from 'react-router-dom'
 import Loader from '../../common/loader/loader.component'
 import {LabTestResultsProvider} from '../../context/lab-test-results-context'
-import PendingLabOrdersProvider from '../../context/pending-orders-context'
+import {PendingLabOrdersProvider} from '../../context/pending-orders-context'
 import {UploadReportProvider} from '../../context/upload-report-context'
 import {
   auditLogURL,
+  fetcher,
   getPayloadForPatientAccess,
   postApiCall,
+  swrOptions,
 } from '../../utils/api-utils'
 import {
   failureMessage,
@@ -29,6 +31,11 @@ import PendingLabOrdersTable from '../table/pending-lab-orders/pending-lab-order
 import ReportTable from '../table/report-table/report-table.component'
 import UploadReport from '../upload-report/upload-report'
 import styles from './patient-lab-details.scss'
+import TestResults from '../test-results/test-results'
+import useSWR from 'swr'
+import {getLabConfig} from '../../utils/lab-orders'
+import {LabConfigResponse} from '../../types'
+
 interface PatientParamsType {
   patientUuid: string
 }
@@ -42,6 +49,9 @@ const PatientLabDetails: React.FC<RouteComponentProps<PatientParamsType>> = ({
   const [onSaveSuccess, setOnSaveSuccess] = useState<boolean>(false)
   const [onSaveFailure, setOnSaveFailure] = useState<boolean>(false)
   const [reloadReportTable, setReloadReportTable] = useState<boolean>(false)
+  const [onEnterResultButtonClick, setOnEnterResultButtonClick] = useState<
+    boolean
+  >(false)
 
   const handleClick = () => {
     setOnButtonClick(true)
@@ -49,13 +59,22 @@ const PatientLabDetails: React.FC<RouteComponentProps<PatientParamsType>> = ({
     setReloadReportTable(false)
     setOnSaveFailure(false)
   }
-
+  const enterResultsHandleClick = () => {
+    setOnEnterResultButtonClick(true)
+    setOnSaveSuccess(false)
+    setReloadReportTable(false)
+    setOnSaveFailure(false)
+  }
+  const enterResultsHandleClose = () => {
+    setOnEnterResultButtonClick(false)
+  }
   const handleClose = () => {
     setOnButtonClick(false)
   }
 
   const handleUploadAndSave = (isSaveSuccess: boolean) => {
     setOnButtonClick(false)
+    setOnEnterResultButtonClick(false)
     setOnSaveSuccess(isSaveSuccess)
     setOnSaveFailure(!isSaveSuccess)
     setReloadReportTable(true)
@@ -77,6 +96,10 @@ const PatientLabDetails: React.FC<RouteComponentProps<PatientParamsType>> = ({
       }}
     />
   )
+  const {data: labConfig, error: labConfigError} = useSWR<
+    LabConfigResponse,
+    Error
+  >(getLabConfig, fetcher, swrOptions)
 
   useEffect(() => {
     const loggedInUser = localStorage.getItem(loggedInUserKey)
@@ -99,14 +122,14 @@ const PatientLabDetails: React.FC<RouteComponentProps<PatientParamsType>> = ({
   return (
     <main
       className={
-        onButtonClick
+        onButtonClick || onEnterResultButtonClick
           ? styles.patientDetailsContainerWithSidePanel
           : styles.patientDetailsContainer
       }
     >
       {isLoading ? (
         <Loader />
-      ) : error ? (
+      ) : error || labConfigError ? (
         <div>Something went wrong: {error.message}</div>
       ) : (
         <div>
@@ -146,24 +169,52 @@ const PatientLabDetails: React.FC<RouteComponentProps<PatientParamsType>> = ({
                 <PendingLabOrdersTable
                   patientUuid={patientUuid}
                   onButtonClick={onButtonClick}
+                  onEnterResultButtonClick={onEnterResultButtonClick}
                   reloadTableData={reloadReportTable}
                 />
               </div>
-              <Button renderIcon={AddFilled16} onClick={handleClick}>
-                Upload Report
-              </Button>
-              {onButtonClick && (
-                <UploadReportProvider>
-                  <UploadReport
-                    saveHandler={(isSaveSuccess = false) =>
-                      handleUploadAndSave(isSaveSuccess)
-                    }
-                    closeHandler={() => handleClose()}
-                    header="Upload Report"
-                    patientUuid={patientUuid}
-                  />
-                </UploadReportProvider>
-              )}
+              {/* className={styles.testresultinputfield} */}
+              <div style={{float: 'right'}} className={styles.flexContainer}>
+                <Button
+                  renderIcon={AddFilled16}
+                  onClick={handleClick}
+                  style={{margin: '0%'}}
+                >
+                  Upload Report
+                </Button>
+                {onButtonClick && (
+                  <UploadReportProvider>
+                    <UploadReport
+                      saveHandler={(isSaveSuccess = false) =>
+                        handleUploadAndSave(isSaveSuccess)
+                      }
+                      closeHandler={() => handleClose()}
+                      header="Upload Report"
+                      patientUuid={patientUuid}
+                    />
+                  </UploadReportProvider>
+                )}
+                {labConfig?.data?.labLite.captureTestResults && (
+                  <Button
+                    renderIcon={AddFilled16}
+                    onClick={enterResultsHandleClick}
+                  >
+                    Enter Test Results
+                  </Button>
+                )}
+                {onEnterResultButtonClick && (
+                  <UploadReportProvider>
+                    <TestResults
+                      saveHandler={(isSaveSuccess = false) => {
+                        handleUploadAndSave(isSaveSuccess)
+                      }}
+                      closeHandler={() => enterResultsHandleClose()}
+                      header="Enter Test Results"
+                      patientUuid={patientUuid}
+                    />
+                  </UploadReportProvider>
+                )}
+              </div>
             </PendingLabOrdersProvider>
             <div style={{marginTop: '2rem', marginBottom: '2rem'}}>
               <ReportTable
