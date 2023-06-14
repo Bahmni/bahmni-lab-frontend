@@ -2,6 +2,7 @@ import {
   Button,
   DatePicker,
   DatePickerInput,
+  Dropdown,
   TextArea,
   TextInput,
 } from 'carbon-components-react'
@@ -10,10 +11,7 @@ import React, {useState} from 'react'
 import useSWR from 'swr'
 import Overlay from '../../common/overlay'
 import {usePendingLabOrderContext} from '../../context/pending-orders-context'
-import {
-  useDoctorDetails,
-  useSelectedTests,
-} from '../../context/upload-report-context'
+import {useDoctorDetails} from '../../context/upload-report-context'
 import styles from './test-results.scss'
 import {fetcher, getTestResults, swrOptions} from '../../utils/api-utils'
 import {getTestName} from '../../utils/helperFunctions'
@@ -39,24 +37,27 @@ const TestResults: React.FC<TestResultProps> = ({
   const [reportDate, setReportDate] = useState<Date>(null)
   const [reportConclusion, setReportConclusion] = useState<string>('')
   const {doctor, setDoctor} = useDoctorDetails()
-  const {setSelectedTests} = useSelectedTests()
+  const [answer, setAnswer] = useState(null)
   const maxCount: number = 500
-  const {selectedPendingOrder} = usePendingLabOrderContext()
+  const {
+    selectedPendingOrder,
+    setSelectedPendingOrder,
+  } = usePendingLabOrderContext()
   const [showReportConclusionLabel, setShowReportConclusionLabel] = useState<
     boolean
   >(true)
   const [isSaveButtonClicked, setIsSaveButtonClicked] = useState(false)
+  const [labResult, setLabResult] = useState(new Map())
+
   const testResultData = []
   const handleDiscard = () => {
     setReportDate(null)
     setReportConclusion('')
-    setSelectedTests([])
     setDoctor(null)
     setShowReportConclusionLabel(true)
     setLabResult(new Map())
+    setAnswer(null)
   }
-
-  const [labResult, setLabResult] = useState(new Map())
 
   selectedPendingOrder.forEach(selectedPendingOrder => {
     // eslint-disable-next-line
@@ -68,14 +69,44 @@ const TestResults: React.FC<TestResultProps> = ({
   })
 
   const isDisabled = () =>
-    !reportDate || !doctor || !isValidDataPreset() || isSaveButtonClicked
+    !reportDate || !doctor || !isValidDataPresent() || isSaveButtonClicked
 
-  const isValidDataPreset = () => {
+  const getTestData = test => {
+    for (let index = 0; index < testResultData.length; index++) {
+      if (testResultData[index].data.uuid === test.conceptUuid) {
+        return testResultData[index].data
+      }
+    }
+  }
+
+  const isInvalid = test => {
+    if (labResult.get(test.uuid)?.value !== '') {
+      const datatype = test?.datatype.name
+      if (datatype === 'Numeric' && isNaN(labResult.get(test.uuid)?.value)) {
+        return true
+      }
+    }
+    return false
+  }
+
+  const isValidDataPresent = () => {
     if (labResult.size == 0 || labResult.size !== selectedPendingOrder.length)
       return false
+
     for (let mapEntry of labResult.values()) {
       if (mapEntry.value === '') return false
     }
+
+    for (let index = 0; index < testResultData.length; index++) {
+      for (let mapEntry of labResult.keys()) {
+        if (testResultData[index].data.uuid === mapEntry) {
+          if (isInvalid(testResultData[index].data)) {
+            return false
+          }
+        }
+      }
+    }
+
     return true
   }
 
@@ -95,10 +126,6 @@ const TestResults: React.FC<TestResultProps> = ({
       </Button>
     </div>
   )
-
-  const getSelectedPendingOrderTest = index => {
-    return selectedPendingOrder[index]
-  }
   const saveTestResults = async () => {
     const ac = new AbortController()
     let allSuccess: boolean = true
@@ -111,8 +138,9 @@ const TestResults: React.FC<TestResultProps> = ({
           reportDate,
           reportConclusion,
           ac,
-          getSelectedPendingOrderTest(index),
+          selectedPendingOrder[index],
           labResult,
+          getTestData(selectedPendingOrder[index]).datatype,
         )
         if (allSuccess && !response.ok) {
           allSuccess = false
@@ -123,8 +151,8 @@ const TestResults: React.FC<TestResultProps> = ({
       allSuccess = false
     }
     if (allSuccess) {
-      setLabResult(new Map())
       saveHandler(true)
+      setSelectedPendingOrder([])
     } else {
       saveHandler(false)
     }
@@ -142,52 +170,108 @@ const TestResults: React.FC<TestResultProps> = ({
   }
   const isAbnormal = (value, test) => {
     return (
-      (value < test.lowNormal || value > test.hiNormal) &&
       test.lowNormal !== null &&
-      test.hiNormal !== null
+      test.hiNormal !== null &&
+      (value < test.lowNormal || value > test.hiNormal)
     )
   }
+
   const updateOrStoreLabResult = (value, test) => {
-    if (value !== null || value !== undefined || !isNaN(value)) {
-      isAbnormal(value, test)
-        ? setLabResult(
-            map =>
-              new Map(
-                map.set(test.uuid, {
-                  value: value,
-                  abnormal: true,
-                }),
-              ),
-          )
-        : setLabResult(
-            map =>
-              new Map(
-                map.set(test.uuid, {
-                  value: value,
-                  abnormal: false,
-                }),
-              ),
-          )
+    if (value !== null || value !== undefined) {
+      if (isAbnormal(value, test)) {
+        setLabResult(
+          map =>
+            new Map(
+              map.set(test.uuid, {
+                value: value,
+                abnormal: true,
+              }),
+            ),
+        )
+      } else
+        setLabResult(
+          map =>
+            new Map(
+              map.set(test.uuid, {
+                value: value,
+              }),
+            ),
+        )
     }
   }
-  const getValue = (labResult, test) => labResult.get(test.uuid)?.value ?? ''
+
+  const getValue = test => labResult.get(test.uuid)?.value ?? ''
+
+  const updateLabResult = (selectedItem, test) => {
+    setAnswer(selectedItem)
+    if (selectedItem.uuid)
+      setLabResult(
+        map =>
+          new Map(
+            map.set(test.uuid, {
+              value: selectedItem.name.name,
+              codableConceptUuid: selectedItem.uuid,
+            }),
+          ),
+      )
+    else
+      setLabResult(
+        map =>
+          new Map(
+            map.set(test.uuid, {
+              value: selectedItem.name.name,
+            }),
+          ),
+      )
+  }
 
   const renderInputField = (test, index) => {
     if (test) {
-      return (
-        <div className={styles.testresultinputfield}>
-          <TextInput
-            key={`text-${test.uuid}-${index}`}
-            labelText={getTestNameWithUnits(test)}
-            id={`${test.uuid}-${index}`}
-            placeholder="Input Text"
-            size="sm"
-            onChange={e => updateOrStoreLabResult(e.target.value, test)}
-            style={labResult.get(test.uuid)?.abnormal ? {color: 'red'} : {}}
-            value={getValue(labResult, test)}
-          />
-        </div>
-      )
+      const items = []
+      const datatype = test.datatype.name
+      if (datatype === 'Boolean' || datatype === 'Coded') {
+        if (datatype === 'Boolean')
+          items.push({name: {name: 'True'}}, {name: {name: 'False'}})
+        else if (datatype === 'Coded') {
+          const answers = test.answers
+          for (let answer of answers) {
+            items.push(answer)
+          }
+        }
+        return (
+          <div className={styles.testresultinputfield}>
+            <Dropdown
+              titleText={getTestNameWithUnits(test)}
+              id="answers-list-dropdown"
+              title="answers list"
+              items={items}
+              itemToString={data => data.name.name}
+              label="Select an answer"
+              onChange={({selectedItem}) => updateLabResult(selectedItem, test)}
+              selectedItem={answer}
+              helperText={
+                answer && answer.name.name.length > 35 ? answer.name.name : ''
+              }
+            />
+          </div>
+        )
+      } else
+        return (
+          <div className={styles.testresultinputfield}>
+            <TextInput
+              key={`text-${test.uuid}-${index}`}
+              labelText={getTestNameWithUnits(test)}
+              id={`${test.uuid}-${index}`}
+              placeholder="Enter Value"
+              size="sm"
+              onChange={e => updateOrStoreLabResult(e.target.value, test)}
+              style={labResult.get(test.uuid)?.abnormal ? {color: 'red'} : {}}
+              value={getValue(test)}
+              invalid={labResult.size != 0 && isInvalid(test)}
+              invalidText="Please enter valid data"
+            />
+          </div>
+        )
     }
   }
   const renderTestResultWidget = () => {
