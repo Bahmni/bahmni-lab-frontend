@@ -163,13 +163,11 @@ const TestResults: React.FC<TestResultProps> = ({
   }
 
   const getTestNameWithUnits = test => {
-      return test.hiNormal && test.lowNormal
-        ? `${getTestName(test)} [${test.lowNormal} - ${test.hiNormal} ${
-            test.units ?? ""
-          }]`
-        : `${getTestName(test)} ${test.units ?? ""}`
-
-    return getTestName(test)
+    return test.hiNormal && test.lowNormal
+      ? `${getTestName(test)} [${test.lowNormal} - ${
+          test.hiNormal
+        } ${test.units ?? ''}]`
+      : `${getTestName(test)} ${test.units ?? ''}`
   }
   const isAbnormal = (value, test) => {
     return (
