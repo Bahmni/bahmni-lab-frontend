@@ -4,6 +4,7 @@ import {
   Button,
   Column,
   Grid,
+  InlineNotification,
   NotificationKind,
   Row,
   ToastNotification,
@@ -11,11 +12,7 @@ import {
 import React, {useEffect, useState} from 'react'
 import {RouteComponentProps} from 'react-router-dom'
 import Loader from '../../common/loader/loader.component'
-import {LabTestResultsProvider} from '../../context/lab-test-results-context'
-import {
-  PendingLabOrdersProvider,
-  usePendingLabOrderContext,
-} from '../../context/pending-orders-context'
+import {usePendingLabOrderContext} from '../../context/pending-orders-context'
 import {UploadReportProvider} from '../../context/upload-report-context'
 import {
   auditLogURL,
@@ -56,6 +53,7 @@ const PatientLabDetails: React.FC<RouteComponentProps<PatientParamsType>> = ({
     boolean
   >(false)
   const {selectedPendingOrder} = usePendingLabOrderContext()
+  const [duplicateOrder, setDuplicateOrder] = useState<boolean>(false)
 
   const handleClick = () => {
     setOnButtonClick(true)
@@ -123,6 +121,22 @@ const PatientLabDetails: React.FC<RouteComponentProps<PatientParamsType>> = ({
     }
   }, [patient])
 
+  useEffect(() => {
+    setDuplicateOrder(selectedPendingOrder?.length > 0 && checkDuplicateOrder())
+  }, [selectedPendingOrder])
+
+  const checkDuplicateOrder = () => {
+    const conceptUUIDs = new Set()
+    for (const order of selectedPendingOrder) {
+      if (conceptUUIDs.has(order.conceptUuid)) {
+        console.log('ghjk')
+        return true
+      }
+      conceptUUIDs.add(order.conceptUuid)
+    }
+    return false
+  }
+
   return (
     <main
       className={
@@ -167,6 +181,14 @@ const PatientLabDetails: React.FC<RouteComponentProps<PatientParamsType>> = ({
               </Row>
             </Grid>
           </div>
+          {duplicateOrder && (
+            <InlineNotification
+              kind="error"
+              title="Duplicate Order"
+              subtitle="You have selected duplicate orders. Please select unique orders."
+              lowContrast={true}
+            />
+          )}
           <div style={{paddingBottom: '2rem'}}>
             <PendingLabOrdersTable
               patientUuid={patientUuid}
@@ -175,12 +197,12 @@ const PatientLabDetails: React.FC<RouteComponentProps<PatientParamsType>> = ({
               reloadTableData={reloadReportTable}
             />
           </div>
-          {/* className={styles.testresultinputfield} */}
           <div style={{float: 'right'}} className={styles.flexContainer}>
             <Button
               renderIcon={AddFilled16}
               onClick={handleClick}
               style={{margin: '0%'}}
+              disabled={duplicateOrder}
             >
               Upload Report
             </Button>
@@ -198,7 +220,7 @@ const PatientLabDetails: React.FC<RouteComponentProps<PatientParamsType>> = ({
             )}
             {labConfig?.data?.labLite.captureTestResults && (
               <Button
-                disabled={selectedPendingOrder?.length == 0}
+                disabled={selectedPendingOrder?.length == 0 || duplicateOrder}
                 renderIcon={AddFilled16}
                 onClick={enterResultsHandleClick}
               >
