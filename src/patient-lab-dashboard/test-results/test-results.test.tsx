@@ -183,6 +183,7 @@ describe('TestResults Report', () => {
         patientUuid={'123'}
       />,
     )
+
     await waitFor(() =>
       expect(
         screen.getAllByPlaceholderText(/Enter value/i)[0],
@@ -193,7 +194,7 @@ describe('TestResults Report', () => {
       screen.getByRole('button', {name: /save and upload/i}),
     ).toBeDisabled()
 
-    expect(screen.getAllByRole('checkbox', {name: /Abnormal/i}).length).toBe(2)
+    expect(screen.getAllByRole('checkbox', {name: /Abnormal/i}).length).toBe(3)
 
     userEvent.type(screen.getAllByPlaceholderText(/Enter value/i)[0], '6')
 
