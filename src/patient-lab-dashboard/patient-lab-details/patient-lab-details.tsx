@@ -4,6 +4,7 @@ import {
   Button,
   Column,
   Grid,
+  InlineNotification,
   NotificationKind,
   Row,
   ToastNotification,
@@ -11,13 +12,14 @@ import {
 import React, {useEffect, useState} from 'react'
 import {RouteComponentProps} from 'react-router-dom'
 import Loader from '../../common/loader/loader.component'
-import {LabTestResultsProvider} from '../../context/lab-test-results-context'
-import PendingLabOrdersProvider from '../../context/pending-orders-context'
+import {usePendingLabOrderContext} from '../../context/pending-orders-context'
 import {UploadReportProvider} from '../../context/upload-report-context'
 import {
   auditLogURL,
+  fetcher,
   getPayloadForPatientAccess,
   postApiCall,
+  swrOptions,
 } from '../../utils/api-utils'
 import {
   failureMessage,
@@ -29,6 +31,11 @@ import PendingLabOrdersTable from '../table/pending-lab-orders/pending-lab-order
 import ReportTable from '../table/report-table/report-table.component'
 import UploadReport from '../upload-report/upload-report'
 import styles from './patient-lab-details.scss'
+import TestResults from '../test-results/test-results'
+import useSWR from 'swr'
+import {getLabConfig} from '../../utils/lab-orders'
+import {LabConfigResponse} from '../../types'
+
 interface PatientParamsType {
   patientUuid: string
 }
@@ -42,6 +49,11 @@ const PatientLabDetails: React.FC<RouteComponentProps<PatientParamsType>> = ({
   const [onSaveSuccess, setOnSaveSuccess] = useState<boolean>(false)
   const [onSaveFailure, setOnSaveFailure] = useState<boolean>(false)
   const [reloadReportTable, setReloadReportTable] = useState<boolean>(false)
+  const [onEnterResultButtonClick, setOnEnterResultButtonClick] = useState<
+    boolean
+  >(false)
+  const {selectedPendingOrder} = usePendingLabOrderContext()
+  const [duplicateOrder, setDuplicateOrder] = useState<boolean>(false)
 
   const handleClick = () => {
     setOnButtonClick(true)
@@ -49,13 +61,22 @@ const PatientLabDetails: React.FC<RouteComponentProps<PatientParamsType>> = ({
     setReloadReportTable(false)
     setOnSaveFailure(false)
   }
-
+  const enterResultsHandleClick = () => {
+    setOnEnterResultButtonClick(true)
+    setOnSaveSuccess(false)
+    setReloadReportTable(false)
+    setOnSaveFailure(false)
+  }
+  const enterResultsHandleClose = () => {
+    setOnEnterResultButtonClick(false)
+  }
   const handleClose = () => {
     setOnButtonClick(false)
   }
 
   const handleUploadAndSave = (isSaveSuccess: boolean) => {
     setOnButtonClick(false)
+    setOnEnterResultButtonClick(false)
     setOnSaveSuccess(isSaveSuccess)
     setOnSaveFailure(!isSaveSuccess)
     setReloadReportTable(true)
@@ -77,6 +98,10 @@ const PatientLabDetails: React.FC<RouteComponentProps<PatientParamsType>> = ({
       }}
     />
   )
+  const {data: labConfig, error: labConfigError} = useSWR<
+    LabConfigResponse,
+    Error
+  >(getLabConfig, fetcher, swrOptions)
 
   useEffect(() => {
     const loggedInUser = localStorage.getItem(loggedInUserKey)
@@ -96,24 +121,45 @@ const PatientLabDetails: React.FC<RouteComponentProps<PatientParamsType>> = ({
     }
   }, [patient])
 
+  useEffect(() => {
+    setDuplicateOrder(selectedPendingOrder?.length > 0 && checkDuplicateOrder())
+  }, [selectedPendingOrder])
+
+  const checkDuplicateOrder = () => {
+    const conceptUUIDs = new Set()
+    for (const order of selectedPendingOrder) {
+      if (conceptUUIDs.has(order.conceptUuid)) {
+        return true
+      }
+      conceptUUIDs.add(order.conceptUuid)
+    }
+    return false
+  }
+
   return (
     <main
       className={
-        onButtonClick
-          ? styles.patientDetailsContainerWithSidePanel
-          : styles.patientDetailsContainer
+        !(onButtonClick || onEnterResultButtonClick) &&
+        styles.patientDetailsContainer
       }
     >
       {isLoading ? (
         <Loader />
-      ) : error ? (
+      ) : error || labConfigError ? (
         <div>Something went wrong: {error.message}</div>
       ) : (
-        <div>
-          <div style={{marginBottom: '3rem'}}>
-            <Grid style={{paddingLeft: '0'}}>
+        <Grid
+          style={{padding: '1rem'}}
+          className={styles.patientLabDetContainer}
+        >
+          <Column
+            style={{padding: '0'}}
+            sm={4}
+            lg={onButtonClick || onEnterResultButtonClick ? 8 : 16}
+          >
+            <Grid style={{padding: '0', marginBottom: '3rem'}}>
               <Row>
-                <Column lg={9}>
+                <Column sm={4} lg={9}>
                   <ExtensionSlot
                     extensionSlotName="patient-header-slot"
                     state={{
@@ -139,17 +185,30 @@ const PatientLabDetails: React.FC<RouteComponentProps<PatientParamsType>> = ({
                 </Column>
               </Row>
             </Grid>
-          </div>
-          <LabTestResultsProvider>
-            <PendingLabOrdersProvider>
-              <div style={{paddingBottom: '2rem'}}>
-                <PendingLabOrdersTable
-                  patientUuid={patientUuid}
-                  onButtonClick={onButtonClick}
-                  reloadTableData={reloadReportTable}
-                />
-              </div>
-              <Button renderIcon={AddFilled16} onClick={handleClick}>
+            {duplicateOrder && (
+              <InlineNotification
+                kind="error"
+                title="Duplicate Order"
+                subtitle="You have selected duplicate orders. Please select unique orders."
+                lowContrast={true}
+              />
+            )}
+            <div style={{paddingBottom: '2rem'}}>
+              <PendingLabOrdersTable
+                patientUuid={patientUuid}
+                onButtonClick={onButtonClick}
+                onEnterResultButtonClick={onEnterResultButtonClick}
+                reloadTableData={reloadReportTable}
+              />
+            </div>
+            <div style={{float: 'right'}} className={styles.flexContainer}>
+              <Button
+                renderIcon={AddFilled16}
+                onClick={handleClick}
+                style={{margin: '0%'}}
+                disabled={duplicateOrder}
+                className={styles.responsiveButton}
+              >
                 Upload Report
               </Button>
               {onButtonClick && (
@@ -164,15 +223,37 @@ const PatientLabDetails: React.FC<RouteComponentProps<PatientParamsType>> = ({
                   />
                 </UploadReportProvider>
               )}
-            </PendingLabOrdersProvider>
-            <div style={{marginTop: '2rem', marginBottom: '2rem'}}>
+              {labConfig?.data?.labLite.captureTestResults && (
+                <Button
+                  disabled={selectedPendingOrder?.length == 0 || duplicateOrder}
+                  renderIcon={AddFilled16}
+                  onClick={enterResultsHandleClick}
+                  className={styles.responsiveButton}
+                >
+                  Enter Test Results
+                </Button>
+              )}
+              {onEnterResultButtonClick && (
+                <UploadReportProvider>
+                  <TestResults
+                    saveHandler={(isSaveSuccess = false) => {
+                      handleUploadAndSave(isSaveSuccess)
+                    }}
+                    closeHandler={() => enterResultsHandleClose()}
+                    header="Enter Test Results"
+                    patientUuid={patientUuid}
+                  />
+                </UploadReportProvider>
+              )}
+            </div>
+            <div style={{marginTop: '4rem', marginBottom: '2rem'}}>
               <ReportTable
                 patientUuid={patientUuid}
                 reloadTableData={reloadReportTable}
               />
             </div>
-          </LabTestResultsProvider>
-        </div>
+          </Column>
+        </Grid>
       )}
     </main>
   )

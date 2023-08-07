@@ -1,3 +1,5 @@
+import {boolean, number, string} from 'yup'
+
 export interface LabOrders {
   concept: Concept
   orderDate: number
@@ -33,6 +35,7 @@ interface GeneralInfo {
 interface Links {
   rel: string
   uri: string
+  resourceAlias?: string
 }
 
 interface OrderType {
@@ -142,4 +145,109 @@ export interface ImagePreviewComponentProps {
   auditMessage: AuditMessage
   postAuditMessage: Function
 }
+interface Name {
+  display: string
+  uuid: string
+  name: string
+  locale: string
+  localePreferred: boolean
+  conceptNameType: string
+  links: Links
+  resourceVersion: string
+}
+interface ValueQuantity {
+  value: string
+}
+interface Subject {
+  reference: string
+}
 
+interface Contained {
+  resourceType: string
+  id: string
+  status: string
+  code: {
+    coding: [
+      {
+        code: string
+        display: string
+      },
+    ]
+  }
+  subject: Subject
+  valueQuantity?: ValueQuantity
+  valueCodeableConcept?: {
+    coding: [
+      {
+        code: string
+        display: string
+      },
+    ]
+  }
+  valueBoolean?: boolean
+  valueString?: string
+  interpretation?: Array<{
+    coding: [
+      {
+        code: string
+      },
+    ]
+  }>
+}
+
+export interface TestResultsLabOrder {
+  data: {
+    uuid: string
+    name: Name
+    names: Array<Name>
+    set: boolean
+    datatype: Datatype
+    conceptClass: Datatype
+    hiNormal: string
+    hiAbsolute: string
+    hiCritical: string
+    lowNormal: string
+    lowAbsolute: string
+    lowCritical: string
+    units: string
+    allowDecimal: string
+    handler: string
+    descriptions: Array<Descriptions>
+    answers: any
+    setMembers: Array<TestResultsLabOrder> //doubt
+    resourceVersion: string
+  }
+}
+interface Datatype {
+  uuid: string
+  display: string
+  name: string
+  description: string
+  hl7Abbreviation?: string
+  retired: false
+  links: Array<Links>
+  resourceVersion: string
+}
+interface Descriptions {
+  display: string
+  uuid: string
+  description: string
+  locale: string
+  links: Array<Links>
+  resourceVersion: string
+}
+export interface LabConfigResponse {
+  data: {
+    labLite: {
+      id: string
+      extensionPointId: string
+      type: string
+      translationKey: string
+      url: string
+      icon: string
+      order: number
+      captureTestResults: boolean
+      requiredPrivilege: string
+    }
+  }
+}

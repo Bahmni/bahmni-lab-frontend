@@ -6,11 +6,11 @@ interface PendingLabOrderContextProps {
   setSelectedPendingOrder: Function
 }
 
-export const PendingOrdersContext = React.createContext<
-  PendingLabOrderContextProps
->(null)
+const PendingOrdersContext = React.createContext<PendingLabOrderContextProps>(
+  null,
+)
 
-export const usePendingLabOrderContext = () => {
+const usePendingLabOrderContext = () => {
   const context = React.useContext(PendingOrdersContext)
 
   if (!context) {
@@ -40,4 +40,4 @@ const PendingLabOrdersProvider = ({children}) => {
   )
 }
 
-export default PendingLabOrdersProvider
+export {PendingLabOrdersProvider, usePendingLabOrderContext}

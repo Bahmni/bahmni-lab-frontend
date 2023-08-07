@@ -12,7 +12,7 @@ import {
   mockPendingLabOrdersResponse,
 } from '../../../__mocks__/pendingLabOrders.mock'
 import PendingLabOrdersTable from './pending-lab-orders'
-import PendingLabOrdersProvider from '../../../context/pending-orders-context'
+import {PendingLabOrdersProvider} from '../../../context/pending-orders-context'
 import userEvent from '@testing-library/user-event'
 
 const mockPatientUuid = '1'
@@ -61,6 +61,8 @@ describe('Paginated Table', () => {
               reloadTableData={false}
               patientUuid={mockPatientUuid}
               onButtonClick={false}
+              onEnterResultButtonClick={false}
+
             />
           </PendingLabOrdersProvider>
         </BrowserRouter>
@@ -96,7 +98,7 @@ describe('Paginated Table', () => {
         name: /select row/i,
       }).length,
     ).toEqual(1)
-    expect(screen.getByText(/2 \/ 2 items/i)).toBeInTheDocument()
+    expect(screen.getByText(/3 \/ 3 items/i)).toBeInTheDocument()
 
     userEvent.click(
       screen.getByRole('checkbox', {
@@ -144,6 +146,7 @@ describe('Paginated Table', () => {
               reloadTableData={false}
               patientUuid={mockPatientUuid}
               onButtonClick={false}
+              onEnterResultButtonClick={false}
             />
           </PendingLabOrdersProvider>
         </BrowserRouter>
@@ -176,6 +179,7 @@ describe('Paginated Table', () => {
               reloadTableData={false}
               patientUuid={mockPatientUuid}
               onButtonClick={false}
+              onEnterResultButtonClick={false}
             />
           </PendingLabOrdersProvider>
         </BrowserRouter>
@@ -205,6 +209,7 @@ describe('Paginated Table', () => {
               reloadTableData={false}
               patientUuid={mockPatientUuid}
               onButtonClick={false}
+              onEnterResultButtonClick={false}
             />
           </PendingLabOrdersProvider>
         </BrowserRouter>
@@ -238,6 +243,7 @@ describe('Paginated Table', () => {
               reloadTableData={false}
               patientUuid={mockPatientUuid}
               onButtonClick={false}
+              onEnterResultButtonClick={false}
             />
           </BrowserRouter>
         </SWRConfig>,

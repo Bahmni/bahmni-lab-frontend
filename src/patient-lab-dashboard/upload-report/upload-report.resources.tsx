@@ -1,5 +1,5 @@
 import {FetchResponse} from '@openmrs/esm-framework'
-import {PendingLabOrders} from '../../types'
+import {Contained, Datatype, PendingLabOrders} from '../../types'
 import {LabTest} from '../../types/selectTest'
 import {
   postApiCall,
@@ -25,6 +25,11 @@ export interface BasedOnType {
   }
 }
 
+export interface Observation {
+  reference: string
+  type: string
+}
+
 interface DiagnosticReportRequestType {
   resourceType: string
   status: string
@@ -46,6 +51,27 @@ interface DiagnosticReportRequestType {
   }>
   basedOn?: Array<BasedOnType>
   performer?: Array<ReferenceRequestType>
+}
+
+interface TestResultDiagnosticReportRequestType {
+  resourceType: string
+  status: string
+  code: {
+    coding: [
+      {
+        code: string
+        display: string
+      },
+    ]
+  }
+  subject: ReferenceRequestType
+  encounter?: {reference: string}
+  issued: Date
+  conclusion?: string
+  basedOn?: Array<BasedOnType>
+  performer?: Array<ReferenceRequestType>
+  contained: Array<Contained>
+  result?: Array<Observation>
 }
 
 export function uploadFile(
@@ -117,6 +143,126 @@ export function saveDiagnosticReport(
   if (selectedPendingOrderTest.length === 1) {
     requestBody.basedOn = basedOn
   }
+  if (performerUuid) {
+    requestBody.performer = [
+      {
+        reference: 'Practitioner/' + performerUuid,
+      },
+    ]
+  }
+  if (encounter && encounter.encounterUuid) {
+    requestBody.encounter = {
+      reference: `Encounter/${encounter.encounterUuid}`,
+    }
+  }
+
+  return postApiCall(saveDiagnosticReportURL, requestBody, ac)
+}
+
+export function saveTestDiagnosticReport(
+  encounter,
+  patientUuid: string,
+  performerUuid: string,
+  reportDate: Date,
+  reportConclusion: string,
+  ac: AbortController,
+  selectedPendingOrder: PendingLabOrders,
+  labResult: Map<
+    string,
+    {value: string; abnormal?: boolean; codableConceptUuid?: string}
+  >,
+  dataType: Datatype,
+) {
+  let basedOn: Array<BasedOnType> = null
+  if (selectedPendingOrder)
+    basedOn = [
+      {
+        identifier: {value: selectedPendingOrder.id},
+        reference: 'ServiceRequest',
+        display: selectedPendingOrder.testName,
+      },
+    ]
+
+  const requestBody: TestResultDiagnosticReportRequestType = {
+    resourceType: 'DiagnosticReport',
+    status: 'final',
+    code: {
+      coding: [
+        {
+          code: selectedPendingOrder.conceptUuid,
+          display: selectedPendingOrder.testName,
+        },
+      ],
+    },
+    subject: {
+      reference: 'Patient/' + patientUuid,
+    },
+    issued: reportDate,
+    contained: [
+      {
+        resourceType: 'Observation',
+        id: 'lab-test-result',
+        status: 'final',
+        code: {
+          coding: [
+            {
+              code: selectedPendingOrder.conceptUuid,
+              display: selectedPendingOrder.testName,
+            },
+          ],
+        },
+        subject: {
+          reference: 'Patient/' + patientUuid,
+        },
+      },
+    ],
+    result: [
+      {
+        reference: '#lab-test-result',
+        type: 'Observation',
+      },
+    ],
+  }
+  if (labResult.get(selectedPendingOrder.conceptUuid).abnormal === true) {
+    requestBody.contained[0].interpretation = [
+      {
+        coding: [
+          {
+            code: 'A',
+          },
+        ],
+      },
+    ]
+  }
+  if (dataType.name == 'Boolean') {
+    requestBody.contained[0].valueBoolean =
+      labResult.get(selectedPendingOrder.conceptUuid)?.value.toLowerCase() ==
+      'true'
+  } else if (dataType.name == 'Numeric') {
+    requestBody.contained[0].valueQuantity = {
+      value: labResult.get(selectedPendingOrder.conceptUuid)?.value,
+    }
+  } else if (dataType.name == 'Coded') {
+    requestBody.contained[0].valueCodeableConcept = {
+      coding: [
+        {
+          code: labResult.get(selectedPendingOrder.conceptUuid)
+            ?.codableConceptUuid,
+          display: labResult.get(selectedPendingOrder.conceptUuid)?.value,
+        },
+      ],
+    }
+  } else {
+    requestBody.contained[0].valueString = labResult.get(
+      selectedPendingOrder.conceptUuid,
+    )?.value
+  }
+
+  if (reportConclusion) {
+    requestBody.conclusion = reportConclusion
+  }
+
+  requestBody.basedOn = basedOn
   if (performerUuid) {
     requestBody.performer = [
       {

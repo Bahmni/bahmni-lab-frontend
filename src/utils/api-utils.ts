@@ -15,6 +15,9 @@ export const getPendingLabOrdersURL = (
 export const getLabTests = () =>
   `/ws/rest/v1/concept?s=${s}&locale=${locale}&name=${name}&v=${v}`
 
+export const getTestResults = (conceptUuid: string) =>
+  `/ws/rest/v1/concept/${conceptUuid}?&locale=${locale}&v=bahmni`
+
 export const getOrderTypeUuid = '/ws/rest/v1/ordertype'
 
 export const uploadDocumentURL =

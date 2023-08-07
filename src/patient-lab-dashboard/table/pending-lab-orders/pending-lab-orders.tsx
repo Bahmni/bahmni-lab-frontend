@@ -30,6 +30,7 @@ import {
 const PendingLabOrdersTable = ({
   patientUuid,
   onButtonClick,
+  onEnterResultButtonClick,
   reloadTableData,
 }) => {
   const {orderTypeUuidConfig} = useOrderTypeUuidConfig()
@@ -128,7 +129,7 @@ const PendingLabOrdersTable = ({
                             setSelectAll(!selectAll)
                           }
                         }}
-                        disabled={onButtonClick}
+                        disabled={onButtonClick || onEnterResultButtonClick}
                         checked={selectAll}
                       />
                       {headers.map(header => (
@@ -160,7 +161,7 @@ const PendingLabOrdersTable = ({
                               )
                             }
                           }}
-                          disabled={onButtonClick}
+                          disabled={onButtonClick || onEnterResultButtonClick}
                           checked={isChecked(row)}
                         />
                         {row.cells.map(cell => (
