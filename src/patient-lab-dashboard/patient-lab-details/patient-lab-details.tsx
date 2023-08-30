@@ -135,7 +135,36 @@ const PatientLabDetails: React.FC<RouteComponentProps<PatientParamsType>> = ({
     }
     return false
   }
+  console.log("patient : ", patient);
 
+  const [modifiedPatient, setModifiedPatient] = useState<any>({});
+
+  const getAddressKey = (url) => url.split('#')[1];
+
+  useEffect(() => {
+    if(patient?.address) {
+      var addressMap = new Map();
+      Object.entries(patient?.address[0]).filter(([key]) => !['use', 'id'].some((k) => k === key))
+      .map(([key, value]) => {
+        console.log("key --- ", key)
+        console.log("value --- ", value)
+        key === 'extension' ? (
+          value[0]?.extension.map((ext, i) => {
+            addressMap.set(getAddressKey(ext.url), ext.valueString)}
+          )) :
+          addressMap.set(key, value)
+      });
+      console.log("addressmap -- ", addressMap);
+      setModifiedPatient ({
+        ...patient, "address" : [{ 
+          "postalCode" : addressMap.get("address5") + ", " + addressMap.get("address4") + ", " + addressMap.get("address3"),
+          "city" : addressMap.get("address2"),
+          "state" : addressMap.get("address1"),
+          "country" : addressMap.get("country")
+        }]
+      })
+  }}, [patient])
+  console.log("modifiedPatient - ", modifiedPatient);
   return (
     <main
       className={
@@ -163,7 +192,7 @@ const PatientLabDetails: React.FC<RouteComponentProps<PatientParamsType>> = ({
                   <ExtensionSlot
                     extensionSlotName="patient-header-slot"
                     state={{
-                      patient,
+                      patient : modifiedPatient,
                       patientUuid: patient.id,
                       hideActionsOverflow: true,
                     }}

@@ -25,5 +25,8 @@
     "search": {
       "hideActionsOverflow": true
     }
+  },
+  "@openmrs/esm-patient-banner-app": {
+    "contactAttributeType": ["708b8e27-f7fc-479b-b3cd-f25fe8de0d9c","88b2f4fb-65cc-44e5-9c05-e82e8487f65c","f8066909-8d23-4914-b55e-fccfb62e4440","d43bacd2-8162-48e3-927f-e159c308b466"]
   }
 }
