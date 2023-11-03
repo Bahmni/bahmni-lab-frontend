@@ -36,6 +36,10 @@ export const headers = [
     key: 'orderedBy',
     header: 'Ordered By',
   },
+  {
+    key : 'orderNotes',
+    header : 'Order Notes'
+  }
 ]
 
 export const reportHeaders = [

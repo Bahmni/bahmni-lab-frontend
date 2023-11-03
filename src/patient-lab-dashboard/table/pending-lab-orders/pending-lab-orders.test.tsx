@@ -47,6 +47,7 @@ describe('Paginated Table', () => {
             testName: 'Routine Blood',
             date: 'April 19, 2022',
             orderedBy: 'Test Orderer',
+            orderNotes : "sample notes"
           },
         ],
         goTo: jest.fn(),
@@ -82,6 +83,9 @@ describe('Paginated Table', () => {
     ).toBeInTheDocument()
     expect(
       screen.getByRole('cell', {name: 'Routine Blood'}),
+    ).toBeInTheDocument()
+    expect(
+      screen.getByRole('cell', {name: 'sample notes'}),
     ).toBeInTheDocument()
     expect(
       screen.getAllByRole('checkbox', {

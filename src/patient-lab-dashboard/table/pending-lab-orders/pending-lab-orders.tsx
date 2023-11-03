@@ -8,7 +8,6 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-  TableSelectAll,
   TableSelectRow,
   TableSelectRowProps,
 } from 'carbon-components-react'
@@ -74,6 +73,7 @@ const PendingLabOrdersTable = ({
           orderedBy: pendingLabOrderRow.provider,
           providerUuid: pendingLabOrderRow.providerUuid,
           conceptUuid: pendingLabOrderRow.concept.uuid,
+          orderNotes: pendingLabOrderRow.commentToFulfiller
         }
       })
   }
