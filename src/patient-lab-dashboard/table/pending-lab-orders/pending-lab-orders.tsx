@@ -73,7 +73,7 @@ const PendingLabOrdersTable = ({
           orderedBy: pendingLabOrderRow.provider,
           providerUuid: pendingLabOrderRow.providerUuid,
           conceptUuid: pendingLabOrderRow.concept.uuid,
-          orderNotes: pendingLabOrderRow.commentToFulfiller
+          orderNotes: pendingLabOrderRow.commentToFulfiller,
         }
       })
   }
