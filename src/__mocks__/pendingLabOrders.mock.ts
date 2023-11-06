@@ -12,6 +12,7 @@ export const mockPendingLabOrdersResponse: LabOrdersFetchResponse = {
       provider: 'Super Man',
       providerUuid: '1',
       fulfillerStatus: null,
+      commentToFulfiller: null,
     },
     {
       concept: {
@@ -23,6 +24,7 @@ export const mockPendingLabOrdersResponse: LabOrdersFetchResponse = {
       provider: 'Super Man',
       providerUuid: '2',
       fulfillerStatus: null,
+      commentToFulfiller: null,
     },
     {
       concept: {
@@ -34,6 +36,7 @@ export const mockPendingLabOrdersResponse: LabOrdersFetchResponse = {
       provider: 'Super Man',
       providerUuid: '2',
       fulfillerStatus: null,
+      commentToFulfiller: null,
     },
     {
       concept: {
@@ -45,6 +48,7 @@ export const mockPendingLabOrdersResponse: LabOrdersFetchResponse = {
       provider: 'Super Man',
       providerUuid: '2',
       fulfillerStatus: null,
+      commentToFulfiller: null,
     },
   ],
 }

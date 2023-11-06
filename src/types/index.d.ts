@@ -7,6 +7,7 @@ export interface LabOrders {
   provider: string
   providerUuid: string
   fulfillerStatus: string
+  commentToFulfiller: string
 }
 
 interface Concept {
