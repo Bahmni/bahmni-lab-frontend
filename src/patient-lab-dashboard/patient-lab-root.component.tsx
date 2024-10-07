@@ -13,6 +13,8 @@ import PatientLabDetails from './patient-lab-details/patient-lab-details'
 import {UserHasAccess} from '@openmrs/esm-framework'
 import {PendingLabOrdersProvider} from '../context/pending-orders-context'
 import {LabTestResultsProvider} from '../context/lab-test-results-context'
+import {I18nextProvider} from 'react-i18next'
+import i18n from '../i18n'
 
 const swrConfiguration = {
   // Maximum number of retries when the backend returns an error
@@ -27,20 +29,22 @@ const Root: React.FC = () => {
       fallback={<UnauthorisedResponse />}
     >
       <main>
-        <SWRConfig value={swrConfiguration}>
-          <BrowserRouter basename={spaRoot}>
-            <Route exact path={labEntryHomePath} component={Home} />
-            <LabTestResultsProvider>
-              <PendingLabOrdersProvider>
-                <Route
-                  exact
-                  path={patientLabDetailsRoute}
-                  component={PatientLabDetails}
-                />
-              </PendingLabOrdersProvider>
-            </LabTestResultsProvider>
-          </BrowserRouter>
-        </SWRConfig>
+        <I18nextProvider i18n={i18n}>
+          <SWRConfig value={swrConfiguration}>
+            <BrowserRouter basename={spaRoot}>
+              <Route exact path={labEntryHomePath} component={Home} />
+              <LabTestResultsProvider>
+                <PendingLabOrdersProvider>
+                  <Route
+                    exact
+                    path={patientLabDetailsRoute}
+                    component={PatientLabDetails}
+                  />
+                </PendingLabOrdersProvider>
+              </LabTestResultsProvider>
+            </BrowserRouter>
+          </SWRConfig>
+        </I18nextProvider>
       </main>
     </UserHasAccess>
   )

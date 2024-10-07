@@ -19,6 +19,7 @@ interface AuditLogResponse {
 }
 const Home = () => {
   const {t} = useTranslation()
+  console.log(t('HOME_PAGE_TITLE'))
   const [loggedInUser, setLoggedInUser] = useState<LoggedInUser | null>(null)
 
   let {data: auditLogEnabledResponse, error: auditLogResponseError} = useSWR<
@@ -46,16 +47,14 @@ const Home = () => {
   return (
     <div className={classes.homeContainer}>
       <div className={classes.image}>
-        <img src={BahmniLogo} alt={`${t('LOGO_ALT_TEXT', 'Bahmni Logo')}`} />
+        <img src={BahmniLogo} alt={t('LOGO_ALT_TEXT', 'Bahmni Logo')} />
       </div>
-      <h1 className={classes.welcomeText}>
-        {`${t('HOME_PAGE_TITLE', 'WELCOME TO LAB ENTRY')}`}
-      </h1>
+      <h1 className={classes.welcomeText}>{t('HOME_PAGE_TITLE')}</h1>
       <span className={classes.helpText}>
-        {`${t(
+        {t(
           'HOME_PAGE_SUBTITLE',
           'Please click on the search icon above to get started',
-        )}`}
+        )}
       </span>
     </div>
   )

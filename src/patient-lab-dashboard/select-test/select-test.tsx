@@ -15,6 +15,7 @@ import {useSelectedTests} from '../../context/upload-report-context'
 import {LabTest} from '../../types/selectTest'
 import {getTestName} from '../../utils/helperFunctions'
 import styles from './select-test.scss'
+import {useTranslation} from 'react-i18next'
 
 const SelectTest = ({isDiscardButtonClicked}) => {
   const [searchResults, setSearchResults] = useState<Array<LabTest>>([])
@@ -27,6 +28,7 @@ const SelectTest = ({isDiscardButtonClicked}) => {
   const {selectedPendingOrder} = usePendingLabOrderContext()
   const {labTestResultsError} = useLabTestResultsContext()
   const {allTestsAndPanels} = useAllTestAndPanel()
+  const {t} = useTranslation()
 
   useEffect(() => {
     isDiscardButtonClicked && setSearchValue('')
@@ -266,7 +268,7 @@ const SelectTest = ({isDiscardButtonClicked}) => {
     if (searchResults.length > 0) {
       return (
         <>
-          {searchResults.length} items matching "
+          {searchResults.length} {t('ITEMS_MATCHING_TEXT', 'items matching')}"
           <p className={styles.bold}>{searchValue}</p>"
         </>
       )
@@ -294,10 +296,10 @@ const SelectTest = ({isDiscardButtonClicked}) => {
               <Tag
                 className="some-class"
                 size="sm"
-                title="Clear Filter"
+                title={t('CLEAR_FILTER_TEXT', 'Clear Filter')}
                 type="blue"
               >
-                Panel
+                {t('PANEL_LABEL', 'Panel')}
               </Tag>
             )}
           </div>
@@ -308,7 +310,11 @@ const SelectTest = ({isDiscardButtonClicked}) => {
 
   const renderSelectedTests = () => {
     if (selectedTests.length == 0)
-      return <div className={'bx--label'}>You have not selected any tests</div>
+      return (
+        <div className={'bx--label'}>
+          {t('NO_TEST_SELECTED', 'You have not selected any tests')}
+        </div>
+      )
     return (
       <div>
         {selectedTests.map((selectedTest, index) => (
@@ -326,10 +332,10 @@ const SelectTest = ({isDiscardButtonClicked}) => {
               <Tag
                 className="some-class"
                 size="sm"
-                title="Clear Filter"
+                title={t('CLEAR_FILTER_TEXT', 'Clear Filter')}
                 type="blue"
               >
-                Panel
+                {t('PANEL_LABEL', 'Panel')}
               </Tag>
             )}
           </div>
@@ -348,20 +354,27 @@ const SelectTest = ({isDiscardButtonClicked}) => {
   }
 
   if (labTestResultsError)
-    return <h3>Something went wrong in fetching Lab Tests</h3>
+    return (
+      <h3>
+        {t(
+          'LAB_TEST_FETCH_ERROR',
+          'Something went wrong in fetching Lab Tests',
+        )}
+      </h3>
+    )
 
   return (
     <>
-      <p className={'bx--label'}>Select Tests</p>
+      <p className={'bx--label'}>{t('SELECT_TESTS_LABEL', 'Select Tests')}</p>
       <div className={styles.searchTests}>
-        <p className={'bx--label'}>Search</p>
+        <p className={'bx--label'}>{t('SEARCH_LABEL', 'Search')}</p>
         <Search
-          labelText="search"
+          labelText={t('SEARCH_LABEL', 'Search')}
           value={searchValue}
           onChange={e => {
             setSearchValue(e.target.value)
           }}
-          placeholder="Search by lab test name"
+          placeholder={t('SEARCH_TEST_PLACEHOLDER', 'Search by lab test name')}
           onClear={handleClear}
         />
       </div>
@@ -370,7 +383,10 @@ const SelectTest = ({isDiscardButtonClicked}) => {
         <AccordionItem
           className={isAvailableTestsClicked ? styles.accordionItem : ''}
           data-testid="available-tests"
-          title={`Available Tests ( ${getAvailableTestsCount()} )`}
+          title={`${t(
+            'AVAILABLE_TESTS_LABEL',
+            'Available Tests',
+          )} ( ${getAvailableTestsCount()} )`}
           open={isAvailableTestsClicked && !selectedPendingOrder.length}
           children={renderSearchResults()}
           onClick={() => setIsAvailableTestsClicked(!isAvailableTestsClicked)}
@@ -379,7 +395,9 @@ const SelectTest = ({isDiscardButtonClicked}) => {
         <AccordionItem
           className={styles.accordionItem}
           data-testid="selected-tests"
-          title={`Selected Tests ( ${selectedTests.length} )`}
+          title={`${t('SELECTED_TESTS_LABEL', 'Selected Tests')} ( ${
+            selectedTests.length
+          } )`}
           open={true}
           children={renderSelectedTests()}
         />

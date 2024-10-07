@@ -1,7 +1,25 @@
-{
-    "title": "Lab Entry App",
-    "loading": "Chargement",
-    "LOGO_ALT_TEXT": "Bahmni logo",
-    "HOME_PAGE_TITLE": "Bienvenue à l'entrée du laboratoire",
-    "HOME_PAGE_SUBTITLE": "Veuillez cliquer sur l'icône de recherche ci-dessus pour commencer"
+{ 
+  "AVAILABLE_TESTS_LABEL": "Tests disponibles", 
+  "CLEAR_FILTER_TEXT": "Effacer le filtre", 
+  "DOCTOR_LIST": "liste des médecins", 
+  "DOCTOR_NAME_ERROR": "Une erreur s'est produite lors de la récupération des noms des médecins.. .", 
+  "DUPLICATE_ORDER_SUBTITLE": "Vous avez sélectionné des commandes en double. Veuillez sélectionner des commandes uniques.", 
+  "DUPLICATE_ORDER_TITLE": "Commande en double", 
+  "ENTER_TEST_RESULTS_TEXT": "Entrez les résultats des tests", 
+  "ERROR_MESSAGE_PRETEXT": "Une erreur s'est produite\u00a0:", 
+  "HOME_BUTTON_LABEL": "Accueil", 
+  "HOME_PAGE_SUBTITLE": "Veuillez cliquer sur l'icône de recherche ci-dessus pour commencer",
+  "HOME_PAGE_TITLE": "Bienvenue à l'entrée du laboratoire",
+  "ITEMS_MATCHING_TEXT": "éléments correspondants",
+  "LAB_TEST_FETCH_ERROR": "Une erreur s'est produite lors de la récupération des tests de laboratoire",
+  "loading": "Chargement",
+  "LOGO_ALT_TEXT": " Logo Bahmni",
+  "NO_TEST_SELECTED": "Vous n'avez sélectionné aucun test",
+  "PANEL_LABEL": "Panneau",
+  "SEARCH_LABEL": "Rechercher",
+  "SEARCH_TEST_PLACEHOLDER": "Rechercher par nom de test de laboratoire",
+  "SELECT_DOCTOR": " Sélectionnez un médecin",
+  "SELECT_TESTS_LABEL": "Sélectionner les tests",
+  "SELECTED_TESTS_LABEL": "Tests sélectionnés",
+  "UPLOAD_REPORT_TEXT": "Télécharger le rapport"
 }
