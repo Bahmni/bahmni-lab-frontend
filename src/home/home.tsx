@@ -12,10 +12,13 @@ import {
 } from '../utils/api-utils'
 import {isAuditLogEnabledKey, loggedInUserKey} from '../utils/constants'
 import classes from './home.scss'
+import {useTranslation} from 'react-i18next'
+
 interface AuditLogResponse {
   data: boolean
 }
 const Home = () => {
+  const {t} = useTranslation()
   const [loggedInUser, setLoggedInUser] = useState<LoggedInUser | null>(null)
 
   let {data: auditLogEnabledResponse, error: auditLogResponseError} = useSWR<
@@ -43,11 +46,16 @@ const Home = () => {
   return (
     <div className={classes.homeContainer}>
       <div className={classes.image}>
-        <img src={BahmniLogo} alt="Bahmni Logo" />
+        <img src={BahmniLogo} alt={`${t('LOGO_ALT_TEXT', 'Bahmni Logo')}`} />
       </div>
-      <h1 className={classes.welcomeText}>WELCOME TO LAB ENTRY</h1>
+      <h1 className={classes.welcomeText}>
+        {`${t('HOME_PAGE_TITLE', 'WELCOME TO LAB ENTRY')}`}
+      </h1>
       <span className={classes.helpText}>
-        Please click on the search icon above to get started
+        {`${t(
+          'HOME_PAGE_SUBTITLE',
+          'Please click on the search icon above to get started',
+        )}`}
       </span>
     </div>
   )

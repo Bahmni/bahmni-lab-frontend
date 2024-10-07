@@ -1,1 +1,7 @@
-{}
+{
+    "title": "Lab Entry App",
+    "loading": "Chargement",
+    "LOGO_ALT_TEXT": "Bahmni logo",
+    "HOME_PAGE_TITLE": "Bienvenue à l'entrée du laboratoire",
+    "HOME_PAGE_SUBTITLE": "Veuillez cliquer sur l'icône de recherche ci-dessus pour commencer"
+}
