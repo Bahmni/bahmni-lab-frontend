@@ -283,13 +283,16 @@ const ReportTable = (props: ReportTableProps) => {
                             })}
                           </TableExpandRow>
                           <TableExpandedRow colSpan={reportHeaders.length + 1}>
-                            <div
-                              style={{overflowWrap: 'anywhere'}}
-                            >{`Report conclusion : ${
-                              rows?.filter(
-                                intialRow => intialRow.id === row.id,
-                              )[0]?.conclusion
-                            }`}</div>
+                            <div style={{overflowWrap: 'anywhere'}}>
+                              {`${t(
+                                'REPORT_CONCLUSION_KEY',
+                                'Report Conclusion',
+                              )} : ${
+                                rows?.filter(
+                                  intialRow => intialRow.id === row.id,
+                                )[0]?.conclusion
+                              }`}
+                            </div>
                           </TableExpandedRow>
                         </React.Fragment>
                       )

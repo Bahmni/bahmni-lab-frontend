@@ -28,6 +28,7 @@ import {
 import {isAuditLogEnabledKey, loggedInUserKey} from '../../utils/constants'
 import DoctorListDropdown from '../doctors-list-dropdown/doctor-list-dropdown'
 import {getTestName} from '../../utils/helperFunctions'
+import {useTranslation} from 'react-i18next'
 
 interface UploadReportProps {
   saveHandler: Function
@@ -44,6 +45,7 @@ const UploadReport: React.FC<UploadReportProps> = ({
 }) => {
   const locale: Object = localStorage.getItem('i18nextLng')
   const currentDate: string = dayjs().format('MM/DD/YYYY')
+  const {t} = useTranslation()
   const [reportDate, setReportDate] = useState<Date>(null)
   const [reportConclusion, setReportConclusion] = useState<string>('')
   const [isDiscardButtonClicked, setIsDiscardButtonClicked] = useState<boolean>(
@@ -128,7 +130,7 @@ const UploadReport: React.FC<UploadReportProps> = ({
   const renderButtonGroup = () => (
     <div className={styles.overlayButtons}>
       <Button onClick={handleDiscard} kind="secondary" size="lg">
-        Discard
+        {t('DISCARD_LABEL', 'Discard')}
       </Button>
       <Button
         onClick={() => {
@@ -137,7 +139,7 @@ const UploadReport: React.FC<UploadReportProps> = ({
         size="lg"
         disabled={isDisabled()}
       >
-        Save and Upload
+        {t('SAVE_AND_UPLOAD_LABEL', 'Save and Upload')}
       </Button>
     </div>
   )
@@ -233,7 +235,7 @@ const UploadReport: React.FC<UploadReportProps> = ({
           width: '100%',
         }}
       >
-        Requested by
+        {t('REQUESTED_BY', 'Requested by')}
       </div>
       <DoctorListDropdown />
       {showReportConclusionLabel ? (
@@ -244,7 +246,10 @@ const UploadReport: React.FC<UploadReportProps> = ({
             setShowReportConclusionLabel(false)
           }}
         >
-          Click to record clinical conclusion
+          {t(
+            'RECORD_CLINICAL_CONCLUSION_KEY',
+            'Click to record clinical conclusion',
+          )}
         </Button>
       ) : (
         <div style={{paddingTop: '1rem'}}>
@@ -257,7 +262,7 @@ const UploadReport: React.FC<UploadReportProps> = ({
               width: '100%',
             }}
           >
-            Report Conclusion{' '}
+            {t('REPORT_CONCLUSION_KEY', 'Report Conclusion')}
             <span id="counter">{`${reportConclusion?.length}/${maxCount}`}</span>
           </div>
           <TextArea

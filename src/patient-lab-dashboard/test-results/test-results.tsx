@@ -20,6 +20,7 @@ import DoctorListDropdown from '../doctors-list-dropdown/doctor-list-dropdown'
 import {saveTestDiagnosticReport} from '../upload-report/upload-report.resources'
 import {TestResultsLabOrder} from '../../types'
 import {useAllTestAndPanel} from '../../context/lab-test-results-context'
+import {useTranslation} from 'react-i18next'
 
 interface TestResultProps {
   saveHandler: Function
@@ -41,6 +42,7 @@ const TestResults: React.FC<TestResultProps> = ({
   const {doctor, setDoctor} = useDoctorDetails()
   const [answer, setAnswer] = useState(new Map())
   const maxCount: number = 500
+  const {t} = useTranslation()
   const {
     selectedPendingOrder,
     setSelectedPendingOrder,
@@ -136,7 +138,7 @@ const TestResults: React.FC<TestResultProps> = ({
   const renderButtonGroup = () => (
     <div className={styles.overlayButtons}>
       <Button onClick={handleDiscard} kind="secondary" size="lg">
-        Discard
+        {t('DISCARD_LABEL', 'Discard')}
       </Button>
       <Button
         onClick={() => {
@@ -145,7 +147,7 @@ const TestResults: React.FC<TestResultProps> = ({
         size="lg"
         disabled={isDisabled()}
       >
-        Save and Upload
+        {t('SAVE_AND_UPLOAD_LABEL', 'Save and Upload')}
       </Button>
     </div>
   )
@@ -271,7 +273,7 @@ const TestResults: React.FC<TestResultProps> = ({
               title="answers list"
               items={items}
               itemToString={getDropdownItemToString(test)}
-              label="Select an answer"
+              label={t('SELECT_ANSWER', 'Select an answer')}
               onChange={({selectedItem}) => updateLabResult(selectedItem, test)}
               selectedItem={answer.get(test.uuid) ?? ''}
               helperText={
@@ -285,20 +287,20 @@ const TestResults: React.FC<TestResultProps> = ({
               key={`text-${test.uuid}-${index}`}
               labelText={getTestNameWithUnits(test)}
               id={`${test.uuid}-${index}`}
-              placeholder="Enter Value"
+              placeholder={t('ENTER_VALUE_KEY', 'Enter Value')}
               size="sm"
               onChange={e => updateOrStoreLabResult(e.target.value, test)}
               style={labResult.get(test.uuid)?.abnormal ? {color: 'red'} : {}}
               value={getValue(test)}
               invalid={labResult.size != 0 && isInvalid(test)}
-              invalidText="Please enter valid data"
+              invalidText={t('INVALID_DATA_ENTERED', 'Please enter valid data')}
             />
           )}
           <span style={{paddingLeft: '1rem'}}>
             <Checkbox
               key={`abnormal-${test.uuid}`}
               id={`abnormal-${test.uuid}`}
-              labelText={'Abnormal'}
+              labelText={t('ABNORMAL_TEXT', 'Abnormal')}
               checked={
                 getValue(test) !== '' &&
                 (labResult.get(test.uuid)?.abnormal ?? false)
@@ -385,7 +387,7 @@ const TestResults: React.FC<TestResultProps> = ({
             width: '100%',
           }}
         >
-          Requested by
+          {t('REQUESTED_BY', 'Requested by')}
         </div>
         <DoctorListDropdown />
       </div>
@@ -397,7 +399,10 @@ const TestResults: React.FC<TestResultProps> = ({
             setShowReportConclusionLabel(false)
           }}
         >
-          Click to record clinical conclusion
+          {t(
+            'RECORD_CLINICAL_CONCLUSION_KEY',
+            'Click to record clinical conclusion',
+          )}
         </Button>
       ) : (
         <div style={{paddingTop: '1rem'}}>
@@ -410,7 +415,7 @@ const TestResults: React.FC<TestResultProps> = ({
               width: '100%',
             }}
           >
-            Report Conclusion{' '}
+            {t('REPORT_CONCLUSION_KEY', 'Report Conclusion')}
             <span id="counter">{`${reportConclusion?.length}/${maxCount}`}</span>
           </div>
           <TextArea
