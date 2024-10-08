@@ -20,7 +20,7 @@
   "INVALID_DATA_ENTERED": "Por favor introduza dados válidos",
   "ITEMS_MATCHING_TEXT": "itens correspondentes",
   "LAB_TEST_FETCH_ERROR": "Algo correu mal na pesquisa dos testes laboratoriais",
-  "carregando": "Carregando",
+  "loading": "Carregando",
   "LOGO_ALT_TEXT": "Logotipo Bahmni",
   "MAX_FILE_SIZE_MESSAGE": "Tamanho máximo de ficheiro permitido: 5MB",
   "NO_REPORTS_FOUND_TEXT": "Não foi encontrado nenhum relatório anterior para este doente",

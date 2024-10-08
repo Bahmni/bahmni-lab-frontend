@@ -11,6 +11,15 @@ import {
   mockDoctorsListErrorResponse,
 } from '../../__mocks__/doctorNames.mock'
 import DoctorListDropdown from './doctor-list-dropdown'
+import {translations} from '../../__mocks__/translations.mock'
+
+jest.mock('react-i18next', () => ({
+  useTranslation: () => ({
+    t: key => {
+      return translations[key] || key
+    },
+  }),
+}))
 
 const mockedOpenmrsFetch = openmrsFetch as jest.Mock
 describe('upload file', () => {

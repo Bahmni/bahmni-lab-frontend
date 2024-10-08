@@ -19,7 +19,6 @@ interface AuditLogResponse {
 }
 const Home = () => {
   const {t} = useTranslation()
-  console.log(t('HOME_PAGE_TITLE'))
   const [loggedInUser, setLoggedInUser] = useState<LoggedInUser | null>(null)
 
   let {data: auditLogEnabledResponse, error: auditLogResponseError} = useSWR<

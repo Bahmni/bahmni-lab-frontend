@@ -22,12 +22,21 @@ import {
 } from '../../__mocks__/selectTests.mock'
 import {saveDiagnosticReportURL} from '../../utils/api-utils'
 import {mockDoctorNames} from '../../__mocks__/doctorNames.mock'
+import {translations} from '../../__mocks__/translations.mock'
 
 jest.mock('../../context/pending-orders-context', () => ({
   ...jest.requireActual('../../context/pending-orders-context'),
   usePendingLabOrderContext: jest.fn(() => ({
     selectedPendingOrder: mockSelectedPendingOrder,
   })),
+}))
+
+jest.mock('react-i18next', () => ({
+  useTranslation: () => ({
+    t: key => {
+      return translations[key] || key
+    },
+  }),
 }))
 
 jest.mock('../../context/lab-test-results-context', () => ({

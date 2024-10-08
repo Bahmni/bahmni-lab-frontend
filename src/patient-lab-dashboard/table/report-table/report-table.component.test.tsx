@@ -26,8 +26,17 @@ import {
   mockLabTestsResponse,
 } from '../../../__mocks__/selectTests.mock'
 import ReportTable from './report-table.component'
+import {translations} from '../../../__mocks__/translations.mock'
 
 const mockPatientUuid = 'uuid-1'
+
+jest.mock('react-i18next', () => ({
+  useTranslation: () => ({
+    t: key => {
+      return translations[key] || key
+    },
+  }),
+}))
 
 describe('Paginated Reports Table', () => {
   beforeEach(() => {

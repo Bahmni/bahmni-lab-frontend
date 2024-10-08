@@ -5,7 +5,7 @@
   "ALLOWED_FILE_TYPES": "Extensions de fichiers autorisées : pdf, jpeg, jpg", 
   "AVAILABLE_TESTS_LABEL": "Tests disponibles", 
   "CLEAR_FILTER_TEXT": "Effacer le filtre", 
-  "DISCARD_LABEL": "Discard", 
+  "DISCARD_LABEL": "Rejeter", 
   "DOCTOR_LIST": "liste des médecins", 
   "DOCTOR_NAME_ERROR": "Une erreur s'est produite lors de la récupération des noms des médecins.. . ", 
   "DUPLICATE_ORDER_SUBTITLE": "Vous avez sélectionné des commandes en double. Veuillez sélectionner des commandes uniques.", 
