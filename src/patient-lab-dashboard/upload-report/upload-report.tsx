@@ -220,7 +220,7 @@ const UploadReport: React.FC<UploadReportProps> = ({
         <label id="reportDateLabel">
           <DatePickerInput
             placeholder="mm/dd/yyyy"
-            labelText="Report Date"
+            labelText={t('REPORT_DATE_LABEL', 'Report Date')}
             id="reportDate"
           />
         </label>

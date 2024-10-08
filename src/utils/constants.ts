@@ -27,18 +27,22 @@ export const headers = [
   {
     key: 'date',
     header: 'Date',
+    txKey: 'DATE_LABEL',
   },
   {
     key: 'testName',
     header: 'Test',
+    txKey: 'TEST_LABEL',
   },
   {
     key: 'orderedBy',
     header: 'Ordered By',
+    txKey: 'ORDERED_BY_LABEL',
   },
   {
     key: 'orderNotes',
     header: 'Order Notes',
+    txKey: 'ORDER_NOTES_LABEL',
   },
 ]
 
@@ -46,17 +50,21 @@ export const reportHeaders = [
   {
     key: 'date',
     header: 'Report date',
+    txKey: 'REPORT_DATE_LABEL',
   },
   {
     key: 'tests',
     header: 'Tests',
+    txKey: 'TESTS_LABEL',
   },
   {
     key: 'file',
     header: 'File',
+    txKey: 'FILE_LABEL',
   },
   {
     key: 'requester',
     header: 'Requester',
+    txKey: 'REQUESTER_LABEL',
   },
 ]

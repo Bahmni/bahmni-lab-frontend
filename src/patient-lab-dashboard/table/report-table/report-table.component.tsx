@@ -213,7 +213,7 @@ const ReportTable = (props: ReportTableProps) => {
                         }
                         {...getHeaderProps({header})}
                       >
-                        {header.header}
+                        {t(header.txKey, header.header)}
                       </TableHeader>
                     ))}
                   </TableRow>

@@ -129,7 +129,7 @@ const PendingLabOrdersTable = ({
                       <TableHeader></TableHeader>
                       {headers.map(header => (
                         <TableHeader {...getHeaderProps({header})}>
-                          {header.header}
+                          {t(header.txKey, header.header)}
                         </TableHeader>
                       ))}
                     </TableRow>

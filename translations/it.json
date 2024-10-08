@@ -40,5 +40,13 @@
   "SELECT_DOCTOR": "Seleziona un medico",
   "SELECT_TESTS_LABEL": "Seleziona test",
   "SELECTED_TESTS_LABEL": "Test selezionati",
-  "UPLOAD_REPORT_TEXT": "Carica report"
+  "UPLOAD_REPORT_TEXT": "Carica report",
+  "REPORT_DATE_LABEL": "Data del report",
+  "DATE_LABEL": "Data",
+  "TEST_LABEL": "Test",
+  "ORDERED_BY_LABEL": "Ordinato da",
+  "ORDER_NOTES_LABEL": "Note sull'ordine",
+  "TESTS_LABEL": "Test",
+  "FILE_LABEL": "File",
+  "REQUESTER_LABEL": "Richiedente"
 }

@@ -11,7 +11,7 @@
   "DUPLICATE_ORDER_SUBTITLE": "Vous avez sélectionné des commandes en double. Veuillez sélectionner des commandes uniques.", 
   "DUPLICATE_ORDER_TITLE": "Commande en double", 
   "ENTER_TEST_RESULTS_TEXT": "Entrez les résultats des tests",
-  "ENTER_VALUE_KEY": "Enter Value", 
+  "ENTER_VALUE_KEY": "Entrer une valeur", 
   "ERROR_MESSAGE_PRETEXT": "Une erreur s'est produite\u00a0:", 
   "FILE_FORMAT_ERROR": "Seuls les fichiers avec l'extension suivante autorisés : pdf, jpg", 
   "FILE_SIZE_ERROR": "La taille du fichier dépasse max limit (5mb)", 
@@ -41,5 +41,14 @@
   "SELECT_DOCTOR": " Sélectionnez un médecin", 
   "SELECT_TESTS_LABEL": "Sélectionner les tests", 
   "SELECTED_TESTS_LABEL": "Tests sélectionnés", 
-  "UPLOAD_REPORT_TEXT": "Télécharger le rapport" 
+  "UPLOAD_REPORT_TEXT": "Télécharger le rapport",
+  "REPORT_DATE_LABEL": "Date du rapport",
+  "REPORT_CONCLUSION_KEY": "Conclusión del informe",
+  "DATE_LABEL": "Date",
+  "TEST_LABEL": "Test",
+  "ORDERED_BY_LABEL": "Commandé par",
+  "ORDER_NOTES_LABEL": "Notes de commande",
+  "TESTS_LABEL": "Tests",
+  "FILE_LABEL": "Fichier",
+  "REQUESTER_LABEL": "Demandeur"
 }

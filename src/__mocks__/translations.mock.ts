@@ -44,4 +44,12 @@ export const translations = {
   SELECT_TESTS_LABEL: 'Select Tests',
   SELECTED_TESTS_LABEL: 'Selected Tests',
   UPLOAD_REPORT_TEXT: 'Upload Report',
+  REPORT_DATE_LABEL: 'Report date',
+  DATE_LABEL: 'Date',
+  TEST_LABEL: 'Test',
+  ORDERED_BY_LABEL: 'Ordered By',
+  ORDER_NOTES_LABEL: 'Order Notes',
+  TESTS_LABEL: 'Tests',
+  FILE_LABEL: 'File',
+  REQUESTER_LABEL: 'Requester',
 }
