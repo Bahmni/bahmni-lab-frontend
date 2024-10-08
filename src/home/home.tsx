@@ -48,7 +48,9 @@ const Home = () => {
       <div className={classes.image}>
         <img src={BahmniLogo} alt={t('LOGO_ALT_TEXT', 'Bahmni Logo')} />
       </div>
-      <h1 className={classes.welcomeText}>{t('HOME_PAGE_TITLE')}</h1>
+      <h1 className={classes.welcomeText}>
+        {t('HOME_PAGE_TITLE', 'WELCOME TO LAB ENTRY')}
+      </h1>
       <span className={classes.helpText}>
         {t(
           'HOME_PAGE_SUBTITLE',
