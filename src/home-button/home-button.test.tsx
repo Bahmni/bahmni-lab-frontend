@@ -1,7 +1,16 @@
-import { render, screen } from '@testing-library/react'
+import {render, screen} from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import React from 'react'
 import HomeButton from './home-button'
+import {translations} from '../__mocks__/translations.mock'
+
+jest.mock('react-i18next', () => ({
+  useTranslation: () => ({
+    t: key => {
+      return translations[key] || key
+    },
+  }),
+}))
 
 describe('home button', () => {
   beforeEach(() => {
@@ -31,5 +40,4 @@ describe('home button', () => {
     userEvent.click(screen.getByLabelText('Home'))
     expect(window.location.href).toEqual('/bahmni/home')
   })
-
 })

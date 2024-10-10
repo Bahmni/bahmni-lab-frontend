@@ -4,6 +4,15 @@ import UploadFile from './upload-file'
 import userEvent from '@testing-library/user-event'
 import {UploadReportProvider} from '../../context/upload-report-context'
 import {uploadFiles} from '../../utils/test-utils/upload-report-helper'
+import {translations} from '../../__mocks__/translations.mock'
+
+jest.mock('react-i18next', () => ({
+  useTranslation: () => ({
+    t: key => {
+      return translations[key] || key
+    },
+  }),
+}))
 
 describe('upload file', () => {
   it('should show the file upload box', () => {

@@ -1,16 +1,17 @@
-import { openmrsFetch } from '@openmrs/esm-framework'
-import { render, screen, waitFor } from '@testing-library/react'
+import {openmrsFetch} from '@openmrs/esm-framework'
+import {render, screen, waitFor} from '@testing-library/react'
 import React from 'react'
-import { of } from 'rxjs'
-import { SWRConfig } from 'swr'
+import {of} from 'rxjs'
+import {SWRConfig} from 'swr'
 import {
   auditLogGlobalPropertyURL,
   auditLogURL,
-  getPayloadForUserLogin
+  getPayloadForUserLogin,
 } from '../utils/api-utils'
-import { verifyApiCall } from '../utils/test-utils'
-import { mockUser } from '../__mocks__/mockUser'
+import {verifyApiCall} from '../utils/test-utils'
+import {mockUser} from '../__mocks__/mockUser'
 import Home from './home'
+import {translations} from '../__mocks__/translations.mock'
 
 const mockUserObservable = of(mockUser)
 jest.mock('@openmrs/esm-framework', () => ({
@@ -18,10 +19,18 @@ jest.mock('@openmrs/esm-framework', () => ({
   getCurrentUser: jest.fn(() => mockUserObservable),
   subscribeConnectivity: jest.fn(),
 }))
+
+jest.mock('react-i18next', () => ({
+  useTranslation: () => ({
+    t: key => {
+      return translations[key] || key
+    },
+  }),
+}))
+
 describe('home page', () => {
   let mockedOpenmrsFetch = openmrsFetch as jest.Mock
-  mockedOpenmrsFetch
-    .mockReturnValueOnce({data: true})
+  mockedOpenmrsFetch.mockReturnValueOnce({data: true})
   it('should show home page', () => {
     render(
       <SWRConfig value={{provider: () => new Map()}}>
@@ -45,8 +54,7 @@ describe('home page - Auditing', () => {
   })
 
   it('should update audit logs when user enters lab lite', async () => {
-    mockedOpenmrsFetch
-      .mockReturnValueOnce({data: true})
+    mockedOpenmrsFetch.mockReturnValueOnce({data: true})
 
     render(
       <SWRConfig value={{provider: () => new Map()}}>
@@ -62,8 +70,7 @@ describe('home page - Auditing', () => {
   })
 
   it('should not update audit logs when audit log property is disabled', async () => {
-    mockedOpenmrsFetch
-      .mockReturnValueOnce({data: false})
+    mockedOpenmrsFetch.mockReturnValueOnce({data: false})
 
     render(
       <SWRConfig value={{provider: () => new Map()}}>

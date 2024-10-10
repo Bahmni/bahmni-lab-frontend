@@ -6,8 +6,10 @@ import {usePendingLabOrderContext} from '../../context/pending-orders-context'
 import {useDoctorDetails} from '../../context/upload-report-context'
 import {DoctorsResponse} from '../../types'
 import {fetcher, getProvidersURL} from '../../utils/lab-orders'
+import {useTranslation} from 'react-i18next'
 
 const DoctorListDropdown = () => {
+  const {t} = useTranslation()
   const {data: doctorsList, error: doctorsListError} = useSWR<
     DoctorsResponse,
     Error
@@ -37,7 +39,12 @@ const DoctorListDropdown = () => {
 
   const isProvidersListError = () =>
     doctorsListError && (
-      <div>Something went wrong in fetching Doctor Names...</div>
+      <div>
+        {t(
+          'DOCTOR_NAME_ERROR',
+          'Something went wrong in fetching Doctor Names...',
+        )}
+      </div>
     )
 
   return (
@@ -45,10 +52,10 @@ const DoctorListDropdown = () => {
       {isProvidersListError() ?? (
         <Dropdown
           id="doctor-list-dropdown"
-          title="doctor list"
+          title={t('DOCTOR_LIST', 'doctor list')}
           items={items}
           itemToString={data => data.person?.display}
-          label="Select a Doctor"
+          label={t('SELECT_DOCTOR', 'Select a Doctor')}
           onChange={({selectedItem}) => setDoctor(selectedItem)}
           selectedItem={doctor}
         />

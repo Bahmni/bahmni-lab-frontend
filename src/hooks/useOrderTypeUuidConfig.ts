@@ -3,8 +3,7 @@ import useSWR from 'swr'
 import createPersistedState from 'use-persisted-state'
 import {orderTypeUuidKey, labOrderType} from '../utils/constants'
 import {OrderTypeFetchResponse, OrderType} from '../types'
-import {getOrderTypeUuid} from '../utils/api-utils'
-import {fetcher} from '../utils/api-utils'
+import {getOrderTypeUuid, fetcher} from '../utils/api-utils'
 const useOrderTypeUuidConfigState = createPersistedState<string>(
   orderTypeUuidKey,
 )

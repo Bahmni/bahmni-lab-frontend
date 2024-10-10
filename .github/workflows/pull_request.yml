@@ -2,7 +2,7 @@ name: Pull Reqeust
 
 on:
   pull_request:
-    branches: [ main ]
+    branches: [ Bahmni-IPD-master ]
     types: [opened, synchronize, reopened]
 
 jobs:
@@ -11,10 +11,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - name: Setup Node.js 16.x
+      - name: Setup Node.js 18.x
         uses: actions/setup-node@v1
         with:
-          node-version: "16.x"
+          node-version: "18.x"
       - run: yarn install
       - run: yarn lint
       - run: yarn typescript

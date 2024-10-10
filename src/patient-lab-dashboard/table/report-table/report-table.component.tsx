@@ -48,6 +48,7 @@ import {getShortName} from '../../../utils/helperFunctions'
 import {fetcher, getReportTableDataURL} from '../../../utils/lab-orders'
 import ImagePreviewComponent from '../../image-preview-component/image-preview-component'
 import classes from './report-table.component.scss'
+import {useTranslation} from 'react-i18next'
 
 function getReportUrl(reportsData: Array<ReportTableRow>, reportId: string) {
   const url = reportsData?.find(intialRow => intialRow.id === reportId)?.url
@@ -63,6 +64,7 @@ interface ReportTableProps {
 const ReportTable = (props: ReportTableProps) => {
   const {patientUuid, reloadTableData} = props
   const reportTableDataUrl = getReportTableDataURL(patientUuid)
+  const {t} = useTranslation()
   const {
     labTestResults,
     setLabTestResults,
@@ -168,13 +170,18 @@ const ReportTable = (props: ReportTableProps) => {
 
   if (reportsTableDataError || testResultsError)
     return (
-      <div>Something went wrong in fetching Report tables or Lab Tests...</div>
+      <div>
+        {t(
+          'REPORTS_ANDLAB_TESTS_FETCH_ERROR',
+          'Something went wrong in fetching Report tables or Lab Tests...',
+        )}
+      </div>
     )
 
   return (
     <div title="report-table">
       <>
-        <h4>Reports table</h4>
+        <h4>{t('REPORTS_TABLE_TEXT', 'Reports table')}</h4>
         {(!testResultsError && !labTestResults) ||
         (!reports && !reportsTableDataError) ? (
           <Loader />
@@ -206,7 +213,7 @@ const ReportTable = (props: ReportTableProps) => {
                         }
                         {...getHeaderProps({header})}
                       >
-                        {header.header}
+                        {t(header.txKey, header.header)}
                       </TableHeader>
                     ))}
                   </TableRow>
@@ -276,20 +283,26 @@ const ReportTable = (props: ReportTableProps) => {
                             })}
                           </TableExpandRow>
                           <TableExpandedRow colSpan={reportHeaders.length + 1}>
-                            <div
-                              style={{overflowWrap: 'anywhere'}}
-                            >{`Report conclusion : ${
-                              rows?.filter(
-                                intialRow => intialRow.id === row.id,
-                              )[0]?.conclusion
-                            }`}</div>
+                            <div style={{overflowWrap: 'anywhere'}}>
+                              {`${t(
+                                'REPORT_CONCLUSION_KEY',
+                                'Report Conclusion',
+                              )} : ${
+                                rows?.filter(
+                                  intialRow => intialRow.id === row.id,
+                                )[0]?.conclusion
+                              }`}
+                            </div>
                           </TableExpandedRow>
                         </React.Fragment>
                       )
                     })
                   ) : (
                     <TableExpandedRow colSpan={reportHeaders.length + 1}>
-                      No previous reports found for this patient
+                      {t(
+                        'NO_REPORTS_FOUND_TEXT',
+                        'No previous reports found for this patient',
+                      )}
                     </TableExpandedRow>
                   )}
                 </TableBody>

@@ -35,6 +35,7 @@ import TestResults from '../test-results/test-results'
 import useSWR from 'swr'
 import {getLabConfig} from '../../utils/lab-orders'
 import {LabConfigResponse} from '../../types'
+import {useTranslation} from 'react-i18next'
 
 interface PatientParamsType {
   patientUuid: string
@@ -54,6 +55,7 @@ const PatientLabDetails: React.FC<RouteComponentProps<PatientParamsType>> = ({
   >(false)
   const {selectedPendingOrder} = usePendingLabOrderContext()
   const [duplicateOrder, setDuplicateOrder] = useState<boolean>(false)
+  const {t} = useTranslation()
 
   const handleClick = () => {
     setOnButtonClick(true)
@@ -146,7 +148,9 @@ const PatientLabDetails: React.FC<RouteComponentProps<PatientParamsType>> = ({
       {isLoading ? (
         <Loader />
       ) : error || labConfigError ? (
-        <div>Something went wrong: {error.message}</div>
+        <div>
+          {t('ERROR_MESSAGE_PRETEXT', 'Something went wrong:')} {error.message}
+        </div>
       ) : (
         <Grid
           style={{padding: '1rem'}}
@@ -188,8 +192,11 @@ const PatientLabDetails: React.FC<RouteComponentProps<PatientParamsType>> = ({
             {duplicateOrder && (
               <InlineNotification
                 kind="error"
-                title="Duplicate Order"
-                subtitle="You have selected duplicate orders. Please select unique orders."
+                title={t('DUPLICATE_ORDER_TITLE', 'Duplicate Order')}
+                subtitle={t(
+                  'DUPLICATE_ORDER_SUBTITLE',
+                  'You have selected duplicate orders. Please select unique orders.',
+                )}
                 lowContrast={true}
               />
             )}
@@ -209,7 +216,7 @@ const PatientLabDetails: React.FC<RouteComponentProps<PatientParamsType>> = ({
                 disabled={duplicateOrder}
                 className={styles.responsiveButton}
               >
-                Upload Report
+                {t('UPLOAD_REPORT_TEXT', 'Upload Report')}
               </Button>
               {onButtonClick && (
                 <UploadReportProvider>
@@ -218,7 +225,7 @@ const PatientLabDetails: React.FC<RouteComponentProps<PatientParamsType>> = ({
                       handleUploadAndSave(isSaveSuccess)
                     }
                     closeHandler={() => handleClose()}
-                    header="Upload Report"
+                    header={t('UPLOAD_REPORT_TEXT', 'Upload Report')}
                     patientUuid={patientUuid}
                   />
                 </UploadReportProvider>
@@ -230,7 +237,7 @@ const PatientLabDetails: React.FC<RouteComponentProps<PatientParamsType>> = ({
                   onClick={enterResultsHandleClick}
                   className={styles.responsiveButton}
                 >
-                  Enter Test Results
+                  {t('ENTER_TEST_RESULTS_TEXT', 'Enter Test Results')}
                 </Button>
               )}
               {onEnterResultButtonClick && (
@@ -240,7 +247,7 @@ const PatientLabDetails: React.FC<RouteComponentProps<PatientParamsType>> = ({
                       handleUploadAndSave(isSaveSuccess)
                     }}
                     closeHandler={() => enterResultsHandleClose()}
-                    header="Enter Test Results"
+                    header={t('ENTER_TEST_RESULTS_TEXT', 'Enter Test Results')}
                     patientUuid={patientUuid}
                   />
                 </UploadReportProvider>

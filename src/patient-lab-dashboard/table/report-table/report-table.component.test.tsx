@@ -26,14 +26,23 @@ import {
   mockLabTestsResponse,
 } from '../../../__mocks__/selectTests.mock'
 import ReportTable from './report-table.component'
+import {translations} from '../../../__mocks__/translations.mock'
 
 const mockPatientUuid = 'uuid-1'
+
+jest.mock('react-i18next', () => ({
+  useTranslation: () => ({
+    t: key => {
+      return translations[key] || key
+    },
+  }),
+}))
 
 describe('Paginated Reports Table', () => {
   beforeEach(() => {
     Object.defineProperty(window, 'localStorage', {value: localStorageMock})
     when(openmrsFetch).mockImplementation(() => jest.fn())
-    localStorage.setItem('i18nextLng', 'en-us')
+    localStorage.setItem('i18nextLng', 'en')
     when(usePagination)
       .calledWith(expect.anything(), 5)
       .mockReturnValue({

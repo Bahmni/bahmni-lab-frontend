@@ -42,7 +42,7 @@ module.exports = {
   lineEnding: 'lf',
   // Control the line ending. See options at https://github.com/ryanve/eol
 
-  locales: ['en'],
+  locales: ['en', 'fr', 'es', 'it', 'pt_BR'],
   // An array of the locales in your applications
 
   namespaceSeparator: ':',
@@ -90,4 +90,4 @@ module.exports = {
   //   message: "${defaultValue}",
   //   description: "${maxLength}", // t('my-key', {maxLength: 150})
   // }
-};
+}

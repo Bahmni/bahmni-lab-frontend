@@ -14,11 +14,20 @@ import {
   mockLabTestsErrorResponse,
 } from '../../__mocks__/selectTests.mock'
 import SelectTest from './select-test'
+import {translations} from '../../__mocks__/translations.mock'
 
 jest.mock('../../context/lab-test-results-context', () => ({
   ...jest.requireActual('../../context/lab-test-results-context'),
   useLabTestResultsContext: jest.fn(),
   useAllTestAndPanel: jest.fn(),
+}))
+
+jest.mock('react-i18next', () => ({
+  useTranslation: () => ({
+    t: key => {
+      return translations[key] || key
+    },
+  }),
 }))
 
 describe('Select Test', () => {
@@ -50,7 +59,7 @@ describe('Select Test', () => {
     mockUseLabTestResultsContext.mockImplementation(() => ({
       labTestResultsError: mockLabTestsErrorResponse,
     }))
-   
+
     await renderSelectTestComponent()
     expect(
       screen.getByText(/Something went wrong in fetching Lab Tests/i),

@@ -11,10 +11,7 @@ import {
   saveDiagnosticReportURL,
   uploadDocumentURL,
 } from '../../utils/api-utils'
-import {
-  isAuditLogEnabledKey,
-  loggedInUserKey,
-} from '../../utils/constants'
+import {isAuditLogEnabledKey, loggedInUserKey} from '../../utils/constants'
 import {localStorageMock, verifyApiCall} from '../../utils/test-utils'
 import {uploadFiles} from '../../utils/test-utils/upload-report-helper'
 import {mockDoctorNames} from '../../__mocks__/doctorNames.mock'
@@ -29,6 +26,7 @@ import {
 } from '../../__mocks__/selectTests.mock'
 import UploadReport from './upload-report'
 import {LabTestResultsProvider} from '../../context/lab-test-results-context'
+import {translations} from '../../__mocks__/translations.mock'
 
 jest.mock('../../context/lab-test-results-context', () => ({
   ...jest.requireActual('../../context/lab-test-results-context'),
@@ -39,6 +37,14 @@ jest.mock('../../context/lab-test-results-context', () => ({
   useAllTestAndPanel: jest.fn(() => ({
     allTestsAndPanels: mockAlltestAndPanels,
   })),
+}))
+
+jest.mock('react-i18next', () => ({
+  useTranslation: () => ({
+    t: key => {
+      return translations[key] || key
+    },
+  }),
 }))
 
 describe('Upload Report', () => {
@@ -194,8 +200,7 @@ describe('Upload Report', () => {
     const file = new File(['content'], 'test.jpg', {type: 'image/jpg'})
     localStorage.setItem('i18nextLng', 'en')
     const mockedOpenmrsFetch = openmrsFetch as jest.Mock
-    mockedOpenmrsFetch
-      .mockReturnValue(mockDoctorNames)
+    mockedOpenmrsFetch.mockReturnValue(mockDoctorNames)
 
     const mockedLayout = useLayoutType as jest.Mock
     mockedLayout.mockReturnValue('desktop')

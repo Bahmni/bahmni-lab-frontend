@@ -25,6 +25,7 @@ import {
   headers,
   orderStatusCompleted,
 } from '../../../utils/constants'
+import {useTranslation} from 'react-i18next'
 
 const PendingLabOrdersTable = ({
   patientUuid,
@@ -37,6 +38,7 @@ const PendingLabOrdersTable = ({
     patientUuid,
     orderTypeUuidConfig,
   )
+  const {t} = useTranslation()
 
   const {data: pendingLabOrders, error: pendingLabOrderDataError} = useSWR<
     LabOrdersFetchResponse,
@@ -104,11 +106,16 @@ const PendingLabOrdersTable = ({
   return (
     <div title="paginated-table">
       {pendingLabOrderDataError ? (
-        <div>Something went wrong in fetching pending lab orders...</div>
+        <div>
+          {t(
+            'PENDING_LAB_ORDERS_ERROR',
+            'Something went wrong in fetching pending lab orders...',
+          )}
+        </div>
       ) : (
         pendingLabOrderRows?.length > 0 && (
           <>
-            <h4>Pending Lab Orders</h4>
+            <h4>{t('PENDING_LAB_ORDERS_TEXT', 'Pending Lab Orders')}</h4>
             <DataTable rows={paginatedPendingLabOrders} headers={headers}>
               {({
                 rows: dataTableRows,
@@ -122,7 +129,7 @@ const PendingLabOrdersTable = ({
                       <TableHeader></TableHeader>
                       {headers.map(header => (
                         <TableHeader {...getHeaderProps({header})}>
-                          {header.header}
+                          {t(header.txKey, header.header)}
                         </TableHeader>
                       ))}
                     </TableRow>

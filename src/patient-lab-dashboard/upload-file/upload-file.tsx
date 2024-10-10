@@ -5,13 +5,20 @@ import {
   Tag,
 } from 'carbon-components-react'
 import {useSelectedFile} from '../../context/upload-report-context'
+import {useTranslation} from 'react-i18next'
 
 const UploadFile = () => {
   const maxFileSize: number = 5242880
+  const {t} = useTranslation()
   const validFileTypes = ['image/jpg', 'image/jpeg', 'application/pdf']
-  const fileSizeErrorMessage = 'File size exceeds max limit (5mb)'
-  const fileFormatErrorMessage =
-    'Only files with following extension allowed: pdf, jpg'
+  const fileSizeErrorMessage = t(
+    'FILE_SIZE_ERROR',
+    'File size exceeds max limit (5mb)',
+  )
+  const fileFormatErrorMessage = t(
+    'FILE_FORMAT_ERROR',
+    'Only files with following extension allowed: pdf, jpg',
+  )
 
   const [errorMessage, setErrorMessage] = useState(null)
   const [showDragDropBox, setShowDragDropBox] = React.useState(true)
@@ -46,14 +53,17 @@ const UploadFile = () => {
     <>
       <FileUploaderDropContainer
         accept={validFileTypes}
-        labelText="Drag and drop files here or click to upload"
+        labelText={t(
+          'ADD_FILES_MESSAGE',
+          'Drag and drop files here or click to upload',
+        )}
         onAddFiles={onAddFiles}
       />
       <Tag type="cool-gray" size="md">
-        Maximum File size allowed: 5MB
+        {t('MAX_FILE_SIZE_MESSAGE', 'Maximum File size allowed: 5MB')}
       </Tag>
       <Tag type="cool-gray" size="md">
-        Allowed file extensions: pdf, jpeg, jpg
+        {t('ALLOWED_FILE_TYPES', 'Allowed file extensions: pdf, jpeg, jpg')}
       </Tag>
     </>
   )

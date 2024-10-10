@@ -14,6 +14,7 @@ import {
 import PendingLabOrdersTable from './pending-lab-orders'
 import {PendingLabOrdersProvider} from '../../../context/pending-orders-context'
 import userEvent from '@testing-library/user-event'
+import {translations} from '../../../__mocks__/translations.mock'
 
 const mockPatientUuid = '1'
 const mockOrderTypeUuid = '8189b409-3f10-11e4-adec-0800271c1b75'
@@ -22,6 +23,14 @@ jest.mock('../../../hooks/useOrderTypeUuidConfig', () => ({
   useOrderTypeUuidConfig: jest.fn().mockImplementation(() => ({
     orderTypeUuidConfig: mockOrderTypeUuid,
   })),
+}))
+
+jest.mock('react-i18next', () => ({
+  useTranslation: () => ({
+    t: key => {
+      return translations[key] || key
+    },
+  }),
 }))
 
 describe('Paginated Table', () => {
@@ -47,7 +56,7 @@ describe('Paginated Table', () => {
             testName: 'Routine Blood',
             date: 'April 19, 2022',
             orderedBy: 'Test Orderer',
-            orderNotes : "sample notes"
+            orderNotes: 'sample notes',
           },
         ],
         goTo: jest.fn(),
@@ -84,9 +93,7 @@ describe('Paginated Table', () => {
     expect(
       screen.getByRole('cell', {name: 'Routine Blood'}),
     ).toBeInTheDocument()
-    expect(
-      screen.getByRole('cell', {name: 'sample notes'}),
-    ).toBeInTheDocument()
+    expect(screen.getByRole('cell', {name: 'sample notes'})).toBeInTheDocument()
     expect(
       screen.getAllByRole('checkbox', {
         name: /select row/i,

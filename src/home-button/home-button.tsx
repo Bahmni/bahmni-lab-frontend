@@ -3,11 +3,13 @@ import {HeaderGlobalAction} from 'carbon-components-react'
 import React from 'react'
 import {bahmniHomePath} from '../utils/constants'
 import styles from './home-button.scss'
+import {useTranslation} from 'react-i18next'
 
 const HomeButton = () => {
+  const {t} = useTranslation()
   return (
     <HeaderGlobalAction
-      aria-label="Home"
+      aria-label={t('HOME_BUTTON_LABEL', 'Home')}
       className={styles.headerGlobalBarButton}
       onClick={() => {
         window.location.href = bahmniHomePath

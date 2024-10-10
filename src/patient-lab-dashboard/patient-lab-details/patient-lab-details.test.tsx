@@ -43,6 +43,7 @@ import {
 } from '../../__mocks__/testResults'
 import {PendingLabOrdersProvider} from '../../context/pending-orders-context'
 import {LabTestResultsProvider} from '../../context/lab-test-results-context'
+import {translations} from '../../__mocks__/translations.mock'
 
 const mockPatientUuid = '123'
 const matchParams = {
@@ -59,6 +60,14 @@ jest.mock('../../hooks/useOrderTypeUuidConfig', () => ({
   useOrderTypeUuidConfig: jest.fn().mockImplementation(() => ({
     orderTypeUuidConfig: mockOrderTypeUuid,
   })),
+}))
+
+jest.mock('react-i18next', () => ({
+  useTranslation: () => ({
+    t: key => {
+      return translations[key] || key
+    },
+  }),
 }))
 
 describe('Patient lab details', () => {
