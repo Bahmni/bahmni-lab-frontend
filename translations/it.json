@@ -23,6 +23,7 @@
   "loading": "Caricamento",
   "LOGO_ALT_TEXT": "Logo Bahmni",
   "MAX_FILE_SIZE_MESSAGE": "Dimensione massima consentita per il file: 5 MB",
+  "NO_MATCHING_TEXT_FOUND": "Nessun test corrispondente trovato",
   "NO_REPORTS_FOUND_TEXT": "Nessun report precedente trovato per questo paziente",
   "NO_TEST_SELECTED": "Non hai selezionato alcun test",
   "PANEL_LABEL": "Pannello",
@@ -30,6 +31,7 @@
   "PENDING_LAB_ORDERS_TEXT": "Ordini di laboratorio in sospeso",
   "RECORD_CLINICAL_CONCLUSION_KEY": "Fai clic per registrare la conclusione clinica",
   "REPORT_CONCLUSION_KEY": "Conclusione del report",
+  "REPORT_DATE_LABEL": "Data del report",
   "REPORTS_ANDLAB_TESTS_FETCH_ERROR": "Si è verificato un problema durante il recupero delle tabelle dei report o dei test di laboratorio...",
   "REPORTS_TABLE_TEXT": "Tabella dei report",
   "REQUESTED_BY": "Richiesto da",
@@ -40,13 +42,5 @@
   "SELECT_DOCTOR": "Seleziona un medico",
   "SELECT_TESTS_LABEL": "Seleziona test",
   "SELECTED_TESTS_LABEL": "Test selezionati",
-  "UPLOAD_REPORT_TEXT": "Carica report",
-  "REPORT_DATE_LABEL": "Data del report",
-  "DATE_LABEL": "Data",
-  "TEST_LABEL": "Test",
-  "ORDERED_BY_LABEL": "Ordinato da",
-  "ORDER_NOTES_LABEL": "Note sull'ordine",
-  "TESTS_LABEL": "Test",
-  "FILE_LABEL": "File",
-  "REQUESTER_LABEL": "Richiedente"
+  "UPLOAD_REPORT_TEXT": "Carica report"
 }

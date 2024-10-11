@@ -273,7 +273,7 @@ const SelectTest = ({isDiscardButtonClicked}) => {
         </>
       )
     }
-    return 'No matching tests found'
+    return t('NO_MATCHING_TEXT_FOUND', 'No matching tests found')
   }
 
   const renderSearchResults = () => {
