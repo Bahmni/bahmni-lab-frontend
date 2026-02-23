@@ -1,3 +1,12 @@
+/*
+ * This Source Code Form is subject to the terms of the Mozilla Public License,
+ * v. 2.0. If a copy of the MPL was not distributed with this file, You can
+ * obtain one at https://www.bahmni.org/license/mplv2hd.
+ *
+ * Copyright (C) OpenMRS Inc. OpenMRS is a registered trademark and the OpenMRS
+ * graphic logo is a trademark of OpenMRS Inc.
+ */
+
 import {openmrsFetch, usePagination} from '@openmrs/esm-framework'
 import {render, screen, waitFor} from '@testing-library/react'
 import {when} from 'jest-when'
@@ -47,7 +56,7 @@ describe('Paginated Table', () => {
             testName: 'Routine Blood',
             date: 'April 19, 2022',
             orderedBy: 'Test Orderer',
-            orderNotes : "sample notes"
+            orderNotes: 'sample notes',
           },
         ],
         goTo: jest.fn(),
@@ -84,9 +93,7 @@ describe('Paginated Table', () => {
     expect(
       screen.getByRole('cell', {name: 'Routine Blood'}),
     ).toBeInTheDocument()
-    expect(
-      screen.getByRole('cell', {name: 'sample notes'}),
-    ).toBeInTheDocument()
+    expect(screen.getByRole('cell', {name: 'sample notes'})).toBeInTheDocument()
     expect(
       screen.getAllByRole('checkbox', {
         name: /select row/i,
