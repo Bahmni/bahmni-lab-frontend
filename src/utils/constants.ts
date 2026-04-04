@@ -1,3 +1,12 @@
+/*
+ * This Source Code Form is subject to the terms of the Mozilla Public License,
+ * v. 2.0. If a copy of the MPL was not distributed with this file, You can
+ * obtain one at https://www.bahmni.org/license/mplv2hd.
+ *
+ * Copyright (C) OpenMRS Inc. OpenMRS is a registered trademark and the OpenMRS
+ * graphic logo is a trademark of OpenMRS Inc.
+ */
+
 export const spaRoot = window['getOpenmrsSpaBase']()
 export const labliteModuleName = '@bahmni/lab-lite-app'
 export const searchModuleName = '@openmrs/esm-patient-search-app'
@@ -37,9 +46,9 @@ export const headers = [
     header: 'Ordered By',
   },
   {
-    key : 'orderNotes',
-    header : 'Order Notes'
-  }
+    key: 'orderNotes',
+    header: 'Order Notes',
+  },
 ]
 
 export const reportHeaders = [

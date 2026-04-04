@@ -1,3 +1,12 @@
+/*
+ * This Source Code Form is subject to the terms of the Mozilla Public License,
+ * v. 2.0. If a copy of the MPL was not distributed with this file, You can
+ * obtain one at https://www.bahmni.org/license/mplv2hd.
+ *
+ * Copyright (C) OpenMRS Inc. OpenMRS is a registered trademark and the OpenMRS
+ * graphic logo is a trademark of OpenMRS Inc.
+ */
+
 import {openmrsFetch, useLayoutType} from '@openmrs/esm-framework'
 import {render, screen, waitFor} from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
@@ -11,10 +20,7 @@ import {
   saveDiagnosticReportURL,
   uploadDocumentURL,
 } from '../../utils/api-utils'
-import {
-  isAuditLogEnabledKey,
-  loggedInUserKey,
-} from '../../utils/constants'
+import {isAuditLogEnabledKey, loggedInUserKey} from '../../utils/constants'
 import {localStorageMock, verifyApiCall} from '../../utils/test-utils'
 import {uploadFiles} from '../../utils/test-utils/upload-report-helper'
 import {mockDoctorNames} from '../../__mocks__/doctorNames.mock'
@@ -194,8 +200,7 @@ describe('Upload Report', () => {
     const file = new File(['content'], 'test.jpg', {type: 'image/jpg'})
     localStorage.setItem('i18nextLng', 'en')
     const mockedOpenmrsFetch = openmrsFetch as jest.Mock
-    mockedOpenmrsFetch
-      .mockReturnValue(mockDoctorNames)
+    mockedOpenmrsFetch.mockReturnValue(mockDoctorNames)
 
     const mockedLayout = useLayoutType as jest.Mock
     mockedLayout.mockReturnValue('desktop')

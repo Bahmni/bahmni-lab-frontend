@@ -1,3 +1,12 @@
+/*
+ * This Source Code Form is subject to the terms of the Mozilla Public License,
+ * v. 2.0. If a copy of the MPL was not distributed with this file, You can
+ * obtain one at https://www.bahmni.org/license/mplv2hd.
+ *
+ * Copyright (C) OpenMRS Inc. OpenMRS is a registered trademark and the OpenMRS
+ * graphic logo is a trademark of OpenMRS Inc.
+ */
+
 import {render, screen, waitFor} from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import React from 'react'
@@ -50,7 +59,7 @@ describe('Select Test', () => {
     mockUseLabTestResultsContext.mockImplementation(() => ({
       labTestResultsError: mockLabTestsErrorResponse,
     }))
-   
+
     await renderSelectTestComponent()
     expect(
       screen.getByText(/Something went wrong in fetching Lab Tests/i),

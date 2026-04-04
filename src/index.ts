@@ -1,3 +1,12 @@
+/*
+ * This Source Code Form is subject to the terms of the Mozilla Public License,
+ * v. 2.0. If a copy of the MPL was not distributed with this file, You can
+ * obtain one at https://www.bahmni.org/license/mplv2hd.
+ *
+ * Copyright (C) OpenMRS Inc. OpenMRS is a registered trademark and the OpenMRS
+ * graphic logo is a trademark of OpenMRS Inc.
+ */
+
 /**
  * This is the entrypoint file of the application. It communicates the
  * important features of this microfrontend to the app shell. It
@@ -44,10 +53,13 @@ function setupOpenMRS() {
     pages: [
       {
         route: /^[A-Za-z0-9-]+/,
-        load: getAsyncLifecycle(() => import('./patient-lab-dashboard/patient-lab-root.component'), {
-          featureName: 'patient-lab-root',
-          moduleName: labliteModuleName,
-        }),
+        load: getAsyncLifecycle(
+          () => import('./patient-lab-dashboard/patient-lab-root.component'),
+          {
+            featureName: 'patient-lab-root',
+            moduleName: labliteModuleName,
+          },
+        ),
       },
     ],
     extensions: [

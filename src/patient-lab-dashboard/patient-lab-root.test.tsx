@@ -1,8 +1,17 @@
-import { openmrsFetch } from '@openmrs/esm-framework'
-import { render, screen, waitFor } from '@testing-library/react'
+/*
+ * This Source Code Form is subject to the terms of the Mozilla Public License,
+ * v. 2.0. If a copy of the MPL was not distributed with this file, You can
+ * obtain one at https://www.bahmni.org/license/mplv2hd.
+ *
+ * Copyright (C) OpenMRS Inc. OpenMRS is a registered trademark and the OpenMRS
+ * graphic logo is a trademark of OpenMRS Inc.
+ */
+
+import {openmrsFetch} from '@openmrs/esm-framework'
+import {render, screen, waitFor} from '@testing-library/react'
 import React from 'react'
-import { of } from 'rxjs'
-import { mockUnauthorizedUser, mockUser } from '../__mocks__/mockUser'
+import {of} from 'rxjs'
+import {mockUnauthorizedUser, mockUser} from '../__mocks__/mockUser'
 import Root from './patient-lab-root.component'
 
 const mockUserObservable = of(mockUser)
@@ -37,8 +46,7 @@ jest.mock('react-router-dom', () => {
 describe('Root', () => {
   it('should render home when user hits home url', async () => {
     let mockedOpenmrsFetch = openmrsFetch as jest.Mock
-    mockedOpenmrsFetch
-      .mockReturnValueOnce({data: true})
+    mockedOpenmrsFetch.mockReturnValueOnce({data: true})
     window.history.pushState({}, 'Lab Entry', '/lab/home')
     render(<Root />)
     await waitFor(() =>
