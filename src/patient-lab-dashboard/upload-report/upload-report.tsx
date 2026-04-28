@@ -89,7 +89,6 @@ const UploadReport: React.FC<UploadReportProps> = ({
           try {
             for (let index = 0; index < selectedTests.length; index++) {
               await uploadSelectedTests(
-                undefined,
                 selectedTests[index],
                 patientUuid,
                 doctor.uuid,
@@ -150,7 +149,6 @@ const UploadReport: React.FC<UploadReportProps> = ({
   }
 
   async function uploadSelectedTests(
-    encounter,
     selectedTest: LabTest,
     patientUuid: string,
     doctorUuid: string,
@@ -163,17 +161,21 @@ const UploadReport: React.FC<UploadReportProps> = ({
     saveHandler: Function,
     allSuccess: boolean,
   ) {
+    const matchingOrder =
+      selectedPendingOrder.find(
+        order => order.conceptUuid === selectedTest.uuid,
+      ) ?? null
     const diagnosticReportResponse = await saveDiagnosticReport(
-      encounter,
+      matchingOrder,
       patientUuid,
       doctorUuid,
       reportDate,
       selectedTest,
       url,
       selectedFile.name,
+      selectedFile.type,
       reportConclusion,
       ac,
-      selectedPendingOrder,
     )
     if (diagnosticReportResponse.ok) {
       const loggedInUser = localStorage.getItem(loggedInUserKey)

@@ -4,6 +4,7 @@ export interface LabOrders {
   concept: Concept
   orderDate: number
   orderUuid: string
+  encounterUuid?: string
   provider: string
   providerUuid: string
   fulfillerStatus: string
@@ -97,6 +98,7 @@ export interface PendingLabOrders {
   orderedBy: string
   providerUuid: string
   conceptUuid: string
+  encounterUuid?: string
 }
 
 export interface Attribute {
@@ -157,7 +159,7 @@ interface Name {
   resourceVersion: string
 }
 interface ValueQuantity {
-  value: string
+  value: number
 }
 interface Subject {
   reference: string
@@ -194,6 +196,7 @@ interface Contained {
       },
     ]
   }>
+  effectiveDateTime?: Date
 }
 
 export interface TestResultsLabOrder {
