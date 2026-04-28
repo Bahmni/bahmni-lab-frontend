@@ -49,18 +49,10 @@ describe('TestResults Report', () => {
     mockUseAllTestAndPanel.mockImplementation(() => ({
       allTestsAndPanels: mockAlltestAndPanels,
     }))
-    if (!global.crypto) {
-      Object.defineProperty(global, 'crypto', {
-        value: {} as Crypto,
-        writable: true,
-      })
-    }
     let uuidCounter = 0
-    global.crypto.randomUUID = jest.fn().mockImplementation(() => {
-      uuidCounter++
-      if (uuidCounter === 1) return 'mock-dr-uuid'
-      return `mock-obs-uuid-${uuidCounter - 1}`
-    })
+    global.crypto.randomUUID = jest.fn().mockImplementation(() =>
+      ++uuidCounter === 1 ? 'mock-dr-uuid' : `mock-obs-uuid-${uuidCounter - 1}`,
+    )
   })
   afterEach(() => {
     jest.clearAllMocks(), localStorage.clear()
