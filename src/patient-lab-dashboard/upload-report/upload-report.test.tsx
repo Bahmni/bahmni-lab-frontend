@@ -47,12 +47,6 @@ describe('Upload Report', () => {
       value: 'bahmni.user.location={"uuid":"locationuuid123"}',
     })
     Object.defineProperty(window, 'localStorage', {value: localStorageMock})
-    if (!global.crypto) {
-      Object.defineProperty(global, 'crypto', {
-        value: {} as Crypto,
-        writable: true,
-      })
-    }
     global.crypto.randomUUID = jest.fn().mockReturnValue('mock-dr-uuid')
   })
   afterEach(() => {

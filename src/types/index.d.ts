@@ -165,7 +165,7 @@ interface Subject {
   reference: string
 }
 
-interface Contained {
+export interface ObservationResource {
   resourceType: string
   id: string
   status: string
@@ -178,6 +178,7 @@ interface Contained {
     ]
   }
   subject: Subject
+  effectiveDateTime: Date
   valueQuantity?: ValueQuantity
   valueCodeableConcept?: {
     coding: [
@@ -196,7 +197,6 @@ interface Contained {
       },
     ]
   }>
-  effectiveDateTime?: Date
 }
 
 export interface TestResultsLabOrder {

@@ -1,5 +1,5 @@
 import {FetchResponse} from '@openmrs/esm-framework'
-import {Contained, Datatype, PendingLabOrders} from '../../types'
+import {Datatype, ObservationResource, PendingLabOrders} from '../../types'
 import {LabTest} from '../../types/selectTest'
 import {
   postApiCall,
@@ -23,7 +23,7 @@ export interface Observation {
 
 interface BundleEntry {
   fullUrl: string
-  resource: Record<string, unknown>
+  resource: object
 }
 
 interface BundleRequestType {
@@ -31,6 +31,14 @@ interface BundleRequestType {
   type: 'collection'
   entry: BundleEntry[]
 }
+
+const labCategory = [
+  {
+    coding: [
+      {system: 'http://terminology.hl7.org/CodeSystem/v2-0074', code: 'LAB'},
+    ],
+  },
+]
 
 const wrapInBundle = (entries: BundleEntry[]): BundleRequestType => ({
   resourceType: 'Bundle',
@@ -77,16 +85,7 @@ export function saveDiagnosticReport(
     resourceType: 'DiagnosticReport',
     id: drId,
     status: 'final',
-    category: [
-      {
-        coding: [
-          {
-            system: 'http://terminology.hl7.org/CodeSystem/v2-0074',
-            code: 'LAB',
-          },
-        ],
-      },
-    ],
+    category: labCategory,
     code: {
       coding: [
         {
@@ -133,7 +132,6 @@ export function saveDiagnosticReport(
 }
 
 export function saveTestDiagnosticReport(
-  encounter,
   patientUuid: string,
   performerUuid: string,
   selectedTest: LabTest,
@@ -147,7 +145,7 @@ export function saveTestDiagnosticReport(
   >,
   dataType: Datatype[],
 ) {
-  let basedOn: Array<BasedOnType> = null
+  let basedOn: Array<BasedOnType> | null = null
   if (selectedPendingOrder)
     basedOn = [
       {
@@ -161,7 +159,7 @@ export function saveTestDiagnosticReport(
 
   const createObservation = (item, index) => {
     const obsId = crypto.randomUUID()
-    const observation: Contained = {
+    const observation: ObservationResource = {
       resourceType: 'Observation',
       id: obsId,
       status: 'final',
@@ -216,7 +214,7 @@ export function saveTestDiagnosticReport(
 
     obsEntries.push({
       fullUrl: `urn:uuid:${obsId}`,
-      resource: (observation as unknown) as Record<string, unknown>,
+      resource: observation,
     })
     resultArray.push({
       reference: `Observation/${obsId}`,
@@ -233,16 +231,7 @@ export function saveTestDiagnosticReport(
     resourceType: 'DiagnosticReport',
     id: drId,
     status: 'final',
-    category: [
-      {
-        coding: [
-          {
-            system: 'http://terminology.hl7.org/CodeSystem/v2-0074',
-            code: 'LAB',
-          },
-        ],
-      },
-    ],
+    category: labCategory,
     code: {
       coding: [
         {
@@ -273,9 +262,9 @@ export function saveTestDiagnosticReport(
       },
     ]
   }
-  if (encounter && encounter.encounterUuid) {
+  if (selectedPendingOrder?.encounterUuid) {
     dr.encounter = {
-      reference: `Encounter/${encounter.encounterUuid}`,
+      reference: `Encounter/${selectedPendingOrder.encounterUuid}`,
     }
   }
 

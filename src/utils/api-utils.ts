@@ -93,18 +93,6 @@ export const postApiCall = (url, data, abortController) => {
   })
 }
 
-export const updateOrderFulfillerStatus = (
-  orderUuid: string,
-  status: string,
-  abortController: AbortController,
-) =>
-  openmrsFetch(`/ws/rest/v1/order/${orderUuid}`, {
-    method: 'POST',
-    headers: {'content-type': 'application/json'},
-    body: JSON.stringify({fulfillerStatus: status}),
-    signal: abortController.signal,
-  })
-
 export const swrOptions = {
   revalidateIfStale: false,
   revalidateOnFocus: false,
