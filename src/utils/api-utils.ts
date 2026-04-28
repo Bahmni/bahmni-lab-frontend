@@ -23,7 +23,8 @@ export const getOrderTypeUuid = '/ws/rest/v1/ordertype'
 export const uploadDocumentURL =
   '/ws/rest/v1/bahmnicore/visitDocument/uploadDocument'
 
-export const saveDiagnosticReportURL = '/ws/fhir2/R4/DiagnosticReport'
+export const saveDiagnosticReportURL =
+  '/ws/fhir2/R4/DiagnosticReport/$submit-bundle'
 
 export const auditLogURL = '/ws/rest/v1/auditlog'
 
@@ -91,6 +92,18 @@ export const postApiCall = (url, data, abortController) => {
     signal: abortController.signal,
   })
 }
+
+export const updateOrderFulfillerStatus = (
+  orderUuid: string,
+  status: string,
+  abortController: AbortController,
+) =>
+  openmrsFetch(`/ws/rest/v1/order/${orderUuid}`, {
+    method: 'POST',
+    headers: {'content-type': 'application/json'},
+    body: JSON.stringify({fulfillerStatus: status}),
+    signal: abortController.signal,
+  })
 
 export const swrOptions = {
   revalidateIfStale: false,

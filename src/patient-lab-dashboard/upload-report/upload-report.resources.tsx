@@ -13,66 +13,30 @@ interface UploadFileResponseType {
   url: string
 }
 
-interface ReferenceRequestType {
-  reference: string
-}
-
 export interface BasedOnType {
   reference: string
-  display: string
-  identifier: {
-    value: string
-  }
 }
 
 export interface Observation {
   reference: string
-  type: string
 }
 
-interface DiagnosticReportRequestType {
-  resourceType: string
-  status: string
-  code: {
-    coding: [
-      {
-        code: string
-        display: string
-      },
-    ]
-  }
-  subject: ReferenceRequestType
-  encounter?: {reference: string}
-  issued: Date
-  conclusion?: string
-  presentedForm: Array<{
-    url: string
-    title: string
-  }>
-  basedOn?: Array<BasedOnType>
-  performer?: Array<ReferenceRequestType>
+interface BundleEntry {
+  fullUrl: string
+  resource: Record<string, unknown>
 }
 
-interface TestResultDiagnosticReportRequestType {
-  resourceType: string
-  status: string
-  code: {
-    coding: [
-      {
-        code: string
-        display: string
-      },
-    ]
-  }
-  subject: ReferenceRequestType
-  encounter?: {reference: string}
-  issued: Date
-  conclusion?: string
-  basedOn?: Array<BasedOnType>
-  performer?: Array<ReferenceRequestType>
-  contained: Array<Contained>
-  result?: Array<Observation>
+interface BundleRequestType {
+  resourceType: 'Bundle'
+  type: 'collection'
+  entry: BundleEntry[]
 }
+
+const wrapInBundle = (entries: BundleEntry[]): BundleRequestType => ({
+  resourceType: 'Bundle',
+  type: 'collection',
+  entry: entries,
+})
 
 export function uploadFile(
   patientUuid: string,
@@ -96,33 +60,33 @@ const uploadFileRequestBody = (fileContent, fileType, patientUuid) => {
 }
 
 export function saveDiagnosticReport(
-  encounter,
+  pendingOrder: PendingLabOrders | null,
   patientUuid: string,
   performerUuid: string,
   reportDate: Date,
   selectedTest: LabTest,
   uploadFileUrl: string,
   uploadedFileName: string,
+  fileType: string,
   reportConclusion: string,
   ac: AbortController,
-  selectedPendingOrder: PendingLabOrders[],
 ) {
-  let basedOn: Array<BasedOnType> = null
-  const selectedPendingOrderTest = getSelectedPendingOrderTests(
-    selectedTest,
-    selectedPendingOrder,
-  )
-  if (selectedPendingOrderTest.length === 1)
-    basedOn = [
-      {
-        identifier: {value: selectedPendingOrderTest[0].id},
-        reference: 'ServiceRequest',
-        display: getTestName(selectedTest),
-      },
-    ]
-  const requestBody: DiagnosticReportRequestType = {
+  const drId = crypto.randomUUID()
+
+  const dr: Record<string, unknown> = {
     resourceType: 'DiagnosticReport',
+    id: drId,
     status: 'final',
+    category: [
+      {
+        coding: [
+          {
+            system: 'http://terminology.hl7.org/CodeSystem/v2-0074',
+            code: 'LAB',
+          },
+        ],
+      },
+    ],
     code: {
       coding: [
         {
@@ -135,28 +99,37 @@ export function saveDiagnosticReport(
       reference: 'Patient/' + patientUuid,
     },
     issued: reportDate,
-    presentedForm: [{url: uploadFileUrl, title: uploadedFileName}],
+    effectiveDateTime: reportDate,
+    presentedForm: [
+      {contentType: fileType, url: uploadFileUrl, title: uploadedFileName},
+    ],
   }
+
   if (reportConclusion) {
-    requestBody.conclusion = reportConclusion
+    dr.conclusion = reportConclusion
   }
-  if (selectedPendingOrderTest.length === 1) {
-    requestBody.basedOn = basedOn
+  if (pendingOrder) {
+    dr.basedOn = [{reference: `ServiceRequest/${pendingOrder.id}`}]
   }
   if (performerUuid) {
-    requestBody.performer = [
+    dr.performer = [
       {
         reference: 'Practitioner/' + performerUuid,
       },
     ]
   }
-  if (encounter && encounter.encounterUuid) {
-    requestBody.encounter = {
-      reference: `Encounter/${encounter.encounterUuid}`,
+  if (pendingOrder?.encounterUuid) {
+    dr.encounter = {
+      reference: `Encounter/${pendingOrder.encounterUuid}`,
     }
   }
 
-  return postApiCall(saveDiagnosticReportURL, requestBody, ac)
+  const drEntry: BundleEntry = {
+    fullUrl: `urn:uuid:${drId}`,
+    resource: dr,
+  }
+
+  return postApiCall(saveDiagnosticReportURL, wrapInBundle([drEntry]), ac)
 }
 
 export function saveTestDiagnosticReport(
@@ -178,18 +151,19 @@ export function saveTestDiagnosticReport(
   if (selectedPendingOrder)
     basedOn = [
       {
-        identifier: {value: selectedPendingOrder.id},
-        reference: 'ServiceRequest',
-        display: selectedPendingOrder.testName,
+        reference: `ServiceRequest/${selectedPendingOrder.id}`,
       },
     ]
 
-  let containedArray: Contained[] = []
+  const drId = crypto.randomUUID()
+  const obsEntries: BundleEntry[] = []
+  const resultArray: Array<Observation> = []
 
   const createObservation = (item, index) => {
+    const obsId = crypto.randomUUID()
     const observation: Contained = {
       resourceType: 'Observation',
-      id: `lab-test-result${index + 1}`,
+      id: obsId,
       status: 'final',
       code: {
         coding: [
@@ -200,6 +174,7 @@ export function saveTestDiagnosticReport(
         ],
       },
       subject: {reference: `Patient/${patientUuid}`},
+      effectiveDateTime: reportDate,
     }
 
     const labItem = labResult.get(item.uuid)
@@ -222,7 +197,7 @@ export function saveTestDiagnosticReport(
         break
       case 'Numeric':
         observation.valueQuantity = {
-          value: labItem?.value,
+          value: parseFloat(labItem?.value),
         }
         break
       case 'Coded':
@@ -239,26 +214,35 @@ export function saveTestDiagnosticReport(
         observation.valueString = labItem?.value
     }
 
-    return observation
+    obsEntries.push({
+      fullUrl: `urn:uuid:${obsId}`,
+      resource: (observation as unknown) as Record<string, unknown>,
+    })
+    resultArray.push({
+      reference: `Observation/${obsId}`,
+    })
   }
 
   if (selectedTest.setMembers && selectedTest.setMembers.length > 0) {
-    containedArray = selectedTest.setMembers.map(createObservation)
+    selectedTest.setMembers.forEach(createObservation)
   } else {
-    const observation = createObservation(selectedTest, 0)
-    containedArray.push(observation)
+    createObservation(selectedTest, 0)
   }
 
-  const resultArray = containedArray.map(item => {
-    return {
-      reference: `#${item.id}`,
-      type: 'Observation',
-    }
-  })
-
-  const requestBody: TestResultDiagnosticReportRequestType = {
+  const dr: Record<string, unknown> = {
     resourceType: 'DiagnosticReport',
+    id: drId,
     status: 'final',
+    category: [
+      {
+        coding: [
+          {
+            system: 'http://terminology.hl7.org/CodeSystem/v2-0074',
+            code: 'LAB',
+          },
+        ],
+      },
+    ],
     code: {
       coding: [
         {
@@ -271,28 +255,40 @@ export function saveTestDiagnosticReport(
       reference: 'Patient/' + patientUuid,
     },
     issued: reportDate,
-    contained: containedArray,
+    effectiveDateTime: reportDate,
     result: resultArray,
   }
+
   if (reportConclusion) {
-    requestBody.conclusion = reportConclusion
+    dr.conclusion = reportConclusion
   }
 
-  requestBody.basedOn = basedOn
+  if (basedOn) {
+    dr.basedOn = basedOn
+  }
   if (performerUuid) {
-    requestBody.performer = [
+    dr.performer = [
       {
         reference: 'Practitioner/' + performerUuid,
       },
     ]
   }
   if (encounter && encounter.encounterUuid) {
-    requestBody.encounter = {
+    dr.encounter = {
       reference: `Encounter/${encounter.encounterUuid}`,
     }
   }
 
-  return postApiCall(saveDiagnosticReportURL, requestBody, ac)
+  const drEntry: BundleEntry = {
+    fullUrl: `urn:uuid:${drId}`,
+    resource: dr,
+  }
+
+  return postApiCall(
+    saveDiagnosticReportURL,
+    wrapInBundle([drEntry, ...obsEntries]),
+    ac,
+  )
 }
 
 const removeBase64 = fileData => {
@@ -300,14 +296,5 @@ const removeBase64 = fileData => {
   return fileData.substring(
     fileData.indexOf(searchStr) + searchStr.length,
     fileData.length,
-  )
-}
-
-const getSelectedPendingOrderTests = (
-  selectedTest: LabTest,
-  selectedPendingOrder: PendingLabOrders[],
-): PendingLabOrders[] => {
-  return selectedPendingOrder.filter(
-    pendingOrder => pendingOrder.conceptUuid === selectedTest.uuid,
   )
 }
