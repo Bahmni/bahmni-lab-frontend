@@ -5,6 +5,10 @@ global.TextEncoder = TextEncoder
 global.TextDecoder = TextDecoder
 window.getOpenmrsSpaBase = jest.fn().mockReturnValue('/lab')
 Object.defineProperty(global, 'crypto', {
-  value: {randomUUID: jest.fn()},
+  value: {
+    ...(global.crypto ?? {}),
+    randomUUID: jest.fn().mockReturnValue('test-uuid'),
+  },
   writable: true,
+  configurable: true,
 })

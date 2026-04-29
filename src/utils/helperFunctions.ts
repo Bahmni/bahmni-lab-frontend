@@ -1,12 +1,26 @@
 import {LabTest} from '../types/selectTest'
 
+export const generateUuid = (): string => {
+  if (
+    typeof crypto !== 'undefined' &&
+    typeof crypto.randomUUID === 'function'
+  ) {
+    return crypto.randomUUID()
+  }
+  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, c => {
+    const r = (Math.random() * 16) | 0
+    const v = c === 'x' ? r : (r & 0x3) | 0x8
+    return v.toString(16)
+  })
+}
+
 export const getTestName = (test: LabTest) => {
   const testName = test?.names?.filter(
     name =>
       name.conceptNameType == 'SHORT' ||
       name.conceptNameType == 'FULLY_SPECIFIED',
   )[0].name
- 
+
   return testName ? testName : undefined
 }
 
