@@ -161,10 +161,10 @@ const UploadReport: React.FC<UploadReportProps> = ({
     saveHandler: Function,
     allSuccess: boolean,
   ) {
-    const matchingOrder =
-      selectedPendingOrder.find(
-        order => order.conceptUuid === selectedTest.uuid,
-      ) ?? null
+    const matches = selectedPendingOrder.filter(
+      order => order.conceptUuid === selectedTest.uuid,
+    )
+    const matchingOrder = matches.length === 1 ? matches[0] : null
     const diagnosticReportResponse = await saveDiagnosticReport(
       matchingOrder,
       patientUuid,

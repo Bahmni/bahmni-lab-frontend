@@ -1,5 +1,26 @@
 import {boolean, number, string} from 'yup'
 
+export interface FhirReference {
+  reference: string
+}
+
+export interface DiagnosticReportResource {
+  resourceType: string
+  id: string
+  status: string
+  category: Array<{coding: Array<{system: string; code: string}>}>
+  code: {coding: Array<{code: string; display?: string}>}
+  subject: FhirReference
+  issued: Date
+  effectiveDateTime: Date
+  conclusion?: string
+  basedOn?: FhirReference[]
+  performer?: FhirReference[]
+  encounter?: FhirReference
+  presentedForm?: Array<{contentType: string; url: string; title: string}>
+  result?: FhirReference[]
+}
+
 export interface LabOrders {
   concept: Concept
   orderDate: number
@@ -161,9 +182,6 @@ interface Name {
 interface ValueQuantity {
   value: number
 }
-interface Subject {
-  reference: string
-}
 
 export interface ObservationResource {
   resourceType: string
@@ -177,7 +195,7 @@ export interface ObservationResource {
       },
     ]
   }
-  subject: Subject
+  subject: FhirReference
   effectiveDateTime: Date
   valueQuantity?: ValueQuantity
   valueCodeableConcept?: {

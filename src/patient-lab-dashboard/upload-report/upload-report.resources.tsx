@@ -1,5 +1,11 @@
 import {FetchResponse} from '@openmrs/esm-framework'
-import {Datatype, ObservationResource, PendingLabOrders} from '../../types'
+import {
+  Datatype,
+  DiagnosticReportResource,
+  FhirReference,
+  ObservationResource,
+  PendingLabOrders,
+} from '../../types'
 import {LabTest} from '../../types/selectTest'
 import {
   postApiCall,
@@ -7,23 +13,15 @@ import {
   uploadDocumentURL,
 } from '../../utils/api-utils'
 import {uploadedDocumentEncounterType} from '../../utils/constants'
-import {getTestName} from '../../utils/helperFunctions'
+import {generateUuid, getTestName} from '../../utils/helperFunctions'
 
 interface UploadFileResponseType {
   url: string
 }
 
-export interface BasedOnType {
-  reference: string
-}
-
-export interface Observation {
-  reference: string
-}
-
 interface BundleEntry {
   fullUrl: string
-  resource: object
+  resource: DiagnosticReportResource | ObservationResource
 }
 
 interface BundleRequestType {
@@ -79,9 +77,9 @@ export function saveDiagnosticReport(
   reportConclusion: string,
   ac: AbortController,
 ) {
-  const drId = crypto.randomUUID()
+  const drId = generateUuid()
 
-  const dr: Record<string, unknown> = {
+  const dr: DiagnosticReportResource = {
     resourceType: 'DiagnosticReport',
     id: drId,
     status: 'final',
@@ -145,7 +143,7 @@ export function saveTestDiagnosticReport(
   >,
   dataType: Datatype[],
 ) {
-  let basedOn: Array<BasedOnType> | null = null
+  let basedOn: Array<FhirReference> | null = null
   if (selectedPendingOrder)
     basedOn = [
       {
@@ -153,12 +151,12 @@ export function saveTestDiagnosticReport(
       },
     ]
 
-  const drId = crypto.randomUUID()
+  const drId = generateUuid()
   const obsEntries: BundleEntry[] = []
-  const resultArray: Array<Observation> = []
+  const resultArray: Array<FhirReference> = []
 
   const createObservation = (item, index) => {
-    const obsId = crypto.randomUUID()
+    const obsId = generateUuid()
     const observation: ObservationResource = {
       resourceType: 'Observation',
       id: obsId,
@@ -194,8 +192,10 @@ export function saveTestDiagnosticReport(
         observation.valueBoolean = labItem?.value.toLowerCase() === 'true'
         break
       case 'Numeric':
-        observation.valueQuantity = {
-          value: parseFloat(labItem?.value),
+        if (labItem?.value !== undefined && labItem.value !== '') {
+          observation.valueQuantity = {
+            value: parseFloat(labItem.value),
+          }
         }
         break
       case 'Coded':
@@ -227,7 +227,7 @@ export function saveTestDiagnosticReport(
     createObservation(selectedTest, 0)
   }
 
-  const dr: Record<string, unknown> = {
+  const dr: DiagnosticReportResource = {
     resourceType: 'DiagnosticReport',
     id: drId,
     status: 'final',
