@@ -26,6 +26,9 @@ export const uploadDocumentURL =
 export const saveDiagnosticReportURL =
   '/ws/fhir2/R4/DiagnosticReport/$submit-bundle'
 
+export const getUpdateFulfillerStatusURL = (orderId: string) =>
+  `/ws/rest/v1/order/${orderId}/fulfillerdetails`
+
 export const auditLogURL = '/ws/rest/v1/auditlog'
 
 export const auditLogGlobalPropertyURL =
