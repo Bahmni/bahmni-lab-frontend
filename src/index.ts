@@ -28,7 +28,7 @@ const importTranslation = require.context(
  * `openmrs-module-`; e.g., `openmrs-module-fhir2` becomes `fhir2`.
  */
 const backendDependencies = {
-  fhir2: '^1.2.0',
+  fhir2: '^2.0.0',
   'webservices.rest': '^2.2.0',
 }
 
@@ -44,10 +44,13 @@ function setupOpenMRS() {
     pages: [
       {
         route: /^[A-Za-z0-9-]+/,
-        load: getAsyncLifecycle(() => import('./patient-lab-dashboard/patient-lab-root.component'), {
-          featureName: 'patient-lab-root',
-          moduleName: labliteModuleName,
-        }),
+        load: getAsyncLifecycle(
+          () => import('./patient-lab-dashboard/patient-lab-root.component'),
+          {
+            featureName: 'patient-lab-root',
+            moduleName: labliteModuleName,
+          },
+        ),
       },
     ],
     extensions: [
