@@ -64,7 +64,7 @@ const Home = () => {
   const [cookies] = useCookies()
   const location = cookies[userLocationKey]
   const {data: patients, error: responseErrorFromSWR} = useSWR(
-    activePatientWithLabOrdersURL(location?.uuid),
+    location?.uuid ? activePatientWithLabOrdersURL(location.uuid) : null,
     fetcher,
     swrOptions,
   )
@@ -79,7 +79,6 @@ const Home = () => {
     },
   ]
   const renderPatientTable = () => {
-    console.log('patients', patients)
     if (patients && Array.isArray(patients.data) && patients.data.length > 0) {
       return (
         <div className={classes.patientListSection}>
