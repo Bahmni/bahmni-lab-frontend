@@ -11,10 +11,7 @@ import {
   saveDiagnosticReportURL,
   uploadDocumentURL,
 } from '../../utils/api-utils'
-import {
-  isAuditLogEnabledKey,
-  loggedInUserKey,
-} from '../../utils/constants'
+import {isAuditLogEnabledKey, loggedInUserKey} from '../../utils/constants'
 import {localStorageMock, verifyApiCall} from '../../utils/test-utils'
 import {uploadFiles} from '../../utils/test-utils/upload-report-helper'
 import {mockDoctorNames} from '../../__mocks__/doctorNames.mock'
@@ -50,6 +47,7 @@ describe('Upload Report', () => {
       value: 'bahmni.user.location={"uuid":"locationuuid123"}',
     })
     Object.defineProperty(window, 'localStorage', {value: localStorageMock})
+    global.crypto.randomUUID = jest.fn().mockReturnValue('mock-dr-uuid')
   })
   afterEach(() => {
     jest.clearAllMocks(), localStorage.clear()
@@ -194,8 +192,7 @@ describe('Upload Report', () => {
     const file = new File(['content'], 'test.jpg', {type: 'image/jpg'})
     localStorage.setItem('i18nextLng', 'en')
     const mockedOpenmrsFetch = openmrsFetch as jest.Mock
-    mockedOpenmrsFetch
-      .mockReturnValue(mockDoctorNames)
+    mockedOpenmrsFetch.mockReturnValue(mockDoctorNames)
 
     const mockedLayout = useLayoutType as jest.Mock
     mockedLayout.mockReturnValue('desktop')
