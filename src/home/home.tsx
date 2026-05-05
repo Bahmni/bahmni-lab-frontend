@@ -63,7 +63,7 @@ const Home = () => {
         .split('; ')
         .find(row => row.startsWith(`${userLocationKey}=`))
         ?.split('=')[1]
-      return cookieString ? JSON.parse(cookieString) : null
+      return cookieString ? JSON.parse(decodeURIComponent(cookieString)) : null
     } catch {
       return null
     }
