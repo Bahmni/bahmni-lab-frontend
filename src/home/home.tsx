@@ -32,7 +32,7 @@ interface AuditLogResponse {
   data: boolean
 }
 const Home = () => {
-  const {t} = useTranslation()
+  const {t} = useTranslation('@bahmni/lab-app')
   const [loggedInUser, setLoggedInUser] = useState<LoggedInUser | null>(null)
 
   let {data: auditLogEnabledResponse, error: auditLogResponseError} = useSWR<
