@@ -37,9 +37,9 @@ export const headers = [
     header: 'Ordered By',
   },
   {
-    key : 'orderNotes',
-    header : 'Order Notes'
-  }
+    key: 'orderNotes',
+    header: 'Order Notes',
+  },
 ]
 
 export const reportHeaders = [
@@ -58,5 +58,16 @@ export const reportHeaders = [
   {
     key: 'requester',
     header: 'Requester',
+  },
+]
+
+export const activePatientHeaders = [
+  {
+    key: 'identifier',
+    header: 'patientId',
+  },
+  {
+    key: 'name',
+    header: 'patientName',
   },
 ]

@@ -1,3 +1,7 @@
 {
-  "title": "Lab Entry App"
+  "title": "Lab Entry App",
+  "activePatientList": "Active Patient List",
+  "patientId": "Patient Id",
+  "patientName": "Patient Name",
+  "noPatients": "No patients found."
 }

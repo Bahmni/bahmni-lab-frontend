@@ -1,1 +1,7 @@
-{}
+{
+  "title": "Application d'Entrée de Laboratoire",
+  "activePatientList": "Liste des Patients Actifs",
+  "patientId": "ID Patient",
+  "patientName": "Nom du Patient",
+  "noPatients": "Aucun patient trouvé."
+}

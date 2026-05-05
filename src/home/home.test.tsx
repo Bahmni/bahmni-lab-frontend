@@ -16,13 +16,14 @@ import Home from './home'
 
 const mockLocationUuid = 'location-uuid-123'
 
-jest.mock('react-cookie', () => ({
-  useCookies: jest.fn(() => [
-    {'bahmni.user.location': {uuid: mockLocationUuid}},
-  ]),
+const mockUserObservable = of(mockUser)
+
+jest.mock('react-i18next', () => ({
+  useTranslation: () => ({
+    t: (key: string, defaultValue?: string) => defaultValue || key,
+  }),
 }))
 
-const mockUserObservable = of(mockUser)
 jest.mock('@openmrs/esm-framework', () => ({
   openmrsFetch: jest.fn().mockResolvedValue({}),
   getCurrentUser: jest.fn(() => mockUserObservable),
@@ -51,6 +52,10 @@ describe('home page - Auditing', () => {
   beforeEach(() => {
     jest.resetModules()
     jest.clearAllMocks()
+    Object.defineProperty(window.document, 'cookie', {
+      writable: true,
+      value: `bahmni.user.location={"uuid":"${mockLocationUuid}"}`,
+    })
   })
 
   it('should update audit logs when user enters lab lite', async () => {
@@ -89,6 +94,10 @@ describe('home page - Active Patient List', () => {
   beforeEach(() => {
     jest.resetModules()
     jest.clearAllMocks()
+    Object.defineProperty(window.document, 'cookie', {
+      writable: true,
+      value: `bahmni.user.location={"uuid":"${mockLocationUuid}"}`,
+    })
   })
 
   it('should show active patient list when patients with lab orders exist', async () => {
