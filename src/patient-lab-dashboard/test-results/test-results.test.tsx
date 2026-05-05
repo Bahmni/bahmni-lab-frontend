@@ -18,15 +18,20 @@ import {localStorageMock, verifyApiCall} from '../../utils/test-utils'
 import TestResults from './test-results'
 import {
   mockAlltestAndPanels,
+  mockDiagnosticReportResponse,
   panelTestResultsDiagnosticReportRequestBody,
 } from '../../__mocks__/selectTests.mock'
-import {saveDiagnosticReportURL} from '../../utils/api-utils'
+import {
+  getUpdateFulfillerStatusURL,
+  saveDiagnosticReportURL,
+} from '../../utils/api-utils'
 import {mockDoctorNames} from '../../__mocks__/doctorNames.mock'
 
 jest.mock('../../context/pending-orders-context', () => ({
   ...jest.requireActual('../../context/pending-orders-context'),
   usePendingLabOrderContext: jest.fn(() => ({
     selectedPendingOrder: mockSelectedPendingOrder,
+    setSelectedPendingOrder: jest.fn(),
   })),
 }))
 
@@ -50,9 +55,13 @@ describe('TestResults Report', () => {
       allTestsAndPanels: mockAlltestAndPanels,
     }))
     let uuidCounter = 0
-    global.crypto.randomUUID = jest.fn().mockImplementation(() =>
-      ++uuidCounter === 1 ? 'mock-dr-uuid' : `mock-obs-uuid-${uuidCounter - 1}`,
-    )
+    global.crypto.randomUUID = jest
+      .fn()
+      .mockImplementation(() =>
+        ++uuidCounter === 1
+          ? 'mock-dr-uuid'
+          : `mock-obs-uuid-${uuidCounter - 1}`,
+      )
   })
   afterEach(() => {
     jest.clearAllMocks(), localStorage.clear()
@@ -364,8 +373,8 @@ describe('TestResults Report', () => {
     mockedOpenmrsFetch
       .mockReturnValueOnce(mockDoctorNames)
       .mockReturnValueOnce(mockPanelTestResult)
-      .mockReturnValueOnce(mockAlltestAndPanels)
-      .mockReturnValueOnce(mockSelectedPendingOrder)
+      .mockReturnValueOnce(mockDiagnosticReportResponse)
+      .mockReturnValueOnce({ok: true, status: 200})
 
     const mockedLayout = useLayoutType as jest.Mock
     mockedLayout.mockReturnValue('desktop')
@@ -401,7 +410,7 @@ describe('TestResults Report', () => {
     userEvent.click(saveButton)
 
     await waitFor(() => {
-      expect(mockedOpenmrsFetch).toBeCalledTimes(3)
+      expect(mockedOpenmrsFetch).toBeCalledTimes(4)
     })
     verifyApiCall(
       saveDiagnosticReportURL,
@@ -409,6 +418,11 @@ describe('TestResults Report', () => {
       panelTestResultsDiagnosticReportRequestBody(
         new Date(currentDay).toISOString(),
       ),
+    )
+    verifyApiCall(
+      getUpdateFulfillerStatusURL(mockSelectedPendingOrder[0].id),
+      'POST',
+      JSON.stringify({fulfillerStatus: 'COMPLETED'}),
     )
   })
 })

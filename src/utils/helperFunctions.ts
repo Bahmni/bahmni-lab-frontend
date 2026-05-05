@@ -1,7 +1,5 @@
 import {LabTest} from '../types/selectTest'
 
-export const generateUuid = (): string => crypto.randomUUID()
-
 export const getTestName = (test: LabTest) => {
   const testName = test?.names?.filter(
     name =>

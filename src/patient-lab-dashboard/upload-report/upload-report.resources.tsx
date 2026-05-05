@@ -1,11 +1,5 @@
 import {FetchResponse} from '@openmrs/esm-framework'
-import {
-  Datatype,
-  DiagnosticReportResource,
-  FhirReference,
-  ObservationResource,
-  PendingLabOrders,
-} from '../../types'
+import {Datatype, PendingLabOrders} from '../../types'
 import {LabTest} from '../../types/selectTest'
 import {
   postApiCall,
@@ -13,7 +7,66 @@ import {
   uploadDocumentURL,
 } from '../../utils/api-utils'
 import {uploadedDocumentEncounterType} from '../../utils/constants'
-import {generateUuid, getTestName} from '../../utils/helperFunctions'
+import {getTestName} from '../../utils/helperFunctions'
+
+interface FhirReference {
+  reference: string
+}
+
+interface DiagnosticReportResource {
+  resourceType: string
+  id: string
+  status: string
+  category: Array<{coding: Array<{system: string; code: string}>}>
+  code: {coding: Array<{code: string; display?: string}>}
+  subject: FhirReference
+  issued: Date
+  effectiveDateTime: Date
+  conclusion?: string
+  basedOn?: FhirReference[]
+  performer?: FhirReference[]
+  encounter?: FhirReference
+  presentedForm?: Array<{contentType: string; url: string; title: string}>
+  result?: FhirReference[]
+}
+
+interface ValueQuantity {
+  value: number
+}
+
+interface ObservationResource {
+  resourceType: string
+  id: string
+  status: string
+  code: {
+    coding: [
+      {
+        code: string
+        display: string
+      },
+    ]
+  }
+  subject: FhirReference
+  effectiveDateTime: Date
+  valueQuantity?: ValueQuantity
+  valueCodeableConcept?: {
+    coding: [
+      {
+        code: string
+        display: string
+      },
+    ]
+  }
+  valueBoolean?: boolean
+  valueString?: string
+  interpretation?: Array<{
+    coding: [
+      {
+        code: string
+      },
+    ]
+  }>
+}
 
 interface UploadFileResponseType {
   url: string
@@ -77,7 +130,7 @@ export function saveDiagnosticReport(
   reportConclusion: string,
   ac: AbortController,
 ) {
-  const drId = generateUuid()
+  const drId = crypto.randomUUID()
 
   const dr: DiagnosticReportResource = {
     resourceType: 'DiagnosticReport',
@@ -151,12 +204,12 @@ export function saveTestDiagnosticReport(
       },
     ]
 
-  const drId = generateUuid()
+  const drId = crypto.randomUUID()
   const obsEntries: BundleEntry[] = []
   const resultArray: Array<FhirReference> = []
 
   const createObservation = (item, index) => {
-    const obsId = generateUuid()
+    const obsId = crypto.randomUUID()
     const observation: ObservationResource = {
       resourceType: 'Observation',
       id: obsId,

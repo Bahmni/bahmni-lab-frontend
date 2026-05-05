@@ -23,6 +23,7 @@ import styles from './upload-report.scss'
 import {
   auditLogURL,
   getPayloadForPatientReportUpload,
+  getUpdateFulfillerStatusURL,
   postApiCall,
 } from '../../utils/api-utils'
 import {isAuditLogEnabledKey, loggedInUserKey} from '../../utils/constants'
@@ -178,6 +179,13 @@ const UploadReport: React.FC<UploadReportProps> = ({
       ac,
     )
     if (diagnosticReportResponse.ok) {
+      if (matchingOrder) {
+        await postApiCall(
+          getUpdateFulfillerStatusURL(matchingOrder.id),
+          {fulfillerStatus: 'COMPLETED'},
+          ac,
+        )
+      }
       const loggedInUser = localStorage.getItem(loggedInUserKey)
       const isAuditLogEnabled = localStorage.getItem(isAuditLogEnabledKey)
       if (isAuditLogEnabled && loggedInUser) {
