@@ -1,5 +1,15 @@
 import {getCurrentUser, LoggedInUser} from '@openmrs/esm-framework'
 import React, {useEffect, useState} from 'react'
+import {useTranslation} from 'react-i18next'
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from 'carbon-components-react'
+import {Link} from 'react-router-dom'
 import useSWR from 'swr'
 import BahmniLogo from '../assets/bahmniLogoFull.png'
 import {
@@ -9,13 +19,20 @@ import {
   fetcher,
   getPayloadForUserLogin,
   postApiCall,
+  activePatientWithLabOrdersURL,
 } from '../utils/api-utils'
-import {isAuditLogEnabledKey, loggedInUserKey} from '../utils/constants'
+import {
+  isAuditLogEnabledKey,
+  loggedInUserKey,
+  userLocationKey,
+  activePatientHeaders,
+} from '../utils/constants'
 import classes from './home.scss'
 interface AuditLogResponse {
   data: boolean
 }
 const Home = () => {
+  const {t} = useTranslation()
   const [loggedInUser, setLoggedInUser] = useState<LoggedInUser | null>(null)
 
   let {data: auditLogEnabledResponse, error: auditLogResponseError} = useSWR<
@@ -40,6 +57,75 @@ const Home = () => {
     }
   }, [auditLogEnabledResponse, loggedInUser])
 
+  const getLocationFromCookie = () => {
+    try {
+      const cookieString = document.cookie
+        .split('; ')
+        .find(row => row.startsWith(`${userLocationKey}=`))
+        ?.split('=')[1]
+      return cookieString ? JSON.parse(decodeURIComponent(cookieString)) : null
+    } catch {
+      return null
+    }
+  }
+
+  const location = getLocationFromCookie()
+  const {data: patients, error: responseErrorFromSWR} = useSWR(
+    location?.uuid ? activePatientWithLabOrdersURL(location.uuid) : null,
+    fetcher,
+    swrOptions,
+  )
+
+  const headerDefaults = {
+    patientId: 'Patient Id',
+    patientName: 'Patient Name',
+  }
+
+  const renderPatientTable = () => {
+    if (responseErrorFromSWR) {
+      return <p>Error loading patient list. Please try again.</p>
+    }
+
+    if (!patients) {
+      return null
+    }
+
+    if (patients && Array.isArray(patients.data) && patients.data.length > 0) {
+      return (
+        <div className={classes.patientListSection}>
+          <h2>{t('activePatientList', 'Active Patient List')}</h2>
+          <Table role="table">
+            <TableHead role="columnheader">
+              <TableRow>
+                {activePatientHeaders.map(header => (
+                  <TableHeader key={header.key}>
+                    {t(header.header, headerDefaults[header.header])}
+                  </TableHeader>
+                ))}
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {patients.data.map(patient => (
+                <TableRow key={patient.uuid}>
+                  <TableCell>
+                    <Link to={`/patient/${patient.uuid}`}>
+                      {patient.identifier}
+                    </Link>
+                  </TableCell>
+                  <TableCell>
+                    <Link to={`/patient/${patient.uuid}`}>{patient.name}</Link>
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </div>
+      )
+    }
+
+    return <p>{t('noPatients', 'No patients found.')}</p>
+  }
+
   return (
     <div className={classes.homeContainer}>
       <div className={classes.image}>
@@ -49,6 +135,7 @@ const Home = () => {
       <span className={classes.helpText}>
         Please click on the search icon above to get started
       </span>
+      {renderPatientTable()}
     </div>
   )
 }
