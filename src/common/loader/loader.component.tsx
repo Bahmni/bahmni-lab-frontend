@@ -4,7 +4,7 @@ import {InlineLoading} from 'carbon-components-react'
 import {useTranslation} from 'react-i18next'
 
 const Loader: React.FC = () => {
-  const {t} = useTranslation()
+  const {t} = useTranslation('@bahmni/lab-app')
   return (
     <InlineLoading
       className={styles.loading}
