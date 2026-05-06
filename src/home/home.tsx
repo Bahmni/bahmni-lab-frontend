@@ -26,13 +26,14 @@ import {
   loggedInUserKey,
   userLocationKey,
   activePatientHeaders,
+  labAppNamespace,
 } from '../utils/constants'
 import classes from './home.scss'
 interface AuditLogResponse {
   data: boolean
 }
 const Home = () => {
-  const {t} = useTranslation('@bahmni/lab-app')
+  const {t} = useTranslation(labAppNamespace)
   const [loggedInUser, setLoggedInUser] = useState<LoggedInUser | null>(null)
 
   let {data: auditLogEnabledResponse, error: auditLogResponseError} = useSWR<
@@ -131,9 +132,11 @@ const Home = () => {
       <div className={classes.image}>
         <img src={BahmniLogo} alt="Bahmni Logo" />
       </div>
-      <h1 className={classes.welcomeText}>WELCOME TO LAB ENTRY</h1>
+      <h1 className={classes.welcomeText}>
+        {t('welcome', 'WELCOME TO LAB ENTRY')}
+      </h1>
       <span className={classes.helpText}>
-        Please click on the search icon above to get started
+        {t('helpText', 'Please click on the search icon above to get started')}
       </span>
       {renderPatientTable()}
     </div>
