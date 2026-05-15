@@ -1,13 +1,13 @@
 import {LabTest} from '../types/selectTest'
 
 export const getTestName = (test: LabTest) => {
-  const testName = test?.names?.filter(
+  const matching = test?.names?.find(
     name =>
-      name.conceptNameType == 'SHORT' ||
-      name.conceptNameType == 'FULLY_SPECIFIED',
-  )[0].name
-
-  return testName ? testName : undefined
+      (name.conceptNameType == 'SHORT' ||
+        name.conceptNameType == 'FULLY_SPECIFIED') &&
+      (!name.locale || name.locale == 'en'),
+  )
+  return matching?.name ?? test?.display ?? test?.name?.display
 }
 
 export const getShortName = (

@@ -7,6 +7,7 @@ export interface Names {
   display: string
   name: string
   conceptNameType: string
+  locale?: string
 }
 
 export interface ConceptClass {
@@ -17,6 +18,7 @@ export interface ConceptClass {
 
 export interface LabTest {
   uuid: string
+  display?: string
   name: Name
   names: Array<Names>
   set: boolean
