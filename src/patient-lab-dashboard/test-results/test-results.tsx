@@ -23,7 +23,13 @@ import Overlay from '../../common/overlay'
 import {usePendingLabOrderContext} from '../../context/pending-orders-context'
 import {useDoctorDetails} from '../../context/upload-report-context'
 import styles from './test-results.scss'
-import {fetcher, getTestResults, swrOptions} from '../../utils/api-utils'
+import {
+  fetcher,
+  getTestResults,
+  getUpdateFulfillerStatusURL,
+  postApiCall,
+  swrOptions,
+} from '../../utils/api-utils'
 import {getTestName} from '../../utils/helperFunctions'
 import DoctorListDropdown from '../doctors-list-dropdown/doctor-list-dropdown'
 import {saveTestDiagnosticReport} from '../upload-report/upload-report.resources'
@@ -164,7 +170,6 @@ const TestResults: React.FC<TestResultProps> = ({
     try {
       for (let index = 0; index < selectedTests.length; index++) {
         const response = await saveTestDiagnosticReport(
-          undefined,
           patientUuid,
           doctor.uuid,
           selectedTests[index],
@@ -175,10 +180,15 @@ const TestResults: React.FC<TestResultProps> = ({
           labResult,
           getTestData(selectedTests[index]),
         )
-        if (allSuccess && !response.ok) {
+        if (!response.ok) {
           allSuccess = false
           break
         }
+        await postApiCall(
+          getUpdateFulfillerStatusURL(selectedPendingOrder[index].id),
+          {fulfillerStatus: 'COMPLETED'},
+          ac,
+        )
       }
     } catch (e) {
       allSuccess = false

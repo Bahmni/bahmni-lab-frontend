@@ -43,6 +43,12 @@ jest.mock('react-router-dom', () => {
   }
 })
 
+jest.mock('react-i18next', () => ({
+  useTranslation: () => ({
+    t: (key: string, defaultValue?: string) => defaultValue || key,
+  }),
+}))
+
 describe('Root', () => {
   it('should render home when user hits home url', async () => {
     let mockedOpenmrsFetch = openmrsFetch as jest.Mock

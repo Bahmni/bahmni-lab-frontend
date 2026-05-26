@@ -137,7 +137,7 @@ const ReportTable = (props: ReportTableProps) => {
       })
       .map(row => {
         if (row !== undefined) {
-          const title = row.resource?.presentedForm[0]?.title
+          const title = row.resource?.presentedForm?.[0]?.title
 
           return {
             id: row.resource.id,
@@ -145,7 +145,7 @@ const ReportTable = (props: ReportTableProps) => {
               row.resource.code.coding[0]?.display,
               allTestsAndPanels,
             ),
-            url: row.resource?.presentedForm[0]?.url,
+            url: row.resource?.presentedForm?.[0]?.url,
             date: new Date(row.resource.issued).toLocaleDateString(
               localStorage.getItem('i18nextLng'),
               {
@@ -253,7 +253,7 @@ const ReportTable = (props: ReportTableProps) => {
                                     >
                                       {cell.value}
                                     </Link>
-                                  ) : (
+                                  ) : cell.value ? (
                                     <ImagePreviewComponent
                                       url={getReportUrl(rows, row.id)}
                                       fileName={cell.value}
@@ -269,7 +269,7 @@ const ReportTable = (props: ReportTableProps) => {
                                       )}
                                       postAuditMessage={postAuditMessage}
                                     />
-                                  )}
+                                  ) : null}
                                 </TableCell>
                               ) : (
                                 <TableCell
@@ -323,7 +323,7 @@ const ReportTable = (props: ReportTableProps) => {
 }
 
 function url(resource: ReportResource) {
-  return resource?.presentedForm ? resource?.presentedForm[0].url : ''
+  return resource?.presentedForm?.[0]?.url ?? ''
 }
 function code(resource: ReportResource) {
   return resource.code.coding[0].display
@@ -334,21 +334,22 @@ function getUniqueReportUrls(diagnosticReport: ReportEntry[]) {
 }
 
 function dedupe(diagnosticReport: Array<ReportEntry>) {
-  return Array.from(getUniqueReportUrls(diagnosticReport)).map(reportUrl => {
-    if (reportUrl != '') {
-      return diagnosticReport.reduce<ReportEntry | undefined>((acc, curr) => {
-        if (url(curr.resource) === reportUrl) {
-          if (acc)
-            acc.resource.code.coding[0].display = `${code(
-              acc.resource,
-            )}, ${code(curr.resource)}`
-          else return curr
-        }
-        return acc
-      }, undefined)
-    }
-    return undefined
-  })
+  const withUrl = diagnosticReport?.filter(e => url(e.resource) !== '') ?? []
+
+  const deduped = Array.from(getUniqueReportUrls(withUrl)).map(reportUrl =>
+    withUrl.reduce<ReportEntry | undefined>((acc, curr) => {
+      if (url(curr.resource) === reportUrl) {
+        if (acc)
+          acc.resource.code.coding[0].display = `${code(acc.resource)}, ${code(
+            curr.resource,
+          )}`
+        else return curr
+      }
+      return acc
+    }, undefined),
+  )
+
+  return deduped
 }
 
 const getPatientIdentifier = (displayName: string) => {

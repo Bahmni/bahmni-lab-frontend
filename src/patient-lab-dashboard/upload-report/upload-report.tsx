@@ -32,6 +32,7 @@ import styles from './upload-report.scss'
 import {
   auditLogURL,
   getPayloadForPatientReportUpload,
+  getUpdateFulfillerStatusURL,
   postApiCall,
 } from '../../utils/api-utils'
 import {isAuditLogEnabledKey, loggedInUserKey} from '../../utils/constants'
@@ -98,7 +99,6 @@ const UploadReport: React.FC<UploadReportProps> = ({
           try {
             for (let index = 0; index < selectedTests.length; index++) {
               await uploadSelectedTests(
-                undefined,
                 selectedTests[index],
                 patientUuid,
                 doctor.uuid,
@@ -159,7 +159,6 @@ const UploadReport: React.FC<UploadReportProps> = ({
   }
 
   async function uploadSelectedTests(
-    encounter,
     selectedTest: LabTest,
     patientUuid: string,
     doctorUuid: string,
@@ -172,19 +171,30 @@ const UploadReport: React.FC<UploadReportProps> = ({
     saveHandler: Function,
     allSuccess: boolean,
   ) {
+    const matches = selectedPendingOrder.filter(
+      order => order.conceptUuid === selectedTest.uuid,
+    )
+    const matchingOrder = matches.length === 1 ? matches[0] : null
     const diagnosticReportResponse = await saveDiagnosticReport(
-      encounter,
+      matchingOrder,
       patientUuid,
       doctorUuid,
       reportDate,
       selectedTest,
       url,
       selectedFile.name,
+      selectedFile.type,
       reportConclusion,
       ac,
-      selectedPendingOrder,
     )
     if (diagnosticReportResponse.ok) {
+      if (matchingOrder) {
+        await postApiCall(
+          getUpdateFulfillerStatusURL(matchingOrder.id),
+          {fulfillerStatus: 'COMPLETED'},
+          ac,
+        )
+      }
       const loggedInUser = localStorage.getItem(loggedInUserKey)
       const isAuditLogEnabled = localStorage.getItem(isAuditLogEnabledKey)
       if (isAuditLogEnabled && loggedInUser) {

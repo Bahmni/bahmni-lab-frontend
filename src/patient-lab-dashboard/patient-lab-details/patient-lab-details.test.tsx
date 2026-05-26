@@ -23,6 +23,7 @@ import {SWRConfig} from 'swr'
 import {
   auditLogURL,
   getPayloadForPatientAccess,
+  getUpdateFulfillerStatusURL,
   saveDiagnosticReportURL,
 } from '../../utils/api-utils'
 import {isAuditLogEnabledKey, loggedInUserKey} from '../../utils/constants'
@@ -102,6 +103,14 @@ describe('Patient lab details', () => {
     when(usePagination)
       .calledWith(expect.anything(), 5)
       .mockReturnValue(mockPendingLabOrder)
+    let uuidCounter = 0
+    global.crypto.randomUUID = jest
+      .fn()
+      .mockImplementation(() =>
+        ++uuidCounter === 1
+          ? 'mock-dr-uuid'
+          : `mock-obs-uuid-${uuidCounter - 1}`,
+      )
   })
 
   afterEach(() => {
@@ -478,13 +487,18 @@ describe('Patient lab details', () => {
     uploadFiles(fileInput, [file])
     await verifyFileName(fileInput)
     await saveReport()
-    expect(mockedOpenmrsFetch).toBeCalledTimes(7)
+    expect(mockedOpenmrsFetch).toBeCalledTimes(8)
     verifyApiCall(
       saveDiagnosticReportURL,
       'POST',
       diagnosticReportRequestBodyWithBasedOn(
         new Date(currentDay).toISOString(),
       ),
+    )
+    verifyApiCall(
+      getUpdateFulfillerStatusURL('abc-123'),
+      'POST',
+      JSON.stringify({fulfillerStatus: 'COMPLETED'}),
     )
   })
 

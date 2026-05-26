@@ -8,7 +8,7 @@
  */
 
 import {FetchResponse} from '@openmrs/esm-framework'
-import {Contained, Datatype, PendingLabOrders} from '../../types'
+import {Datatype, PendingLabOrders} from '../../types'
 import {LabTest} from '../../types/selectTest'
 import {
   postApiCall,
@@ -18,70 +18,93 @@ import {
 import {uploadedDocumentEncounterType} from '../../utils/constants'
 import {getTestName} from '../../utils/helperFunctions'
 
+interface FhirReference {
+  reference: string
+}
+
+interface DiagnosticReportResource {
+  resourceType: string
+  id: string
+  status: string
+  category: Array<{coding: Array<{system: string; code: string}>}>
+  code: {coding: Array<{code: string; display?: string}>}
+  subject: FhirReference
+  issued: Date
+  effectiveDateTime: Date
+  conclusion?: string
+  basedOn?: FhirReference[]
+  performer?: FhirReference[]
+  encounter?: FhirReference
+  presentedForm?: Array<{contentType: string; url: string; title: string}>
+  result?: FhirReference[]
+}
+
+interface ValueQuantity {
+  value: number
+}
+
+interface ObservationResource {
+  resourceType: string
+  id: string
+  status: string
+  code: {
+    coding: [
+      {
+        code: string
+        display: string
+      },
+    ]
+  }
+  subject: FhirReference
+  effectiveDateTime: Date
+  valueQuantity?: ValueQuantity
+  valueCodeableConcept?: {
+    coding: [
+      {
+        code: string
+        display: string
+      },
+    ]
+  }
+  valueBoolean?: boolean
+  valueString?: string
+  interpretation?: Array<{
+    coding: [
+      {
+        code: string
+      },
+    ]
+  }>
+}
+
 interface UploadFileResponseType {
   url: string
 }
 
-interface ReferenceRequestType {
-  reference: string
+interface BundleEntry {
+  fullUrl: string
+  resource: DiagnosticReportResource | ObservationResource
 }
 
-export interface BasedOnType {
-  reference: string
-  display: string
-  identifier: {
-    value: string
-  }
+interface BundleRequestType {
+  resourceType: 'Bundle'
+  type: 'collection'
+  entry: BundleEntry[]
 }
 
-export interface Observation {
-  reference: string
-  type: string
-}
-
-interface DiagnosticReportRequestType {
-  resourceType: string
-  status: string
-  code: {
+const labCategory = [
+  {
     coding: [
-      {
-        code: string
-        display: string
-      },
-    ]
-  }
-  subject: ReferenceRequestType
-  encounter?: {reference: string}
-  issued: Date
-  conclusion?: string
-  presentedForm: Array<{
-    url: string
-    title: string
-  }>
-  basedOn?: Array<BasedOnType>
-  performer?: Array<ReferenceRequestType>
-}
+      {system: 'http://terminology.hl7.org/CodeSystem/v2-0074', code: 'LAB'},
+    ],
+  },
+]
 
-interface TestResultDiagnosticReportRequestType {
-  resourceType: string
-  status: string
-  code: {
-    coding: [
-      {
-        code: string
-        display: string
-      },
-    ]
-  }
-  subject: ReferenceRequestType
-  encounter?: {reference: string}
-  issued: Date
-  conclusion?: string
-  basedOn?: Array<BasedOnType>
-  performer?: Array<ReferenceRequestType>
-  contained: Array<Contained>
-  result?: Array<Observation>
-}
+const wrapInBundle = (entries: BundleEntry[]): BundleRequestType => ({
+  resourceType: 'Bundle',
+  type: 'collection',
+  entry: entries,
+})
 
 export function uploadFile(
   patientUuid: string,
@@ -105,33 +128,24 @@ const uploadFileRequestBody = (fileContent, fileType, patientUuid) => {
 }
 
 export function saveDiagnosticReport(
-  encounter,
+  pendingOrder: PendingLabOrders | null,
   patientUuid: string,
   performerUuid: string,
   reportDate: Date,
   selectedTest: LabTest,
   uploadFileUrl: string,
   uploadedFileName: string,
+  fileType: string,
   reportConclusion: string,
   ac: AbortController,
-  selectedPendingOrder: PendingLabOrders[],
 ) {
-  let basedOn: Array<BasedOnType> = null
-  const selectedPendingOrderTest = getSelectedPendingOrderTests(
-    selectedTest,
-    selectedPendingOrder,
-  )
-  if (selectedPendingOrderTest.length === 1)
-    basedOn = [
-      {
-        identifier: {value: selectedPendingOrderTest[0].id},
-        reference: 'ServiceRequest',
-        display: getTestName(selectedTest),
-      },
-    ]
-  const requestBody: DiagnosticReportRequestType = {
+  const drId = crypto.randomUUID()
+
+  const dr: DiagnosticReportResource = {
     resourceType: 'DiagnosticReport',
+    id: drId,
     status: 'final',
+    category: labCategory,
     code: {
       coding: [
         {
@@ -144,32 +158,40 @@ export function saveDiagnosticReport(
       reference: 'Patient/' + patientUuid,
     },
     issued: reportDate,
-    presentedForm: [{url: uploadFileUrl, title: uploadedFileName}],
+    effectiveDateTime: reportDate,
+    presentedForm: [
+      {contentType: fileType, url: uploadFileUrl, title: uploadedFileName},
+    ],
   }
+
   if (reportConclusion) {
-    requestBody.conclusion = reportConclusion
+    dr.conclusion = reportConclusion
   }
-  if (selectedPendingOrderTest.length === 1) {
-    requestBody.basedOn = basedOn
+  if (pendingOrder) {
+    dr.basedOn = [{reference: `ServiceRequest/${pendingOrder.id}`}]
   }
   if (performerUuid) {
-    requestBody.performer = [
+    dr.performer = [
       {
         reference: 'Practitioner/' + performerUuid,
       },
     ]
   }
-  if (encounter && encounter.encounterUuid) {
-    requestBody.encounter = {
-      reference: `Encounter/${encounter.encounterUuid}`,
+  if (pendingOrder?.encounterUuid) {
+    dr.encounter = {
+      reference: `Encounter/${pendingOrder.encounterUuid}`,
     }
   }
 
-  return postApiCall(saveDiagnosticReportURL, requestBody, ac)
+  const drEntry: BundleEntry = {
+    fullUrl: `urn:uuid:${drId}`,
+    resource: dr,
+  }
+
+  return postApiCall(saveDiagnosticReportURL, wrapInBundle([drEntry]), ac)
 }
 
 export function saveTestDiagnosticReport(
-  encounter,
   patientUuid: string,
   performerUuid: string,
   selectedTest: LabTest,
@@ -183,22 +205,23 @@ export function saveTestDiagnosticReport(
   >,
   dataType: Datatype[],
 ) {
-  let basedOn: Array<BasedOnType> = null
+  let basedOn: Array<FhirReference> | null = null
   if (selectedPendingOrder)
     basedOn = [
       {
-        identifier: {value: selectedPendingOrder.id},
-        reference: 'ServiceRequest',
-        display: selectedPendingOrder.testName,
+        reference: `ServiceRequest/${selectedPendingOrder.id}`,
       },
     ]
 
-  let containedArray: Contained[] = []
+  const drId = crypto.randomUUID()
+  const obsEntries: BundleEntry[] = []
+  const resultArray: Array<FhirReference> = []
 
   const createObservation = (item, index) => {
-    const observation: Contained = {
+    const obsId = crypto.randomUUID()
+    const observation: ObservationResource = {
       resourceType: 'Observation',
-      id: `lab-test-result${index + 1}`,
+      id: obsId,
       status: 'final',
       code: {
         coding: [
@@ -209,6 +232,7 @@ export function saveTestDiagnosticReport(
         ],
       },
       subject: {reference: `Patient/${patientUuid}`},
+      effectiveDateTime: reportDate,
     }
 
     const labItem = labResult.get(item.uuid)
@@ -230,8 +254,10 @@ export function saveTestDiagnosticReport(
         observation.valueBoolean = labItem?.value.toLowerCase() === 'true'
         break
       case 'Numeric':
-        observation.valueQuantity = {
-          value: labItem?.value,
+        if (labItem?.value !== undefined && labItem.value !== '') {
+          observation.valueQuantity = {
+            value: parseFloat(labItem.value),
+          }
         }
         break
       case 'Coded':
@@ -248,26 +274,26 @@ export function saveTestDiagnosticReport(
         observation.valueString = labItem?.value
     }
 
-    return observation
+    obsEntries.push({
+      fullUrl: `urn:uuid:${obsId}`,
+      resource: observation,
+    })
+    resultArray.push({
+      reference: `Observation/${obsId}`,
+    })
   }
 
   if (selectedTest.setMembers && selectedTest.setMembers.length > 0) {
-    containedArray = selectedTest.setMembers.map(createObservation)
+    selectedTest.setMembers.forEach(createObservation)
   } else {
-    const observation = createObservation(selectedTest, 0)
-    containedArray.push(observation)
+    createObservation(selectedTest, 0)
   }
 
-  const resultArray = containedArray.map(item => {
-    return {
-      reference: `#${item.id}`,
-      type: 'Observation',
-    }
-  })
-
-  const requestBody: TestResultDiagnosticReportRequestType = {
+  const dr: DiagnosticReportResource = {
     resourceType: 'DiagnosticReport',
+    id: drId,
     status: 'final',
+    category: labCategory,
     code: {
       coding: [
         {
@@ -280,28 +306,40 @@ export function saveTestDiagnosticReport(
       reference: 'Patient/' + patientUuid,
     },
     issued: reportDate,
-    contained: containedArray,
+    effectiveDateTime: reportDate,
     result: resultArray,
   }
+
   if (reportConclusion) {
-    requestBody.conclusion = reportConclusion
+    dr.conclusion = reportConclusion
   }
 
-  requestBody.basedOn = basedOn
+  if (basedOn) {
+    dr.basedOn = basedOn
+  }
   if (performerUuid) {
-    requestBody.performer = [
+    dr.performer = [
       {
         reference: 'Practitioner/' + performerUuid,
       },
     ]
   }
-  if (encounter && encounter.encounterUuid) {
-    requestBody.encounter = {
-      reference: `Encounter/${encounter.encounterUuid}`,
+  if (selectedPendingOrder?.encounterUuid) {
+    dr.encounter = {
+      reference: `Encounter/${selectedPendingOrder.encounterUuid}`,
     }
   }
 
-  return postApiCall(saveDiagnosticReportURL, requestBody, ac)
+  const drEntry: BundleEntry = {
+    fullUrl: `urn:uuid:${drId}`,
+    resource: dr,
+  }
+
+  return postApiCall(
+    saveDiagnosticReportURL,
+    wrapInBundle([drEntry, ...obsEntries]),
+    ac,
+  )
 }
 
 const removeBase64 = fileData => {
@@ -309,14 +347,5 @@ const removeBase64 = fileData => {
   return fileData.substring(
     fileData.indexOf(searchStr) + searchStr.length,
     fileData.length,
-  )
-}
-
-const getSelectedPendingOrderTests = (
-  selectedTest: LabTest,
-  selectedPendingOrder: PendingLabOrders[],
-): PendingLabOrders[] => {
-  return selectedPendingOrder.filter(
-    pendingOrder => pendingOrder.conceptUuid === selectedTest.uuid,
   )
 }

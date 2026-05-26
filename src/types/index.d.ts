@@ -13,6 +13,7 @@ export interface LabOrders {
   concept: Concept
   orderDate: number
   orderUuid: string
+  encounterUuid?: string
   provider: string
   providerUuid: string
   fulfillerStatus: string
@@ -106,6 +107,7 @@ export interface PendingLabOrders {
   orderedBy: string
   providerUuid: string
   conceptUuid: string
+  encounterUuid?: string
 }
 
 export interface Attribute {
@@ -165,46 +167,6 @@ interface Name {
   links: Links
   resourceVersion: string
 }
-interface ValueQuantity {
-  value: string
-}
-interface Subject {
-  reference: string
-}
-
-interface Contained {
-  resourceType: string
-  id: string
-  status: string
-  code: {
-    coding: [
-      {
-        code: string
-        display: string
-      },
-    ]
-  }
-  subject: Subject
-  valueQuantity?: ValueQuantity
-  valueCodeableConcept?: {
-    coding: [
-      {
-        code: string
-        display: string
-      },
-    ]
-  }
-  valueBoolean?: boolean
-  valueString?: string
-  interpretation?: Array<{
-    coding: [
-      {
-        code: string
-      },
-    ]
-  }>
-}
-
 export interface TestResultsLabOrder {
   data: {
     uuid: string

@@ -32,7 +32,11 @@ export const getOrderTypeUuid = '/ws/rest/v1/ordertype'
 export const uploadDocumentURL =
   '/ws/rest/v1/bahmnicore/visitDocument/uploadDocument'
 
-export const saveDiagnosticReportURL = '/ws/fhir2/R4/DiagnosticReport'
+export const saveDiagnosticReportURL =
+  '/ws/fhir2/R4/DiagnosticReport/$submit-bundle'
+
+export const getUpdateFulfillerStatusURL = (orderId: string) =>
+  `/ws/rest/v1/order/${orderId}/fulfillerdetails`
 
 export const auditLogURL = '/ws/rest/v1/auditlog'
 
@@ -40,6 +44,8 @@ export const auditLogGlobalPropertyURL =
   '/ws/rest/v1/bahmnicore/sql/globalproperty?property=bahmni.enableAuditLog'
 
 export const configUrl = '/../bahmni_config/openmrs/apps/registration/app.json'
+export const activePatientWithLabOrdersURL = (locationUuid: string) =>
+  `/ws/rest/v1/bahmnicore/sql?location_uuid=${locationUuid}&q=emrapi.sqlSearch.activePatientsWithLabOrders&v=full`
 
 export const getPayloadForUserLogin = (username: string): AuditMessage => ({
   eventType: 'ACCESSED_LAB_ENTRY',
