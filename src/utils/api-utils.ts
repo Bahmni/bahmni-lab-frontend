@@ -24,8 +24,11 @@ export const getPendingLabOrdersURL = (
 export const getLabTests = () =>
   `/ws/rest/v1/concept?s=${s}&locale=${locale}&name=${name}&v=${v}`
 
+const testResultsRep =
+  'custom:(uuid,display,name:(uuid,name,display),names:(conceptNameType,name,locale),set,datatype:(uuid,name,display),conceptClass:(uuid,name,display),descriptions:(uuid,description),answers:(uuid,display,name:(uuid,name)),setMembers:(uuid,display,name:(uuid,name,display),names:(conceptNameType,name,locale),set,datatype:(uuid,name,display),conceptClass:(uuid,name,display),hiNormal,hiAbsolute,hiCritical,lowNormal,lowAbsolute,lowCritical,units,allowDecimal,answers:(uuid,display,name:(uuid,name))))'
+
 export const getTestResults = (conceptUuid: string) =>
-  `/ws/rest/v1/concept/${conceptUuid}?&locale=${locale}&v=bahmni`
+  `/ws/rest/v1/concept/${conceptUuid}?locale=${locale}&v=${testResultsRep}`
 
 export const getOrderTypeUuid = '/ws/rest/v1/ordertype'
 

@@ -10,13 +10,17 @@
 import {LabTest} from '../types/selectTest'
 
 export const getTestName = (test: LabTest) => {
-  const testName = test?.names?.filter(
-    name =>
-      name.conceptNameType == 'SHORT' ||
-      name.conceptNameType == 'FULLY_SPECIFIED',
-  )[0].name
-
-  return testName ? testName : undefined
+  const userLocale = localStorage.getItem('i18nextLng') ?? 'en'
+  const localeNames = (test?.names ?? []).filter(
+    n => !n.locale || n.locale === userLocale,
+  )
+  return (
+    localeNames.find(n => n.conceptNameType === 'SHORT')?.name ??
+    localeNames.find(n => n.conceptNameType == null)?.name ??
+    localeNames.find(n => n.conceptNameType === 'FULLY_SPECIFIED')?.name ??
+    test?.display ??
+    test?.name?.display
+  )
 }
 
 export const getShortName = (
