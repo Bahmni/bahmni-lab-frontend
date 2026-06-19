@@ -14,12 +14,13 @@ import {bahmniHomePath} from '../utils/constants'
 import styles from './home-button.scss'
 
 const HomeButton = () => {
+  const homeURL = localStorage.getItem('homeUrl') || bahmniHomePath
   return (
     <HeaderGlobalAction
       aria-label="Home"
       className={styles.headerGlobalBarButton}
       onClick={() => {
-        window.location.href = bahmniHomePath
+        window.location.href = homeURL
       }}
     >
       <Home24 className={styles.home} />
