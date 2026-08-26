@@ -8,6 +8,24 @@
  */
 
 import {LabTest} from '../types/selectTest'
+import {legacyLocaleStorageKey} from './constants'
+
+/**
+ * The classic Bahmni login page persists the locale a user picks to
+ * `localStorage[legacyLocaleStorageKey]`, not to the OpenMRS session/user
+ * properties that `@openmrs/esm-framework`'s i18next instance reads via
+ * `<html lang>`. Without this, a locale chosen at login never reaches this
+ * (separately built and deployed) app.
+ */
+export const syncLocaleFromLegacyBahmni = () => {
+  const legacyLocale = localStorage.getItem(legacyLocaleStorageKey)
+  if (
+    legacyLocale &&
+    legacyLocale !== document.documentElement.getAttribute('lang')
+  ) {
+    document.documentElement.setAttribute('lang', legacyLocale)
+  }
+}
 
 export const getTestName = (test: LabTest) => {
   const userLocale = localStorage.getItem('i18nextLng') ?? 'en'
