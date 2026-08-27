@@ -37,7 +37,6 @@ import {
   activePatientHeaders,
   labAppNamespace,
 } from '../utils/constants'
-import {syncLocaleFromLegacyBahmni} from '../utils/helperFunctions'
 import classes from './home.scss'
 interface AuditLogResponse {
   data: boolean
@@ -52,16 +51,9 @@ const Home = () => {
   >(auditLogGlobalPropertyURL, fetcher, swrOptions)
 
   useEffect(() => {
-    syncLocaleFromLegacyBahmni()
     const subscription = getCurrentUser({
       includeAuthStatus: false,
-    }).subscribe(user => {
-      setLoggedInUser(user)
-      // Re-assert the legacy locale in case the session response (fetched
-      // as part of getCurrentUser) raced with the sync above and reset
-      // <html lang> to the backend's (untranslated) session locale.
-      syncLocaleFromLegacyBahmni()
-    })
+    }).subscribe(setLoggedInUser)
     return () => subscription.unsubscribe()
   }, [])
 
