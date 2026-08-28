@@ -16,7 +16,7 @@ export const mockUser = {
   roles: [{uuid: 'uuid', display: 'System Developer'}],
   username: 'admin',
   userProperties: {
-    defaultLocale: 'fr',
+    defaultLocale: 'es',
   },
 }
 
@@ -43,7 +43,7 @@ export const mockUnauthorizedUser = {
     roles: [{uuid: 'uuid1', display: 'mock-role'}],
     username: 'testuser',
     userProperties: {
-      defaultLocale: 'fr',
+      defaultLocale: 'es',
     },
   },
 }

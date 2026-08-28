@@ -24,13 +24,13 @@ describe('normalizeLegacyLocale', () => {
 
   it('returns the bare language subtag for a supported locale', () => {
     const {normalizeLegacyLocale} = require('./helperFunctions')
-    expect(normalizeLegacyLocale('fr')).toBe('fr')
+    expect(normalizeLegacyLocale('es')).toBe('es')
   })
 
   it('normalizes a region-qualified legacy value to its bare language subtag', () => {
     const {normalizeLegacyLocale} = require('./helperFunctions')
     expect(normalizeLegacyLocale('en_GB')).toBe('en')
-    expect(normalizeLegacyLocale('PT-br')).toBe('pt')
+    expect(normalizeLegacyLocale('ES-mx')).toBe('es')
   })
 
   it('returns null for a locale this app has no translations for', () => {
@@ -53,18 +53,18 @@ describe('syncLocaleFromLegacyBahmni', () => {
   })
 
   it('sets <html lang> when the legacy locale differs from the current value', () => {
-    localStorage.setItem(legacyLocaleStorageKey, 'fr')
+    localStorage.setItem(legacyLocaleStorageKey, 'es')
     const {syncLocaleFromLegacyBahmni} = require('./helperFunctions')
     syncLocaleFromLegacyBahmni()
-    expect(document.documentElement.getAttribute('lang')).toBe('fr')
+    expect(document.documentElement.getAttribute('lang')).toBe('es')
   })
 
   it('leaves <html lang> untouched when it already matches the legacy locale', () => {
-    localStorage.setItem(legacyLocaleStorageKey, 'fr')
-    document.documentElement.setAttribute('lang', 'fr')
+    localStorage.setItem(legacyLocaleStorageKey, 'es')
+    document.documentElement.setAttribute('lang', 'es')
     const {syncLocaleFromLegacyBahmni} = require('./helperFunctions')
     syncLocaleFromLegacyBahmni()
-    expect(document.documentElement.getAttribute('lang')).toBe('fr')
+    expect(document.documentElement.getAttribute('lang')).toBe('es')
   })
 
   it('does not apply an unsupported legacy locale', () => {
@@ -84,14 +84,14 @@ describe('startLegacyLocaleSync', () => {
   })
 
   it('applies the legacy locale immediately', () => {
-    localStorage.setItem(legacyLocaleStorageKey, 'fr')
+    localStorage.setItem(legacyLocaleStorageKey, 'es')
     const {startLegacyLocaleSync} = require('./helperFunctions')
     startLegacyLocaleSync()
-    expect(document.documentElement.getAttribute('lang')).toBe('fr')
+    expect(document.documentElement.getAttribute('lang')).toBe('es')
   })
 
   it('re-asserts the legacy locale for the rest of the session when something else overwrites <html lang>', async () => {
-    localStorage.setItem(legacyLocaleStorageKey, 'fr')
+    localStorage.setItem(legacyLocaleStorageKey, 'es')
     const {startLegacyLocaleSync} = require('./helperFunctions')
     startLegacyLocaleSync()
 
@@ -100,6 +100,6 @@ describe('startLegacyLocaleSync', () => {
     document.documentElement.setAttribute('lang', 'en')
     await flushMutationObserver()
 
-    expect(document.documentElement.getAttribute('lang')).toBe('fr')
+    expect(document.documentElement.getAttribute('lang')).toBe('es')
   })
 })
