@@ -7,10 +7,12 @@
  * graphic logo is a trademark of OpenMRS Inc.
  */
 
-import React from 'react'
+import React, {useEffect} from 'react'
+import {useTranslation} from 'react-i18next'
 import {BrowserRouter, Route} from 'react-router-dom'
 import {SWRConfig} from 'swr'
 import {
+  labAppNamespace,
   labEntryHomePath,
   patientLabDetailsRoute,
   privilegeLabLite,
@@ -30,6 +32,18 @@ const swrConfiguration = {
 }
 
 const Root: React.FC = () => {
+  const {t} = useTranslation(labAppNamespace)
+
+  /**
+   * `--pageTitle` at build time bakes a static, English-only `<title>` into
+   * the app shell HTML. Re-set it from the translation bundle so the browser
+   * tab title tracks the locale, the same way `startLegacyLocaleSync` keeps
+   * `<html lang>` in sync for the app's lifetime.
+   */
+  useEffect(() => {
+    document.title = t('title', 'Lab Entry App')
+  })
+
   return (
     <UserHasAccess
       privilege={privilegeLabLite}

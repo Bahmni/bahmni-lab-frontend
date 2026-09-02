@@ -30,6 +30,9 @@ jest.mock('@openmrs/esm-framework', () => ({
     })
     .mockImplementationOnce(({fallback}) => {
       return fallback
+    })
+    .mockImplementationOnce(({children}) => {
+      return children
     }),
 }))
 
@@ -63,5 +66,13 @@ describe('Root', () => {
     render(<Root />)
 
     expect(screen.getByText(/redirected to login/i)).toBeInTheDocument()
+  })
+
+  it('should set the document title from the translation bundle', async () => {
+    let mockedOpenmrsFetch = openmrsFetch as jest.Mock
+    mockedOpenmrsFetch.mockReturnValueOnce({data: true})
+    window.history.pushState({}, 'Lab Entry', '/lab/home')
+    render(<Root />)
+    await waitFor(() => expect(document.title).toBe('Lab Entry App'))
   })
 })
